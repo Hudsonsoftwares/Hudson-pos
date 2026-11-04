@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- POS Config Form View -->
+    <record id="pos_config_view_form_inherit_pos_booking" model="ir.ui.view">
+        <field name="name">pos.config.form.inherit.pos.booking</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='configuration']//div[hasclass('o_settings_container')]" position="inside">
+                <setting id="pos_booking_setting" string="Table Booking" help="Allow restaurant table bookings directly within POS">
+                    <field name="use_booking"/>
+                    <div class="content-group mt16" invisible="not use_booking">
+                        <div class="row mb-2">
+                            <label for="booking_appointment_type_id" class="col-lg-4 o_light_label"/>
+                            <field name="booking_appointment_type_id" class="col-lg-8" required="use_booking"/>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="booking_no_show_grace_minutes" class="col-lg-4 o_light_label"/>
+                            <field name="booking_no_show_grace_minutes" class="col-lg-8"/>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- POS General Settings Form View -->
+    <record id="res_config_settings_view_form_inherit_pos_booking" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.pos.booking</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <block id="restaurant_section" position="inside">
+                <setting id="pos_booking_res_setting" string="Table Booking" help="Allow table bookings inside POS" invisible="not pos_module_pos_restaurant">
+                    <field name="pos_use_booking"/>
+                    <div class="content-group mt16" invisible="not pos_use_booking">
+                        <div class="row mb-2">
+                            <label for="pos_booking_appointment_type_id" string="Booking Type" class="col-lg-4 o_light_label"/>
+                            <field name="pos_booking_appointment_type_id" class="col-lg-8" required="pos_use_booking"/>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="pos_booking_no_show_grace_minutes" string="Grace Period (Min)" class="col-lg-4 o_light_label"/>
+                            <field name="pos_booking_no_show_grace_minutes" class="col-lg-8"/>
+                        </div>
+                    </div>
+                </setting>
+            </block>
+        </field>
+    </record>
+</odoo>
+

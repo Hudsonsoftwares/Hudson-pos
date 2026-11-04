@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_delivery_platform_tree" model="ir.ui.view">
+        <field name="name">pos.delivery.platform.list</field>
+        <field name="model">pos.delivery.platform</field>
+        <field name="arch" type="xml">
+            <list string="Food Delivery Platforms" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="urbanpiper_channel_code" optional="show"/>
+                <field name="country_ids" widget="many2many_tags" optional="show" placeholder="All Countries"/>
+                <field name="delivery_type" optional="hide"/>
+                <field name="auto_accept"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pos_delivery_platform_form" model="ir.ui.view">
+        <field name="name">pos.delivery.platform.form</field>
+        <field name="model">pos.delivery.platform</field>
+        <field name="arch" type="xml">
+            <form string="Food Delivery Platform">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Swiggy, Zomato, Talabat, Deliveroo"/></h1>
+                    </div>
+                    <group>
+                        <group string="Platform Details">
+                            <field name="code" placeholder="e.g. swiggy, zomato, talabat"/>
+                            <field name="urbanpiper_channel_code" placeholder="UrbanPiper Channel Code"/>
+                            <field name="sequence"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                        <group string="Regional &amp; Automation">
+                            <field name="country_ids" widget="many2many_tags" placeholder="Select Operating Countries (e.g. India, UAE)"/>
+                            <field name="delivery_type"/>
+                            <field name="auto_accept"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pos_delivery_platform" model="ir.actions.act_window">
+        <field name="name">Delivery Platforms</field>
+        <field name="res_model">pos.delivery.platform</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure Food Delivery Platforms by Country
+            </p>
+            <p>
+                Manage country-specific online aggregators (Swiggy, Zomato, Talabat, Deliveroo, Careem, Jahez, Uber Eats, DoorDash) integrated via UrbanPiper.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_pos_delivery_platform"
+              name="Delivery Platforms"
+              parent="point_of_sale.menu_point_of_sale"
+              action="action_pos_delivery_platform"
+              sequence="29"/>
+</odoo>

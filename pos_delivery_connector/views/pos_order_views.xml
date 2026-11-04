@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- POS Order Form View Extension -->
+    <record id="view_pos_pos_form_inherit_delivery" model="ir.ui.view">
+        <field name="name">pos.order.form.inherit.delivery</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_accept_delivery_order" type="object" string="Accept Delivery" class="btn btn-primary" invisible="not is_delivery_order or delivery_status != 'new'"/>
+                <button name="action_ready_delivery_order" type="object" string="Mark Ready" class="btn btn-info" invisible="not is_delivery_order or delivery_status not in ['new', 'accepted', 'preparing']"/>
+                <button name="action_dispatch_delivery_order" type="object" string="Out for Delivery" class="btn btn-warning" invisible="not is_delivery_order or delivery_status != 'ready'"/>
+                <button name="action_complete_delivery_order" type="object" string="Delivered" class="btn btn-success" invisible="not is_delivery_order or delivery_status not in ['ready', 'dispatched']"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_delivery_order"/>
+                <field name="delivery_platform_id" invisible="not is_delivery_order"/>
+                <field name="delivery_order_ref" invisible="not is_delivery_order"/>
+                <field name="delivery_status" widget="badge" 
+                       decoration-info="delivery_status == 'new'" 
+                       decoration-primary="delivery_status == 'accepted'" 
+                       decoration-warning="delivery_status in ['preparing', 'ready', 'dispatched']" 
+                       decoration-success="delivery_status == 'delivered'" 
+                       decoration-danger="delivery_status == 'cancelled'"
+                       invisible="not is_delivery_order"/>
+                <field name="delivery_customer_name" invisible="not is_delivery_order"/>
+                <field name="delivery_customer_phone" invisible="not is_delivery_order"/>
+                <field name="delivery_rider_name" invisible="not is_delivery_order"/>
+                <field name="delivery_rider_phone" invisible="not is_delivery_order"/>
+                <field name="delivery_instructions" invisible="not is_delivery_order"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Dedicated Action for Online Delivery Orders -->
+    <record id="action_pos_delivery_orders" model="ir.actions.act_window">
+        <field name="name">Online Delivery Orders</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_delivery_order', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No delivery orders yet
+            </p>
+            <p>
+                Incoming orders from Swiggy, Zomato, Uber Eats, and UrbanPiper will appear here automatically.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_pos_delivery_orders"
+              name="Online Delivery Orders"
+              parent="point_of_sale.menu_point_of_sale"
+              action="action_pos_delivery_orders"
+              sequence="28"/>
+</odoo>

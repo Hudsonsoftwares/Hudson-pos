@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_inherit_pos_delivery_connector" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.pos_delivery_connector</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//app[@name='point_of_sale']" position="inside">
+                    <block title="Food Delivery Connector" name="pos_delivery_connector_section">
+                        <!-- Left Block: UrbanPiper / Aggregator Account -->
+                        <setting id="pos_urbanpiper_setting" string="UrbanPiper Integration" help="Manage your online delivery channels (Swiggy, Zomato, Talabat, Deliveroo, etc.) via UrbanPiper.">
+                            <field name="pos_pos_urbanpiper_enabled"/>
+                            <div class="content-group mt-3" invisible="not pos_pos_urbanpiper_enabled">
+                                <div class="row mt-2">
+                                    <label for="pos_pos_urbanpiper_username" class="col-4 o_light_label"/>
+                                    <field name="pos_pos_urbanpiper_username" class="col-8" placeholder="API Username"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="pos_pos_urbanpiper_api_key" class="col-4 o_light_label"/>
+                                    <field name="pos_pos_urbanpiper_api_key" password="True" class="col-8" placeholder="API Secret Key"/>
+                                </div>
+                            </div>
+                        </setting>
+
+                        <!-- Right Block: Location / Country & Store Settings -->
+                        <setting id="pos_urbanpiper_location_setting" string="Store &amp; Country Channels" invisible="not pos_pos_urbanpiper_enabled">
+                            <div class="content-group">
+                                <div class="row mt-2">
+                                    <label for="pos_pos_urbanpiper_country_id" class="col-4 o_light_label" string="Store Country"/>
+                                    <div class="col-8">
+                                        <field name="pos_pos_urbanpiper_country_id" class="fw-bold" placeholder="e.g. India, UAE, Saudi Arabia, US"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="pos_pos_urbanpiper_pos_id" class="col-4 o_light_label" string="POS ID"/>
+                                    <field name="pos_pos_urbanpiper_pos_id" class="col-8"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="pos_pos_urbanpiper_platform_ids" class="col-4 o_light_label" string="Platforms"/>
+                                    <div class="col-8">
+                                        <field name="pos_pos_urbanpiper_platform_ids" widget="many2many_tags" class="w-100"/>
+                                        <div class="mt-1">
+                                            <button name="action_urbanpiper_load_country_platforms" type="object" string="Auto-Load for Selected Country" class="btn btn-sm btn-link p-0" icon="fa-globe"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="pos_pos_urbanpiper_pricelist_id" class="col-4 o_light_label" string="Pricelist"/>
+                                    <field name="pos_pos_urbanpiper_pricelist_id" class="col-8"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="pos_pos_urbanpiper_fiscal_position_id" class="col-4 o_light_label" string="Fiscal Position"/>
+                                    <field name="pos_pos_urbanpiper_fiscal_position_id" class="col-8"/>
+                                </div>
+                                <div class="row mt-2 align-items-center">
+                                    <label for="pos_pos_urbanpiper_preparation_time" class="col-4 o_light_label" string="Prep Time"/>
+                                    <div class="col-8 d-flex align-items-center">
+                                        <field name="pos_pos_urbanpiper_preparation_time" class="oe_inline me-2"/> minutes
+                                    </div>
+                                </div>
+                                <div class="mt16 pt-2 border-top">
+                                    <button name="action_urbanpiper_create_store" type="object" string="Create Store" class="btn btn-primary me-2" icon="fa-plus"/>
+                                    <button name="action_urbanpiper_sync_menu" type="object" string="Sync Menu" class="btn btn-secondary me-2" icon="fa-upload"/>
+                                    <button name="action_urbanpiper_test_order" type="object" string="Simulate Test Order" class="btn btn-outline-primary" icon="fa-bolt"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,63 @@
+.pos-rightheader-notification {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    height: 100%;
+}
+
+.pos-rightheader-notification .notification-icon {
+    font-size: 20px;
+    position: relative;
+    color: #495057;
+    display: flex;
+    align-items: center;
+}
+
+.pos-rightheader-notification:hover .notification-icon {
+    color: #0d6efd;
+}
+
+.pos-rightheader-notification .badge-notification {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    font-size: 11px;
+    padding: 3px 6px;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.4);
+}
+
+.notification-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    width: 340px;
+    z-index: 1050;
+    overflow: hidden;
+    animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pulse {
+    animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.notification-dropdown .platform-row {
+    background-color: #ffffff;
+    transition: background-color 0.15s ease;
+}
+
+.notification-dropdown .platform-row:hover {
+    background-color: #f8f9fa;
+}

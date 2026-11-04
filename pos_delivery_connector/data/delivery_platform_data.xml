@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- India Platforms (UrbanPiper) -->
+        <record id="platform_swiggy" model="pos.delivery.platform">
+            <field name="name">Swiggy</field>
+            <field name="code">swiggy</field>
+            <field name="urbanpiper_channel_code">swiggy</field>
+            <field name="sequence">1</field>
+            <field name="color">3</field>
+            <field name="country_ids" eval="[(4, ref('base.in'))]"/>
+        </record>
+        
+        <record id="platform_zomato" model="pos.delivery.platform">
+            <field name="name">Zomato</field>
+            <field name="code">zomato</field>
+            <field name="urbanpiper_channel_code">zomato</field>
+            <field name="sequence">2</field>
+            <field name="color">1</field>
+            <field name="country_ids" eval="[(4, ref('base.in')), (4, ref('base.ae'))]"/>
+        </record>
+        
+        <record id="platform_radyes" model="pos.delivery.platform">
+            <field name="name">Radyes</field>
+            <field name="code">radyes</field>
+            <field name="urbanpiper_channel_code">radyes</field>
+            <field name="sequence">3</field>
+            <field name="color">10</field>
+            <field name="country_ids" eval="[(4, ref('base.in'))]"/>
+        </record>
+
+        <record id="platform_magicpin" model="pos.delivery.platform">
+            <field name="name">Magicpin</field>
+            <field name="code">magicpin</field>
+            <field name="urbanpiper_channel_code">magicpin</field>
+            <field name="sequence">4</field>
+            <field name="color">5</field>
+            <field name="country_ids" eval="[(4, ref('base.in'))]"/>
+        </record>
+
+        <!-- Middle East / GCC Platforms (UrbanPiper) -->
+        <record id="platform_talabat" model="pos.delivery.platform">
+            <field name="name">Talabat</field>
+            <field name="code">talabat</field>
+            <field name="urbanpiper_channel_code">talabat</field>
+            <field name="sequence">5</field>
+            <field name="color">2</field>
+            <field name="country_ids" eval="[(4, ref('base.ae')), (4, ref('base.sa'))]"/>
+        </record>
+
+        <record id="platform_deliveroo" model="pos.delivery.platform">
+            <field name="name">Deliveroo</field>
+            <field name="code">deliveroo</field>
+            <field name="urbanpiper_channel_code">deliveroo</field>
+            <field name="sequence">6</field>
+            <field name="color">7</field>
+            <field name="country_ids" eval="[(4, ref('base.ae')), (4, ref('base.gb'))]"/>
+        </record>
+
+        <record id="platform_careem" model="pos.delivery.platform">
+            <field name="name">Careem</field>
+            <field name="code">careem</field>
+            <field name="urbanpiper_channel_code">careem</field>
+            <field name="sequence">7</field>
+            <field name="color">9</field>
+            <field name="country_ids" eval="[(4, ref('base.ae')), (4, ref('base.sa'))]"/>
+        </record>
+
+        <record id="platform_noon" model="pos.delivery.platform">
+            <field name="name">Noon Food</field>
+            <field name="code">noon</field>
+            <field name="urbanpiper_channel_code">noon</field>
+            <field name="sequence">8</field>
+            <field name="color">8</field>
+            <field name="country_ids" eval="[(4, ref('base.ae')), (4, ref('base.sa'))]"/>
+        </record>
+
+        <record id="platform_jahez" model="pos.delivery.platform">
+            <field name="name">Jahez</field>
+            <field name="code">jahez</field>
+            <field name="urbanpiper_channel_code">jahez</field>
+            <field name="sequence">9</field>
+            <field name="color">11</field>
+            <field name="country_ids" eval="[(4, ref('base.sa'))]"/>
+        </record>
+
+        <record id="platform_hungerstation" model="pos.delivery.platform">
+            <field name="name">HungerStation</field>
+            <field name="code">hungerstation</field>
+            <field name="urbanpiper_channel_code">hungerstation</field>
+            <field name="sequence">10</field>
+            <field name="color">6</field>
+            <field name="country_ids" eval="[(4, ref('base.sa'))]"/>
+        </record>
+
+        <!-- US / Global Platforms -->
+        <record id="platform_ubereats" model="pos.delivery.platform">
+            <field name="name">Uber Eats</field>
+            <field name="code">ubereats</field>
+            <field name="urbanpiper_channel_code">ubereats</field>
+            <field name="sequence">11</field>
+            <field name="color">4</field>
+            <field name="country_ids" eval="[(4, ref('base.us')), (4, ref('base.gb')), (4, ref('base.ae'))]"/>
+        </record>
+
+        <record id="platform_doordash" model="pos.delivery.platform">
+            <field name="name">DoorDash</field>
+            <field name="code">doordash</field>
+            <field name="urbanpiper_channel_code">doordash</field>
+            <field name="sequence">12</field>
+            <field name="color">1</field>
+            <field name="country_ids" eval="[(4, ref('base.us'))]"/>
+        </record>
+    </data>
+</odoo>

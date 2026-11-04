@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="appointment_booking_view_form_inherit_pos" model="ir.ui.view">
+        <field name="name">appointment.booking.view.form.inherit.pos</field>
+        <field name="model">appointment.booking</field>
+        <field name="inherit_id" ref="appointment.appointment_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Point of Sale" name="pos_booking_page">
+                    <group>
+                        <group>
+                            <field name="pos_config_id"/>
+                            <field name="table_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <field name="pos_order_ids">
+                        <list string="POS Orders" create="0">
+                            <field name="name"/>
+                            <field name="date_order"/>
+                            <field name="amount_total"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Resource List View to show Table IDs -->
+    <record id="appointment_booking_view_list_resource_inherit_pos" model="ir.ui.view">
+        <field name="name">appointment.booking.view.list.resource.inherit.pos</field>
+        <field name="model">appointment.booking</field>
+        <field name="inherit_id" ref="appointment.appointment_booking_view_list_resource"/>
+        <field name="arch" type="xml">
+            <field name="resource_ids" position="after">
+                <field name="table_ids" widget="many2many_tags" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>
+

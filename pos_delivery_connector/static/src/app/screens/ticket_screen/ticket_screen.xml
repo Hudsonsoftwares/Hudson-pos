@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_delivery_connector.TicketScreen" t-inherit="point_of_sale.TicketScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('controls')]" position="inside">
+            <button class="button btn btn-light ms-2 d-flex align-items-center gap-1"
+                    t-on-click="() => this.toggleDeliveryFilter()"
+                    t-att-class="{ 'btn-primary text-white highlight': this.isDeliveryFilterOn }">
+                <i class="fa fa-motorcycle"/>
+                <span>Food Platform</span>
+            </button>
+        </xpath>
+    </t>
+</templates>

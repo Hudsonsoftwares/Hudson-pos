@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_restaurant_table_form_inherit_pos_booking" model="ir.ui.view">
+        <field name="name">restaurant.table.form.inherit.pos.booking</field>
+        <field name="model">restaurant.table</field>
+        <field name="inherit_id" ref="pos_restaurant.view_restaurant_table_form"/>
+        <field name="arch" type="xml">
+            <field name="seats" position="after">
+                <field name="appointment_resource_id" options="{'no_create_edit': False}"/>
+            </field>
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_create_appointment_resource"
+                            type="object"
+                            string="Create Appointment Resource"
+                            class="btn-secondary"
+                            invisible="appointment_resource_id"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

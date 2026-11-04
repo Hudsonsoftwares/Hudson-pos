@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_delivery_connector.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('status-buttons')]" position="inside">
+            <div class="pos-rightheader-notification" t-on-click="() => this.toggleDeliveryDropdown()">
+                <div class="notification-icon">
+                    <i class="fa fa-motorcycle" role="img" aria-label="Delivery Orders" title="Delivery Orders"></i>
+                    <span t-if="deliveryNewCount > 0" class="badge rounded-pill text-bg-danger badge-notification animate-pulse">
+                        <t t-out="deliveryNewCount"/>
+                    </span>
+                </div>
+                
+                <div t-if="deliveryDropdownOpen" class="notification-dropdown shadow-lg bg-white rounded-3 border">
+                    <div class="dropdown-header d-flex align-items-center justify-content-between p-3 border-bottom bg-light">
+                        <div class="fw-bold text-dark"><i class="fa fa-motorcycle me-1 text-primary"/> Online Delivery Orders</div>
+                        <span class="badge text-bg-primary rounded-pill"><t t-out="deliveryNewCount"/> New</span>
+                    </div>
+                    
+                    <div class="dropdown-body">
+                        <t t-foreach="deliveryPlatforms" t-as="platform" t-key="platform.id">
+                            <div class="platform-row d-flex align-items-center justify-content-between p-3 border-bottom">
+                                <div class="platform-name fw-semibold text-dark">
+                                    <t t-out="platform.name || 'Platform'"/>
+                                </div>
+                                <div class="platform-stats d-flex text-center gap-3">
+                                    <div class="stat-item d-flex flex-column">
+                                        <span class="fw-bold text-danger"><t t-out="platform.newCount"/></span>
+                                        <span class="text-muted small">New</span>
+                                    </div>
+                                    <div class="stat-item d-flex flex-column">
+                                        <span class="fw-bold text-warning"><t t-out="platform.ongoingCount"/></span>
+                                        <span class="text-muted small">Prep</span>
+                                    </div>
+                                    <div class="stat-item d-flex flex-column">
+                                        <span class="fw-bold text-success"><t t-out="platform.doneCount"/></span>
+                                        <span class="text-muted small">Done</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="!deliveryPlatforms.length" class="p-4 text-center text-muted">
+                            <i class="fa fa-check-circle text-success fa-2x mb-2 d-block"/>
+                            No active delivery orders
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

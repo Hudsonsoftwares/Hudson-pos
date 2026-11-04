@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="hudson_pos_booking.BookingScreen">
+        <div class="pos-booking-screen d-flex flex-column h-100 bg-view">
+            <!-- Top Header -->
+            <div class="pos-booking-header d-flex align-items-center justify-content-between p-3 border-bottom bg-light">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-secondary btn-lg d-flex align-items-center gap-2" t-on-click="backToFloor">
+                        <i class="fa fa-arrow-left"/>
+                        <span>Back to Floor</span>
+                    </button>
+                    <h3 class="m-0 fw-bold">
+                        <i class="fa fa-calendar-check-o me-2 text-primary"/>
+                        <span>Table Bookings</span>
+                    </h3>
+                    <div t-if="!this.isOnline" class="badge bg-danger p-2 fs-6">
+                        <i class="fa fa-exclamation-triangle me-1"/>
+                        <span>Offline Mode (Read-Only)</span>
+                    </div>
+                </div>
+
+                <!-- Date Filter Tabs & New Booking Button -->
+                <div class="d-flex align-items-center gap-2">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary"
+                                t-att-class="{'active': this.state.filterDate === 'today'}"
+                                t-on-click="() => this.state.filterDate = 'today'">Today</button>
+                        <button type="button" class="btn btn-outline-primary"
+                                t-att-class="{'active': this.state.filterDate === 'tomorrow'}"
+                                t-on-click="() => this.state.filterDate = 'tomorrow'">Tomorrow</button>
+                        <button type="button" class="btn btn-outline-primary"
+                                t-att-class="{'active': this.state.filterDate === 'all'}"
+                                t-on-click="() => this.state.filterDate = 'all'">All</button>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg d-flex align-items-center gap-2 ms-2"
+                            t-att-disabled="!this.isOnline"
+                            t-on-click="openCreateModal">
+                        <i class="fa fa-plus"/>
+                        <span>New Booking</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kanban Columns Container -->
+            <div class="pos-booking-columns d-flex flex-fill p-3 gap-3 overflow-hidden">
+                <!-- Column 1: Booked (Confirmed) -->
+                <div class="booking-column d-flex flex-column flex-fill bg-light rounded border p-2 overflow-hidden"
+                     t-on-dragover="onDragOver"
+                     t-on-drop="(ev) => this.onDrop(ev, 'confirmed')">
+                    <div class="column-header d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+                        <span class="fw-bold fs-5 text-warning-emphasis">
+                            <i class="fa fa-clock-o me-1"/> Booked
+                        </span>
+                        <span class="badge bg-warning text-dark fs-6 rounded-pill" t-out="this.bookedList.length"/>
+                    </div>
+                    <div class="column-cards d-flex flex-column gap-2 overflow-auto flex-fill p-1">
+                        <t t-foreach="this.bookedList" t-as="b" t-key="b.id">
+                            <div class="card p-3 shadow-sm border-start border-4 border-warning cursor-grab"
+                                 draggable="true"
+                                 t-on-dragstart="(ev) => this.onDragStart(ev, b)">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h5 class="m-0 fw-bold" t-out="b.customerDisplayName"/>
+                                    <span class="badge bg-secondary" style="font-size: 0.8rem;">
+                                        <i class="fa fa-user me-1"/><t t-out="b.party_size"/> guests
+                                    </span>
+                                </div>
+                                <div class="text-muted small mb-2 d-flex flex-wrap gap-3">
+                                    <span t-if="b.customerDisplayPhone"><i class="fa fa-phone me-1"/><t t-out="b.customerDisplayPhone"/></span>
+                                    <span><i class="fa fa-clock-o me-1"/><t t-out="b.startTimeStr"/> - <t t-out="b.endTimeStr"/></span>
+                                    <span class="fw-bold text-dark"><i class="fa fa-cutlery me-1"/><t t-out="b.tableDisplayNames"/></span>
+                                </div>
+                                <div t-if="b.guest_details" class="alert alert-secondary py-1 px-2 small mb-2 text-truncate" t-out="b.guest_details"/>
+                                <div class="d-flex gap-1 mt-auto pt-2 border-top">
+                                    <button class="btn btn-sm btn-primary flex-fill" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'checked_in')">
+                                        <i class="fa fa-check me-1"/>Check In
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'no_show')">
+                                        No Show
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'cancelled')">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="!this.bookedList.length" class="text-center text-muted p-4">
+                            No booked reservations
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Checked-In -->
+                <div class="booking-column d-flex flex-column flex-fill bg-light rounded border p-2 overflow-hidden"
+                     t-on-dragover="onDragOver"
+                     t-on-drop="(ev) => this.onDrop(ev, 'checked_in')">
+                    <div class="column-header d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+                        <span class="fw-bold fs-5 text-primary">
+                            <i class="fa fa-check-circle me-1"/> Checked In
+                        </span>
+                        <span class="badge bg-primary fs-6 rounded-pill" t-out="this.checkedInList.length"/>
+                    </div>
+                    <div class="column-cards d-flex flex-column gap-2 overflow-auto flex-fill p-1">
+                        <t t-foreach="this.checkedInList" t-as="b" t-key="b.id">
+                            <div class="card p-3 shadow-sm border-start border-4 border-primary cursor-grab"
+                                 draggable="true"
+                                 t-on-dragstart="(ev) => this.onDragStart(ev, b)">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h5 class="m-0 fw-bold" t-out="b.customerDisplayName"/>
+                                    <span class="badge bg-info text-white" style="font-size: 0.8rem;">
+                                        <i class="fa fa-user me-1"/><t t-out="b.party_size"/> guests
+                                    </span>
+                                </div>
+                                <div class="text-muted small mb-2 d-flex flex-wrap gap-3">
+                                    <span t-if="b.customerDisplayPhone"><i class="fa fa-phone me-1"/><t t-out="b.customerDisplayPhone"/></span>
+                                    <span><i class="fa fa-clock-o me-1"/><t t-out="b.startTimeStr"/> - <t t-out="b.endTimeStr"/></span>
+                                    <span class="fw-bold text-dark"><i class="fa fa-cutlery me-1"/><t t-out="b.tableDisplayNames"/></span>
+                                </div>
+                                <div t-if="b.guest_details" class="alert alert-secondary py-1 px-2 small mb-2 text-truncate" t-out="b.guest_details"/>
+                                <div class="d-flex gap-1 mt-auto pt-2 border-top">
+                                    <button class="btn btn-sm btn-success flex-fill" t-on-click="() => this.openTableOrder(b)">
+                                        <i class="fa fa-cutlery me-1"/>Open Table
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'confirmed')">
+                                        Revert
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'cancelled')">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="!this.checkedInList.length" class="text-center text-muted p-4">
+                            No checked-in guests
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 3: No-Show -->
+                <div class="booking-column d-flex flex-column flex-fill bg-light rounded border p-2 overflow-hidden"
+                     t-on-dragover="onDragOver"
+                     t-on-drop="(ev) => this.onDrop(ev, 'no_show')">
+                    <div class="column-header d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+                        <span class="fw-bold fs-5 text-secondary">
+                            <i class="fa fa-user-times me-1"/> No Show
+                        </span>
+                        <span class="badge bg-secondary fs-6 rounded-pill" t-out="this.noShowList.length"/>
+                    </div>
+                    <div class="column-cards d-flex flex-column gap-2 overflow-auto flex-fill p-1">
+                        <t t-foreach="this.noShowList" t-as="b" t-key="b.id">
+                            <div class="card p-3 shadow-sm border-start border-4 border-secondary opacity-75 cursor-grab"
+                                 draggable="true"
+                                 t-on-dragstart="(ev) => this.onDragStart(ev, b)">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h5 class="m-0 fw-bold" t-out="b.customerDisplayName"/>
+                                    <span class="badge bg-secondary" style="font-size: 0.8rem;">
+                                        <i class="fa fa-user me-1"/><t t-out="b.party_size"/> guests
+                                    </span>
+                                </div>
+                                <div class="text-muted small mb-2 d-flex flex-wrap gap-3">
+                                    <span t-if="b.customerDisplayPhone"><i class="fa fa-phone me-1"/><t t-out="b.customerDisplayPhone"/></span>
+                                    <span><i class="fa fa-clock-o me-1"/><t t-out="b.startTimeStr"/></span>
+                                    <span class="fw-bold text-dark"><i class="fa fa-cutlery me-1"/><t t-out="b.tableDisplayNames"/></span>
+                                </div>
+                                <div class="d-flex gap-1 mt-auto pt-2 border-top">
+                                    <button class="btn btn-sm btn-outline-primary flex-fill" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'confirmed')">
+                                        Reinstate
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'cancelled')">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="!this.noShowList.length" class="text-center text-muted p-4">
+                            No no-show records
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Walk-in / Booking Modal -->
+            <div t-if="this.state.showCreateModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold">
+                                <i class="fa fa-calendar-plus-o me-2 text-primary"/>New Table Booking / Walk-in
+                            </h5>
+                            <button type="button" class="btn-close" t-on-click="closeCreateModal"/>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Customer Name</label>
+                                <input type="text" class="form-control form-control-lg"
+                                       placeholder="e.g. John Doe (or Walk-in)"
+                                       t-model="this.state.newBooking.customer_name"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Phone Number (Optional)</label>
+                                <input type="text" class="form-control"
+                                       placeholder="+1 555 123 4567"
+                                       t-model="this.state.newBooking.customer_phone"/>
+                                <div class="form-text">No email required for walk-in guest bookings.</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-bold">Party Size</label>
+                                    <input type="number" min="1" max="50" class="form-control"
+                                           t-model="this.state.newBooking.party_size"/>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-bold">Time</label>
+                                    <input type="time" class="form-control"
+                                           t-model="this.state.newBooking.start_time"/>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Preferred Table</label>
+                                <select class="form-select" t-model="this.state.newBooking.table_id">
+                                    <option value="">Auto-Assign Table</option>
+                                    <t t-foreach="this.availableTables" t-as="tbl" t-key="tbl.id">
+                                        <option t-att-value="tbl.id">
+                                            Table <t t-out="tbl.table_number"/> (<t t-out="tbl.seats"/> seats)
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Notes</label>
+                                <textarea class="form-control" rows="2"
+                                          placeholder="Allergies, high chair, window seat..."
+                                          t-model="this.state.newBooking.notes"/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" t-on-click="closeCreateModal">Cancel</button>
+                            <button type="button" class="btn btn-primary btn-lg" t-on-click="submitNewBooking">Create Booking</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
+
