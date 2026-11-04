@@ -1,5 +1,6 @@
 import { patch } from "@web/core/utils/patch";
 import { RestaurantTable } from "@pos_restaurant/app/models/restaurant_table";
+import { FloorPlan } from "@pos_restaurant/app/screens/floor_screen/floor_plan/floor_plan";
 
 patch(RestaurantTable.prototype, {
     getActiveBookings() {
@@ -31,3 +32,13 @@ patch(RestaurantTable.prototype, {
     }
 });
 
+// Fix upstream Odoo bug where window resize triggers ensureBoardFits when containerRef is null/unmounted
+patch(FloorPlan.prototype, {
+    ensureBoardFits() {
+        const scrollContainer = this.containerRef?.();
+        if (!this.selectedFloor || this.isKanban || !scrollContainer || !this.canvasRef?.()) {
+            return;
+        }
+        super.ensureBoardFits();
+    },
+});

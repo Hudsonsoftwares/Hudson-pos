@@ -17,7 +17,8 @@ class PosConfig(models.Model):
     booking_appointment_type_id = fields.Many2one(
         'appointment.type',
         string='Table Booking Type',
-        domain="[('booking_target', '=', 'resources')]",
+        domain="[('booking_target', '=', 'resources'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        check_company=True,
         help="Appointment type used for restaurant table bookings."
     )
     booking_no_show_grace_minutes = fields.Integer(

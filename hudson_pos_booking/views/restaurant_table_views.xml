@@ -6,6 +6,7 @@
         <field name="inherit_id" ref="pos_restaurant.view_restaurant_table_form"/>
         <field name="arch" type="xml">
             <field name="seats" position="after">
+                <field name="company_id" groups="base.group_multi_company"/>
                 <field name="appointment_resource_id" options="{'no_create_edit': False}"/>
             </field>
             <xpath expr="//sheet" position="before">
