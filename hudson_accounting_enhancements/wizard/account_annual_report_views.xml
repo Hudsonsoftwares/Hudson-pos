@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <!-- Kanban View -->
+    <record id="view_account_annual_report_kanban" model="ir.ui.view">
+        <field name="name">account.annual.report.kanban</field>
+        <field name="model">account.annual.report</field>
+        <field name="arch" type="xml">
+            <kanban class="o_annual_report_kanban">
+                <field name="name"/>
+                <field name="period_display"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id"/>
+                <field name="user_ids"/>
+                <field name="state"/>
+                <field name="target_move"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_annual_report_card">
+                            <div class="o_annual_report_card_header">
+                                <div class="o_annual_report_card_title text-truncate" t-att-title="record.name.value">
+                                    <field name="name"/>
+                                </div>
+                                <field name="state" widget="badge"
+                                       decoration-warning="state == 'draft'"
+                                       decoration-success="state == 'confirmed'"/>
+                            </div>
+                            <div class="o_annual_report_date_badge">
+                                <i class="fa fa-calendar"/>
+                                <span class="text-nowrap">
+                                    <field name="period_display"/>
+                                </span>
+                            </div>
+                            <div class="o_annual_report_company">
+                                <i class="fa fa-building-o"/>
+                                <span class="text-truncate">
+                                    <field name="company_id"/>
+                                </span>
+                            </div>
+                            <div class="o_annual_report_moves">
+                                <i class="fa fa-filter"/>
+                                <span>
+                                    <field name="target_move"/>
+                                </span>
+                            </div>
+                            <div class="o_annual_report_footer">
+                                <button name="action_print_report" type="object"
+                                        class="btn_print_annual">
+                                    <i class="fa fa-print"/> Print
+                                </button>
+                                <field name="user_ids" widget="many2many_avatar_user"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_account_annual_report_list" model="ir.ui.view">
+        <field name="name">account.annual.report.list</field>
+        <field name="model">account.annual.report</field>
+        <field name="arch" type="xml">
+            <list string="Annual Reports">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="user_ids" widget="many2many_avatar_user"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'draft'"
+                       decoration-success="state == 'confirmed'"/>
+                <button name="action_print_report" type="object"
+                        string="Print" icon="print" class="btn-sm btn-secondary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View (dialog for New/Edit) -->
+    <record id="view_account_annual_report_form" model="ir.ui.view">
+        <field name="name">account.annual.report.form</field>
+        <field name="model">account.annual.report</field>
+        <field name="arch" type="xml">
+            <form string="Create an Annual Report">
+                <sheet>
+                    <div class="oe_title mb-4">
+                        <field name="name" nolabel="1"
+                               placeholder="e.g. Annual Financial Overview"
+                               class="o_annual_report_title"/>
+                    </div>
+                    <group>
+                        <group string="Period">
+                            <field name="date_from" string="From"/>
+                            <field name="date_to" string="To"/>
+                        </group>
+                        <group string="Options">
+                            <field name="user_ids" widget="many2many_avatar_user" string="Responsibles"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="target_move" widget="radio"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_print_report" string="Print" type="object"
+                            class="btn-primary" data-hotkey="p"/>
+                    <button string="Save" type="save" class="btn-secondary" data-hotkey="s"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_account_annual_report_search" model="ir.ui.view">
+        <field name="name">account.annual.report.search</field>
+        <field name="model">account.annual.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <group>
+                    <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Main Action: Kanban + List -->
+    <record id="action_account_annual_report" model="ir.actions.act_window">
+        <field name="name">Annual Reports</field>
+        <field name="res_model">account.annual.report</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_account_annual_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Annual Report
+            </p>
+            <p>
+                Annual reports combine Balance Sheet, P&amp;L, Aged Payable/Receivable
+                and more into a comprehensive audit-ready document.
+            </p>
+        </field>
+    </record>
+
+    <!-- Keep the OLD wizard view (required for backward-compat reference) -->
+    <record id="view_account_annual_report_wizard" model="ir.ui.view">
+        <field name="name">account.annual.report.wizard.form</field>
+        <field name="model">account.annual.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Annual Report">
+                <group>
+                    <group string="Fiscal Year">
+                        <field name="fiscal_year"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group string="Options">
+                        <field name="target_move" widget="radio"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_report" string="Generate Annual Report"
+                            type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary"
+                            special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Old wizard action (kept for backward compat) -->
+    <record id="action_account_annual_report_wizard" model="ir.actions.act_window">
+        <field name="name">Annual Report</field>
+        <field name="res_model">account.annual.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_account_annual_report_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    </data>
+</odoo>

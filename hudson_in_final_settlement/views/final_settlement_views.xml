@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View for Final Settlement -->
+    <record id="view_final_settlement_list" model="ir.ui.view">
+        <field name="name">final.settlement.list</field>
+        <field name="model">final.settlement</field>
+        <field name="arch" type="xml">
+            <list string="Final Settlements" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="exit_reason"/>
+                <field name="last_working_day"/>
+                <field name="settlement_date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-muted="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Amount breakdown of the settlements (Payroll dashboard: Final Settlement Planner cards) -->
+    <record id="view_final_settlement_list_breakdown" model="ir.ui.view">
+        <field name="name">final.settlement.list.breakdown</field>
+        <field name="model">final.settlement</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Final Settlements" create="false" decoration-muted="state == 'cancel'">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="department_id" optional="show"/>
+                <field name="exit_reason" optional="show"/>
+                <field name="last_working_day"/>
+                <field name="gratuity_gross_amount" string="Gratuity" widget="monetary" sum="Total Gratuity"/>
+                <field name="gratuity_taxable_amount" string="Taxable Gratuity" widget="monetary" sum="Total Taxable Gratuity" optional="hide"/>
+                <field name="exit_leave_encash_days" string="Encashed Days" optional="hide"/>
+                <field name="leave_encash_gross_amount" string="Leave Encashment" widget="monetary" sum="Total Leave Encashment"/>
+                <field name="leave_encash_taxable_amount" string="Taxable Leave Encashment" widget="monetary" sum="Total Taxable Leave Encashment" optional="hide"/>
+                <field name="other_earnings_amount" widget="monetary" sum="Total Other Earnings"/>
+                <field name="total_earnings" widget="monetary" sum="Total Earnings"/>
+                <field name="total_deductions" widget="monetary" sum="Total Deductions"/>
+                <field name="net_settlement_amount" string="Net Settlement" widget="monetary" sum="Total Net Settlement" class="fw-bold text-primary"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-muted="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for Final Settlement -->
+    <record id="view_final_settlement_form" model="ir.ui.view">
+        <field name="name">final.settlement.form</field>
+        <field name="model">final.settlement</field>
+        <field name="arch" type="xml">
+            <form string="Final Settlement">
+                <header>
+                    <button name="action_compute_settlement" string="Compute Settlement" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_print_settlement_report" string="Print Settlement Statement" type="object" class="btn-secondary" icon="print"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-success" invisible="state != 'draft'"/>
+                    <button name="action_generate_settlement_payslip" string="Generate Settlement Payslip" type="object" class="btn-primary" invisible="state != 'approved' or payslip_id"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object" class="btn-secondary" invisible="state != 'approved'"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" invisible="state == 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_payslip" type="object" class="oe_stat_button" icon="receipt_long" invisible="not payslip_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Settlement</span>
+                                <span class="o_stat_text">Payslip</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Employee Information">
+                            <field name="employee_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Exit Information">
+                            <field name="departure_reason_id" options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="exit_reason"/>
+                            <field name="departure_id" invisible="not departure_id" readonly="1"/>
+                            <field name="last_working_day"/>
+                            <field name="settlement_date"/>
+                            <field name="exit_leave_encash_days" invisible="exit_leave_encash_days == 0"/>
+                            <field name="is_exit_leave_deducted" widget="boolean_toggle" invisible="exit_leave_encash_days == 0"/>
+                        </group>
+                    </group>
+                    <group string="Gratuity &amp; Tax" invisible="gratuity_gross_amount == 0">
+                        <group>
+                            <field name="gratuity_gross_amount" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="gratuity_exemption_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group>
+                            <field name="gratuity_taxable_amount" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                    </group>
+                    <group string="Leave Encashment &amp; Tax (Exit u/s 10(10AA))" invisible="leave_encash_gross_amount == 0">
+                        <group>
+                            <field name="leave_encash_gross_amount" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="leave_encash_exemption_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group>
+                            <field name="leave_encash_taxable_amount" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Settlement Breakdown" name="settlement_lines">
+                            <field name="line_ids" mode="list,form">
+                                <list string="Breakdown Lines" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="component_code"/>
+                                    <field name="component_name"/>
+                                    <field name="line_type" widget="badge" decoration-success="line_type == 'earning'" decoration-danger="line_type == 'deduction'"/>
+                                    <field name="description"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_earnings" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="total_deductions" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="net_settlement_amount"/>
+                                </div>
+                                <field name="net_settlement_amount" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                        </page>
+                        <page string="Payroll Information" name="payroll_info">
+                            <group>
+                                <field name="payslip_id" readonly="state == 'approved'" options="{'no_create': True}"/>
+                            </group>
+                        </page>
+                        <page string="Notes &amp; Remarks" name="notes_info">
+                            <field name="notes" placeholder="Enter settlement remarks, exit details, or notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Final Settlement -->
+    <record id="view_final_settlement_search" model="ir.ui.view">
+        <field name="name">final.settlement.search</field>
+        <field name="model">final.settlement</field>
+        <field name="arch" type="xml">
+            <search string="Final Settlements">
+                <field name="name" string="Settlement / Employee" filter_domain="['|', ('name', 'ilike', self), ('employee_id', 'ilike', self)]"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="departure_reason_id"/>
+                <field name="resignation_id"/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Approved" name="filter_approved" domain="[('state', '=', 'approved')]"/>
+                <group>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Exit Reason" name="group_by_exit_reason" context="{'group_by': 'exit_reason'}"/>
+                    <filter string="Departure Reason" name="group_by_departure_reason" context="{'group_by': 'departure_reason_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Final Settlement -->
+    <record id="action_final_settlement" model="ir.actions.act_window">
+        <field name="name">Final Settlements</field>
+        <field name="res_model">final.settlement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_final_settlement_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create the first Employee Final Settlement Master Record!
+            </p>
+            <p>
+                Manage complete employee exit settlements, including gratuity, leave encashment, notice pay, and recoveries.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items for Final Settlement under Payroll Operations and Exit Management -->
+    <menuitem id="menu_final_settlement_payroll"
+              name="Final Settlements"
+              parent="hudson_payroll_base.menu_hr_payroll_operations"
+              action="action_final_settlement"
+              sequence="30"/>
+
+    <menuitem id="menu_final_settlement_exit"
+              name="Final Settlements"
+              parent="hudson_exit_management.menu_hudson_exit_management_root"
+              action="action_final_settlement"
+              sequence="30"
+              active="False"/>
+</odoo>

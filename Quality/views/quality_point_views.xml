@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_quality_point_list" model="ir.ui.view">
+        <field name="name">quality.point.list</field>
+        <field name="model">quality.point</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="product_ids" widget="many2many_tags"/>
+                <field name="picking_type_ids" widget="many2many_tags"/>
+                <field name="control_per"/>
+                <field name="test_type"/>
+                <field name="team_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_point_form" model="ir.ui.view">
+        <field name="name">quality.point.form</field>
+        <field name="model">quality.point</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_checks" type="object"
+                                class="oe_stat_button" icon="check_box">
+                            <field name="check_count" widget="statinfo" string="Quality Checks"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="title"/>
+                            <field name="apply_to" widget="radio" options="{'horizontal': true}"/>
+                            <field name="product_ids" widget="many2many_tags"
+                                   invisible="apply_to != 'products'"/>
+                            <field name="product_category_id"
+                                   invisible="apply_to != 'categories'"/>
+                            <field name="picking_type_ids" widget="many2many_tags"/>
+                            <field name="applies_to_manufacturing"/>
+                            <field name="workorder_operation_id"
+                                   invisible="not applies_to_manufacturing"/>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="control_per"/>
+                            <field name="control_frequency"/>
+                            <field name="random_percentage"
+                                   invisible="control_frequency != 'random'"/>
+                            <label for="periodic_qty" invisible="control_frequency != 'periodical'"/>
+                            <div invisible="control_frequency != 'periodical'" class="o_row">
+                                <field name="periodic_qty"/>
+                                <field name="periodic_uom"/>
+                            </div>
+                            <label for="testing_percentage_within_lot" string="Partial Test" invisible="control_per != 'quantity'"/>
+                            <div class="o_row" invisible="control_per != 'quantity'">
+                                <span>Test </span>
+                                <field name="testing_percentage_within_lot"/>
+                                <span> % of products</span>
+                            </div>
+                            <field name="test_type"/>
+                            <field name="device_id" invisible="test_type not in ('measure', 'picture')"/>
+                            <label for="norm" invisible="test_type != 'measure'"/>
+                            <div class="o_row" invisible="test_type != 'measure'">
+                                <field name="norm"/>
+                                <field name="norm_unit"/>
+                            </div>
+                            <label for="tolerance_min" invisible="test_type != 'measure'" string="Tolerance"/>
+                            <div class="o_row" invisible="test_type != 'measure'">
+                                <span>from </span>
+                                <field name="tolerance_min"/>
+                                <span> to </span>
+                                <field name="tolerance_max"/>
+                            </div>
+                            <field name="obox_device_id" invisible="test_type not in ('measure', 'picture')"/>
+                            <field name="team_id"/>
+                            <field name="failure_location_ids" widget="many2many_tags" domain="[('usage', '=', 'internal')]"/>
+                        </group>
+                    </group>
+
+
+
+
+
+                    <group invisible="test_type != 'spreadsheet'">
+                        <field name="spreadsheet_template_id"/>
+                        <field name="spreadsheet_success_cell"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Instructions">
+                            <field name="instructions" options="{'collaborative': false}" placeholder="Describe the quality check to do..."/>
+                        </page>
+                        <page string="Message If Failure"
+                              invisible="test_type not in ['passfail','measure','spreadsheet']">
+                            <field name="failure_message"/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_quality_point_kanban" model="ir.ui.view">
+        <field name="name">quality.point.kanban</field>
+        <field name="model">quality.point</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="test_type"/>
+                <field name="control_per"/>
+                <field name="team_id"/>
+                <field name="user_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div>Type: <field name="test_type"/></div>
+                            <div>Control per: <field name="control_per"/></div>
+                            <div t-if="record.team_id.raw_value">Team: <field name="team_id"/></div>
+                            <div class="oe_kanban_record_bottom mt-2">
+                                <div class="oe_kanban_bottom_left"/>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_quality_point" model="ir.actions.act_window">
+        <field name="name">Control Points</field>
+        <field name="res_model">quality.point</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a Quality Control Point</p>
+            <p>A Control Point defines the rule: "when this operation happens,
+               create this kind of inspection." Odoo will generate Quality
+               Checks automatically based on it.</p>
+        </field>
+    </record>
+
+</odoo>

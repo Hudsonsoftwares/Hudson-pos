@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================= -->
+    <!-- 1. SECTION 80C INVESTMENTS DECLARATION VIEWS                  -->
+    <!-- ============================================================= -->
+
+    <!-- 80C Form View -->
+    <record id="tds_employee_80c_declaration_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.80c.declaration.form</field>
+        <field name="model">tds.employee.80c.declaration</field>
+        <field name="arch" type="xml">
+            <form string="Section 80C Investments Declaration">
+                <header>
+                    <button name="action_submit_declaration" string="Submit Declaration" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_submit_proofs" string="Submit Proof Documents" type="object" class="btn-primary" invisible="state not in ['declared', 'submitted']"/>
+                    <button name="action_start_review" string="Start HR Verification" type="object" class="btn-info" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['declared', 'submitted', 'proof_submitted']"/>
+                    <button name="action_verify_proofs" string="Verify &amp; Approve Proofs" type="object" class="btn-success" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['declared', 'submitted', 'proof_submitted', 'proof_under_review']"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" class="btn-secondary" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,declared,proof_submitted,proof_under_review,proof_verified"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="80C Capped at ₹1.5L" bg_color="text-bg-warning" invisible="not is_80c_capped"/>
+                    <widget name="web_ribbon" title="Proof Verified" bg_color="text-bg-success" invisible="state not in ['proof_verified', 'approved']"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Tax Period">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="company_id"/>
+                            <field name="financial_year_id" readonly="state != 'draft'"/>
+                            <field name="tax_regime_id"/>
+                            <field name="regime_code" invisible="1"/>
+                            <field name="is_80c_capped" invisible="1"/>
+                        </group>
+                        <group string="Section 80C Summary &amp; Statutory Ceiling">
+                            <field name="total_declared_amount" widget="monetary"/>
+                            <field name="total_approved_amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                            <field name="submission_date"/>
+                            <field name="approval_date"/>
+                            <field name="approved_by_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Section 80C Investment Items (Max ₹1,50,000 Exemption)" name="80c_items">
+                            <group>
+                                <group string="Government Schemes &amp; Provident Funds">
+                                    <field name="decl_80c_ppf" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_epf" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_nsc" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_ssy" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_fd" readonly="state in ['proof_verified', 'approved']"/>
+                                </group>
+                                <group string="Insurance, Market &amp; Loan Principal">
+                                    <field name="decl_80c_lic" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_elss" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_tuition" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_housing_principal" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80c_other" readonly="state in ['proof_verified', 'approved']"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Proof Receipts" name="proofs">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 80C List View -->
+    <record id="tds_employee_80c_declaration_view_tree" model="ir.ui.view">
+        <field name="name">tds.employee.80c.declaration.list</field>
+        <field name="model">tds.employee.80c.declaration</field>
+        <field name="arch" type="xml">
+            <list string="Section 80C Investment Declarations" decoration-success="state in ['proof_verified', 'approved']" decoration-info="state in ['declared', 'submitted']" decoration-warning="state in ['proof_submitted', 'proof_under_review']" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="financial_year_id" optional="show"/>
+                <field name="regime_code" optional="show"/>
+                <field name="total_declared_amount" widget="monetary" optional="show"/>
+                <field name="total_approved_amount" widget="monetary" optional="show"/>
+                <field name="state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 80C Action -->
+    <record id="action_tds_employee_80c_declaration" model="ir.actions.act_window">
+        <field name="name">Section 80C Investment Declarations</field>
+        <field name="res_model">tds.employee.80c.declaration</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Declare Section 80C Investments (PPF, ELSS, LIC, VPF, Tuition Fees, Housing Principal).
+            </p>
+        </field>
+    </record>
+
+
+    <!-- ============================================================= -->
+    <!-- 2. SECTION 80D HEALTH INSURANCE DECLARATION VIEWS             -->
+    <!-- ============================================================= -->
+
+    <!-- 80D Form View -->
+    <record id="tds_employee_80d_declaration_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.80d.declaration.form</field>
+        <field name="model">tds.employee.80d.declaration</field>
+        <field name="arch" type="xml">
+            <form string="Section 80D Health Insurance Declaration">
+                <header>
+                    <button name="action_submit_declaration" string="Submit Declaration" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_submit_proofs" string="Submit Proof Documents" type="object" class="btn-primary" invisible="state not in ['declared', 'submitted']"/>
+                    <button name="action_start_review" string="Start HR Verification" type="object" class="btn-info" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['declared', 'submitted', 'proof_submitted']"/>
+                    <button name="action_verify_proofs" string="Verify &amp; Approve Proofs" type="object" class="btn-success" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['declared', 'submitted', 'proof_submitted', 'proof_under_review']"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" class="btn-secondary" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,declared,proof_submitted,proof_under_review,proof_verified"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Proof Verified" bg_color="text-bg-success" invisible="state not in ['proof_verified', 'approved']"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Tax Period">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="company_id"/>
+                            <field name="financial_year_id" readonly="state != 'draft'"/>
+                            <field name="tax_regime_id"/>
+                            <field name="regime_code" invisible="1"/>
+                        </group>
+                        <group string="80D Medical Summary &amp; Max Statutory Limit">
+                            <field name="total_declared_amount" widget="monetary"/>
+                            <field name="max_80d_limit" widget="monetary"/>
+                            <field name="total_approved_amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Medical Insurance Details (Section 80D)" name="80d_details">
+                            <group>
+                                <group string="Self, Spouse &amp; Children">
+                                    <field name="decl_80d_self" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80d_self_is_senior" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80d_preventive" readonly="state in ['proof_verified', 'approved']"/>
+                                </group>
+                                <group string="Parents Medical Insurance">
+                                    <field name="decl_80d_parents" readonly="state in ['proof_verified', 'approved']"/>
+                                    <field name="decl_80d_parents_is_senior" readonly="state in ['proof_verified', 'approved']"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Medical Proof Receipts" name="proofs">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 80D List View -->
+    <record id="tds_employee_80d_declaration_view_tree" model="ir.ui.view">
+        <field name="name">tds.employee.80d.declaration.list</field>
+        <field name="model">tds.employee.80d.declaration</field>
+        <field name="arch" type="xml">
+            <list string="Section 80D Health Insurance Declarations" decoration-success="state in ['proof_verified', 'approved']" decoration-info="state in ['declared', 'submitted']" decoration-warning="state in ['proof_submitted', 'proof_under_review']" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="financial_year_id" optional="show"/>
+                <field name="decl_80d_self_is_senior" optional="show"/>
+                <field name="decl_80d_parents_is_senior" optional="show"/>
+                <field name="total_declared_amount" widget="monetary" optional="show"/>
+                <field name="total_approved_amount" widget="monetary" optional="show"/>
+                <field name="state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 80D Action -->
+    <record id="action_tds_employee_80d_declaration" model="ir.actions.act_window">
+        <field name="name">Section 80D Health Insurance Declarations</field>
+        <field name="res_model">tds.employee.80d.declaration</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- ============================================================= -->
+    <!-- 3. HOUSE RENT ALLOWANCE (HRA) DECLARATION VIEWS                -->
+    <!-- ============================================================= -->
+
+    <!-- HRA Form View -->
+    <record id="tds_employee_hra_declaration_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.hra.declaration.form</field>
+        <field name="model">tds.employee.hra.declaration</field>
+        <field name="arch" type="xml">
+            <form string="House Rent Allowance (HRA) Declaration">
+                <header>
+                    <button name="action_submit_declaration" string="Submit Declaration" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_submit_proofs" string="Submit Proof Documents" type="object" class="btn-primary" invisible="state not in ['declared', 'submitted']"/>
+                    <button name="action_start_review" string="Start HR Verification" type="object" class="btn-info" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['declared', 'submitted', 'proof_submitted']"/>
+                    <button name="action_verify_proofs" string="Verify &amp; Approve Proofs" type="object" class="btn-success" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['declared', 'submitted', 'proof_submitted', 'proof_under_review']"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" class="btn-secondary" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,declared,proof_submitted,proof_under_review,proof_verified"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Metro Accommodation (50%)" bg_color="text-bg-info" invisible="not is_metro_city"/>
+                    <widget name="web_ribbon" title="Proof Verified" bg_color="text-bg-success" invisible="state not in ['proof_verified', 'approved']"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Tax Period">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="company_id"/>
+                            <field name="financial_year_id" readonly="state != 'draft'"/>
+                            <field name="tax_regime_id"/>
+                            <field name="regime_code" invisible="1"/>
+                        </group>
+                        <group string="Rented Accommodation Overview">
+                            <field name="annual_rent_paid" widget="monetary" readonly="state in ['proof_verified', 'approved']"/>
+                            <field name="monthly_rent_paid" widget="monetary"/>
+                            <field name="is_metro_city" readonly="state in ['proof_verified', 'approved']"/>
+                            <field name="own_residential_property_at_workplace" readonly="state in ['proof_verified', 'approved']"/>
+                            <field name="rent_period_from" readonly="state in ['proof_verified', 'approved']"/>
+                            <field name="rent_period_to" readonly="state in ['proof_verified', 'approved']"/>
+                            <field name="is_pan_required" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Landlord Statutory Details (Mandatory if Annual Rent > ₹1,00,000)">
+                        <group>
+                            <field name="landlord_name" required="annual_rent_paid &gt; 100000" readonly="state in ['proof_verified', 'approved']"/>
+                            <field name="landlord_pan" required="annual_rent_paid &gt; 100000" readonly="state in ['proof_verified', 'approved']" placeholder="e.g. ABCDE1234F"/>
+                        </group>
+                        <group>
+                            <field name="landlord_address" readonly="state in ['proof_verified', 'approved']" placeholder="Full address of rented premises..."/>
+                        </group>
+                        <field name="summary_html" nolabel="1" colspan="2" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Rent Receipts &amp; Agreement Proofs" name="proofs">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- HRA List View -->
+    <record id="tds_employee_hra_declaration_view_tree" model="ir.ui.view">
+        <field name="name">tds.employee.hra.declaration.list</field>
+        <field name="model">tds.employee.hra.declaration</field>
+        <field name="arch" type="xml">
+            <list string="House Rent Allowance (HRA) Declarations" decoration-success="state in ['proof_verified', 'approved']" decoration-info="state in ['declared', 'submitted']" decoration-warning="state in ['proof_submitted', 'proof_under_review']" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="financial_year_id" optional="show"/>
+                <field name="annual_rent_paid" widget="monetary"/>
+                <field name="is_metro_city" optional="show"/>
+                <field name="landlord_name" optional="show"/>
+                <field name="landlord_pan" optional="show"/>
+                <field name="state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- HRA Action -->
+    <record id="action_tds_employee_hra_declaration" model="ir.actions.act_window">
+        <field name="name">House Rent Allowance (HRA) Declarations</field>
+        <field name="res_model">tds.employee.hra.declaration</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

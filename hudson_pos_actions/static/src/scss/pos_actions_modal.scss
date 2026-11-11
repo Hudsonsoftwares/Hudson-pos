@@ -1,0 +1,172 @@
+/* =========================================================
+ * POS Actions Modal Styling (Odoo Online 5-Column Grid Match)
+ * ========================================================= */
+
+.control-buttons-modal {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    padding: 12px 6px !important;
+}
+
+@media (max-width: 992px) {
+    .control-buttons-modal {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .control-buttons-modal {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+/* Individual Action Button Cards */
+.control-buttons-modal .control-button,
+.control-buttons-modal button.btn {
+    border-radius: 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    background: #f8f9fa !important;
+    color: #1f2937 !important;
+    min-height: 100px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 16px 10px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.15s ease-in-out !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    text-align: center !important;
+}
+
+.control-buttons-modal .control-button:hover:not(:disabled),
+.control-buttons-modal button.btn:hover:not(:disabled) {
+    background: #eef2f6 !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.control-buttons-modal .control-button:disabled,
+.control-buttons-modal button.btn:disabled,
+.control-buttons-modal .control-button.disabled {
+    opacity: 0.42 !important;
+    background: #f9fafb !important;
+    border-color: rgba(0, 0, 0, 0.04) !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+/* Icons inside Action Buttons */
+.control-buttons-modal .control-button i.oi,
+.control-buttons-modal .control-button .fa,
+.control-buttons-modal button.btn i.oi {
+    font-size: 28px !important;
+    opacity: 0.65 !important;
+    margin-bottom: 2px !important;
+}
+
+/* Guest Button Circle Badge */
+.control-buttons-modal .o_guests_button span.rounded-5,
+.control-buttons-modal .o_guests_button span.order-last,
+.control-buttons-modal .o_guest_badge {
+    background-color: #cbd5e1 !important;
+    color: #1e293b !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    margin-bottom: 2px !important;
+}
+
+/* Hide Tax and Break Combo to preserve 5-col alignment */
+.control-buttons-modal .o_fiscal_position_button,
+.control-buttons-modal .break-combo-button {
+    display: none !important;
+}
+
+/* Full Width Cancel Order Button */
+.control-buttons-modal .btn-danger,
+.control-buttons-modal button:has([data-icon="delete"]) {
+    grid-column: 1 / -1 !important;
+    background: #ef4444 !important;
+    border-color: #ef4444 !important;
+    color: #ffffff !important;
+    min-height: 48px !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    margin-top: 6px !important;
+}
+
+/* Dark Mode support */
+[data-bs-theme="dark"] .control-buttons-modal .control-button,
+[data-bs-theme="dark"] .control-buttons-modal button.btn {
+    background: #1e2430 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: #f1f5f9 !important;
+}
+
+[data-bs-theme="dark"] .control-buttons-modal .control-button:hover:not(:disabled),
+[data-bs-theme="dark"] .control-buttons-modal button.btn:hover:not(:disabled) {
+    background: #283040 !important;
+    border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+[data-bs-theme="dark"] .control-buttons-modal .control-button:disabled,
+[data-bs-theme="dark"] .control-buttons-modal button.btn:disabled {
+    background: #161b22 !important;
+    color: #64748b !important;
+    border-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+
+/* =========================================================
+ * POS Course Button & Course Display Enhancements
+ * ========================================================= */
+
+/* Hide default course button placed before more-btn by pos_restaurant */
+.control-buttons button.course-btn {
+    display: none !important;
+}
+
+/* Hudson Course Button right next to Dine In (preset) */
+.control-buttons button.hudson-course-btn,
+.control-buttons button.hudson-quotation-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+    font-weight: 500 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Active Course header in Order Display */
+.order-course-name {
+    cursor: pointer !important;
+    border-radius: 6px !important;
+    margin: 4px 0 !important;
+    padding: 6px 10px !important;
+    transition: all 0.15s ease-in-out !important;
+    user-select: none !important;
+}
+
+.order-course-name:hover {
+    filter: brightness(0.96) !important;
+}
+
+.order-course-name.o_colorlist_item_color_10 {
+    box-shadow: 0 0 0 2px rgba(113, 75, 103, 0.4) !important;
+    font-weight: 700 !important;
+}

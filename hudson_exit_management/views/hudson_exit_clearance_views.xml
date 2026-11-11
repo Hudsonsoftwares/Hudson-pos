@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_hudson_exit_clearance_tree" model="ir.ui.view">
+            <field name="name">hudson.exit.clearance.list</field>
+            <field name="model">hudson.exit.clearance</field>
+            <field name="arch" type="xml">
+                <list string="Department Exit Clearances">
+                    <field name="resignation_id"/>
+                    <field name="department_type"/>
+                    <field name="name"/>
+                    <field name="responsible_user_id"/>
+                    <field name="clearance_date"/>
+                    <field name="state" widget="badge" decoration-success="state == 'cleared'" decoration-warning="state == 'pending'" decoration-danger="state == 'rejected'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_hudson_exit_clearance" model="ir.actions.act_window">
+            <field name="name">Exit Clearances</field>
+            <field name="res_model">hudson.exit.clearance</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </data>
+</odoo>

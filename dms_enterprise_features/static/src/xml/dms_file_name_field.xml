@@ -1,0 +1,15 @@
+<templates xml:space="preserve">
+    <t t-name="dms_enterprise_features.DmsFileNameField">
+        <div class="d-flex align-items-center w-100">
+            <i t-if="fileIcon" t-attf-class="fa #{fileIcon} fa-lg me-2 cursor-pointer" t-on-click.stop.prevent="this.onIconClick" title="Preview File" />
+            <div class="flex-grow-1 text-truncate">
+                <t t-if="this.props.readonly">
+                    <span t-out="this.formattedValue"/>
+                </t>
+                <t t-else="">
+                    <input class="o_input" t-att-id="this.props.id" t-att-type="this.props.isPassword ? 'password' : 'text'" t-att-placeholder="this.props.placeholder" t-on-blur="this.onBlur" t-ref="this.input"/>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_helpdesk_ticket_convert_lead_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.convert.lead.form</field>
+        <field name="model">helpdesk.ticket.convert.lead</field>
+        <field name="arch" type="xml">
+            <form string="Convert to Lead">
+                <sheet>
+                    <group>
+                        <field name="ticket_id" invisible="1"/>
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="team_id"/>
+                        <field name="user_id"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_convert_to_lead" string="Convert to Lead" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ticket_convert_to_lead" model="ir.actions.act_window">
+        <field name="name">Convert to Lead</field>
+        <field name="res_model">helpdesk.ticket.convert.lead</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="helpdesk_management_pro.model_helpdesk_management_ticket"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>
+

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Policy Form View -->
+    <record id="view_hds_leave_encashment_policy_form" model="ir.ui.view">
+        <field name="name">hds.leave.encashment.policy.form</field>
+        <field name="model">hds.leave.encashment.policy</field>
+        <field name="arch" type="xml">
+            <form string="Leave Encashment Policy">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Standard Earned Leave Encashment Policy"/></h1>
+                    </div>
+                    <group>
+                        <group string="Company &amp; Status">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Calculation Basis">
+                            <field name="calculation_basis"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Eligibility &amp; Limits" name="eligibility">
+                            <group>
+                                <group string="Employee Eligibility">
+                                    <field name="employee_type_ids" widget="many2many_tags" placeholder="All Employee Types" string="Employee Type"/>
+                                    <field name="min_service_period_days"/>
+                                </group>
+                                <group string="Retention &amp; Encashment Caps">
+                                    <field name="min_balance_to_maintain"/>
+                                    <field name="max_encashable_days_per_request"/>
+                                    <field name="max_encashable_days_per_year"/>
+                                </group>
+                            </group>
+                            <group string="Eligible Leave Types">
+                                <field name="leave_type_ids" widget="many2many_tags" placeholder="Select leave types with encashment enabled..."/>
+                            </group>
+                        </page>
+                        <page string="Formula Configuration" name="formula">
+                            <group invisible="calculation_basis != 'custom_formula'">
+                                <field name="custom_formula_code" placeholder="result = ((basic + da) / 26.0) * encash_days"/>
+                            </group>
+                            <div class="alert alert-info mt-2" role="alert">
+                                <strong>Formula Guides:</strong><br/>
+                                • <strong>Statutory Standard (26)</strong>: Evaluates <code>(Basic + DA) / 26 × Encashed Days</code> per Indian labour standards.<br/>
+                                • <strong>Calendar Days (30)</strong>: Evaluates <code>(Basic + DA) / 30 × Encashed Days</code>.<br/>
+                                • <strong>Gross Salary (30)</strong>: Evaluates <code>Gross Wage / 30 × Encashed Days</code>.<br/>
+                                • <strong>Custom Formula</strong>: Custom Python expression with variables <code>basic</code>, <code>da</code>, <code>gross</code>, <code>encash_days</code>, <code>contract</code>, <code>employee</code>. Must set <code>result</code>.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Policy List View -->
+    <record id="view_hds_leave_encashment_policy_tree" model="ir.ui.view">
+        <field name="name">hds.leave.encashment.policy.list</field>
+        <field name="model">hds.leave.encashment.policy</field>
+        <field name="arch" type="xml">
+            <list string="Leave Encashment Policies">
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="calculation_basis"/>
+                <field name="employee_type_ids" widget="many2many_tags" optional="show" string="Employee Type"/>
+                <field name="min_service_period_days"/>
+                <field name="min_balance_to_maintain"/>
+                <field name="max_encashable_days_per_year"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Policy Search View -->
+    <record id="view_hds_leave_encashment_policy_search" model="ir.ui.view">
+        <field name="name">hds.leave.encashment.policy.search</field>
+        <field name="model">hds.leave.encashment.policy</field>
+        <field name="arch" type="xml">
+            <search string="Search Leave Encashment Policies">
+                <field name="name"/>
+                <field name="company_id"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                    <filter string="Calculation Basis" name="group_by_basis" context="{'group_by': 'calculation_basis'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Policy -->
+    <record id="action_hds_leave_encashment_policy" model="ir.actions.act_window">
+        <field name="name">Leave Encashment Policies</field>
+        <field name="res_model">hds.leave.encashment.policy</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hds_leave_encashment_policy_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Leave Encashment Policy!
+            </p>
+            <p>
+                Configure encashment rules, minimum service periods, eligible leave types, buffer retention limits, and calculation formulas.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu for Policy under Payroll Configuration -> Salary -->
+    <menuitem id="menu_hds_leave_encashment_policy"
+              name="Leave Encashment Policies"
+              parent="hudson_payroll_base.menu_hr_payroll_salary_root"
+              action="action_hds_leave_encashment_policy"
+              sequence="35"
+              groups="hudson_payroll_base.group_payroll_manager"/>
+
+    <!-- Menu for Policy under Time Off -> Configuration -->
+    <menuitem id="menu_hds_leave_encashment_policy_timeoff"
+              name="Leave Encashment Policies"
+              parent="hr_holidays.menu_hr_holidays_configuration"
+              action="action_hds_leave_encashment_policy"
+              sequence="55"
+              groups="hr_holidays.group_hr_holidays_manager,hudson_payroll_base.group_payroll_manager"/>
+</odoo>

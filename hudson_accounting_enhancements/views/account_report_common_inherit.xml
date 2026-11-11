@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_common_report_view_inherit_hudson" model="ir.ui.view">
+        <field name="name">Common Report Inherit Hudson</field>
+        <field name="model">account.common.report</field>
+        <field name="inherit_id" ref="accounting_pdf_reports.account_common_report_view"/>
+        <field name="arch" type="xml">
+            <!-- Add a custom class for styling -->
+            <xpath expr="//form" position="attributes">
+                <attribute name="class">o_dynamic_report_form</attribute>
+            </xpath>
+
+            <!-- Hide the original groups and add our custom layout -->
+            <xpath expr="//group[1]" position="attributes">
+                <attribute name="class">d-none</attribute>
+            </xpath>
+            <xpath expr="//group[2]" position="attributes">
+                <attribute name="class">d-none</attribute>
+            </xpath>
+
+            <xpath expr="//group[1]" position="before">
+                <header>
+                    <button name="check_report" string="Print PDF" type="object" class="btn-primary"/>
+                </header>
+                <div class="row mb-3 bg-light p-3 border rounded">
+                    <group col="4">
+                        <field name="target_move" widget="radio"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="journal_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="company_id" invisible="1"/>
+                    </group>
+                </div>
+                <div class="mt-4">
+                    <field name="report_html" widget="html" nolabel="1" readonly="1" options="{'style-inline': true}"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//footer" position="attributes">
+                <attribute name="class">d-none</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

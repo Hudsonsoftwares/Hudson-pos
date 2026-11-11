@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hds_hr_snapshot_view_tree" model="ir.ui.view">
+        <field name="name">hds.hr.snapshot.view.list</field>
+        <field name="model">hds.hr.snapshot</field>
+        <field name="arch" type="xml">
+            <list string="HR Snapshots" create="false" edit="false" delete="false">
+                <field name="snapshot_date"/>
+                <field name="payroll_period"/>
+                <field name="employee_id"/>
+                <field name="employee_code"/>
+                <field name="department"/>
+                <field name="designation"/>
+                <field name="payslip_id"/>
+                <field name="wage"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hds_hr_snapshot_view_form" model="ir.ui.view">
+        <field name="name">hds.hr.snapshot.view.form</field>
+        <field name="model">hds.hr.snapshot</field>
+        <field name="arch" type="xml">
+            <form string="HR Snapshot" create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="employee_id" class="oe_edit_only"/>
+                        <h1>
+                            <field name="employee_id" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="payroll_period" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Employee Details">
+                            <field name="employee_id" readonly="1"/>
+                            <field name="employee_code" readonly="1"/>
+                            <field name="department" readonly="1"/>
+                            <field name="designation" readonly="1"/>
+                            <field name="manager" readonly="1"/>
+                            <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Employment Details">
+                            <field name="joining_date" readonly="1"/>
+                            <field name="employment_type" readonly="1"/>
+                            <field name="branch" readonly="1"/>
+                            <field name="contract_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Payroll Details">
+                            <field name="payroll_period" readonly="1"/>
+                            <field name="snapshot_date" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="wage" readonly="1"/>
+                            <field name="basic_salary" readonly="1"/>
+                            <field name="hra" readonly="1"/>
+                            <field name="da" readonly="1"/>
+                            <field name="travel_allowance" readonly="1"/>
+                        </group>
+                        <group string="Statutory Details">
+                            <field name="pf_wage_basis" readonly="1"/>
+                            <field name="uan" readonly="1"/>
+                            <field name="pf_member_id" readonly="1"/>
+                            <field name="epf_applicable" readonly="1"/>
+                            <field name="eps_applicable" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Attendance Details">
+                            <field name="working_days" readonly="1"/>
+                            <field name="paid_days" readonly="1"/>
+                            <field name="lop_days" readonly="1"/>
+                        </group>
+                        <group string="Payslip Reference">
+                            <field name="payslip_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_hr_snapshot" model="ir.actions.act_window">
+        <field name="name">HR Snapshots</field>
+        <field name="res_model">hds.hr.snapshot</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No HR Snapshots found!
+            </p>
+            <p>
+                HR Snapshots are automatically generated when a payslip is confirmed.
+            </p>
+        </field>
+    </record>
+
+    <!-- HR Snapshots Group under Reporting -->
+    <menuitem id="menu_hr_snapshots_group"
+              name="HR Snapshots"
+              parent="ohrms_payroll_reports.menu_payroll_reporting"
+              sequence="20"/>
+
+    <menuitem id="menu_hds_hr_snapshot"
+              name="HR Snapshots"
+              parent="menu_hr_snapshots_group"
+              action="action_hds_hr_snapshot"
+              sequence="10"/>
+</odoo>

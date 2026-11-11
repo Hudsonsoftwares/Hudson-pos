@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_setup_dms_folders_for_employees" model="ir.actions.server">
+        <field name="name">Setup DMS Folders and Permissions</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.action_setup_dms_folders()
+        </field>
+    </record>
+
+    <!-- On install and every upgrade: create folders for employees that
+         existed before the module (idempotent, skips employees with one). -->
+    <function model="hr.employee" name="_dms_backfill_folders"/>
+</odoo>

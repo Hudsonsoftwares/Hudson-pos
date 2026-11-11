@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- LWF State Rate List View -->
+    <record id="view_lwf_state_rate_list" model="ir.ui.view">
+        <field name="name">lwf.state.rate.list</field>
+        <field name="model">lwf.state.rate</field>
+        <field name="arch" type="xml">
+            <list string="LWF State Rates" multi_edit="1">
+                <field name="name"/>
+                <field name="state_id"/>
+                <field name="deduction_frequency" optional="show"/>
+                <field name="emp_contribution" widget="monetary" optional="show"/>
+                <field name="empl_contribution" widget="monetary" optional="show"/>
+                <field name="deduction_month_1" optional="hide"/>
+                <field name="deduction_month_2" invisible="deduction_frequency != 'half_yearly'" optional="hide"/>
+                <field name="min_employee_count" optional="hide"/>
+                <field name="notification_ref" optional="hide"/>
+                <field name="date_from" optional="hide"/>
+                <field name="date_to" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- LWF State Rate Form View -->
+    <record id="view_lwf_state_rate_form" model="ir.ui.view">
+        <field name="name">lwf.state.rate.form</field>
+        <field name="model">lwf.state.rate</field>
+        <field name="arch" type="xml">
+            <form string="Labour Welfare Fund State Rate">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="state_id" string="Indian State"/>
+                        <h1>
+                            <field name="state_id" placeholder="Select State (e.g. Maharashtra)"/>
+                        </h1>
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Contribution Amounts">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="emp_contribution" widget="monetary"/>
+                            <field name="empl_contribution" widget="monetary"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Deduction Schedule &amp; Thresholds">
+                            <field name="deduction_frequency"/>
+                            <field name="deduction_month_1" invisible="deduction_frequency == 'monthly'"/>
+                            <field name="deduction_month_2" invisible="deduction_frequency != 'half_yearly'"/>
+                            <field name="min_employee_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Validity Period &amp; Scoping">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" placeholder="Global (All Companies)"/>
+                        </group>
+                        <group string="Audit &amp; Compliance Notes">
+                            <field name="notification_ref" placeholder="e.g. Notification No. LAB/LWF/2024/01"/>
+                            <field name="remarks" placeholder="Applicability notes or state amendments..."/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- LWF State Rate Search View -->
+    <record id="view_lwf_state_rate_search" model="ir.ui.view">
+        <field name="name">lwf.state.rate.search</field>
+        <field name="model">lwf.state.rate</field>
+        <field name="arch" type="xml">
+            <search string="Search LWF State Rates">
+                <field name="name"/>
+                <field name="state_id"/>
+                <field name="notification_ref"/>
+                <field name="deduction_frequency"/>
+                <filter string="Global (All Companies)" name="global_rates" domain="[('company_id', '=', False)]"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="State" name="group_state" context="{'group_by': 'state_id'}"/>
+                    <filter string="Frequency" name="group_frequency" context="{'group_by': 'deduction_frequency'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- LWF State Rate Window Action -->
+    <record id="action_lwf_state_rate_act" model="ir.actions.act_window">
+        <field name="name">State Rates</field>
+        <field name="res_model">lwf.state.rate</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_lwf_state_rate_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Labour Welfare Fund (LWF) State Rate!
+            </p>
+            <p>
+                Configure state-wise employee &amp; employer contribution amounts, deduction frequencies, statutory thresholds, and effective date ranges.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Structure: Payroll -> Configuration -> Indian Statutory -> Labour Welfare Fund -->
+    <menuitem id="menu_lwf_state_rate"
+              name="Labour Welfare Fund (LWF)"
+              parent="menu_hds_in_tds_configuration"
+              sequence="70"
+              action="action_lwf_state_rate_act"
+              groups="hudson_payroll_base.group_payroll_manager"/>
+</odoo>

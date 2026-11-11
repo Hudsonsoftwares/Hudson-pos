@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="quality_check_wizard_view_form" model="ir.ui.view">
+        <field name="name">quality.check.wizard.view.form</field>
+        <field name="model">quality.check.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Quality Check">
+                <field name="check_ids" invisible="1"/>
+                <field name="current_check_id" invisible="1"/>
+                <field name="test_type" invisible="1"/>
+                <field name="picking_id" invisible="1"/>
+                <field name="production_id" invisible="1"/>
+                <field name="repair_id" invisible="1"/>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <h2>
+                            <field name="operation_name" readonly="1" class="oe_inline"/>
+                            <span> : </span>
+                            <field name="product_id" readonly="1" class="oe_inline"/>
+                        </h2>
+                    </div>
+                </div>
+                
+                <group>
+                    <field name="title" readonly="1" invisible="not title"/>
+                    <field name="note" invisible="not note" widget="html" readonly="1"/>
+                </group>
+
+                <group invisible="test_type != 'measure'">
+                    <group>
+                        <field name="measure"/>
+                    </group>
+                </group>
+                
+                <group invisible="test_type != 'picture'">
+                    <field name="picture" widget="image"/>
+                </group>
+
+                <field name="additional_note" placeholder="Write quality check notes..." nolabel="1"/>
+
+                <footer>
+                    <button string="Pass" name="action_pass" type="object" class="btn-success" invisible="test_type in ('measure', 'spreadsheet')"/>
+                    <button string="Fail" name="action_fail" type="object" class="btn-danger" invisible="test_type in ('measure', 'spreadsheet')"/>
+                    <button string="Validate" name="action_measure" type="object" class="btn-primary" invisible="test_type != 'measure'"/>
+                    <button string="Open spreadsheet" name="action_open_spreadsheet" type="object" class="btn-primary" invisible="test_type != 'spreadsheet'"/>
+                    <button string="Discard" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

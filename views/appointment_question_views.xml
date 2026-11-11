@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="appointment_question_view_form" model="ir.ui.view">
+            <field name="name">appointment.question.view.form</field>
+            <field name="model">appointment.question</field>
+            <field name="arch" type="xml">
+                <form string="Question">
+                    <sheet>
+                        <div class="alert alert-info" role="alert" invisible="id == False" style="background-color: #1a4254; color: #fff; border: none;">
+                            This question is used by <field name="appointment_usage_count" class="fw-bold" style="color: #0dcaf0;"/> appointments.
+                        </div>
+                        
+                        <div class="mb-4">
+                            <field name="question_type" widget="badges_selection" options="{'horizontal': true}"/>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="name" string="Question" class="fw-bold mb-1"/>
+                            <field name="name" placeholder="Question" class="fs-3 w-100 border-bottom border-info" style="border-top: none; border-left: none; border-right: none; background: transparent; padding-bottom: 5px;"/>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="placeholder"/>
+                                <field name="is_required"/>
+                            </group>
+                            <group>
+                                <field name="is_reusable"/>
+                                <field name="default_question"/>
+                            </group>
+                        </group>
+                        
+                        <field name="extra_comments" placeholder="Extra comments..." nolabel="1" class="mt-4 w-100"/>
+                        <field name="appointment_type_id" invisible="1"/>
+                        <field name="sequence" invisible="1"/>
+
+                        <notebook invisible="question_type not in ('select', 'radio', 'checkbox')">
+                            <page string="Answers" name="answers">
+                                <field name="answer_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name" string="Answer"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="appointment_question_view_list" model="ir.ui.view">
+            <field name="name">appointment.question.view.list</field>
+            <field name="model">appointment.question</field>
+            <field name="arch" type="xml">
+                <list string="Questions">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" string="Question"/>
+                    <field name="placeholder"/>
+                    <field name="answer_ids" string="Available Answers" widget="many2many_tags"/>
+                    <field name="appointment_type_id" string="Appointment Type"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_appointment_question" model="ir.actions.act_window">
+            <field name="name">Questions</field>
+            <field name="res_model">appointment.question</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="appointment_answer_view_list" model="ir.ui.view">
+            <field name="name">appointment.answer.view.list</field>
+            <field name="model">appointment.answer</field>
+            <field name="arch" type="xml">
+                <list string="Answer Breakdown" create="0" edit="0" delete="0">
+                    <field name="appointment_type_id"/>
+                    <field name="value_text" string="Text Answer"/>
+                </list>
+            </field>
+        </record>
+    </data>
+</odoo>

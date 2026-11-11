@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Payroll dashboard in the standard Human Resources group of the Dashboards app -->
+    <record id="spreadsheet_dashboard_payroll" model="spreadsheet.dashboard">
+        <field name="name">Payroll</field>
+        <field name="spreadsheet_binary_data" type="bytes" file="hudson_payroll_spreadsheet_dashboard/data/files/payroll_dashboard.json"/>
+        <field name="main_data_model_ids" eval="[(4, ref('hudson_payroll_spreadsheet_dashboard.model_hds_payroll_analysis'))]"/>
+        <field name="dashboard_group_id" ref="spreadsheet_dashboard.spreadsheet_dashboard_group_hr"/>
+        <field name="group_ids" eval="[Command.link(ref('hudson_payroll_base.group_payroll_user')), Command.link(ref('hudson_payroll_base.group_payroll_manager'))]"/>
+        <field name="sequence">20</field>
+        <field name="is_published">True</field>
+    </record>
+</odoo>

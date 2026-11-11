@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Exit Management Root Menu (Deactivated: Access via Payroll > Operations > Final Settlements) -->
+        <menuitem id="menu_hudson_exit_management_root"
+                  name="Exit Management"
+                  parent="hr.menu_hr_root"
+                  sequence="75"
+                  active="False"/>
+
+        <menuitem id="menu_hr_resignation"
+                  name="Resignations"
+                  parent="menu_hudson_exit_management_root"
+                  action="action_hr_resignation"
+                  sequence="10"
+                  active="False"/>
+
+        <menuitem id="menu_hudson_exit_clearance"
+                  name="Department Clearances"
+                  parent="menu_hudson_exit_management_root"
+                  action="action_hudson_exit_clearance"
+                  sequence="20"
+                  groups="hr.group_hr_user"
+                  active="False"/>
+    </data>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_inherit_salary_type" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit.salary.type</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='wage']" position="after">
+                <field name="salary_calculation_type" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hide redundant standard Odoo attendance_based checkbox since Hudson uses pay_by_attendance -->
+    <record id="view_employee_form_hide_attendance_based" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.hide.attendance.based</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_attendance.view_employee_form_inherit_hr_attendance"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='attendance_based']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

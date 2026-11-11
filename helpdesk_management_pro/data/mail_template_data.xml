@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_ticket_receipt" model="mail.template">
+            <field name="name">Helpdesk: Ticket Received</field>
+            <field name="description">Send customers a confirmation email to notify them that their helpdesk ticket has been received and is currently being reviewed by the helpdesk team. Automatically send an email to customers when a ticket reaches a specific stage in a helpdesk team by setting this template on that stage.</field>
+            <field name="model_id" ref="helpdesk_management_pro.model_helpdesk_management_ticket"/>
+            <field name="subject">Ticket Receipt: {{ object.name }}</field>
+            <field name="email_to">{{ object.partner_email }}</field>
+            <field name="partner_to">{{ object.partner_id.id if object.partner_id else '' }}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear <t t-out="object.partner_name or 'Customer'">Customer</t>,<br/><br/>
+        
+        Your request <strong t-out="object.subject or ''">subject</strong> has been received and is being reviewed by our <t t-out="object.team_id.name or 'Helpdesk'">Helpdesk</t> team.<br/><br/>
+        
+        The reference for your ticket is <strong t-out="object.name or ''">00000</strong>.<br/><br/>
+        
+        To provide any additional information, simply reply to this email.<br/><br/>
+        
+        <div style="text-align: center; margin: 16px 0px 16px 0px;">
+            <a t-att-href="object.get_base_url() + object.get_portal_url()" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                View Ticket
+            </a>
+        </div>
+        <br/>
+        Best regards,<br/><br/>
+        
+        <t t-out="object.team_id.name or 'Helpdesk'">Helpdesk</t> Team
+    </p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+        
+        <record id="mail_template_ticket_review" model="mail.template">
+            <field name="name">Helpdesk: Ticket Rating Request</field>
+            <field name="description">Enable "customer ratings" feature on the helpdesk team</field>
+            <field name="model_id" ref="helpdesk_management_pro.model_helpdesk_management_ticket"/>
+            <field name="subject">Ticket Solved - How did we do? ({{ object.name }})</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.partner_email }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Hello <t t-out="object.partner_name or 'Customer'"/>,
+        <br/><br/>
+        We hope your experience with us was excellent! Your ticket <strong><t t-out="object.name"/></strong> 
+        (<t t-out="object.subject"/>) has been marked as solved.
+        <br/><br/>
+        How would you rate the service you received from us?
+        <br/><br/>
+    </p>
+    <div style="text-align: center;">
+        <table style="width: 100%; border-collapse: collapse; max-width: 400px; margin: 0 auto;">
+            <tr>
+                <td style="text-align: center;">
+                    <a t-attf-href="{{ object.get_base_url() }}/helpdesk/rating/{{ object.id }}/{{ object.access_token }}/5">
+                        <img t-attf-src="{{ object.get_base_url() }}/rating/static/src/img/rating_5.png" alt="Happy" style="width: 50px; height: 50px;"/>
+                    </a>
+                </td>
+                <td style="text-align: center;">
+                    <a t-attf-href="{{ object.get_base_url() }}/helpdesk/rating/{{ object.id }}/{{ object.access_token }}/3">
+                        <img t-attf-src="{{ object.get_base_url() }}/rating/static/src/img/rating_3.png" alt="Neutral" style="width: 50px; height: 50px;"/>
+                    </a>
+                </td>
+                <td style="text-align: center;">
+                    <a t-attf-href="{{ object.get_base_url() }}/helpdesk/rating/{{ object.id }}/{{ object.access_token }}/1">
+                        <img t-attf-src="{{ object.get_base_url() }}/rating/static/src/img/rating_1.png" alt="Sad" style="width: 50px; height: 50px;"/>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center; color: #555; padding-top: 5px;">Satisfied</td>
+                <td style="text-align: center; color: #555; padding-top: 5px;">Okay</td>
+                <td style="text-align: center; color: #555; padding-top: 5px;">Dissatisfied</td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Thank you for your feedback!
+        <br/><br/>
+        Best regards,
+        <br/>
+        <t t-out="object.user_id.name or object.company_id.name"/>
+    </p>
+</div>
+            </field>
+        </record>
+        
+        <record id="mail_template_ticket_closed" model="mail.template">
+            <field name="name">Helpdesk: Ticket Closed</field>
+            <field name="description">Set this template on a project's stage to automate email when tasks reach stages</field>
+            <field name="model_id" ref="helpdesk_management_pro.model_helpdesk_management_ticket"/>
+            <field name="subject">Ticket Closed ({{ object.name }})</field>
+            <field name="email_to">{{ object.partner_email }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Hello <t t-out="object.partner_name or 'Customer'"/>,
+        <br/><br/>
+        Your ticket <strong><t t-out="object.name"/></strong> has been closed. 
+        <br/><br/>
+        If you require further assistance, please reply to this email.
+        <br/><br/>
+        Best regards,
+        <br/>
+        <t t-out="object.user_id.name or object.company_id.name"/>
+    </p>
+</div>
+            </field>
+        </record>
+        
+        <record id="mail_template_ticket_autoclose" model="mail.template">
+            <field name="name">Helpdesk: Auto-Close Reminder</field>
+            <field name="description">Reminder sent to customers before their ticket is closed due to inactivity</field>
+            <field name="model_id" ref="helpdesk_management_pro.model_helpdesk_management_ticket"/>
+            <field name="subject">Ticket Inactivity Reminder ({{ object.name }})</field>
+            <field name="email_to">{{ object.partner_email }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Hello <t t-out="object.partner_name or 'Customer'"/>,
+        <br/><br/>
+        We haven't heard from you in a while regarding your ticket <strong><t t-out="object.name"/></strong>.
+        <br/>
+        It will be automatically closed soon due to inactivity. If you still need help, simply reply to this email.
+        <br/><br/>
+        Best regards,
+        <br/>
+        <t t-out="object.user_id.name or object.company_id.name"/>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+
+</odoo>

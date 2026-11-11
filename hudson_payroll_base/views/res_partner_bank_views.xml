@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hide redundant Account Holder Name field from Bank Account form to prevent duplicate entry (Account Holder partner_id already provides the name) -->
+    <record id="view_partner_bank_form_inherit_hds_payroll" model="ir.ui.view">
+        <field name="name">res.partner.bank.form.inherit.hds.payroll</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_form"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='holder_name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

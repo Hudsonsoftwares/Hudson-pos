@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Backend: create / open the helpdesk ticket of a forum post -->
+    <record id="forum_post_view_form_inherit_helpdesk" model="ir.ui.view">
+        <field name="name">forum.post.view.form.inherit.helpdesk</field>
+        <field name="model">forum.post</field>
+        <field name="inherit_id" ref="website_forum.forum_post_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="helpdesk_ticket_id" invisible="1"/>
+                <button type="object" class="oe_stat_button" icon="confirmation_number" name="action_create_helpdesk_ticket"
+                        groups="helpdesk_management_pro.group_helpdesk_user" invisible="parent_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text" invisible="helpdesk_ticket_id">Create Ticket</span>
+                        <span class="o_stat_text" invisible="not helpdesk_ticket_id">Ticket</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Website: question toolbar button for helpdesk users -->
+    <template id="forum_post_display_helpdesk_ticket" inherit_id="website_forum.post_display"
+              name="Forum Post: Create Helpdesk Ticket">
+        <xpath expr="//t[@t-call='website_forum.post_dropdown']" position="before">
+            <t t-if="post_id == question and post_id.active and request.env.user.has_group('helpdesk_management_pro.group_helpdesk_user')">
+                <a t-if="post_id.sudo().helpdesk_ticket_id"
+                   class="btn btn-sm btn-outline-primary ms-2 o_wforum_helpdesk_ticket"
+                   t-attf-href="/odoo/helpdesk.management.ticket/#{post_id.sudo().helpdesk_ticket_id.id}"
+                   title="Open the helpdesk ticket of this question">
+                    <i class="oi me-1" data-icon="confirmation_number"/>View Helpdesk Ticket
+                </a>
+                <form t-else="" method="POST" class="ms-2 o_wforum_helpdesk_ticket"
+                      t-attf-action="/helpdesk/forum/post/#{post_id.id}/create_ticket">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <button type="submit" class="btn btn-sm btn-primary"
+                            title="Create a helpdesk ticket from this question to handle it in the backend">
+                        <i class="oi me-1" data-icon="confirmation_number"/>Create Helpdesk Ticket
+                    </button>
+                </form>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

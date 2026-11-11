@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Payslip Report Action -->
+    <record id="action_report_payslip" model="ir.actions.report">
+        <field name="name">Payslip</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_payroll_base.report_payslip_document</field>
+<field name="print_report_name">'Payslip_' + (object.number or object.name or '').replace('/', '_')</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- QWeb Payslip PDF Template -->
+    <template id="report_payslip_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <h2><strong>PAYSLIP</strong></h2>
+                                <h4><span t-field="o.name"/></h4>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Employee:</strong> <span t-field="o.employee_id.name"/><br/>
+                                <strong>Designation:</strong> <span t-field="o.employee_id.job_title"/><br/>
+                                <strong>Department:</strong> <span t-field="o.employee_id.department_id.name"/><br/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>Reference:</strong> <span t-field="o.number"/><br/>
+                                <strong>Period:</strong> <span t-field="o.date_from"/> to <span t-field="o.date_to"/><br/>
+                                <strong>Structure:</strong> <span t-field="o.struct_id.name"/><br/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-bordered mt-4">
+                            <thead>
+                                <tr class="table-light">
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.line_ids" t-as="line">
+                                    <tr t-if="line.appears_on_payslip and abs(line.total) &gt; 0.001">
+                                        <td><span t-field="line.code"/></td>
+                                        <td><span t-field="line.name"/></td>
+                                        <td><span t-field="line.category_id.name"/></td>
+                                        <td class="text-end"><span t-field="line.total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="row mt-4">
+                            <div class="col-6 offset-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td><strong>Gross Wage:</strong></td>
+                                        <td class="text-end"><strong><span t-field="o.gross_wage" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <td><h5><strong>Net Wage:</strong></h5></td>
+                                        <td class="text-end"><h5><strong><span t-field="o.net_wage" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></h5></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,1531 @@
+/* ==========================================================================
+   DMS Enterprise Modern Minimalist Theme & Interactive Experience
+   Light & Dark Mode Adaptive
+   ========================================================================== */
+
+$dms-is-dark-compile: (variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark");
+
+:root {
+    @if $dms-is-dark-compile {
+        /* Dark Theme Variables (Compile-time) */
+        --dms-bg-canvas: #161822;
+        --dms-card-bg: #212430;
+        --dms-card-border: #2e3344;
+        --dms-card-border-hover: #3b82f6;
+        --dms-card-radius: 12px;
+        --dms-card-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.25), 0 1px 3px -1px rgba(0, 0, 0, 0.2);
+        --dms-card-shadow-hover: 0 12px 24px -4px rgba(0, 0, 0, 0.45), 0 4px 8px -2px rgba(0, 0, 0, 0.25);
+
+        --dms-primary: #3b82f6;
+        --dms-primary-light: rgba(59, 130, 246, 0.18);
+        --dms-primary-hover: #60a5fa;
+
+        --dms-text-primary: #f1f5f9;
+        --dms-text-secondary: #94a3b8;
+        --dms-text-muted: #64748b;
+
+        --dms-sidebar-bg: #1c1e28;
+        --dms-sidebar-border: #282c3a;
+        --dms-sidebar-hover: rgba(255, 255, 255, 0.05);
+        --dms-sidebar-item-color: #cbd5e1;
+        --dms-sidebar-item-hover-color: #ffffff;
+        --dms-sidebar-active-bg: rgba(59, 130, 246, 0.2);
+        --dms-sidebar-active-color: #60a5fa;
+        --dms-sidebar-counter-bg: #272a38;
+        --dms-sidebar-counter-color: #94a3b8;
+        --dms-sidebar-active-counter-bg: rgba(59, 130, 246, 0.35);
+        --dms-sidebar-active-counter-color: #93c5fd;
+        --dms-sidebar-btn-bg: #262937;
+        --dms-sidebar-btn-border: #33384a;
+
+        --dms-folder-badge-bg: #2a2e3d;
+        --dms-folder-badge-color: #94a3b8;
+        --dms-folder-badge-border: #363b4d;
+
+        --dms-preview-bg: #181a24;
+        --dms-preview-border: #282c3a;
+        --dms-star-bg: rgba(32, 36, 48, 0.85);
+        --dms-star-color: #e2e8f0;
+
+        --dms-dropdown-bg: #212430;
+        --dms-dropdown-border: #33384a;
+        --dms-dropdown-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.3);
+        --dms-dropdown-item-color: #e2e8f0;
+        --dms-dropdown-item-hover-bg: #2b3040;
+        --dms-dropdown-item-hover-color: #ffffff;
+        --dms-dropdown-divider: #33384a;
+
+        --dms-table-th-bg: #1a1d26;
+        --dms-table-th-color: #94a3b8;
+        --dms-table-tr-hover: #262a38;
+        --dms-table-border: #282c3a;
+        --dms-table-text: #e2e8f0;
+        --dms-directory-row-bg: #1d202b;
+        --dms-directory-row-border: #475569;
+
+        --dms-dot-color: #94a3b8;
+        --dms-dot-hover-color: #ffffff;
+
+        --dms-rev-view-color: #38bdf8;
+        --dms-rev-view-bg: rgba(2, 132, 199, 0.15);
+        --dms-rev-view-border: rgba(56, 189, 248, 0.3);
+        --dms-rev-download-color: #cbd5e1;
+        --dms-rev-download-bg: rgba(148, 163, 184, 0.12);
+        --dms-rev-download-border: rgba(148, 163, 184, 0.25);
+        --dms-rev-active-color: #4ade80;
+        --dms-rev-active-bg: rgba(34, 197, 94, 0.15);
+        --dms-rev-active-border: rgba(74, 222, 128, 0.3);
+        --dms-rev-delete-color: #f87171;
+        --dms-rev-delete-bg: rgba(239, 68, 68, 0.15);
+        --dms-rev-delete-border: rgba(248, 113, 113, 0.3);
+    } @else {
+        /* Light Theme Variables (Default) */
+        --dms-bg-canvas: #f8fafc;
+        --dms-card-bg: #ffffff;
+        --dms-card-border: #e2e8f0;
+        --dms-card-border-hover: #93c5fd;
+        --dms-card-radius: 12px;
+        --dms-card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+        --dms-card-shadow-hover: 0 12px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+
+        --dms-primary: #2563eb;
+        --dms-primary-light: #eff6ff;
+        --dms-primary-hover: #1d4ed8;
+
+        --dms-text-primary: #1e293b;
+        --dms-text-secondary: #64748b;
+        --dms-text-muted: #94a3b8;
+
+        --dms-sidebar-bg: #ffffff;
+        --dms-sidebar-border: #eef2f6;
+        --dms-sidebar-hover: #f1f5f9;
+        --dms-sidebar-item-color: #334155;
+        --dms-sidebar-item-hover-color: #0f172a;
+        --dms-sidebar-active-bg: #eff6ff;
+        --dms-sidebar-active-color: #1d4ed8;
+        --dms-sidebar-counter-bg: #f1f5f9;
+        --dms-sidebar-counter-color: #64748b;
+        --dms-sidebar-active-counter-bg: #dbeafe;
+        --dms-sidebar-active-counter-color: #1d4ed8;
+        --dms-sidebar-btn-bg: #f8fafc;
+        --dms-sidebar-btn-border: #e2e8f0;
+
+        --dms-folder-badge-bg: #f1f5f9;
+        --dms-folder-badge-color: #64748b;
+        --dms-folder-badge-border: transparent;
+
+        --dms-preview-bg: #f8fafc;
+        --dms-preview-border: #f1f5f9;
+        --dms-star-bg: rgba(255, 255, 255, 0.9);
+        --dms-star-color: #334155;
+
+        --dms-dropdown-bg: #ffffff;
+        --dms-dropdown-border: #e2e8f0;
+        --dms-dropdown-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.14), 0 6px 10px -3px rgba(15, 23, 42, 0.06);
+        --dms-dropdown-item-color: #334155;
+        --dms-dropdown-item-hover-bg: #f1f5f9;
+        --dms-dropdown-item-hover-color: #0f172a;
+        --dms-dropdown-divider: #f1f5f9;
+
+        --dms-table-th-bg: #f8fafc;
+        --dms-table-th-color: #64748b;
+        --dms-table-tr-hover: #f8fafc;
+        --dms-table-border: #f1f5f9;
+        --dms-table-text: #1e293b;
+        --dms-directory-row-bg: #fafbfc;
+        --dms-directory-row-border: #cbd5e1;
+
+        --dms-dot-color: #64748b;
+        --dms-dot-hover-color: #0f172a;
+
+        --dms-rev-view-color: #0284c7;
+        --dms-rev-view-bg: #f0f9ff;
+        --dms-rev-view-border: #bae6fd;
+        --dms-rev-download-color: #475569;
+        --dms-rev-download-bg: #f8fafc;
+        --dms-rev-download-border: #cbd5e1;
+        --dms-rev-active-color: #15803d;
+        --dms-rev-active-bg: #f0fdf4;
+        --dms-rev-active-border: #86efac;
+        --dms-rev-delete-color: #dc2626;
+        --dms-rev-delete-bg: #fef2f2;
+        --dms-rev-delete-border: #fecaca;
+    }
+
+    --dms-transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Runtime Dark-Mode Selector Overrides */
+[data-bs-theme="dark"],
+[data-color-mode="dark"],
+body.o_dark,
+.o_web_client.o_dark {
+    --dms-bg-canvas: #161822;
+    --dms-card-bg: #212430;
+    --dms-card-border: #2e3344;
+    --dms-card-border-hover: #3b82f6;
+    --dms-card-radius: 12px;
+    --dms-card-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.25), 0 1px 3px -1px rgba(0, 0, 0, 0.2);
+    --dms-card-shadow-hover: 0 12px 24px -4px rgba(0, 0, 0, 0.45), 0 4px 8px -2px rgba(0, 0, 0, 0.25);
+
+    --dms-primary: #3b82f6;
+    --dms-primary-light: rgba(59, 130, 246, 0.18);
+    --dms-primary-hover: #60a5fa;
+
+    --dms-text-primary: #f1f5f9;
+    --dms-text-secondary: #94a3b8;
+    --dms-text-muted: #64748b;
+
+    --dms-sidebar-bg: #1c1e28;
+    --dms-sidebar-border: #282c3a;
+    --dms-sidebar-hover: rgba(255, 255, 255, 0.05);
+    --dms-sidebar-item-color: #cbd5e1;
+    --dms-sidebar-item-hover-color: #ffffff;
+    --dms-sidebar-active-bg: rgba(59, 130, 246, 0.2);
+    --dms-sidebar-active-color: #60a5fa;
+    --dms-sidebar-counter-bg: #272a38;
+    --dms-sidebar-counter-color: #94a3b8;
+    --dms-sidebar-active-counter-bg: rgba(59, 130, 246, 0.35);
+    --dms-sidebar-active-counter-color: #93c5fd;
+    --dms-sidebar-btn-bg: #262937;
+    --dms-sidebar-btn-border: #33384a;
+
+    --dms-folder-badge-bg: #2a2e3d;
+    --dms-folder-badge-color: #94a3b8;
+    --dms-folder-badge-border: #363b4d;
+
+    --dms-preview-bg: #181a24;
+    --dms-preview-border: #282c3a;
+    --dms-star-bg: rgba(32, 36, 48, 0.85);
+    --dms-star-color: #e2e8f0;
+
+    --dms-dropdown-bg: #212430;
+    --dms-dropdown-border: #33384a;
+    --dms-dropdown-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.3);
+    --dms-dropdown-item-color: #e2e8f0;
+    --dms-dropdown-item-hover-bg: #2b3040;
+    --dms-dropdown-item-hover-color: #ffffff;
+    --dms-dropdown-divider: #33384a;
+
+    --dms-table-th-bg: #1a1d26;
+    --dms-table-th-color: #94a3b8;
+    --dms-table-tr-hover: #262a38;
+    --dms-table-border: #282c3a;
+    --dms-table-text: #e2e8f0;
+    --dms-directory-row-bg: #1d202b;
+    --dms-directory-row-border: #475569;
+
+    --dms-dot-color: #94a3b8;
+    --dms-dot-hover-color: #ffffff;
+
+    --dms-rev-view-color: #38bdf8;
+    --dms-rev-view-bg: rgba(2, 132, 199, 0.15);
+    --dms-rev-view-border: rgba(56, 189, 248, 0.3);
+    --dms-rev-download-color: #cbd5e1;
+    --dms-rev-download-bg: rgba(148, 163, 184, 0.12);
+    --dms-rev-download-border: rgba(148, 163, 184, 0.25);
+    --dms-rev-active-color: #4ade80;
+    --dms-rev-active-bg: rgba(34, 197, 94, 0.15);
+    --dms-rev-active-border: rgba(74, 222, 128, 0.3);
+    --dms-rev-delete-color: #f87171;
+    --dms-rev-delete-bg: rgba(239, 68, 68, 0.15);
+    --dms-rev-delete-border: rgba(248, 113, 113, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   1. Kanban View & Grid Layout
+   -------------------------------------------------------------------------- */
+.mk_file_kanban_view .o_kanban_renderer.o_kanban_ungrouped {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+    gap: 1.25rem !important;
+    padding: 1.25rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    align-content: start !important;
+    background-color: var(--dms-bg-canvas) !important;
+    min-height: 100%;
+}
+
+@media (min-width: 1200px) {
+    .mk_file_kanban_view .o_kanban_renderer.o_kanban_ungrouped {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (min-width: 1600px) {
+    .mk_file_kanban_view .o_kanban_renderer.o_kanban_ungrouped {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    }
+}
+
+.mk_file_kanban_view .o_kanban_renderer.o_kanban_ungrouped > .o_dms_directories_container {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.o_dms_folders_grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 1200px) {
+    .o_dms_folders_grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (min-width: 1600px) {
+    .o_dms_folders_grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    }
+}
+
+.mk_file_kanban_view .o_kanban_renderer.o_kanban_ungrouped .o_kanban_ghost {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Section Headers (Folders & Files)
+   -------------------------------------------------------------------------- */
+.o_dms_section_title {
+    font-size: 0.8125rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: var(--dms-text-secondary) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin: 0.25rem 0 1rem 0 !important;
+    user-select: none;
+
+    &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--dms-card-border);
+        margin-left: 0.5rem;
+    }
+}
+
+.o_dms_section_divider {
+    border: none !important;
+    height: 1px !important;
+    background: var(--dms-card-border) !important;
+    margin: 1.75rem 0 1.25rem 0 !important;
+    opacity: 0.8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Folder Cards (.o_dms_folder_card)
+   -------------------------------------------------------------------------- */
+.o_dms_folder_card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 96px;
+    position: relative;
+    z-index: 1;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    border-radius: var(--dms-card-radius) !important;
+    border: 1px solid var(--dms-card-border) !important;
+    background: var(--dms-card-bg) !important;
+    box-shadow: var(--dms-card-shadow) !important;
+    transition: var(--dms-transition) !important;
+    overflow: visible !important;
+
+    &.dms_folder_menu_open {
+        z-index: 50 !important;
+    }
+
+    &:hover {
+        z-index: 10;
+        transform: translateY(-3px) !important;
+        box-shadow: var(--dms-card-shadow-hover) !important;
+        border-color: var(--dms-card-border-hover) !important;
+
+        .o_dms_folder_icon {
+            transform: scale(1.08);
+        }
+
+        .o_dms_folder_name {
+            color: var(--dms-primary) !important;
+        }
+    }
+
+    &:active {
+        transform: translateY(-1px) !important;
+    }
+
+    .o_dms_folder_inner {
+        border-radius: var(--dms-card-radius);
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .o_dms_folder_icon {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+    }
+
+    .o_dms_folder_name {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--dms-text-primary) !important;
+        line-height: 1.3 !important;
+        transition: color 0.15s ease;
+    }
+
+    .o_dms_folder_badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 2px 7px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        background: var(--dms-folder-badge-bg) !important;
+        color: var(--dms-folder-badge-color) !important;
+        border: 1px solid var(--dms-folder-badge-border) !important;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    .o_dms_activity_badge {
+        cursor: pointer;
+        text-transform: capitalize;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+
+        &:hover {
+            opacity: 0.85;
+            transform: scale(1.04);
+        }
+
+        &.planned {
+            background: #d4edda !important;
+            color: #155724 !important;
+            border-color: #c3e6cb !important;
+        }
+
+        &.today {
+            background: #fff3cd !important;
+            color: #856404 !important;
+            border-color: #ffeeba !important;
+        }
+
+        &.overdue {
+            background: #f8d7da !important;
+            color: #721c24 !important;
+            border-color: #f5c6cb !important;
+        }
+    }
+}
+
+.o_dms_activity_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    border-radius: 6px;
+    white-space: nowrap;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+        opacity: 0.85;
+    }
+
+    &.planned {
+        background: #d4edda !important;
+        color: #155724 !important;
+        border: 1px solid #c3e6cb !important;
+    }
+
+    &.today {
+        background: #fff3cd !important;
+        color: #856404 !important;
+        border: 1px solid #ffeeba !important;
+    }
+
+    &.overdue {
+        background: #f8d7da !important;
+        color: #721c24 !important;
+        border: 1px solid #f5c6cb !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. File Cards (.mk_file_kanban_view .o_kanban_record)
+   -------------------------------------------------------------------------- */
+.mk_file_kanban_view .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record:not(.o_dms_folder_card) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    border-radius: var(--dms-card-radius) !important;
+    border: 1px solid var(--dms-card-border) !important;
+    box-shadow: var(--dms-card-shadow) !important;
+    transition: var(--dms-transition) !important;
+    background: var(--dms-card-bg) !important;
+
+    &:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: var(--dms-card-shadow-hover) !important;
+        border-color: var(--dms-card-border-hover) !important;
+
+        .o_kanban_dms_file_preview canvas,
+        .o_kanban_dms_file_preview img,
+        .o_kanban_dms_file_preview video {
+            transform: scale(1.04);
+        }
+
+        .o_dms_file_star {
+            opacity: 1 !important;
+        }
+
+        strong, .o_kanban_record_title {
+            color: var(--dms-primary) !important;
+        }
+    }
+
+    &:active {
+        transform: translateY(-1px) !important;
+    }
+
+    &.o_record_selected,
+    &.dms_selected {
+        background-color: var(--dms-sidebar-active-bg) !important;
+        border: 2px solid var(--dms-primary) !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+    }
+}
+
+/* File Preview Area */
+.o_kanban_dms_file_preview {
+    height: 145px !important;
+    background: var(--dms-preview-bg) !important;
+    border-bottom: 1px solid var(--dms-preview-border) !important;
+    overflow: hidden !important;
+    position: relative !important;
+
+    canvas, img, video {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    /* Star toggle badge */
+    .o_dms_file_star {
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        background: var(--dms-star-bg) !important;
+        color: var(--dms-star-color) !important;
+        backdrop-filter: blur(4px);
+        border-radius: 50%;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+        &:hover {
+            transform: scale(1.1);
+        }
+
+        &:has(.fa-star) {
+            opacity: 1 !important;
+        }
+    }
+
+    /* Approval & Lock floating banners */
+    .o_dms_approval_banner {
+        backdrop-filter: blur(8px);
+        background: rgba(37, 99, 235, 0.92) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.72rem !important;
+        letter-spacing: 0.01em;
+        color: #ffffff !important;
+    }
+
+    .o_dms_lock_banner {
+        backdrop-filter: blur(8px);
+        background: rgba(15, 23, 42, 0.88) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 0.72rem !important;
+        color: #ffffff !important;
+    }
+}
+
+/* File Card Body */
+.mk_file_kanban_view .o_kanban_record .oe_kanban_global_click {
+    padding: 0.75rem 0.875rem !important;
+
+    strong, .o_kanban_record_title {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--dms-text-primary) !important;
+        line-height: 1.35 !important;
+        letter-spacing: -0.01em;
+        transition: color 0.15s ease;
+    }
+
+    .text-muted {
+        color: var(--dms-text-secondary) !important;
+    }
+
+    .o_tag {
+        border-radius: 6px !important;
+        font-size: 0.72rem !important;
+        font-weight: 500 !important;
+        padding: 2px 7px !important;
+    }
+
+    .oe_kanban_avatar {
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        &:hover {
+            transform: scale(1.18);
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------
+   5. 3-Dots Trigger Button (.o_dms_dots_btn)
+   -------------------------------------------------------------------------- */
+.o_dms_folder_card .o_dms_dots_btn {
+    width: 20px !important;
+    height: 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2.2px !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    cursor: pointer !important;
+    margin: 6px 6px 0 0 !important;
+    padding: 0 !important;
+    transition: opacity 0.15s ease !important;
+    flex-shrink: 0 !important;
+    opacity: 0.65 !important;
+    visibility: visible !important;
+
+    .o_dms_dot {
+        display: block !important;
+        width: 3px !important;
+        height: 3px !important;
+        border-radius: 50% !important;
+        background-color: var(--dms-dot-color) !important;
+        pointer-events: none !important;
+        transition: background-color 0.15s ease !important;
+    }
+
+    &:hover,
+    &[aria-expanded="true"] {
+        opacity: 1 !important;
+
+        .o_dms_dot {
+            background-color: var(--dms-dot-hover-color) !important;
+        }
+    }
+}
+
+a.o_dms_dots_btn {
+    width: 22px !important;
+    height: 22px !important;
+    border-radius: 4px !important;
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    transition: all 0.15s ease !important;
+    cursor: pointer !important;
+    opacity: 0.7 !important;
+
+    .o_dms_dot {
+        display: block !important;
+        width: 3px !important;
+        height: 3px !important;
+        border-radius: 50% !important;
+        background-color: var(--dms-dot-color) !important;
+        pointer-events: none !important;
+    }
+
+    &:hover {
+        background: var(--dms-sidebar-hover) !important;
+        opacity: 1 !important;
+
+        .o_dms_dot {
+            background-color: var(--dms-dot-hover-color) !important;
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------
+   6a. Custom OWL Dropdown for Folder Cards
+   -------------------------------------------------------------------------- */
+.o_dms_folder_dropdown_wrap {
+    z-index: 300;
+}
+
+.o_dms_folder_dropdown_menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 180px;
+    background: var(--dms-dropdown-bg) !important;
+    border: 1px solid var(--dms-dropdown-border) !important;
+    border-radius: 12px;
+    box-shadow: var(--dms-dropdown-shadow) !important;
+    padding: 6px;
+    z-index: 9999;
+    animation: dmsDropdownFade 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.o_dms_folder_dropdown_item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--dms-dropdown-item-color) !important;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.13s ease;
+    margin-bottom: 2px;
+
+    i {
+        width: 16px;
+        text-align: center;
+        color: var(--dms-text-secondary);
+        transition: color 0.13s ease;
+        flex-shrink: 0;
+    }
+
+    &:hover {
+        background: var(--dms-dropdown-item-hover-bg) !important;
+        color: var(--dms-dropdown-item-hover-color) !important;
+        transform: translateX(2px);
+
+        i { color: var(--dms-primary) !important; }
+    }
+
+    &.o_dms_folder_dropdown_item_danger {
+        color: #ef4444 !important;
+        i { color: #ef4444 !important; }
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #f87171 !important;
+            i { color: #f87171 !important; }
+        }
+    }
+}
+
+.o_dms_folder_dropdown_divider {
+    height: 1px;
+    background: var(--dms-dropdown-divider) !important;
+    margin: 4px 0;
+}
+
+/* --------------------------------------------------------------------------
+   6b. Bootstrap Dropdown Menus (Sidebar, File cards 3-dots menu)
+   -------------------------------------------------------------------------- */
+.mk_file_kanban_view .dropdown-menu,
+.mk_directory_kanban_view .dropdown-menu,
+.file_list .dropdown-menu {
+    border-radius: 12px !important;
+    border: 1px solid var(--dms-dropdown-border) !important;
+    background: var(--dms-dropdown-bg) !important;
+    box-shadow: var(--dms-dropdown-shadow) !important;
+    padding: 6px !important;
+    min-width: 170px !important;
+    animation: dmsDropdownFade 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .dropdown-item {
+        border-radius: 7px !important;
+        margin-bottom: 2px !important;
+        padding: 7px 12px !important;
+        font-size: 0.8125rem !important;
+        font-weight: 500 !important;
+        color: var(--dms-dropdown-item-color) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        transition: all 0.13s ease !important;
+
+        i.fa {
+            width: 16px !important;
+            text-align: center !important;
+            color: var(--dms-text-secondary) !important;
+            transition: color 0.13s ease !important;
+            flex-shrink: 0 !important;
+        }
+
+        &:hover {
+            background-color: var(--dms-dropdown-item-hover-bg) !important;
+            color: var(--dms-dropdown-item-hover-color) !important;
+            transform: translateX(2px) !important;
+
+            i.fa { color: var(--dms-primary) !important; }
+        }
+
+        &.text-danger {
+            color: #ef4444 !important;
+            i.fa { color: #ef4444 !important; }
+
+            &:hover {
+                background-color: rgba(239, 68, 68, 0.15) !important;
+                color: #f87171 !important;
+                i.fa { color: #f87171 !important; }
+            }
+        }
+    }
+
+    .dropdown-divider {
+        margin: 4px 0 !important;
+        border-top: 1px solid var(--dms-dropdown-divider) !important;
+    }
+
+    /* Hide empty manage sections */
+    div[name="card_menu_Operations"]:not(:has(.dropdown-item)),
+    div[name="card_menu_view"]:not(:has(.dropdown-item)),
+    .o_kanban_manage_actions:not(:has(.dropdown-item)) {
+        display: none !important;
+    }
+}
+
+@keyframes dmsDropdownFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Kanban Card Menu Section Headers (Operations / Actions) */
+.o_kanban_card_manage_title {
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: var(--dms-text-muted) !important;
+    margin-bottom: 0.5rem !important;
+    padding-left: 8px !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Sidebar (SearchPanel) — scoped to DMS panels only. The template adds
+      .o_dms_search_panel only when the model is dms.file / dms.directory,
+      so the sidebars of Employees, Apps, etc. keep Odoo's default look.
+   -------------------------------------------------------------------------- */
+.o_search_panel.o_dms_search_panel,
+.o_search_panel_sidebar.o_dms_search_panel {
+    background-color: var(--dms-sidebar-bg);
+    border-right: 1px solid var(--dms-sidebar-border);
+}
+
+.o_dms_search_panel {
+    --treeEntry--beforeAfter-color: var(--dms-card-border);
+
+    .o_search_panel_section_header {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: var(--dms-text-muted);
+    }
+
+    /* ---- Folder rows ---- */
+    .o_search_panel_category_value > .o_search_panel_category_value_header {
+        position: relative;
+        min-height: 32px;
+        margin: 1px 8px 1px 0;
+        padding: 4px 8px 4px 4px;
+        border-radius: 6px;
+        background-color: transparent;
+        color: var(--dms-sidebar-item-color);
+        font-weight: 400;
+        transition: background-color 0.12s ease, color 0.12s ease;
+
+        &:hover {
+            background-color: var(--dms-sidebar-hover);
+            color: var(--dms-sidebar-item-hover-color);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--dms-primary-light);
+            outline-offset: -2px;
+        }
+
+        &.active {
+            background-color: var(--dms-sidebar-active-bg);
+            color: var(--dms-sidebar-active-color) !important;
+            font-weight: 600 !important;
+            box-shadow: inset 3px 0 0 var(--dms-primary);
+
+            .o_search_panel_counter {
+                background-color: var(--dms-sidebar-active-counter-bg);
+                color: var(--dms-sidebar-active-counter-color) !important;
+            }
+        }
+
+        /* Rows with an actions menu always reserve room for it, so the label
+           never reflows or gets clipped when the dots fade in on hover. */
+        &.o_dms_has_actions {
+            padding-right: 32px;
+        }
+
+        .o_search_panel_label {
+            min-width: 0;
+        }
+
+        .o_search_panel_label_title {
+            min-width: 0;
+            line-height: 1.4;
+        }
+
+        .o_toggle_fold {
+            color: var(--dms-text-muted);
+        }
+
+        .o_dms_sidebar_folder_icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            object-fit: contain;
+        }
+
+        .o_search_panel_counter {
+            flex-shrink: 0;
+            min-width: 22px;
+            margin: 0 0 0 6px !important;
+            padding: 1px 7px;
+            border-radius: 9999px;
+            background-color: var(--dms-sidebar-counter-bg);
+            color: var(--dms-sidebar-counter-color) !important;
+            font-size: 0.7rem;
+            font-weight: 600 !important;
+            text-align: center;
+            line-height: 1.5;
+        }
+    }
+
+    /* ---- 3-dots trigger: sits in the reserved slot, fades in on hover ---- */
+    .o_dms_sidebar_actions {
+        position: absolute;
+        top: 50%;
+        right: 4px;
+        transform: translateY(-50%);
+        display: flex;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.12s ease, visibility 0.12s ease;
+    }
+
+    .o_search_panel_category_value_header:hover > .o_dms_sidebar_actions,
+    .o_search_panel_category_value_header:focus-within > .o_dms_sidebar_actions,
+    .o_dms_sidebar_actions:has([aria-expanded="true"]) {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .o_dms_sidebar_dots_btn {
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        border: 0;
+        border-radius: 5px;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        transition: background-color 0.12s ease;
+
+        .o_dms_dot {
+            display: block;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background-color: var(--dms-dot-color);
+            pointer-events: none;
+        }
+
+        &:hover,
+        &[aria-expanded="true"] {
+            background-color: var(--dms-sidebar-hover);
+
+            .o_dms_dot {
+                background-color: var(--dms-dot-hover-color);
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--dms-primary-light);
+        }
+    }
+
+    /* ---- Collapse / empty-state buttons ---- */
+    .o_search_panel_sidebar_button,
+    > .d-flex > .btn-light,
+    .o_search_panel_empty_state button {
+        background-color: var(--dms-sidebar-btn-bg);
+        border: 1px solid var(--dms-sidebar-btn-border);
+        color: var(--dms-sidebar-item-color);
+
+        &:hover {
+            background-color: var(--dms-sidebar-hover);
+            color: var(--dms-sidebar-item-hover-color);
+        }
+    }
+
+    /* ---- Trash entry ---- */
+    .o_dms_trash_sidebar {
+        margin: 4px 8px 4px 0;
+        padding: 6px 8px 6px 10px;
+        min-height: 32px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.12s ease;
+
+        .o_dms_trash_icon {
+            flex: 0 0 auto;
+            color: #ef4444;
+        }
+
+        span {
+            color: var(--dms-text-secondary) !important;
+        }
+
+        &:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+
+            span {
+                color: #ef4444 !important;
+            }
+        }
+
+        &.active,
+        &.o_dms_trash_active {
+            background-color: rgba(239, 68, 68, 0.14);
+            box-shadow: inset 3px 0 0 #ef4444;
+
+            span {
+                color: #dc2626 !important;
+                font-weight: 700;
+            }
+
+            // the generic `span` colour rules above are !important too, so the
+            // counter needs its own !important or its number turns red-on-red
+            .o_dms_trash_counter {
+                background: #dc2626;
+                color: #ffffff !important;
+            }
+        }
+
+        .o_dms_trash_counter {
+            min-width: 22px;
+            padding: 1px 7px;
+            border-radius: 9999px;
+            background: rgba(239, 68, 68, 0.16);
+            color: #ef4444 !important;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.5;
+        }
+    }
+}
+
+/* Folder-actions menu (rendered in the overlay layer, outside the panel) */
+.o-dropdown--menu.o_dms_sidebar_menu {
+    min-width: 180px;
+    padding: 4px;
+    border: 1px solid var(--dms-dropdown-border);
+    border-radius: 10px;
+    background: var(--dms-dropdown-bg);
+    box-shadow: var(--dms-dropdown-shadow);
+    animation: dmsDropdownFade 0.12s ease-out;
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--dms-dropdown-item-color);
+
+        .oi {
+            width: 18px;
+            font-size: 18px;
+            text-align: center;
+            color: var(--dms-text-secondary);
+        }
+
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: var(--dms-dropdown-item-hover-bg);
+            color: var(--dms-dropdown-item-hover-color);
+
+            .oi {
+                color: var(--dms-primary);
+            }
+        }
+
+        &.o_dms_sidebar_menu_danger {
+            color: #ef4444;
+
+            .oi {
+                color: #ef4444;
+            }
+
+            &:hover,
+            &:focus,
+            &.focus {
+                background-color: rgba(239, 68, 68, 0.12);
+            }
+        }
+    }
+
+    .dropdown-divider {
+        margin: 4px 2px;
+        border-top-color: var(--dms-dropdown-divider);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   8. List View (.file_list / .o_list_renderer)
+   -------------------------------------------------------------------------- */
+.file_list .o_list_renderer {
+    thead th {
+        background: var(--dms-table-th-bg) !important;
+        color: var(--dms-table-th-color) !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        border-bottom: 1px solid var(--dms-card-border) !important;
+        padding: 12px 14px !important;
+        vertical-align: middle !important;
+    }
+
+    tbody tr.o_data_row {
+        transition: background-color 0.15s ease, transform 0.15s ease !important;
+
+        td {
+            padding: 10px 14px !important;
+            vertical-align: middle !important;
+            border-bottom: 1px solid var(--dms-table-border) !important;
+            color: var(--dms-table-text) !important;
+            font-size: 0.84rem !important;
+        }
+
+        &:hover {
+            background-color: var(--dms-table-tr-hover) !important;
+
+            td[name="name"] span,
+            td[name="name"] .fw-bold {
+                color: var(--dms-primary) !important;
+            }
+
+            img {
+                transform: scale(1.08);
+            }
+        }
+
+        img {
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        /* Folder row styling in list view */
+        &.o_dms_directory_row {
+            background-color: var(--dms-directory-row-bg) !important;
+            border-left: 3px solid var(--dms-directory-row-border) !important;
+
+            &:hover {
+                background-color: var(--dms-table-tr-hover) !important;
+                border-left-color: var(--dms-primary) !important;
+            }
+
+            .o_dms_folder_row_badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 3px;
+                padding: 2px 7px;
+                font-size: 0.72rem;
+                font-weight: 500;
+                background: var(--dms-folder-badge-bg) !important;
+                color: var(--dms-folder-badge-color) !important;
+                border: 1px solid var(--dms-folder-badge-border) !important;
+                border-radius: 6px;
+            }
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------
+   9. Drag & Drop Zone Enhancement (.o_dropzone)
+   -------------------------------------------------------------------------- */
+.o_dropzone {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    background: var(--dms-sidebar-active-bg) !important;
+    border: 2px dashed var(--dms-primary) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(6px) !important;
+    z-index: 100 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    animation: dmsDropzonePulse 1.5s ease-in-out infinite alternate !important;
+
+    i {
+        color: var(--dms-primary) !important;
+        filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.2)) !important;
+    }
+}
+
+@keyframes dmsDropzonePulse {
+    from {
+        border-color: #3b82f6;
+    }
+    to {
+        border-color: #1d4ed8;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   10. Action Buttons & UI Controls (New, Upload, Scan)
+   -------------------------------------------------------------------------- */
+.o_dms_new_dropdown .btn,
+.o_button_upload_expense {
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    font-size: 0.8125rem !important;
+    transition: all 0.15s ease !important;
+
+    &:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    &:active {
+        transform: translateY(0) !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   11. DMS Revision Action Buttons & Table Layout
+   -------------------------------------------------------------------------- */
+.o_field_widget[name="revision_ids"] table td .d-flex,
+.o_list_renderer:has(.dms-rev-btn) td .d-flex,
+td:has(.dms-rev-btn) .d-flex {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+}
+
+.dms-rev-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease-in-out !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    margin: 0 !important;
+
+    .o_button_icon.oi {
+        font-size: 16px !important;
+        line-height: 1 !important;
+        vertical-align: middle !important;
+    }
+
+    &:hover {
+        transform: translateY(-1px) !important;
+        text-decoration: none !important;
+    }
+
+    &:active {
+        transform: translateY(0) !important;
+    }
+
+    &.dms-rev-btn-icon {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        max-width: 30px !important;
+        padding: 0 !important;
+    }
+
+    &.dms-rev-btn-view {
+        color: var(--dms-rev-view-color) !important;
+        background-color: var(--dms-rev-view-bg) !important;
+        border: 1px solid var(--dms-rev-view-border) !important;
+
+        &:hover {
+            color: #ffffff !important;
+            background-color: #0284c7 !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 3px 6px -1px rgba(2, 132, 199, 0.3) !important;
+        }
+    }
+
+    &.dms-rev-btn-download {
+        color: var(--dms-rev-download-color) !important;
+        background-color: var(--dms-rev-download-bg) !important;
+        border: 1px solid var(--dms-rev-download-border) !important;
+
+        &:hover {
+            color: #ffffff !important;
+            background-color: #475569 !important;
+            border-color: #475569 !important;
+            box-shadow: 0 3px 6px -1px rgba(71, 85, 105, 0.3) !important;
+        }
+    }
+
+    &.dms-rev-btn-active {
+        height: 30px !important;
+        padding: 0 12px !important;
+        color: var(--dms-rev-active-color) !important;
+        background-color: var(--dms-rev-active-bg) !important;
+        border: 1px solid var(--dms-rev-active-border) !important;
+        font-weight: 600 !important;
+        gap: 5px !important;
+
+        .o_button_icon.oi {
+            font-size: 15px !important;
+            margin-right: 2px !important;
+        }
+
+        &:hover {
+            color: #ffffff !important;
+            background-color: #16a34a !important;
+            border-color: #16a34a !important;
+            box-shadow: 0 3px 6px -1px rgba(22, 163, 74, 0.3) !important;
+        }
+    }
+
+    &.dms-rev-btn-delete {
+        color: var(--dms-rev-delete-color) !important;
+        background-color: var(--dms-rev-delete-bg) !important;
+        border: 1px solid var(--dms-rev-delete-border) !important;
+
+        &:hover {
+            color: #ffffff !important;
+            background-color: #dc2626 !important;
+            border-color: #dc2626 !important;
+            box-shadow: 0 3px 6px -1px rgba(220, 38, 38, 0.3) !important;
+        }
+    }
+}
+
+/* ==========================================================================
+   DMS Breadcrumb — Control Panel placement (o_cp_bottom_left)
+   Styled to match Odoo Enterprise's  ⋯ / Folder / Subfolder  look
+   ========================================================================== */
+
+// The <nav> that lives in the ControlPanel bottom-left slot
+.o_dms_cp_breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0;
+    padding: 2px 0;
+    font-size: 0.8125rem;        // ~13 px — matches Odoo's cp text
+    line-height: 1.5;
+    color: var(--dms-text-secondary, #64748b);
+    max-width: 100%;
+    overflow: hidden;
+}
+
+// Individual crumb cell (home icon, ancestor name, current name)
+.o_dms_breadcrumb_item {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+    flex-shrink: 1;
+}
+
+// Slash separator  /
+.o_dms_breadcrumb_separator {
+    display: inline-block;
+    margin: 0 5px;
+    color: var(--dms-text-muted, #94a3b8);
+    font-weight: 300;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+// Clickable ancestor links
+.o_dms_breadcrumb_link {
+    color: var(--o-link-color, var(--dms-primary, #2563eb));
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.12s ease, opacity 0.12s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        color: var(--dms-primary-hover, #1d4ed8);
+        text-decoration: underline;
+        outline: none;
+    }
+
+    // Home icon link — slightly smaller, no underline on hover
+    &.o_dms_breadcrumb_home {
+        font-size: 0.875rem;
+        opacity: 0.75;
+        flex-shrink: 0;
+
+        &:hover {
+            text-decoration: none;
+            opacity: 1;
+        }
+    }
+}
+
+// Current (last) folder — bold, not clickable
+.o_dms_breadcrumb_current {
+    color: var(--dms-text-primary, #1e293b);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+// Dark-mode overrides
+[data-bs-theme="dark"],
+[data-color-mode="dark"],
+body.o_dark,
+.o_web_client.o_dark {
+    .o_dms_cp_breadcrumb {
+        color: var(--dms-text-secondary, #94a3b8);
+    }
+
+    .o_dms_breadcrumb_link {
+        color: var(--dms-primary-hover, #60a5fa);
+
+        &:hover,
+        &:focus {
+            color: #93c5fd;
+        }
+    }
+
+    .o_dms_breadcrumb_separator {
+        color: var(--dms-text-muted, #64748b);
+    }
+
+    .o_dms_breadcrumb_current {
+        color: var(--dms-text-primary, #f1f5f9);
+    }
+}
+
+/* Activity View Integration with SearchPanel (DMS only) */
+.o_component_with_search_panel:has(> .o_dms_search_panel) {
+    @include media-breakpoint-up(md) {
+        .o_activity_view {
+            flex: 1 1 auto;
+            min-width: 0;
+            width: 100%;
+            overflow: auto;
+
+            .o_activity_view_table {
+                min-width: 600px;
+            }
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Folder rows / cards present => never show the "no content" helper
+   (e.g. "Your Trash is empty." above trashed folders in the list view)
+   -------------------------------------------------------------------------- */
+.o_content:has(.o_dms_directory_row),
+.o_content:has(.o_dms_directories_container) {
+    .o_view_nocontent {
+        display: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Configuration > Directories: home-screen folder cards
+   -------------------------------------------------------------------------- */
+.o_dms_directory_cards .o_kanban_renderer.o_kanban_ungrouped {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+    gap: 1.25rem !important;
+    padding: 1.25rem !important;
+    align-content: start !important;
+    background-color: var(--dms-bg-canvas) !important;
+    min-height: 100%;
+
+    @media (min-width: 1200px) {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+    @media (min-width: 1600px) {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    }
+
+    .o_kanban_ghost {
+        display: none !important;
+    }
+
+    .o_kanban_record.o_dms_folder_card {
+        cursor: pointer;
+        padding: 0 !important;
+    }
+}
+
+.o_dms_icon {
+    flex: 0 0 auto;
+    vertical-align: -2px;
+    margin-right: 4px;
+}

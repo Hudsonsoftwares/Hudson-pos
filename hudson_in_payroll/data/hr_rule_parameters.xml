@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        STATUTORY EPF / EPS / EDLI & ESIC RULE PARAMETERS DATA:
+        All statutory rates, percentages, wage ceilings, and admin charges are stored with their historical gazette/notification effective dates.
+        noupdate="0" during initial setup ensures full parameter records are loaded cleanly.
+    -->
+    <data noupdate="0">
+        <!-- 1. PF: EPF Rate (12%) -->
+        <record id="hds_in_epf_rate" model="hr.rule.parameter">
+            <field name="name">PF: EPF Rate</field>
+            <field name="code">hds_in_epf_rate</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory Employee Provident Fund (EPF) contribution rate percentage for employee and employer. Statutory basis: EPF Scheme 1952 Paragraph 29.</field>
+        </record>
+        <record id="hds_in_epf_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_epf_rate"/>
+            <field name="date_from">2014-09-01</field>
+            <field name="parameter_value">12</field>
+            <field name="description">EPFO Gazette Notification G.S.R. 608(E) effective 01-Sep-2014.</field>
+        </record>
+
+        <!-- 2. PF: EPS Rate (8.33%) -->
+        <record id="hds_in_eps_rate" model="hr.rule.parameter">
+            <field name="name">PF: EPS Rate</field>
+            <field name="code">hds_in_eps_rate</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory Employee Pension Scheme (EPS) contribution rate percentage allocated from employer PF contribution. Statutory basis: EPS Scheme 1995 Paragraph 3(1).</field>
+        </record>
+        <record id="hds_in_eps_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_eps_rate"/>
+            <field name="date_from">2014-09-01</field>
+            <field name="parameter_value">8.33</field>
+            <field name="description">EPFO Gazette Notification G.S.R. 609(E) effective 01-Sep-2014.</field>
+        </record>
+
+        <!-- 3. PF: EPS Wage Ceiling (25,000) -->
+        <record id="hds_in_eps_wage_ceiling" model="hr.rule.parameter">
+            <field name="name">PF: EPS Wage Ceiling</field>
+            <field name="code">hds_in_eps_wage_ceiling</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory monthly wage ceiling limit for Employee Pension Scheme (EPS) contribution calculation. Statutory basis: EPS Scheme 1995 Paragraph 3(1) Amendment.</field>
+        </record>
+        <record id="hds_in_eps_wage_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_eps_wage_ceiling"/>
+            <field name="date_from">2014-09-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">EPFO Gazette Notification statutory pensionable wage ceiling limit of INR 25,000.</field>
+        </record>
+
+        <!-- 4. PF: PF Wage Ceiling (25,000) -->
+        <record id="hds_in_pf_wage_ceiling" model="hr.rule.parameter">
+            <field name="name">PF: PF Wage Ceiling</field>
+            <field name="code">hds_in_pf_wage_ceiling</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory monthly wage ceiling limit for Provident Fund contribution. Statutory basis: EPF Scheme 1952 Paragraph 26A.</field>
+        </record>
+        <record id="hds_in_pf_wage_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_pf_wage_ceiling"/>
+            <field name="date_from">2014-09-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">EPFO Gazette Notification statutory PF wage ceiling limit of INR 25,000.</field>
+        </record>
+
+        <!-- 5. PF: EDLI Rate (0.5%) -->
+        <record id="hds_in_edli_rate" model="hr.rule.parameter">
+            <field name="name">PF: EDLI Rate</field>
+            <field name="code">hds_in_edli_rate</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory Employee Deposit Linked Insurance (EDLI) employer contribution rate percentage (0.5%). Statutory basis: EDLI Scheme 1976 Paragraph 8.</field>
+        </record>
+        <record id="hds_in_edli_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_edli_rate"/>
+            <field name="date_from">2018-06-01</field>
+            <field name="parameter_value">0.5</field>
+            <field name="description">EPFO Notification S.O. 2013(E) effective 01-Jun-2018 establishing EDLI contribution rate at 0.5%.</field>
+        </record>
+
+        <!-- 6. PF: EDLI Wage Ceiling (25,000) -->
+        <record id="hds_in_edli_wage_ceiling" model="hr.rule.parameter">
+            <field name="name">PF: EDLI Wage Ceiling</field>
+            <field name="code">hds_in_edli_wage_ceiling</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory monthly wage ceiling limit for EDLI employer contribution calculation. Statutory basis: EDLI Scheme 1976 Paragraph 8(1).</field>
+        </record>
+        <record id="hds_in_edli_wage_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_edli_wage_ceiling"/>
+            <field name="date_from">2014-09-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">EPFO Gazette Notification statutory EDLI wage ceiling limit of INR 25,000.</field>
+        </record>
+
+        <!-- 7. PF: EPF Admin Charge Rate (0.5%) -->
+        <record id="hds_in_epf_admin_charge_rate" model="hr.rule.parameter">
+            <field name="name">PF: EPF Admin Charge Rate</field>
+            <field name="code">hds_in_epf_admin_charge_rate</field>
+            <field name="category">admin</field>
+            <field name="description">Employer administrative charges rate percentage for EPF Scheme (Account No. 2). Statutory basis: EPF Scheme 1952 Paragraph 38.</field>
+        </record>
+        <record id="hds_in_epf_admin_charge_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_epf_admin_charge_rate"/>
+            <field name="date_from">2018-06-01</field>
+            <field name="parameter_value">0.5</field>
+            <field name="description">EPFO Notification S.O. 2012(E) effective 01-Jun-2018 reducing EPF admin charge to 0.5% (subject to min INR 500/month).</field>
+        </record>
+
+        <!-- 8. PF: EDLI Admin Charge Rate (0%) -->
+        <record id="hds_in_edli_admin_charge_rate" model="hr.rule.parameter">
+            <field name="name">PF: EDLI Admin Charge Rate</field>
+            <field name="code">hds_in_edli_admin_charge_rate</field>
+            <field name="category">admin</field>
+            <field name="description">Employer administrative charges rate percentage for EDLI Scheme (Account No. 22). Statutory basis: EDLI Scheme 1976 Paragraph 8(4).</field>
+        </record>
+        <record id="hds_in_edli_admin_charge_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_edli_admin_charge_rate"/>
+            <field name="date_from">2017-04-01</field>
+            <field name="parameter_value">0</field>
+            <field name="description">EPFO Notification S.O. 1091(E) effective 01-Apr-2017 waiving EDLI admin charges (stored as 0, not hardcoded in code).</field>
+        </record>
+
+        <!-- 9. PF: Employer EPF Rate (12%) -->
+        <record id="hds_in_employer_epf_rate" model="hr.rule.parameter">
+            <field name="name">PF: Employer EPF Rate</field>
+            <field name="code">hds_in_employer_epf_rate</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory Employer Provident Fund (EPF) contribution rate percentage (12%). Statutory basis: EPF Scheme 1952 Paragraph 29.</field>
+        </record>
+        <record id="hds_in_employer_epf_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_employer_epf_rate"/>
+            <field name="date_from">2014-09-01</field>
+            <field name="parameter_value">12</field>
+            <field name="description">EPFO Gazette Notification G.S.R. 608(E) effective 01-Sep-2014.</field>
+        </record>
+
+        <!-- ======================================================= -->
+        <!-- STATUTORY ESIC (EMPLOYEES' STATE INSURANCE) PARAMETERS -->
+        <!-- ======================================================= -->
+
+        <!-- 10. ESIC: Employee Contribution Rate (0.75%) -->
+        <record id="hds_in_esic_employee_rate" model="hr.rule.parameter">
+            <field name="name">ESIC: Employee Contribution Rate</field>
+            <field name="code">hds_in_esic_employee_rate</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory ESIC contribution rate percentage for employees. Statutory basis: ESI (Central) Rules 1950 Rule 51 (Amended 2019).</field>
+        </record>
+        <record id="hds_in_esic_employee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_esic_employee_rate"/>
+            <field name="date_from">2019-07-01</field>
+            <field name="parameter_value">0.75</field>
+            <field name="description">Government Notification S.O. 2181(E) reduced employee ESIC contribution rate from 1.75% to 0.75% w.e.f. 01-Jul-2019.</field>
+        </record>
+
+        <!-- 11. ESIC: Employer Contribution Rate (3.25%) -->
+        <record id="hds_in_esic_employer_rate" model="hr.rule.parameter">
+            <field name="name">ESIC: Employer Contribution Rate</field>
+            <field name="code">hds_in_esic_employer_rate</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory ESIC contribution rate percentage for employers. Statutory basis: ESI (Central) Rules 1950 Rule 51 (Amended 2019).</field>
+        </record>
+        <record id="hds_in_esic_employer_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_esic_employer_rate"/>
+            <field name="date_from">2019-07-01</field>
+            <field name="parameter_value">3.25</field>
+            <field name="description">Government Notification S.O. 2181(E) reduced employer ESIC contribution rate from 4.75% to 3.25% w.e.f. 01-Jul-2019.</field>
+        </record>
+
+        <!-- 12. ESIC: Gross Wage Ceiling (21,000) -->
+        <record id="hds_in_esic_wage_ceiling" model="hr.rule.parameter">
+            <field name="name">ESIC: Gross Wage Ceiling</field>
+            <field name="code">hds_in_esic_wage_ceiling</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory monthly gross wage limit for ESIC coverage applicability. Statutory basis: ESI (Central) Rules 1950 Rule 50 (Amended 2016).</field>
+        </record>
+        <record id="hds_in_esic_wage_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_esic_wage_ceiling"/>
+            <field name="date_from">2017-01-01</field>
+            <field name="parameter_value">21000</field>
+            <field name="description">Government Notification S.O. 4229(E) raised statutory monthly ESIC coverage wage ceiling from INR 15,000 to INR 21,000 w.e.f. 01-Jan-2017.</field>
+        </record>
+
+        <!-- 13. ESIC: PWD Wage Ceiling (25,000) -->
+        <record id="hds_in_esic_pwd_wage_ceiling" model="hr.rule.parameter">
+            <field name="name">ESIC: PWD Wage Ceiling</field>
+            <field name="code">hds_in_esic_pwd_wage_ceiling</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory monthly gross wage ceiling for Persons with Disabilities (PWD) under ESIC Scheme. Statutory basis: ESI Act 1948 Section 2(9).</field>
+        </record>
+        <record id="hds_in_esic_pwd_wage_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_esic_pwd_wage_ceiling"/>
+            <field name="date_from">2017-04-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">Government Scheme for Persons with Disabilities (PWD) wage ceiling limit set at INR 25,000/month w.e.f. 01-Apr-2017.</field>
+        </record>
+
+        <!-- 14. ESIC: Daily Wage Exemption Limit (176) -->
+        <record id="hds_in_esic_daily_wage_exemption" model="hr.rule.parameter">
+            <field name="name">ESIC: Daily Wage Exemption Limit</field>
+            <field name="code">hds_in_esic_daily_wage_exemption</field>
+            <field name="category">other</field>
+            <field name="description">Statutory daily average wage exemption threshold. Employees earning up to this daily average wage are exempt from employee share contribution. Statutory basis: ESI (Central) Rules 1950 Rule 51-B / Rule 52.</field>
+        </record>
+        <record id="hds_in_esic_daily_wage_exemption_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_esic_daily_wage_exemption"/>
+            <field name="date_from">2019-07-01</field>
+            <field name="parameter_value">176</field>
+            <field name="description">Government Notification S.O. 2182(E) raised average daily wage exemption limit from INR 137 to INR 176 per day w.e.f. 01-Jul-2019.</field>
+        </record>
+
+        <!-- 14b. ESIC: Daily Wage Exemption Threshold (Rule 51-B Canonical Parameter) -->
+        <record id="esic_daily_wage_exemption_threshold" model="hr.rule.parameter">
+            <field name="name">ESIC Daily Wage Exemption Threshold (Rule 51-B)</field>
+            <field name="code">esic_daily_wage_exemption_threshold</field>
+            <field name="category">other</field>
+            <field name="description">Statutory daily average wage exemption threshold under ESI (Central) Rules 1950 Rule 51-B. Employees earning an average daily wage up to this threshold are exempt from employee contribution.</field>
+        </record>
+        <record id="esic_daily_wage_exemption_threshold_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="esic_daily_wage_exemption_threshold"/>
+            <field name="date_from">2019-07-01</field>
+            <field name="parameter_value">176</field>
+            <field name="description">Government Notification S.O. 2182(E) w.e.f. 01-Jul-2019 sets Rule 51-B threshold at INR 176/day.</field>
+        </record>
+
+        <!-- ======================================================= -->
+        <!-- STATUTORY GRATUITY RULE PARAMETERS                      -->
+        <!-- ======================================================= -->
+
+        <!-- 15. Gratuity: Days Multiplier (15 days) -->
+        <record id="hds_in_gratuity_days_multiplier" model="hr.rule.parameter">
+            <field name="name">Gratuity: Days Multiplier</field>
+            <field name="code">hds_in_gratuity_days_multiplier</field>
+            <field name="category">other</field>
+            <field name="description">Number of payable wage days per completed year of service. Statutory basis: Payment of Gratuity Act 1972 Section 4(2).</field>
+        </record>
+        <record id="hds_in_gratuity_days_multiplier_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_gratuity_days_multiplier"/>
+            <field name="date_from">1972-09-16</field>
+            <field name="parameter_value">15</field>
+            <field name="description">Payment of Gratuity Act 1972 Section 4(2) establishing 15 days wages per completed year of service.</field>
+        </record>
+
+        <!-- 16. Gratuity: Month Divisor (26 days) -->
+        <record id="hds_in_gratuity_month_divisor" model="hr.rule.parameter">
+            <field name="name">Gratuity: Month Divisor</field>
+            <field name="code">hds_in_gratuity_month_divisor</field>
+            <field name="category">other</field>
+            <field name="description">Monthly wage divisor used for gratuity calculation. Statutory basis: Payment of Gratuity Act 1972 Section 4(2).</field>
+        </record>
+        <record id="hds_in_gratuity_month_divisor_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_gratuity_month_divisor"/>
+            <field name="date_from">1972-09-16</field>
+            <field name="parameter_value">26</field>
+            <field name="description">Payment of Gratuity Act 1972 Section 4(2) establishing 26 working days month divisor for daily rate calculation.</field>
+        </record>
+
+        <!-- 17. Gratuity: Minimum Service Years (5 years) -->
+        <record id="hds_in_gratuity_min_service_years" model="hr.rule.parameter">
+            <field name="name">Gratuity: Minimum Service Years</field>
+            <field name="code">hds_in_gratuity_min_service_years</field>
+            <field name="category">threshold</field>
+            <field name="description">Minimum continuous service required for gratuity eligibility. Statutory basis: Payment of Gratuity Act 1972 Section 4(1).</field>
+        </record>
+        <record id="hds_in_gratuity_min_service_years_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_gratuity_min_service_years"/>
+            <field name="date_from">1972-09-16</field>
+            <field name="parameter_value">5</field>
+            <field name="description">Payment of Gratuity Act 1972 Section 4(1) establishing 5 years minimum continuous service threshold.</field>
+        </record>
+
+        <!-- 18. Gratuity: Statutory Ceiling (INR 2,000,000) -->
+        <record id="hds_in_gratuity_statutory_ceiling" model="hr.rule.parameter">
+            <field name="name">Gratuity: Statutory Ceiling</field>
+            <field name="code">hds_in_gratuity_statutory_ceiling</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum gratuity amount payable under the statute. Statutory basis: Payment of Gratuity Act 1972 Section 4(3) Amendment.</field>
+        </record>
+        <record id="hds_in_gratuity_statutory_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_gratuity_statutory_ceiling"/>
+            <field name="date_from">2018-03-29</field>
+            <field name="parameter_value">2000000</field>
+            <field name="description">Government Notification S.O. 1420(E) effective 29-Mar-2018 establishing statutory gratuity ceiling limit of INR 20 Lakhs (2,000,000).</field>
+        </record>
+
+        <!-- 19. Leave Encashment: Month Divisor (26) -->
+        <record id="hds_in_leave_encashment_month_divisor" model="hr.rule.parameter">
+            <field name="name">Leave Encashment: Month Divisor</field>
+            <field name="code">hds_in_leave_encashment_month_divisor</field>
+            <field name="category">other</field>
+            <field name="description">Standard month divisor for daily wage calculation in Leave Encashment (default: 26 working days).</field>
+        </record>
+        <record id="hds_in_leave_encashment_month_divisor_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_leave_encashment_month_divisor"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">26</field>
+            <field name="description">Standard statutory month divisor of 26 days for Leave Encashment daily rate calculation.</field>
+        </record>
+
+        <!-- 20. Leave Encashment: Maximum Encashable Days (300) -->
+        <record id="hds_in_max_encashable_days" model="hr.rule.parameter">
+            <field name="name">Leave Encashment: Maximum Encashable Days</field>
+            <field name="code">hds_in_max_encashable_days</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum encashable leave days cap (default: 300 days u/s 10(10AA)).</field>
+        </record>
+        <record id="hds_in_max_encashable_days_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_max_encashable_days"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">300</field>
+            <field name="description">Maximum ceiling cap of 300 days for Leave Encashment tax exemption / policy limit.</field>
+        </record>
+        <!-- 21. Leave Encashment: Statutory Exemption Ceiling u/s 10(10AA) (INR 2,500,000) -->
+        <record id="hds_in_leave_encashment_statutory_ceiling" model="hr.rule.parameter">
+            <field name="name">Leave Encashment: Statutory Exemption Ceiling</field>
+            <field name="code">hds_in_leave_encashment_statutory_ceiling</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory maximum exemption limit for leave encashment on retirement under Section 10(10AA)(ii) of the Income-tax Act (CBDT Notification No. 31/2023 effective 01-Apr-2023).</field>
+        </record>
+        <record id="hds_in_leave_encashment_statutory_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_leave_encashment_statutory_ceiling"/>
+            <field name="date_from">2023-04-01</field>
+            <field name="parameter_value">2500000</field>
+            <field name="description">CBDT Notification S.O. 2276(E) dated 24-May-2023 w.e.f. 01-Apr-2023 establishing statutory leave encashment ceiling limit of INR 25 Lakhs (2,500,000).</field>
+        </record>
+
+    </data>
+</odoo>

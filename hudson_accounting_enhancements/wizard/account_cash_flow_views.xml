@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_cash_flow_wizard" model="ir.ui.view">
+        <field name="name">account.cash.flow.wizard.form</field>
+        <field name="model">account.cash.flow.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cash Flow Statement">
+                <group>
+                    <group string="Report Period">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group string="Options">
+                        <field name="target_move" widget="radio"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_report"
+                            string="Generate Report"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_cash_flow_wizard" model="ir.actions.act_window">
+        <field name="name">Cash Flow Statement</field>
+        <field name="res_model">account.cash.flow.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_account_cash_flow_wizard"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

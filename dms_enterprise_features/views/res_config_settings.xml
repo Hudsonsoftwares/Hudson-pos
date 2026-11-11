@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Patch the base DMS view to remove group_system restriction from the app block -->
+    <record id="res_config_settings_view_dms_patch_groups" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.dms.patch.groups</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="19"/>
+        <field name="inherit_id" ref="dms.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='dms']" position="attributes">
+                <attribute name="groups">base.group_system,dms_enterprise_features.group_dms_administrator</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_config_settings_view_dms_enterprise" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.dms.enterprise</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="25"/>
+        <field name="inherit_id" ref="dms.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='dms']" position="inside">
+                <!-- Trash Management -->
+                <block title="Trash Management">
+                    <setting string="Deletion Delay (days)" help="Time before documents in the Trash are permanently deleted.">
+                        <field name="documents_trash_delay"/>
+                    </setting>
+                </block>
+
+                <!-- Document Controller -->
+                <block title="Document Controller">
+                    <setting string="Document Controller Features" help="Enable revisions, approval workflows, and signature requests.">
+                        <field name="group_dms_document_controller"/>
+                    </setting>
+                </block>
+
+                <!-- Files Centralization -->
+                <block title="Files Centralization">
+                    
+                    <setting string="Default Project Folder" help="Folder where new project documents are created." company_dependent="1">
+                        <div class="content-group">
+                            <div class="mt16">
+                                <label for="documents_project_folder_id" class="o_light_label" string="Folder"/>
+                                <field name="documents_project_folder_id" options="{'no_create': False}"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                    <setting string="Sign" help="Link Sign Templates to directories." company_dependent="1">
+                        <field name="documents_sign_enabled" widget="boolean_toggle"/>
+                        <div class="content-group" invisible="not documents_sign_enabled">
+                            <div class="mt16">
+                                <label for="documents_sign_folder_id" class="o_light_label" string="Folder"/>
+                                <field name="documents_sign_folder_id" options="{'no_create': False}"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                    <setting string="Product" help="Centralize files attached to products." company_dependent="1">
+                        <field name="documents_product_enabled" widget="boolean_toggle"/>
+                        <div class="content-group" invisible="not documents_product_enabled">
+                            <div class="mt16">
+                                <label for="documents_product_folder_id" class="o_light_label" string="Folder"/>
+                                <field name="documents_product_folder_id" options="{'no_create': False}"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_product_tag_ids" class="o_light_label" string="Tags"/>
+                                <field name="documents_product_tag_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                    <setting string="Accounting" help="Centralize accounting files and documents." company_dependent="1">
+                        <field name="documents_accounting_enabled" widget="boolean_toggle"/>
+                        <div class="content-group" invisible="not documents_accounting_enabled">
+                            <div class="mt16">
+                                <label for="documents_accounting_folder_id" class="o_light_label" string="Folder"/>
+                                <field name="documents_accounting_folder_id" options="{'no_create': False}"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_accounting_tag_ids" class="o_light_label" string="Tags"/>
+                                <field name="documents_accounting_tag_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                    <setting string="Recruitment" help="Centralize files attached to applications and job positions." company_dependent="1">
+                        <field name="documents_recruitment_enabled" widget="boolean_toggle"/>
+                        <div class="content-group" invisible="not documents_recruitment_enabled">
+                            <div class="mt16">
+                                <label for="documents_recruitment_folder_id" class="o_light_label" string="Folder"/>
+                                <field name="documents_recruitment_folder_id" options="{'no_create': False}"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_recruitment_tag_ids" class="o_light_label" string="Tags"/>
+                                <field name="documents_recruitment_tag_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                    <setting string="Approvals" help="Centralize files attached to Approvals." company_dependent="1">
+                        <field name="documents_approvals_enabled" widget="boolean_toggle"/>
+                        <div class="content-group" invisible="not documents_approvals_enabled">
+                            <div class="mt16">
+                                <label for="documents_approvals_folder_id" class="o_light_label" string="Folder"/>
+                                <field name="documents_approvals_folder_id" options="{'no_create': False}"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_approvals_tag_ids" class="o_light_label" string="Tags"/>
+                                <field name="documents_approvals_tag_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                    <setting string="Human Resources" help="Centralize your employees' documents (contracts, payslips, etc.)." company_dependent="1">
+                        <field name="documents_hr_enabled" widget="boolean_toggle"/>
+                        <div class="content-group" invisible="not documents_hr_enabled">
+                            <div class="mt16">
+                                <label for="documents_hr_folder_id" class="o_light_label" string="Employees Folder"/>
+                                <field name="documents_hr_folder_id" options="{'no_create': False}"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_hr_create_subfolders" class="o_light_label" string="Employee Subfolders"/>
+                                <field name="documents_hr_create_subfolders" widget="boolean_toggle"/>
+                            </div>
+                            <div class="mt16">
+                                <span class="font-weight-bold">Default Tags</span>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_hr_contract_tag_ids" class="o_light_label" string="Contracts"/>
+                                <field name="documents_hr_contract_tag_ids" widget="many2many_tags"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_hr_payslip_tag_ids" class="o_light_label" string="Payslip"/>
+                                <field name="documents_hr_payslip_tag_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                    <setting string="Fleet" help="Centralize your Fleet's documents (fines, etc.)." company_dependent="1">
+                        <field name="documents_fleet_enabled" widget="boolean_toggle"/>
+                        <div class="content-group" invisible="not documents_fleet_enabled">
+                            <div class="mt16">
+                                <label for="documents_fleet_folder_id" class="o_light_label" string="Folder"/>
+                                <field name="documents_fleet_folder_id" options="{'no_create': False}"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="documents_fleet_tag_ids" class="o_light_label" string="Tags"/>
+                                <field name="documents_fleet_tag_ids" widget="many2many_tags"/>
+                            </div>
+                        </div>
+                    </setting>
+
+                </block>
+
+                <!-- External Email Servers -->
+                <block title="External Email Servers">
+                    <setting string="Outgoing Mail Servers" help="Configure your external SMTP server (e.g. Gmail App Passwords) for sending Signature Requests.">
+                        <div class="content-group mt8">
+                            <div class="mt16">
+                                <button name="%(base.action_ir_mail_server_list)d" icon="oi-arrow-right" type="action" string="Configure Outgoing Mail Servers" class="btn-link"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+            
+            <!-- Hide the Storages setting block from File Upload block -->
+            <xpath expr="//button[@name='%(dms.action_dms_storage)d']/.." position="replace">
+            </xpath>
+
+            <!-- Replace manual file extensions text input with multi-select tags dropdown and security badge -->
+            <xpath expr="//field[@name='documents_forbidden_extensions']/.." position="replace">
+                <setting string="Forbidden Extensions" help="Select document-related file extensions to forbid from being uploaded in Document Controller.">
+                    <field name="documents_forbidden_extensions" invisible="1"/>
+                    <div class="content-group">
+                        <div class="mt8">
+                            <field name="documents_forbidden_extension_ids"
+                                   widget="many2many_tags"
+                                   options="{'no_create_edit': False, 'color_field': 'color'}"
+                                   placeholder="Select or search extensions to forbid (e.g. .xlsx, .csv, .zip)..."/>
+                        </div>
+                        <div class="text-muted small mt-2 p-2 rounded bg-light border">
+                            <i class="fa fa-shield me-1 text-primary"/>
+                            <strong>Protected by Default:</strong> Executables, scripts, and system binary files (<code class="text-danger">.exe</code>, <code class="text-danger">.msi</code>, <code class="text-danger">.bat</code>, <code class="text-danger">.cmd</code>, <code class="text-danger">.sh</code>, <code class="text-danger">.dll</code>, etc.) are permanently blocked by default in Document Controller.
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

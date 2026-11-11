@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- 1. Inject folder rows into the list tbody -->
+    <t t-inherit="dms.ListRenderer" t-inherit-mode="extension">
+        <xpath expr="//tbody/t" position="before">
+            <style t-if="this.dmsDirectoriesState.data.length">
+                .file_list .o_list_renderer:has(.o_dms_directory_row) .o_view_nocontent {
+                    display: none !important;
+                }
+            </style>
+
+            <t t-foreach="this.dmsDirectoriesState.data" t-as="directory" t-key="'dir_' + directory.id">
+                <tr class="o_data_row o_dms_directory_row cursor-pointer text-muted" t-on-click="() => this.openDirectory(directory.id)">
+                    <td t-if="this.hasSelectors" class="o_list_record_selector user-select-none" tabindex="-1">
+                        <div class="form-check o_checkbox">
+                            <input type="checkbox" class="form-check-input" t-on-click.stop="() => {}" disabled="1" style="opacity: 0.2;" />
+                        </div>
+                    </td>
+                    <t t-foreach="this.columns" t-as="column" t-key="column.id">
+                        <td class="o_data_cell cursor-pointer" t-att-name="column.name">
+                            <t t-if="column.name === 'name'">
+                                <div class="d-flex align-items-center">
+                                    <img t-if="directory.icon_url" t-att-src="directory.icon_url" class="me-2 flex-shrink-0" style="width: 22px; height: 22px; object-fit: contain;"/>
+                                    <img t-else="" src="/dms/static/description/open-folder.png" class="me-2 flex-shrink-0" style="width: 22px; height: 22px; object-fit: contain;"/>
+                                    <span class="fw-bold text-dark text-truncate" t-out="directory.name || directory.display_name || 'Untitled Folder'"/>
+                                    <span t-if="directory.activity_state" t-attf-class="o_dms_folder_badge o_dms_activity_badge ms-2 #{directory.activity_state}" t-att-title="directory.activity_summary || ('Activity: ' + directory.activity_state)" t-on-click.stop="() => this.scheduleActivityDirectory(directory.id)"><t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'clock'"/></t><t t-out="directory.activity_state"/></span>
+                                </div>
+                            </t>
+                            <t t-elif="column.name === 'write_date'">
+                                <span class="text-muted" t-out="directory.write_date ? directory.write_date.slice(0, 10) : ''"/>
+                            </t>
+                            <t t-elif="column.name === 'human_size'">
+                                <span class="o_dms_folder_row_badge">
+                                    <t t-if="directory.count_files"><t t-out="directory.count_files"/> file<t t-if="directory.count_files != 1">s</t></t>
+                                    <t t-else="">0 files</t>
+                                </span>
+                            </t>
+                            <t t-elif="column.name === 'mimetype'">
+                                <span class="badge bg-light text-muted border">Folder</span>
+                            </t>
+                            <t t-elif="column.name === 'directory_id'">
+                                <span t-if="this.dmsDirectoriesState.currentDir" t-out="this.dmsDirectoriesState.currentDir.name"/>
+                            </t>
+                            <t t-else=""><span/></t>
+                        </td>
+                    </t>
+                    <td t-if="this.hasOpenFormViewColumn" class="w-print-0 p-print-0"/>
+                    <td t-if="this.displayOptionalFields or this.activeActions.onDelete" class="w-print-0 p-print-0 text-end pe-2">
+                        <t t-if="directory.is_trashed">
+                            <button type="button" class="btn btn-sm btn-link text-success p-0 me-2" title="Restore" t-on-click.stop="() => this.restoreDirectory(directory.id)">
+                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'restore'"/></t>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-link text-danger p-0" title="Delete permanently" t-on-click.stop="() => this.deleteDirectoryPermanently(directory.id)">
+                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'delete'"/></t>
+                            </button>
+                        </t>
+                        <t t-else="">
+                            <button t-if="directory.permission_write" type="button" class="btn btn-sm btn-link text-secondary p-0 me-2" title="New Subfolder" t-on-click.stop="() => this.createSubdirectory(directory.id)">
+                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'new_folder'"/></t>
+                            </button>
+                            <button t-if="directory.permission_download" type="button" class="btn btn-sm btn-link text-secondary p-0 me-2" title="Download" t-on-click.stop="() => this.downloadDirectory(directory.id)">
+                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'download'"/></t>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-link text-secondary p-0 me-2" title="Schedule Activity" t-on-click.stop="() => this.scheduleActivityDirectory(directory.id)">
+                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'clock'"/></t>
+                            </button>
+                            <button t-if="directory.permission_edit" type="button" class="btn btn-sm btn-link text-secondary p-0 me-2" title="Edit" t-on-click.stop="() => this.editDirectory(directory.id)">
+                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'edit'"/></t>
+                            </button>
+                            <button t-if="directory.permission_unlink" type="button" class="btn btn-sm btn-link text-danger p-0" title="Send to Trash" t-on-click.stop="() => this.trashDirectory(directory.id)">
+                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'delete'"/></t>
+                            </button>
+                        </t>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+    </t>
+
+    <!-- 2. dms.ListButtons extension:
+            Add New Folder button and guard upload buttons to DMS admins
+    -->
+    <t t-inherit="dms.ListButtons" t-inherit-mode="extension">
+        <xpath expr="//button[contains(@class, 'o_button_upload_expense')][1]" position="before">
+            <button t-if="this.canCreate"
+                    type="button"
+                    class="btn btn-secondary mx-1"
+                    t-on-click.prevent="() => this.createDirectory()">
+                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'new_folder'"/></t> New Folder
+            </button>
+        </xpath>
+        <xpath expr="//button[contains(@class, 'o_button_upload_expense')][1]" position="attributes">
+            <attribute name="t-if">this.canCreate</attribute>
+        </xpath>
+        <xpath expr="//button[contains(@class, 'o_button_upload_expense')][2]" position="attributes">
+            <attribute name="t-if">this.canCreate</attribute>
+        </xpath>
+    </t>
+
+    <!-- 3. No "New" (create a file) while the Trash is shown -->
+    <t t-inherit="web.ListView.Buttons" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_list_button_add')]" position="attributes">
+            <attribute name="t-if">!this.env.inDialog and !this.editedRecord and this.activeActions.create and !this.env.searchModel?.dmsTrash</attribute>
+        </xpath>
+    </t>
+    <t t-inherit="dms.ListButtons" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_list_button_add')]" position="attributes">
+            <attribute name="t-if">!this.env.inDialog and !this.editedRecord and this.activeActions.create and !this.env.searchModel?.dmsTrash</attribute>
+        </xpath>
+    </t>
+
+</templates>

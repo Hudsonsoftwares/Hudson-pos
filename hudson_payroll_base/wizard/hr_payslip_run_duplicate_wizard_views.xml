@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_payslip_run_duplicate_wizard_view_form" model="ir.ui.view">
+        <field name="name">hr.payslip.run.duplicate.wizard.form</field>
+        <field name="model">hr.payslip.run.duplicate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Duplicate Payslips Warning">
+                <div class="alert alert-warning d-flex align-items-center mb-3 p-3 rounded" role="alert"
+                     style="background-color: rgba(255, 193, 7, 0.18); border-left: 5px solid #ffc107 !important;">
+                    <i class="fa fa-exclamation-triangle text-warning me-3 fs-3"/>
+                    <div>
+                        <h5 class="alert-heading mb-1 text-warning fw-bold">Duplicate Payslips Detected!</h5>
+                        <p class="mb-0 text-dark">
+                            This pay run batch includes <strong><field name="duplicate_count" class="oe_inline"/></strong> employee(s) for whom an active payslip is already generated for this month / period.
+                            Odoo Online flags these as <strong>Duplicate</strong> to prevent accidental double payment.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <p class="text-muted small mb-2">
+                        Please review the duplicate payslips below. You can automatically remove them and validate the remaining valid payslips, or proceed anyway if intentional.
+                    </p>
+                    <field name="duplicate_slip_ids" readonly="1">
+                        <list string="Duplicate Payslips" create="false" delete="false">
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                            <field name="number" string="Reference"/>
+                            <field name="payslip_warning" string="Warning" widget="badge" decoration-warning="payslip_warning"/>
+                            <field name="duplicate_payslip_id" string="Conflicting Payslip"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="net_wage" string="Net Wage" widget="monetary"/>
+                            <field name="state" string="State" widget="badge"
+                                   decoration-info="state == 'draft'"
+                                   decoration-warning="state == 'verify'"/>
+                        </list>
+                    </field>
+                </div>
+
+                <footer>
+                    <button name="action_remove_and_validate" string="Remove Duplicates &amp; Validate"
+                            type="object" class="btn-primary"
+                            confirm="This will remove the duplicate payslips from this pay run and validate all remaining valid payslips. Are you sure you want to proceed?"/>
+                    <button name="action_proceed_validate" string="Proceed Anyway (Validate All)"
+                            type="object" class="btn-warning ms-2"
+                            confirm="Are you sure you want to validate payslips that are flagged as Duplicate?"/>
+                    <button string="Cancel" class="btn-secondary ms-2" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

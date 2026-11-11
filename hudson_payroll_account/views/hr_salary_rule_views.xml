@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_salary_rule_view_form_inherit_account" model="ir.ui.view">
+        <field name="name">hr.salary.rule.form.inherit.account</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_salary_rule_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="accounting" string="Accounting">
+                    <group>
+                        <group>
+                            <field name="account_debit_id" options="{'no_create': True}"/>
+                            <field name="account_credit_id" options="{'no_create': True}"/>
+                            <field name="analytic_distribution" widget="analytic_distribution"
+                                   options="{'account_field': 'account_debit_id', 'business_domain': 'general'}"/>
+                            <field name="split_names"/>
+                            <field name="excluded_from_net"/>
+                            <field name="set_employee_on_account_line"/>
+                        </group>
+                        <group>
+                            <field name="debit_tax_grid_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   invisible="not account_debit_id"/>
+                            <field name="credit_tax_grid_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   invisible="not account_credit_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

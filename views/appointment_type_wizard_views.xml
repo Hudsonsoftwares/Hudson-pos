@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="appointment_type_wizard_view_form" model="ir.ui.view">
+            <field name="name">appointment.type.wizard.view.form</field>
+            <field name="model">appointment.type.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Choose an appointment preset">
+                    <div class="row w-100 m-0">
+                        <!-- Meeting -->
+                        <div class="col-12 col-md-6 p-2">
+                            <button name="action_preset_meeting" type="object" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4">
+                                <i class="oi oi-3x oi-filled mb-3 text-primary" data-icon="person"></i>
+                                <h4>Meeting</h4>
+                                <span class="text-muted text-wrap text-center">Let others book a meeting in your calendar</span>
+                            </button>
+                        </div>
+                        <!-- Video Call -->
+                        <div class="col-12 col-md-6 p-2">
+                            <button name="action_preset_video" type="object" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4">
+                                <i class="oi oi-3x mb-3 text-primary" data-icon="headphones"></i>
+                                <h4>Video Call</h4>
+                                <span class="text-muted text-wrap text-center">Schedule a video meeting in a virtual room with one or more participants</span>
+                            </button>
+                        </div>
+                        <!-- Table Booking -->
+                        <div class="col-12 col-md-6 p-2">
+                            <button name="action_preset_table" type="object" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4">
+                                <i class="oi oi-3x mb-3 text-primary" data-icon="restaurant"></i>
+                                <h4>Table Booking</h4>
+                                <span class="text-muted text-wrap text-center">Let customers book a table in your restaurant or bar</span>
+                            </button>
+                        </div>
+                        <!-- Book a Resource -->
+                        <div class="col-12 col-md-6 p-2">
+                            <button name="action_preset_resource" type="object" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4">
+                                <i class="oi oi-3x mb-3 text-primary" data-icon="schedule"></i>
+                                <h4>Book a Resource</h4>
+                                <span class="text-muted text-wrap text-center">Let customers book a resource such as a room, a tennis court, etc.</span>
+                            </button>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Close" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="appointment_type_wizard_action" model="ir.actions.act_window">
+            <field name="name">Choose an appointment preset</field>
+            <field name="res_model">appointment.type.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

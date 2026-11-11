@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_team_view_form_inherit_forum" model="ir.ui.view">
+        <field name="name">helpdesk.team.form.inherit.forum</field>
+        <field name="model">helpdesk.management.team</field>
+        <field name="inherit_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_team_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='use_website_helpdesk_form']" position="after">
+                <setting id="use_website_helpdesk_forum" help="Allow customers to help each other on a forum. Share answers from your tickets directly.">
+                    <field name="use_website_helpdesk_forum"/>
+                    <div class="o_helpdesk_setting_row" invisible="not use_website_helpdesk_forum">
+                        <label for="forum_id" string="Forum" class="o_light_label"/>
+                        <field name="forum_id" required="use_website_helpdesk_forum"/>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

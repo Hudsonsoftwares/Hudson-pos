@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_view_form_inherit_after_sales" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.after.sales</field>
+        <field name="model">helpdesk.management.ticket</field>
+        <field name="inherit_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_ticket_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="use_credit_notes" invisible="1"/>
+                <field name="use_gift_cards" invisible="1"/>
+                <field name="use_coupons" invisible="1"/>
+                <field name="use_product_returns" invisible="1"/>
+                <field name="use_product_replacements" invisible="1"/>
+                <field name="use_product_repairs" invisible="1"/>
+                <button name="action_open_refund_wizard" type="object" string="Refund" invisible="not use_credit_notes or not id"/>
+                <button name="action_open_gift_card_wizard" type="object" string="Gift Card" invisible="not use_gift_cards or not id"/>
+                <button name="action_open_coupon_wizard" type="object" string="Coupon" invisible="not use_coupons or not id"/>
+                <button name="action_return" type="object" string="Return" invisible="not use_product_returns or not id"/>
+                <button name="action_replace" type="object" string="Replace" invisible="not use_product_replacements or not id"/>
+                <button name="action_repair" type="object" string="Repair" invisible="not use_product_repairs or not id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

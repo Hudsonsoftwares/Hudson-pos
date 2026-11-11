@@ -1,6 +1,10 @@
 id,name,model_id,group_id/id,operation,domain
-access_pos_booking_user,appointment.booking.pos.user,appointment.booking,point_of_sale.group_pos_user,crud,
+access_pos_booking_user,appointment.booking.pos.user,appointment.booking,point_of_sale.group_pos_user,cru,
+access_pos_booking_mgr,appointment.booking.pos.mgr,appointment.booking,point_of_sale.group_pos_manager,crud,
+access_pos_booking_preorder_user,appointment.booking.preorder.line.pos.user,appointment.booking.preorder.line,point_of_sale.group_pos_user,cru,
+access_pos_booking_preorder_mgr,appointment.booking.preorder.line.pos.mgr,appointment.booking.preorder.line,point_of_sale.group_pos_manager,crud,
+access_pos_booking_preorder_base,appointment.booking.preorder.line.base.user,appointment.booking.preorder.line,base.group_user,cru,
 access_pos_resource_user,appointment.resource.pos.user,appointment.resource,point_of_sale.group_pos_user,r,
 access_pos_type_user,appointment.type.pos.user,appointment.type,point_of_sale.group_pos_user,r,
-access_appointment_resource_comp_rule,Appointment Resource multi-company,appointment.resource,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
-access_appointment_type_comp_rule,Appointment Type multi-company,appointment.type,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+access_appointment_resource_comp_rule,Appointment Resource multi-company,appointment.resource,base.group_user,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+access_appointment_type_comp_rule,Appointment Type multi-company,appointment.type,base.group_user,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"

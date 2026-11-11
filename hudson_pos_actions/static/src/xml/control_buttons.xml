@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="hudson_pos_actions.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <!-- Place Course button for Bar & Restaurant; Quotation button for Retail -->
+        <xpath expr="//button[@t-if='this.pos.config.use_presets']" position="after">
+            <button class="hudson-course-btn btn btn-lg btn-secondary lh-lg" t-if="this.pos.config.module_pos_restaurant and this.showAddCourse" t-on-click="() => this.clickAddCourse()">
+                <i class="oi oi-fw align-self-center opacity-50" data-icon="restaurant" role="img" aria-hidden="true"/>
+                <span class="ps-1">Course</span>
+            </button>
+            <button class="hudson-quotation-btn btn btn-lg btn-secondary lh-lg" t-if="this.showRetailQuotation" t-on-click="() => this.clickRetailQuotation()">
+                <i class="oi oi-fw align-self-center opacity-50" data-icon="link" role="img" aria-hidden="true"/>
+                <span class="ps-1">Quotation / Order</span>
+            </button>
+        </xpath>
+
+        <!-- Always show Set Order Name in Actions dialog, even for dine-in tables -->
+        <xpath expr="//t[@t-if='!this.pos.getOrder()?.table_id']" position="attributes">
+            <attribute name="t-if">!this.pos.disableForSelfOrder</attribute>
+        </xpath>
+    </t>
+
+    <t t-name="hudson_pos_actions.NoteButton" t-inherit="point_of_sale.NoteButton" t-inherit-mode="extension">
+        <!-- Allow Customer Note even when order has no lines yet -->
+        <xpath expr="//button" position="attributes">
+            <attribute name="t-att-disabled">this.pos.disableForSelfOrder</attribute>
+        </xpath>
+    </t>
+</templates>

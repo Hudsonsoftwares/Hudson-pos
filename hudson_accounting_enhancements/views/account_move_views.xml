@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inject Deferred Dates to Invoice Lines -->
+    <record id="view_move_form_hudson_deferred" model="ir.ui.view">
+        <field name="name">account.move.form.hudson.deferred</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- Smart Button for Deferral Entries -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_hudson_deferrals"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="list_alt"
+                        invisible="hudson_deferral_count == 0">
+                    <field name="hudson_deferral_count" widget="statinfo" string="Deferral Entries"/>
+                </button>
+            </xpath>
+
+            <!-- Invoice Line Dates -->
+            <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='account_id']" position="after">
+                <field name="hudson_deferred_start_date" optional="show"/>
+                <field name="hudson_deferred_end_date" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

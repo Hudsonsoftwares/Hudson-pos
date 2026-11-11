@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_share_file_page" name="Share File Public View">
+        <html lang="en">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title t-if="has_access and file"><t t-out="file.name"/> - Documents</title>
+                <title t-else="">Documents</title>
+                <link rel="stylesheet" href="/web/static/lib/bootstrap/dist/css/bootstrap.css"/>
+                <link rel="stylesheet" href="/web/static/lib/fontawesome/css/font-awesome.css"/>
+                <style>
+                    * {
+                        box-sizing: border-box;
+                    }
+                    html, body {
+                        height: 100%;
+                        margin: 0;
+                        padding: 0;
+                        background-color: #f8fafc;
+                        background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+                        background-size: 20px 20px;
+                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    }
+                    .dms-share-layout {
+                        display: flex;
+                        flex-direction: column;
+                        min-height: 100vh;
+                        height: 100%;
+                    }
+                    .dms-share-header {
+                        height: 64px;
+                        padding: 0 32px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        flex-shrink: 0;
+                        z-index: 10;
+                    }
+                    .dms-header-left {
+                        display: flex;
+                        align-items: center;
+                    }
+                    .dms-header-right {
+                        display: flex;
+                        align-items: center;
+                    }
+                    .btn-login {
+                        background: #ffffff;
+                        border: 1px solid #d1d5db;
+                        color: #1f2937;
+                        font-weight: 500;
+                        font-size: 13px;
+                        border-radius: 6px;
+                        padding: 6px 16px;
+                        text-decoration: none;
+                        transition: all 0.2s ease;
+                        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+                    }
+                    .btn-login:hover {
+                        background: #f9fafb;
+                        border-color: #9ca3af;
+                        color: #111827;
+                    }
+                    .dms-main-content {
+                        flex: 1 1 auto;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 24px 20px;
+                    }
+                    .dms-share-card {
+                        background: #ffffff;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                        width: 100%;
+                        max-width: 380px;
+                        padding: 40px 32px 34px;
+                        text-align: center;
+                        position: relative;
+                    }
+                    .dms-circle-icon {
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 50%;
+                        border: 3px solid #b0bac3;
+                        margin: 0 auto 18px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #8392a5;
+                        background: #ffffff;
+                    }
+                    .dms-circle-icon svg {
+                        width: 38px;
+                        height: 38px;
+                    }
+                    .dms-file-title {
+                        font-size: 16px;
+                        font-weight: 700;
+                        color: #0f172a;
+                        margin: 0 0 6px;
+                        word-break: break-word;
+                        line-height: 1.4;
+                    }
+                    .dms-file-size {
+                        font-size: 13px;
+                        color: #64748b;
+                        margin: 0 0 24px;
+                    }
+                    .dms-actions-stack {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                    }
+                    .btn-card-primary {
+                        background-color: #714B67;
+                        border: 1px solid #714B67;
+                        color: #ffffff !important;
+                        font-weight: 600;
+                        font-size: 13.5px;
+                        border-radius: 6px;
+                        padding: 9px 16px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        text-decoration: none;
+                        transition: background-color 0.2s ease;
+                        cursor: pointer;
+                        width: 100%;
+                    }
+                    .btn-card-primary:hover {
+                        background-color: #5d3d54;
+                        border-color: #5d3d54;
+                        color: #ffffff !important;
+                    }
+                    .btn-card-outline {
+                        background-color: #ffffff;
+                        border: 1px solid #cbd5e1;
+                        color: #334155;
+                        font-weight: 600;
+                        font-size: 13.5px;
+                        border-radius: 6px;
+                        padding: 9px 16px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        text-decoration: none;
+                        transition: all 0.2s ease;
+                        cursor: pointer;
+                        width: 100%;
+                    }
+                    .btn-card-outline:hover {
+                        background-color: #f8fafc;
+                        border-color: #94a3b8;
+                        color: #0f172a;
+                    }
+                    .alert-banner {
+                        max-width: 380px;
+                        width: 100%;
+                        margin-bottom: 16px;
+                        border-radius: 6px;
+                        padding: 10px 14px;
+                        font-size: 13px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="dms-share-layout">
+                    <!-- Top Navigation Bar: Logo on left, Login on right -->
+                    <header class="dms-share-header">
+                        <div class="dms-header-left">
+                            <img t-if="company_logo_uri" t-att-src="company_logo_uri" alt="Logo" style="max-height: 32px; object-fit: contain;"/>
+                            <div t-else="" class="d-flex align-items-center gap-2 text-muted fw-bold" style="font-size: 16px; color: #714B67 !important;">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                <span>Your logo</span>
+                            </div>
+                        </div>
+
+                        <div class="dms-header-right">
+                            <t t-if="is_public">
+                                <a t-attf-href="/web/login?#{('db=' + db_name + '&amp;') if db_name else ''}redirect=/dms/share/file/#{access_token}" class="btn-login">
+                                    Login
+                                </a>
+                            </t>
+                            <t t-else="">
+                                <span class="text-muted small">
+                                    Logged in as <strong class="text-dark"><t t-out="user_name"/></strong>
+                                </span>
+                            </t>
+                        </div>
+                    </header>
+
+                    <!-- Main Viewport Area: Centered Card -->
+                    <main class="dms-main-content">
+                        <!-- Alert Banners -->
+                        <div t-if="upload_success" class="alert alert-success alert-dismissible fade show alert-banner text-center" style="background-color: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;">
+                            <i class="fa fa-check-circle me-1"/> File replaced successfully!
+                        </div>
+                        <div t-if="is_locked" class="alert alert-warning alert-banner text-center" style="background-color: #fffbeb; color: #92400e; border: 1px solid #fde68a;">
+                            <i class="fa fa-lock me-1"/> Locked by <strong class="ms-1"><t t-out="locked_by"/></strong>
+                        </div>
+
+                        <t t-if="has_access and file">
+                            <div class="dms-share-card">
+                                <!-- Circle with download arrow icon -->
+                                <div class="dms-circle-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="4" x2="12" y2="17"></line>
+                                        <polyline points="6 11 12 17 18 11"></polyline>
+                                    </svg>
+                                </div>
+
+                                <!-- File Name -->
+                                <div class="dms-file-title" t-att-title="file.name">
+                                    <t t-out="file.name"/>
+                                </div>
+
+                                <!-- File Size -->
+                                <div class="dms-file-size">
+                                    Size: <t t-out="formatted_file_size"/>
+                                </div>
+
+                                <!-- Action Buttons Stack -->
+                                <div class="dms-actions-stack">
+                                    <!-- 1. Download file -->
+                                    <a t-attf-href="/dms/share/file/#{access_token}/download#{('?db=' + db_name) if db_name else ''}" class="btn-card-primary">
+                                        <i class="fa fa-download me-1"/>
+                                        <span>Download file</span>
+                                    </a>
+
+                                    <!-- 2. Preview file (opens in new tab) -->
+                                    <a t-attf-href="/dms/share/file/#{access_token}/preview#{('?db=' + db_name) if db_name else ''}" target="_blank" class="btn-card-primary">
+                                        <i class="fa fa-eye me-1"/>
+                                        <span>Preview file</span>
+                                    </a>
+
+                                    <!-- 3. Replace file: ONLY IF can_replace is True (Editor access) -->
+                                    <t t-if="can_replace">
+                                        <form id="share_replace_form" t-attf-action="/dms/share/file/#{access_token}/replace#{('?db=' + db_name) if db_name else ''}" method="post" enctype="multipart/form-data" style="display: none;">
+                                            <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                                            <input type="file" name="replacement_file" id="share_replace_input" onchange="if(this.files.length &gt; 0) { document.getElementById('share_replace_form').submit(); }"/>
+                                        </form>
+                                        <button type="button" class="btn-card-outline" onclick="document.getElementById('share_replace_input').click();">
+                                            <i class="fa fa-upload me-1"/>
+                                            <span>Replace file</span>
+                                        </button>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Access Denied Card -->
+                        <t t-else="">
+                            <div class="dms-share-card">
+                                <div class="dms-circle-icon" style="border-color: #fecaca; background: #fef2f2; color: #ef4444;">
+                                    <i class="fa fa-lock fa-2x"></i>
+                                </div>
+                                <div class="dms-file-title" style="color: #b91c1c;">Access Denied</div>
+                                <div class="dms-file-size mb-0">
+                                    You do not have access to this document or the shared link is restricted.
+                                </div>
+                            </div>
+                        </t>
+                    </main>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

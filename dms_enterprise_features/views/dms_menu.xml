@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Override the General Settings menu to also allow DMS Administrators.
+         In Odoo 19, ir.ui.menu uses a 'groups' field stored as Many2many.
+         We use menuitem shorthand to update the groups attribute. -->
+    <menuitem
+        id="dms.menu_dms_settings_general"
+        name="General Settings"
+        parent="dms.cat_menu_dms_config"
+        action="dms.action_dms_settings_general"
+        groups="dms_enterprise_features.group_dms_administrator,base.group_system"
+    />
+
+    <!-- Trash = the documents browser opened in Trash mode (dms_history.js).
+         Same window, same sidebar as My Documents: the mode only changes the
+         domain/context client-side, so leaving the Trash is just a click on
+         a folder. Hence no domain here and the regular views. -->
+    <record id="action_dms_file_trash" model="ir.actions.act_window">
+        <field name="name">My Documents</field>
+        <field name="res_model">dms.file</field>
+        <field name="view_mode">kanban,list,activity,form</field>
+        <field name="search_view_id" ref="dms.search_dms_file"/>
+        <field name="domain" eval="False"/>
+        <field name="context">{'dms_is_trash': True}</field>
+        <field name="view_ids" eval="[(5, 0, 0)]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No documents found.
+            </p>
+        </field>
+    </record>
+
+    <!-- Keep the old directory trash action for backward-compat but don't expose it in menus -->
+    <record id="action_dms_directory_trash" model="ir.actions.act_window">
+        <field name="name">Trashed Directories</field>
+        <field name="res_model">dms.directory</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('is_trashed', '=', True)]</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <!-- Single Trash menu item -->
+    <menuitem
+        id="menu_dms_file_trash"
+        name="Trash"
+        parent="dms.menu_dms_file"
+        action="action_dms_file_trash"
+        sequence="90"
+    />
+</odoo>

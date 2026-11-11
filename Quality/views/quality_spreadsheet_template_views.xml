@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_quality_spreadsheet_template_list" model="ir.ui.view">
+        <field name="name">quality.spreadsheet.template.list</field>
+        <field name="model">quality.spreadsheet.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="success_cell"/>
+                <field name="spreadsheet_file_name" string="Data"/>
+                <button name="action_open_spreadsheet" type="object" string="Edit" icon="edit"/>
+                <field name="spreadsheet_file_name" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_spreadsheet_template_form" model="ir.ui.view">
+        <field name="name">quality.spreadsheet.template.form</field>
+        <field name="model">quality.spreadsheet.template</field>
+        <field name="arch" type="xml">
+            <form string="Quality Spreadsheet Template">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Quality Control Spreadsheet"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="success_cell"/>
+                            <field name="spreadsheet_file_name" string="Data"/>
+                            <button name="action_open_spreadsheet" type="object" string="Edit Spreadsheet" icon="edit" class="btn-primary"/>
+                            <field name="spreadsheet_file_name" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quality_spreadsheet_template" model="ir.actions.act_window">
+        <field name="name">Quality Spreadsheet Templates</field>
+        <field name="res_model">quality.spreadsheet.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Quality Spreadsheet Template
+            </p><p>
+                Use spreadsheet templates to define complex quality checks, capture measurements, and automatically determine Pass/Fail status.
+            </p>
+        </field>
+    </record>
+
+</odoo>

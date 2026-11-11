@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================== -->
+    <!-- PURCHASE ACCRUAL VIEWS                         -->
+    <!-- ============================================== -->
+
+    <record id="view_hudson_purchase_accrual_tree" model="ir.ui.view">
+        <field name="name">hudson.purchase.accrual.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <list string="Purchases Accrual" create="false" edit="false" action="action_open_invoices" type="object">
+                <header>
+                    <button name="action_open_accrual_wizard" type="object" string="Create Accrual Entries"/>
+                </header>
+                <field name="order_id" string="Order Reference"/>
+                <field name="partner_id" string="Partner"/>
+                <field name="product_id" string="Product"/>
+                <field name="product_qty" string="Quantity" sum="Total Quantity"/>
+                <field name="qty_received" string="Received" sum="Total Received"/>
+                <field name="qty_invoiced" string="Billed" sum="Total Billed"/>
+                <field name="uom_id" string="Unit"/>
+                <field name="price_unit" string="Unit Price"/>
+                <field name="price_subtotal" string="Amount" sum="Total Amount"/>
+                <button name="action_open_invoices" type="object" string="View Bill" icon="edit" title="Open Vendor Bill"/>
+                <button name="action_open_order" type="object" string="View PO" icon="description" title="Open Purchase Order"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hudson_purchase_accrual_search" model="ir.ui.view">
+        <field name="name">hudson.purchase.accrual.search</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Purchases Accrual">
+                <field name="order_id"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <filter string="For the Last 365 Days" name="last_365_days" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=365)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Service" name="service" domain="[('product_id.type', '=', 'service')]"/>
+                <filter string="Goods" name="goods" domain="[('product_id.type', 'in', ['product', 'consu'])]"/>
+                <group>
+                    <filter string="Vendor" name="group_partner" context="{'group_by':'partner_id'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by':'company_id'}"/>
+                    <filter string="Order Reference" name="group_order" context="{'group_by':'order_id'}"/>
+                    <filter string="Product Category" name="group_category" context="{'group_by':'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hudson_purchase_bill_to_receive" model="ir.actions.act_window">
+        <field name="name">Bill To Receive</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state', 'in', ['purchase', 'done']), ('qty_to_invoice', '&gt;', 0)]</field>
+        <field name="search_view_id" ref="view_hudson_purchase_accrual_search"/>
+        <field name="view_id" ref="view_hudson_purchase_accrual_tree"/>
+        <field name="context">{'search_default_last_365_days': 1, 'search_default_group_partner': 1}</field>
+    </record>
+
+    <record id="action_hudson_purchase_billed_not_received" model="ir.actions.act_window">
+        <field name="name">Billed Not Received</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state', 'in', ['purchase', 'done']), ('hudson_billed_not_received', '=', True)]</field>
+        <field name="search_view_id" ref="view_hudson_purchase_accrual_search"/>
+        <field name="view_id" ref="view_hudson_purchase_accrual_tree"/>
+        <field name="context">{'search_default_last_365_days': 1, 'search_default_group_partner': 1}</field>
+    </record>
+
+
+    <!-- ============================================== -->
+    <!-- SALE ACCRUAL VIEWS                             -->
+    <!-- ============================================== -->
+
+    <record id="view_hudson_sale_accrual_tree" model="ir.ui.view">
+        <field name="name">hudson.sale.accrual.tree</field>
+        <field name="model">sale.order.line</field>
+        <field name="arch" type="xml">
+            <list string="Sales Accrual" create="false" edit="false" action="action_open_invoices" type="object">
+                <header>
+                    <button name="action_open_accrual_wizard" type="object" string="Create Accrual Entries"/>
+                </header>
+                <field name="order_id" string="Order Reference"/>
+                <field name="order_partner_id" string="Customer"/>
+                <field name="product_id" string="Product"/>
+                <field name="product_uom_qty" string="Quantity" sum="Total Quantity"/>
+                <field name="qty_delivered" string="Delivered" sum="Total Delivered"/>
+                <field name="qty_invoiced" string="Invoiced" sum="Total Invoiced"/>
+                <field name="product_uom_id" string="Unit"/>
+                <field name="price_unit" string="Unit Price"/>
+                <field name="price_subtotal" string="Amount" sum="Total Amount"/>
+                <button name="action_open_invoices" type="object" string="View Invoice" icon="edit" title="Open Customer Invoice"/>
+                <button name="action_open_order" type="object" string="View SO" icon="description" title="Open Sale Order"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hudson_sale_accrual_search" model="ir.ui.view">
+        <field name="name">hudson.sale.accrual.search</field>
+        <field name="model">sale.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Sales Accrual">
+                <field name="order_id"/>
+                <field name="order_partner_id"/>
+                <field name="product_id"/>
+                <filter string="For the Last 365 Days" name="last_365_days" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=365)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Service" name="service" domain="[('product_id.type', '=', 'service')]"/>
+                <filter string="Goods" name="goods" domain="[('product_id.type', 'in', ['product', 'consu'])]"/>
+                <group>
+                    <filter string="Customer" name="group_partner" context="{'group_by':'order_partner_id'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by':'company_id'}"/>
+                    <filter string="Order Reference" name="group_order" context="{'group_by':'order_id'}"/>
+                    <filter string="Product Category" name="group_category" context="{'group_by':'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hudson_sale_invoices_to_be_issued" model="ir.actions.act_window">
+        <field name="name">Invoices To Be Issued</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state', 'in', ['sale', 'done']), ('qty_to_invoice', '&gt;', 0)]</field>
+        <field name="search_view_id" ref="view_hudson_sale_accrual_search"/>
+        <field name="view_id" ref="view_hudson_sale_accrual_tree"/>
+        <field name="context">{'search_default_last_365_days': 1, 'search_default_group_partner': 1}</field>
+    </record>
+
+    <record id="action_hudson_sale_invoiced_not_delivered" model="ir.actions.act_window">
+        <field name="name">Invoiced Not Delivered</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state', 'in', ['sale', 'done']), ('hudson_invoiced_not_delivered', '=', True)]</field>
+        <field name="search_view_id" ref="view_hudson_sale_accrual_search"/>
+        <field name="view_id" ref="view_hudson_sale_accrual_tree"/>
+        <field name="context">{'search_default_last_365_days': 1, 'search_default_group_partner': 1}</field>
+    </record>
+
+</odoo>

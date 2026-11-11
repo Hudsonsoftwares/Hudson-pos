@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Website Form Builder: expose the "Create a Ticket" action on helpdesk tickets.
+             The values live on the ticket's own ir.model record, so they disappear with the model on uninstall. -->
+        <record id="helpdesk_management_pro.model_helpdesk_management_ticket" model="ir.model">
+            <field name="website_form_key">create_ticket</field>
+            <field name="website_form_default_field_id" ref="helpdesk_management_pro.field_helpdesk_management_ticket__description"/>
+            <field name="website_form_access">True</field>
+            <field name="website_form_label">Create a Ticket</field>
+        </record>
+
+        <function model="ir.model.fields" name="formbuilder_whitelist">
+            <value>helpdesk.management.ticket</value>
+            <value eval="[
+                'subject',
+                'description',
+                'partner_name',
+                'partner_email',
+                'partner_phone',
+                'team_id',
+                'category_id',
+            ]"/>
+        </function>
+    </data>
+</odoo>

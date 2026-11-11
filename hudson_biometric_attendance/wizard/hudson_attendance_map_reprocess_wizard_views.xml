@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hudson_attendance_map_reprocess_wizard_form" model="ir.ui.view">
+        <field name="name">hudson.attendance.map.reprocess.wizard.form</field>
+        <field name="model">hudson.attendance.map.reprocess.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Map and Reprocess Punches">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Select an employee to map to the selected unmapped punch codes. This will automatically create employee mappings and reprocess the raw punches.
+                    </div>
+                    <group>
+                        <field name="employee_id" placeholder="Select Employee to Map..." options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_map_and_reprocess" string="Map &amp; Reprocess" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hudson_attendance_map_reprocess" model="ir.actions.act_window">
+        <field name="name">Map &amp; Reprocess</field>
+        <field name="res_model">hudson.attendance.map.reprocess.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_hudson_attendance_raw_punch"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+</odoo>

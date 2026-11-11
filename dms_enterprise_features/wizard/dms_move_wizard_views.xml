@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dms_move_wizard_form" model="ir.ui.view">
+        <field name="name">dms.move.wizard.form</field>
+        <field name="model">dms.move.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Move Items">
+                <field name="res_model" invisible="1"/>
+                <field name="file_ids" invisible="1"/>
+                <field name="directory_ids" invisible="1"/>
+                
+                <div class="mb-3">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="item_names" string="Selected Item(s)" class="fw-bold text-muted small mb-1"/>
+                            <div class="p-2 bg-light border rounded d-flex align-items-center">
+                                <i class="fa fa-file-text-o text-primary me-2 fa-lg" invisible="res_model != 'dms.file'"/>
+                                <i class="fa fa-folder text-warning me-2 fa-lg" invisible="res_model != 'dms.directory'"/>
+                                <field name="item_names" readonly="1" class="fw-bold text-dark m-0"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6" invisible="not current_directory_id">
+                            <label for="current_directory_id" string="Current Location" class="fw-bold text-muted small mb-1"/>
+                            <field name="current_directory_id" readonly="1" options="{'no_open': True}"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="destination_directory_id" string="Destination Folder *" class="fw-bold text-dark small mb-1"/>
+                            <field name="destination_directory_id" 
+                                   placeholder="Select destination folder..." 
+                                   options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                                   required="1"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label for="permission_preview_html" string="Security &amp; Permissions Preview" class="fw-bold text-secondary small text-uppercase mb-2 d-block"/>
+                    <field name="permission_preview_html" widget="html" readonly="1" nolabel="1"/>
+                </div>
+
+                <footer>
+                    <button name="action_move" string="Move" type="object" class="btn btn-primary"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action definition for opening move wizard -->
+    <record id="action_dms_move_wizard" model="ir.actions.act_window">
+        <field name="name">Move</field>
+        <field name="res_model">dms.move.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_dms_move_wizard_form"/>
+    </record>
+</odoo>

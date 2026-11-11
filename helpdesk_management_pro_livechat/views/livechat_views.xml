@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Chatbot step: helpdesk team of the "Create Ticket" steps -->
+    <record id="chatbot_script_step_view_form_inherit_helpdesk" model="ir.ui.view">
+        <field name="name">chatbot.script.step.view.form.inherit.helpdesk</field>
+        <field name="model">chatbot.script.step</field>
+        <field name="inherit_id" ref="im_livechat.chatbot_script_step_view_form"/>
+        <field name="arch" type="xml">
+            <field name="step_type" position="after">
+                <field name="helpdesk_team_id" invisible="step_type != 'create_ticket'"
+                       placeholder="First team using Live Chat" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Chatbot: tickets created by the bot -->
+    <record id="chatbot_script_view_form_inherit_helpdesk" model="ir.ui.view">
+        <field name="name">chatbot.script.view.form.inherit.helpdesk</field>
+        <field name="model">chatbot.script</field>
+        <field name="inherit_id" ref="im_livechat.chatbot_script_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_helpdesk_tickets" type="object" class="oe_stat_button"
+                        icon="confirmation_number" invisible="helpdesk_ticket_count == 0"
+                        groups="helpdesk_management_pro.group_helpdesk_user">
+                    <field name="helpdesk_ticket_count" string="Tickets" widget="statinfo"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <!-- Ticket: back to the live chat conversation -->
+    <record id="helpdesk_ticket_view_form_inherit_livechat" model="ir.ui.view">
+        <field name="name">helpdesk.management.ticket.form.inherit.livechat</field>
+        <field name="model">helpdesk.management.ticket</field>
+        <field name="inherit_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_ticket_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <field name="origin_channel_id" invisible="1"/>
+                <button name="action_open_livechat" type="object" class="oe_stat_button" icon="forum"
+                        invisible="not origin_channel_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Live Chat</span>
+                    </div>
+                </button>
+            </div>
+            <xpath expr="//group[field[@name='company_id']][1]/field[@name='company_id']" position="after">
+                <field name="chatbot_script_id" invisible="not chatbot_script_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="helpdesk_management_pro_menu_config_chatbots"
+              name="Chatbots"
+              parent="helpdesk_management_pro.helpdesk_management_pro_menu_config"
+              action="im_livechat.chatbot_script_action"
+              sequence="40"/>
+
+</odoo>

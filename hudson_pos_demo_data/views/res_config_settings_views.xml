@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_demo_data" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.demo.data</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Demo Data ON / OFF Toggle Button right next to + New Shop in Header -->
+            <xpath expr="//button[@name='action_pos_config_create_new']" position="after">
+                <field name="pos_demo_data_loaded" invisible="1"/>
+
+                <!-- When Demo Data is OFF: Click to Turn ON / Load -->
+                <button name="action_load_pos_demo_data"
+                        type="object"
+                        string="⚡ Load POS Demo Data"
+                        class="btn btn-sm btn-outline-primary fw-bold ms-2"
+                        invisible="pos_demo_data_loaded"
+                        title="Click to turn ON and load Restaurant &amp; Cafe demo data"/>
+
+                <!-- When Demo Data is ON: Click to Turn OFF / Clear -->
+                <button name="action_clear_pos_demo_data"
+                        type="object"
+                        string="✕ Turn Off Demo Data"
+                        class="btn btn-sm btn-outline-danger fw-bold ms-2"
+                        invisible="not pos_demo_data_loaded"
+                        confirm="Are you sure you want to turn off and clear all Restaurant &amp; Cafe demo data? This will clean up demo products, combos, pricelists, and orders."
+                        title="Click to turn OFF and clear demo data"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

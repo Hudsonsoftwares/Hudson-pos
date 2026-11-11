@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="appointment_closing_day_view_form" model="ir.ui.view">
+            <field name="name">appointment.closing.day.view.form</field>
+            <field name="model">appointment.closing.day</field>
+            <field name="arch" type="xml">
+                <form string="Closing Day">
+                    <sheet>
+                        <group>
+                            <field name="closing_type" widget="radio" options="{'horizontal': true}" nolabel="1" colspan="2"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="name" string="Reason" placeholder="e.g. Inventory count and valuation"/>
+                                <label for="start_datetime" string="Dates"/>
+                                <div class="o_row">
+                                    <field name="start_datetime"/>
+                                    <i class="oi mx-2" data-icon="east"/>
+                                    <field name="end_datetime"/>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="appointment_type_ids" widget="many2many_tags" invisible="closing_type != 'appointments'"/>
+                                <field name="resource_id" invisible="closing_type != 'resources'"/>
+                                <field name="user_id" invisible="closing_type != 'users'"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="appointment_closing_day_view_list" model="ir.ui.view">
+            <field name="name">appointment.closing.day.view.list</field>
+            <field name="model">appointment.closing.day</field>
+            <field name="arch" type="xml">
+                <list string="Closing Days">
+                    <field name="start_datetime" string="Start Date"/>
+                    <field name="end_datetime" string="End Date"/>
+                    <field name="name" string="Reason"/>
+                    <field name="appointment_type_ids" string="Appointments" widget="many2many_tags"/>
+                    <field name="resource_id" string="Resources"/>
+                    <field name="user_id" string="Users"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_appointment_closing_day" model="ir.actions.act_window">
+            <field name="name">Closing Days</field>
+            <field name="res_model">appointment.closing.day</field>
+            <field name="view_mode">list,form</field>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>

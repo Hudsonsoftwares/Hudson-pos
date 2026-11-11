@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Search View to remove the sidebar -->
+    <record id="view_hudson_auto_reconcile_search" model="ir.ui.view">
+        <field name="name">hudson.auto.reconcile.search</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//searchpanel" position="replace"/>
+        </field>
+    </record>
+
+    <record id="view_hudson_auto_reconcile_tree" model="ir.ui.view">
+        <field name="name">hudson.auto.reconcile.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <list string="Journal Items to reconcile" class="hudson_auto_reconcile_view" default_order="date desc, id desc" multi_edit="1" sample="1" create="0">
+                <header>
+                    <button name="%(hudson_accounting_enhancements.action_auto_reconcile_wizard)d" 
+                            string="Auto-reconcile" 
+                            type="action" 
+                            class="btn-primary" 
+                            display="always"/>
+                </header>
+                <field name="date" readonly="1"/>
+                <field name="move_name" string="Journal Entry" readonly="1"/>
+                <field name="name" string="Label"/>
+                <field name="analytic_distribution" widget="analytic_distribution" optional="show"/>
+                <field name="amount_currency" string="In Currency" readonly="1" groups="base.group_multi_currency"/>
+                <field name="debit" readonly="1"/>
+                <field name="credit" readonly="1"/>
+                <field name="matching_number" readonly="1"/>
+                <field name="amount_residual" string="Residual" readonly="1"/>
+                <!-- Button on each row -->
+                <button name="%(hudson_accounting_enhancements.action_auto_reconcile_wizard)d" 
+                        string="Auto-reconcile" 
+                        type="action" 
+                        class="btn btn-link" 
+                        invisible="parent_state == 'draft'"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="company_currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hudson_auto_reconcile" model="ir.actions.act_window">
+        <field name="name">Journal Items to reconcile</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_hudson_auto_reconcile_tree"/>
+        <field name="search_view_id" ref="view_hudson_auto_reconcile_search"/>
+        <field name="domain">[('parent_state', '=', 'posted'), ('reconciled', '=', False), ('account_id.reconcile', '=', True), ('amount_residual', '!=', 0)]</field>
+        <field name="context">{
+            'search_default_unreconciled': 1, 
+            'search_default_posted': 1, 
+            'search_default_group_by_account': 1, 
+            'search_default_group_by_partner': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No journal items found to reconcile!
+            </p>
+        </field>
+    </record>
+</odoo>

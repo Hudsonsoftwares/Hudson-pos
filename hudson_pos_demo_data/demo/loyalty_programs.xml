@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ============================================================
+         LOYALTY: Gift Card Program
+    ============================================================ -->
+    <record id="loyalty_program_gift_card" model="loyalty.program">
+        <field name="name">Gift Cards</field>
+        <field name="program_type">gift_card</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">future</field>
+        <field name="portal_visible">True</field>
+    </record>
+
+    <record id="loyalty_program_gift_card_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_gift_card"/>
+        <field name="reward_point_amount">1</field>
+        <field name="reward_point_mode">money</field>
+        <field name="reward_point_split" eval="True"/>
+        <field name="product_ids" eval="[(4, ref('loyalty.gift_card_product_50'))]"/>
+    </record>
+
+    <record id="loyalty_program_gift_card_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_gift_card"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">per_point</field>
+        <field name="discount">1</field>
+        <field name="discount_applicability">order</field>
+        <field name="required_points">1</field>
+        <field name="description">Gift Card</field>
+    </record>
+
+    <!-- ============================================================
+         LOYALTY: eWallet Program
+    ============================================================ -->
+    <record id="loyalty_program_ewallet" model="loyalty.program">
+        <field name="name">eWallet</field>
+        <field name="program_type">ewallet</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">future</field>
+        <field name="portal_visible">True</field>
+    </record>
+
+    <record id="loyalty_program_ewallet_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_ewallet"/>
+        <field name="reward_point_amount">1</field>
+        <field name="reward_point_mode">money</field>
+        <field name="reward_point_split" eval="False"/>
+        <field name="product_ids" eval="[(4, ref('loyalty.ewallet_product_50'))]"/>
+    </record>
+
+    <record id="loyalty_program_ewallet_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_ewallet"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">per_point</field>
+        <field name="discount">1</field>
+        <field name="discount_applicability">order</field>
+        <field name="required_points">1</field>
+        <field name="description">eWallet</field>
+    </record>
+
+    <!-- ============================================================
+         PROMOTIONS: 5 Sample Promotional Programs
+    ============================================================ -->
+
+    <!-- Promotion 1: Happy Hour - 15% off on all orders -->
+    <record id="loyalty_program_happy_hour" model="loyalty.program">
+        <field name="name">Happy Hour — 15% Off All Orders</field>
+        <field name="program_type">promotion</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">current</field>
+    </record>
+
+    <record id="loyalty_program_happy_hour_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_happy_hour"/>
+        <field name="reward_point_mode">unit</field>
+        <field name="minimum_qty">1</field>
+    </record>
+
+    <record id="loyalty_program_happy_hour_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_happy_hour"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">15</field>
+        <field name="discount_applicability">order</field>
+        <field name="description">15% Off All Orders</field>
+    </record>
+
+    <!-- Promotion 2: Welcome Discount - 10% off for new customers -->
+    <record id="loyalty_program_welcome_discount" model="loyalty.program">
+        <field name="name">Welcome Discount — 10% Off First Order</field>
+        <field name="program_type">promotion</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">current</field>
+    </record>
+
+    <record id="loyalty_program_welcome_discount_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_welcome_discount"/>
+        <field name="reward_point_mode">unit</field>
+        <field name="minimum_qty">1</field>
+    </record>
+
+    <record id="loyalty_program_welcome_discount_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_welcome_discount"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">10</field>
+        <field name="discount_applicability">order</field>
+        <field name="description">10% Off First Order</field>
+    </record>
+
+    <!-- Promotion 3: Weekend Special - 20% off -->
+    <record id="loyalty_program_weekend_special" model="loyalty.program">
+        <field name="name">Weekend Special — 20% Off Beverages</field>
+        <field name="program_type">promotion</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">current</field>
+    </record>
+
+    <record id="loyalty_program_weekend_special_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_weekend_special"/>
+        <field name="reward_point_mode">unit</field>
+        <field name="minimum_qty">1</field>
+    </record>
+
+    <record id="loyalty_program_weekend_special_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_weekend_special"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">20</field>
+        <field name="discount_applicability">order</field>
+        <field name="description">20% Off Beverages</field>
+    </record>
+
+    <!-- Promotion 4: Loyalty Points Program -->
+    <record id="loyalty_program_points" model="loyalty.program">
+        <field name="name">RestoCafe Loyalty Points</field>
+        <field name="program_type">loyalty</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">both</field>
+        <field name="portal_visible">True</field>
+        <field name="portal_point_name">Points</field>
+    </record>
+
+    <record id="loyalty_program_points_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_points"/>
+        <field name="reward_point_mode">money</field>
+        <field name="reward_point_amount">1</field>
+    </record>
+
+    <record id="loyalty_program_points_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_points"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">5</field>
+        <field name="required_points">50</field>
+        <field name="discount_applicability">order</field>
+        <field name="description">5% Discount for 50 Points</field>
+    </record>
+
+    <!-- Promotion 5: Family Combo Discount - 20% off orders above ₹500 -->
+    <record id="loyalty_program_family_combo" model="loyalty.program">
+        <field name="name">Family Combo — 20% Off Orders Above ₹500</field>
+        <field name="program_type">promotion</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">current</field>
+    </record>
+
+    <record id="loyalty_program_family_combo_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_family_combo"/>
+        <field name="minimum_amount">500</field>
+    </record>
+
+    <record id="loyalty_program_family_combo_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_family_combo"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">20</field>
+        <field name="discount_applicability">order</field>
+        <field name="description">20% Off Orders Above ₹500</field>
+    </record>
+
+</odoo>

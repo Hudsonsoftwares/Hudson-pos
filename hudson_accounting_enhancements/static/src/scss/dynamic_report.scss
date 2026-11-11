@@ -1,0 +1,1168 @@
+.o_dynamic_report_container {
+    // Selected-option tick (inline SVG: Odoo 20 ships no Font Awesome)
+    .o_check_slot {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+        color: #00878a;
+    }
+
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 16px 24px;
+    background-color: var(--o-view-background-color, #f8fafc);
+    
+    .o_dynamic_report_top_bar {
+        background-color: #ffffff;
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+        padding: 8px 16px !important;
+        margin-bottom: 12px !important;
+        min-height: 48px;
+
+        .o_dynamic_report_title_section {
+            .o_report_print_btn {
+                background-color: #714B67;
+                border-color: #714B67;
+                color: #ffffff;
+                font-size: 0.8125rem;
+                font-weight: 600;
+                padding: 4px 14px;
+                border-radius: 4px;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+                transition: all 0.15s ease-in-out;
+
+                &:hover {
+                    background-color: #5d3d54;
+                    border-color: #5d3d54;
+                    color: #ffffff;
+                }
+            }
+
+            h2 {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: #0f172a;
+                letter-spacing: -0.02em;
+            }
+        }
+    }
+
+    .o_dynamic_report_header {
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--body-color, #0f172a);
+            letter-spacing: -0.02em;
+        }
+
+        .o_dynamic_report_buttons {
+            .btn {
+                font-size: 0.8125rem;
+                font-weight: 500;
+                padding: 4px 10px;
+                transition: all 0.15s ease-in-out;
+
+                i {
+                    font-size: 0.85rem;
+                }
+            }
+
+            .btn-group .btn {
+                background-color: #ffffff;
+                border-color: #cbd5e1;
+                color: #334155;
+
+                &:hover {
+                    background-color: #f1f5f9;
+                    border-color: #94a3b8;
+                    color: #0f172a;
+                    z-index: 2;
+                }
+            }
+        }
+    }
+
+    .o_dynamic_report_filters {
+        position: relative;
+        z-index: 1050;
+        overflow: visible !important;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 4px;
+        
+        .btn {
+            height: 32px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            white-space: nowrap;
+            border-radius: 6px;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 10px;
+
+            &:hover {
+                background-color: #f8fafc;
+                border-color: #94a3b8;
+                color: #0f172a;
+            }
+
+            i {
+                font-size: 0.82rem;
+            }
+        }
+
+        .o_report_filter_btn {
+            height: 32px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            white-space: nowrap;
+            border-radius: 6px;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 10px;
+
+            &:hover {
+                background-color: #f8fafc;
+                border-color: #94a3b8;
+                color: #0f172a;
+            }
+
+            &.o_filter_btn_active {
+                background-color: #e6f7f7 !important;
+                border: 1.5px solid #00878a !important;
+                color: #004d40 !important;
+                font-weight: 600 !important;
+                box-shadow: 0 0 0 1px rgba(0, 135, 138, 0.15) !important;
+
+                i, span {
+                    color: #004d40 !important;
+                }
+
+                &:hover {
+                    background-color: #dcf2f2 !important;
+                    border-color: #007376 !important;
+                    color: #00362c !important;
+                }
+            }
+        }
+
+        .o_comparison_dropdown {
+            // Row grid: [tick 16px][label][control, right aligned]. Settings rows
+            // use the same left inset so every label starts on one vertical line.
+            $cmp-pad-x: 12px;
+            $cmp-label-inset: 26px; // tick width + gap
+            $cmp-control-w: 224px;
+
+            width: 440px;
+            max-width: calc(100vw - 32px);
+            padding: 6px !important;
+            border-radius: 8px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            overflow: visible !important;
+            font-size: 0.8125rem;
+
+            .o_cmp_item {
+                display: flex;
+                align-items: center;
+                min-height: 36px;
+                padding: 4px $cmp-pad-x;
+                border-radius: 6px;
+                cursor: pointer;
+                color: #334155;
+                transition: background-color 0.15s ease;
+
+                &:hover {
+                    background-color: #f1f5f9;
+                }
+
+                &.selected {
+                    background-color: #eef2f6;
+                    color: #0f172a;
+                }
+            }
+
+            .o_cmp_label {
+                white-space: nowrap;
+                margin-right: 12px;
+            }
+
+            .o_cmp_control {
+                margin-left: auto;
+                width: $cmp-control-w;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 6px;
+            }
+
+            .o_cmp_input {
+                height: 28px;
+                padding: 2px 6px;
+                font-size: 0.8125rem;
+                color: #0f172a;
+                background-color: #ffffff;
+                border: 1px solid #cbd5e1;
+                border-radius: 5px;
+                box-shadow: none;
+
+                &:focus {
+                    border-color: #00878a;
+                    box-shadow: 0 0 0 3px rgba(0, 135, 138, 0.15);
+                }
+            }
+
+            .o_cmp_input_number {
+                width: 56px;
+                text-align: right;
+            }
+
+            .o_cmp_input_date {
+                width: 104px;
+                min-width: 0;
+                flex: 1 1 0;
+            }
+
+            .o_cmp_unit {
+                color: #64748b;
+                font-size: 0.78rem;
+                white-space: nowrap;
+            }
+
+            .o_percentage_selector {
+                height: 28px;
+                padding: 0 8px;
+                justify-content: space-between;
+                border: 1px solid #cbd5e1;
+                border-radius: 5px;
+                background-color: #ffffff;
+                color: #0f172a;
+                cursor: pointer;
+                transition: border-color 0.15s ease;
+
+                &:hover {
+                    border-color: #00878a;
+                }
+
+                .o_percentage_selected_label {
+                    min-width: 0;
+                }
+
+                .o_cmp_caret {
+                    flex-shrink: 0;
+                    color: #64748b;
+                }
+            }
+
+            .o_cmp_divider {
+                margin: 6px 0;
+                border: 0;
+                border-top: 1px solid #e2e8f0;
+                opacity: 1;
+            }
+
+            .o_cmp_setting {
+                display: flex;
+                align-items: center;
+                min-height: 36px;
+                padding: 4px $cmp-pad-x 4px ($cmp-pad-x + $cmp-label-inset);
+                color: #475569;
+            }
+
+            .o_cmp_select {
+                display: block;
+                height: 28px;
+                padding: 2px 28px 2px 8px;
+                font-size: 0.8125rem;
+                font-weight: 500;
+                color: #0f172a;
+                border: 1px solid #cbd5e1;
+                border-radius: 5px;
+                background-position: right 8px center;
+                box-shadow: none;
+                cursor: pointer;
+
+                &:focus {
+                    border-color: #00878a;
+                    box-shadow: 0 0 0 3px rgba(0, 135, 138, 0.15);
+                }
+            }
+
+            .o_percentage_dropdown_menu {
+                position: absolute;
+                left: calc(100% + 10px);
+                top: -10px;
+                z-index: 1080;
+                min-width: 300px;
+                max-width: 360px;
+                max-height: 520px;
+                overflow-y: auto;
+                background: #ffffff;
+                border: 1px solid #dee2e6;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+                border-radius: 6px;
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 20px;
+                    left: -6px;
+                    width: 10px;
+                    height: 10px;
+                    background: #ffffff;
+                    border-left: 1px solid #dee2e6;
+                    border-bottom: 1px solid #dee2e6;
+                    transform: rotate(45deg);
+                    z-index: 1;
+                }
+
+                @media (max-width: 900px) {
+                    left: auto;
+                    right: 8px;
+                    top: calc(100% + 4px);
+                    &::before {
+                        display: none;
+                    }
+                }
+
+                .o_percentage_table_header {
+                    background-color: #f8fafc;
+                    padding: 8px 16px;
+                    border-bottom: 1px solid #dee2e6;
+                    color: #64748b;
+                    font-size: 0.82rem;
+                    font-weight: 600;
+                    letter-spacing: 0.3px;
+                }
+
+                .o_percentage_table_row {
+                    padding: 9px 16px;
+                    border-bottom: 1px solid #f1f5f9;
+                    font-size: 0.85rem;
+                    color: #1e293b;
+                    cursor: pointer;
+                    transition: background-color 0.12s ease;
+
+                    &:hover {
+                        background-color: #eef6f9 !important;
+                    }
+
+                    &.active {
+                        background-color: #e6f4f8;
+                        font-weight: 600;
+                        color: #008784;
+                    }
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+        }
+
+        .o_dynamic_report_search {
+            input {
+                height: 32px;
+                font-size: 0.8125rem;
+                border-radius: 6px;
+                border: 1px solid #cbd5e1;
+                background-color: #ffffff;
+                color: #0f172a;
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+                &:focus {
+                    border-color: #00878a;
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(0, 135, 138, 0.15);
+                }
+
+                &::placeholder {
+                    color: #94a3b8;
+                }
+            }
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            z-index: 1060 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px;
+            padding: 8px 0;
+
+            .dropdown-item {
+                font-size: 0.8125rem;
+                padding: 6px 14px;
+                color: #334155;
+
+                i.fa-check {
+                    color: #00878a !important;
+                }
+
+                &:hover {
+                    background-color: #f1f5f9;
+                    color: #0f172a;
+                }
+
+                &.active, &:active {
+                    background-color: #00878a;
+                    color: #ffffff;
+                }
+            }
+        }
+
+        // Shared panel for multi-select filters (Analytic, Partners, Asset Categories)
+        .o_hudson_filter_panel {
+            width: 340px;
+            max-width: calc(100vw - 32px);
+            padding: 0 !important;
+            overflow: visible !important;
+            background-color: #ffffff;
+
+            .o_hfp_header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 14px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #0f172a;
+
+                i {
+                    color: #64748b;
+                    margin-right: 6px;
+                }
+            }
+
+            .o_hfp_count {
+                font-size: 0.72rem;
+                font-weight: 600;
+                color: #00636a;
+                background-color: #e6f7f7;
+                border-radius: 10px;
+                padding: 2px 8px;
+            }
+
+            .o_hfp_body {
+                padding: 12px 14px 4px;
+            }
+
+            .o_hfp_section {
+                margin-bottom: 12px;
+            }
+
+            .o_hfp_label {
+                display: block;
+                margin-bottom: 4px;
+                font-size: 0.7rem;
+                font-weight: 600;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                color: #64748b;
+            }
+
+            .o_hfp_search {
+                position: relative;
+
+                > .o_hfp_search_icon {
+                    position: absolute;
+                    left: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 0.78rem;
+                    color: #94a3b8;
+                    pointer-events: none;
+                }
+
+                input {
+                    height: 32px;
+                    padding-left: 30px;
+                    font-size: 0.8125rem;
+                    color: #0f172a;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 6px;
+                    box-shadow: none;
+
+                    &:focus {
+                        border-color: #00878a;
+                        box-shadow: 0 0 0 3px rgba(0, 135, 138, 0.15);
+                    }
+
+                    &::placeholder {
+                        color: #94a3b8;
+                    }
+                }
+            }
+
+            .o_hfp_results {
+                position: absolute;
+                top: calc(100% + 4px);
+                left: 0;
+                right: 0;
+                z-index: 1070;
+                max-height: 200px;
+                overflow-y: auto;
+                background-color: #ffffff;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+                padding: 4px 0;
+            }
+
+            .o_hfp_result {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                padding: 6px 12px;
+                font-size: 0.8125rem;
+                color: #334155;
+                cursor: pointer;
+
+                span {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .o_hfp_add_icon {
+                    flex-shrink: 0;
+                    color: #94a3b8;
+                }
+
+                &:hover {
+                    background-color: #f1f5f9;
+                    color: #0f172a;
+
+                    .o_hfp_add_icon {
+                        color: #00878a;
+                    }
+                }
+            }
+
+            .o_hfp_chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 8px;
+            }
+
+            .o_hfp_chip {
+                display: inline-flex;
+                align-items: center;
+                max-width: 100%;
+                height: 26px;
+                padding: 0 4px 0 10px;
+                font-size: 0.78rem;
+                font-weight: 500;
+                color: #1e293b;
+                background-color: #f1f5f9;
+                border: 1px solid #cbd5e1;
+                border-radius: 13px;
+
+                .o_hfp_chip_label {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    max-width: 230px;
+                }
+            }
+
+            .o_hfp_chip_remove {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                width: 18px;
+                height: 18px;
+                margin-left: 6px;
+                padding: 0;
+                line-height: 0;
+                color: #64748b;
+                background: transparent;
+                border: 0;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: background-color 0.12s ease, color 0.12s ease;
+
+                &:hover, &:focus-visible {
+                    color: #ffffff;
+                    background-color: #dc2626;
+                    outline: none;
+                }
+            }
+
+            .o_hfp_empty {
+                margin-top: 6px;
+                font-size: 0.75rem;
+                color: #94a3b8;
+            }
+
+            .o_hfp_footer {
+                display: flex;
+                justify-content: flex-end;
+                padding: 10px 14px;
+                border-top: 1px solid #e2e8f0;
+                background-color: #f8fafc;
+                border-radius: 0 0 8px 8px;
+
+                .btn {
+                    min-width: 84px;
+                    font-size: 0.8125rem;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+    
+    .o_dynamic_report_content {
+        background-color: #ffffff !important;
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+        margin: 0 0 20px 0;
+        padding: 0;
+        position: relative;
+        overflow-x: auto;
+        overflow-y: visible;
+        
+        .alert {
+            margin: 0;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .enterprise-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 0;
+            
+            thead {
+                position: sticky;
+                top: 0;
+                z-index: 20;
+                background-color: #f8fafc;
+                
+                tr {
+                    th {
+                        position: sticky;
+                        top: 0;
+                        z-index: 20;
+                        background-color: #f8fafc !important;
+                        font-weight: 600;
+                        font-size: 0.76rem;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                        color: #475569;
+                        padding: 7px 12px;
+                        white-space: nowrap;
+                        min-width: max-content;
+                        border-top: none;
+                        border-bottom: 2px solid #cbd5e1 !important;
+                        box-shadow: inset 0 -2px 0 #cbd5e1;
+
+                        &.col-monetary {
+                            max-width: none;
+                        }
+                    }
+                }
+            }
+            
+            tbody {
+                tr {
+                    transition: background-color 0.1s ease;
+                    
+                    td {
+                        vertical-align: middle;
+                        color: #1e293b;
+                        padding: 5px 12px;
+                        border-bottom: 1px solid #f1f5f9;
+                        font-size: 0.8125rem;
+                        line-height: 1.35;
+                    }
+
+                    &:hover > td {
+                        background-color: #f8fafc !important;
+                    }
+
+                    &.o_dynamic_report_clickable {
+                        cursor: pointer;
+                        &:hover > td {
+                            background-color: #f1f5f9 !important;
+                        }
+                    }
+
+                    // One visual hierarchy for every report (modelled on the Balance Sheet):
+                    // section heading > group > account > detail, plus totals. Every
+                    // emphasised row uses the same size and the same light background;
+                    // only weight and borders change.
+
+                    // Level 1 Section Row
+                    &.o_report_line_level_1 {
+                        background-color: #f8fafc;
+
+                        td {
+                            font-weight: 700;
+                            color: #0f172a;
+                            font-size: 0.84rem;
+                            padding-top: 6px;
+                            padding-bottom: 6px;
+                            border-top: 1px solid #e2e8f0;
+                            border-bottom: 1px solid #e2e8f0;
+                        }
+                    }
+
+                    // Level 2 Group Row
+                    &.o_report_line_level_2 {
+                        td {
+                            font-weight: 600;
+                            color: #1e293b;
+                            font-size: 0.8125rem;
+                            padding-top: 5px;
+                            padding-bottom: 5px;
+                        }
+                    }
+
+                    // Level 3 Account Row
+                    &.o_report_line_level_3 {
+                        td {
+                            font-weight: 400;
+                            color: #334155;
+                            font-size: 0.8125rem;
+                            padding-top: 4px;
+                            padding-bottom: 4px;
+                        }
+                    }
+
+                    // Level Detail / Transaction Row
+                    &.o_report_line_level_detail {
+                        td {
+                            font-weight: 400;
+                            font-size: 0.78rem;
+                            color: #475569;
+                            padding-top: 4px;
+                            padding-bottom: 4px;
+                        }
+                    }
+
+                    // Totals (Total Operating Expenses, report totals, ...)
+                    &.o_report_line_summary {
+                        background-color: #f8fafc !important;
+
+                        td {
+                            font-weight: 700 !important;
+                            color: #0f172a !important;
+                            font-size: 0.84rem;
+                            padding-top: 6px;
+                            padding-bottom: 6px;
+                            border-top: 1px solid #94a3b8 !important;
+                            border-bottom: 1px solid #e2e8f0 !important;
+                        }
+                    }
+
+                    // Key results (Gross Profit, Operating Income, Net Profit): same look as
+                    // a section heading, marked only by a stronger rule above
+                    &.o_report_line_summary_banner {
+                        background-color: #f8fafc !important;
+
+                        td {
+                            font-weight: 700 !important;
+                            color: #0f172a !important;
+                            font-size: 0.84rem !important;
+                            padding-top: 6px !important;
+                            padding-bottom: 6px !important;
+                            border-top: 1px solid #94a3b8 !important;
+                            border-bottom: 1px solid #e2e8f0 !important;
+                        }
+                    }
+                }
+            }
+
+            // Columns widths & alignment
+            th, td {
+                &.col-name {
+                    min-width: 260px;
+                    text-align: left;
+                }
+                
+                &.col-monetary {
+                    width: 140px;
+                    min-width: 125px;
+                    text-align: right;
+                    font-variant-numeric: tabular-nums;
+                    white-space: nowrap;
+                    padding-right: 18px !important;
+                    font-family: inherit;
+                    letter-spacing: -0.01em;
+                }
+
+                &.col-amount-currency {
+                    width: 250px;
+                    min-width: 240px;
+                    text-align: right;
+                }
+
+                &.col-operation-balance {
+                    width: 240px;
+                    min-width: 230px;
+                    text-align: right;
+                }
+
+                &.col-current-balance {
+                    width: 230px;
+                    min-width: 220px;
+                    text-align: right;
+                }
+
+                &.col-adjustment {
+                    width: 140px;
+                    min-width: 130px;
+                    text-align: right;
+                }
+                
+                &.col-date, &.col-date-maturity, &.col-invoice-date {
+                    width: 100px;
+                    min-width: 90px;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+                
+                &.col-journal {
+                    width: 80px;
+                    min-width: 70px;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+                
+                &.col-matching {
+                    width: 75px;
+                    min-width: 65px;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+                
+                &.col-account {
+                    width: 130px;
+                    min-width: 110px;
+                    white-space: nowrap;
+                }
+                
+                &.col-partner {
+                    width: 160px;
+                    min-width: 130px;
+                    white-space: nowrap;
+                }
+                
+                &.col-ref {
+                    width: 140px;
+                    min-width: 110px;
+                    white-space: nowrap;
+                }
+            }
+
+            // Line name flex container
+            .o_report_line_name_container {
+                display: flex;
+                align-items: center;
+                min-width: 0;
+                width: 100%;
+                
+                .o_report_caret {
+                    cursor: pointer;
+                    width: 16px;
+                    height: 16px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #64748b;
+                    flex-shrink: 0;
+                    border-radius: 3px;
+                    user-select: none;
+                    transition: background-color 0.15s ease, color 0.15s ease;
+                    
+                    &:hover {
+                        color: #0f172a;
+                        background-color: #e2e8f0;
+                    }
+
+                    .oi, .fa {
+                        font-size: 13px;
+                        line-height: 1;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    // Fallback in case icon fonts are slow or not yet initialized
+                    .oi:empty::before,
+                    .fa:empty::before {
+                        display: inline-block;
+                        font-style: normal;
+                        font-family: inherit;
+                        font-size: 11px;
+                    }
+
+                    .oi[data-icon="arrow_drop_down"]:empty::before,
+                    .fa-caret-down:empty::before {
+                        content: "▼";
+                    }
+
+                    .oi[data-icon="arrow_right"]:empty::before,
+                    .fa-caret-right:empty::before {
+                        content: "▶";
+                    }
+                }
+                
+                .o_report_caret_spacer {
+                    width: 16px;
+                    display: inline-block;
+                    flex-shrink: 0;
+                }
+                
+                .o_report_line_title {
+                    flex: 0 1 auto;
+                    min-width: 0;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .o_report_action_btn {
+                    flex-shrink: 0;
+                    font-size: 0.70rem;
+                    line-height: 1.2;
+                    padding: 2px 8px;
+                    border-radius: 9999px;
+                    border: 1px solid #cbd5e1;
+                    color: #475569;
+                    background-color: #ffffff;
+                    transition: all 0.15s ease;
+
+                    &:hover {
+                        background-color: #00a09d;
+                        border-color: #00a09d;
+                        color: #ffffff;
+                    }
+                }
+
+                .o_report_gl_btn {
+                    flex-shrink: 0;
+                    font-size: 0.70rem;
+                    line-height: 1.2;
+                    padding: 2px 7px;
+                    border-radius: 4px;
+                    border: 1px solid #cbd5e1;
+                    color: #475569;
+                    background-color: #ffffff;
+                    transition: all 0.15s ease;
+
+                    &:hover {
+                        background-color: #f1f5f9;
+                        border-color: #94a3b8;
+                        color: #0f172a;
+                    }
+                }
+
+                .o_audit_badge {
+                    flex-shrink: 0;
+                    font-size: 0.72rem;
+                    line-height: 1.2;
+                    padding: 2px 7px;
+                    border-radius: 4px;
+                    border: 1px solid #d1d5db;
+                    color: #6b7280;
+                    background-color: #f9fafb;
+                    font-weight: 500;
+                    transition: all 0.15s ease;
+
+                    &:hover {
+                        background-color: #f3f4f6;
+                        border-color: #9ca3af;
+                        color: #111827;
+                    }
+                }
+
+                .o_report_options_btn {
+                    flex-shrink: 0;
+                    width: 20px;
+                    height: 20px;
+                    display: inline-flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                    color: #475569 !important;
+                    background: transparent;
+                    border: none;
+                    padding: 0;
+                    cursor: pointer;
+                    vertical-align: middle;
+                    transition: all 0.15s ease;
+
+                    &:hover {
+                        background-color: #e2e8f0;
+                        color: #0f172a !important;
+                    }
+
+                    .o_report_options_svg {
+                        display: block;
+                        fill: currentColor !important;
+                    }
+                }
+            }
+
+            // Monetary values typography
+            .o_report_val_zero {
+                color: #94a3b8 !important;
+                font-weight: 400 !important;
+            }
+            
+            .o_report_val_negative {
+                color: #dc2626 !important;
+                font-weight: 500;
+            }
+            
+            .o_report_val_positive {
+                color: #1e293b;
+            }
+
+            // Percentage values typography
+            .o_report_pct_positive {
+                color: #16a34a !important;
+                font-weight: 600 !important;
+            }
+
+            .o_report_pct_negative {
+                color: #dc2626 !important;
+                font-weight: 600 !important;
+            }
+        }
+
+        .o_dynamic_report_dropdown {
+            .dropdown-menu {
+                z-index: 9999 !important;
+                border-radius: 6px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+                border: 1px solid #cbd5e1 !important;
+                
+                .dropdown-item {
+                    font-size: 0.8125rem;
+                    padding: 6px 14px;
+                    
+                    &:hover {
+                        background-color: #f1f5f9;
+                        color: #0f172a;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Split View Table Compact Tweaks
+.col-lg-6 .enterprise-table {
+    th, td {
+        &.col-name {
+            min-width: 180px;
+        }
+        &.col-monetary {
+            width: 125px;
+            min-width: 110px;
+        }
+    }
+}
+
+// Accounting Dashboard Top KPI Banner
+.o_account_dashboard_kpis_wrapper {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.o_account_dashboard_kpis {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+
+    > .o_account_dashboard_kpi_card {
+        display: flex !important;
+        flex: 1 1 180px !important;
+        min-width: 150px !important;
+        box-sizing: border-box !important;
+    }
+
+    > .o_account_dashboard_kpi_invoice_layout_card {
+        flex: 1 1 220px !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+}
+
+
+// Gear menu next to the report title (Copy to Documents / Insert in Article)
+.o_report_title_actions {
+    .o_report_title_gear {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #475569;
+        cursor: pointer;
+
+        &:hover, &[aria-expanded="true"] {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+    }
+
+    .dropdown-menu {
+        min-width: 190px;
+        padding: 4px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 400;
+
+        .dropdown-item {
+            padding: 7px 12px;
+            border-radius: 6px;
+        }
+    }
+}

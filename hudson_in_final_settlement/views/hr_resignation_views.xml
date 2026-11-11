@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Hudson Exit Management Resignation Form to add India Final Settlement Actions -->
+    <record id="view_hr_resignation_form_inherit_final_settlement" model="ir.ui.view">
+        <field name="name">hr.resignation.form.inherit.final.settlement</field>
+        <field name="model">hr.resignation</field>
+        <field name="inherit_id" ref="hudson_exit_management.view_hr_resignation_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Create Final Settlement button in header -->
+            <xpath expr="//header" position="inside">
+                <field name="settlement_count" invisible="1"/>
+                <button name="action_create_final_settlement"
+                        string="Calculate Final Settlement"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state not in ('approved', 'confirm') or settlement_count &gt; 0"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

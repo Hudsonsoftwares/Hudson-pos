@@ -1,0 +1,218 @@
+/* Analytic Reporting Grid View & Views Styling */
+
+.o_grid_view {
+    .o_grid_container {
+        overflow: auto;
+        position: relative;
+    }
+
+    .o_grid_table_wrapper {
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        overflow-x: auto !important;
+        position: relative;
+        max-width: 100%;
+    }
+
+    .o_grid_table {
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        width: 100%;
+
+        th, td {
+            font-size: 0.875rem;
+            white-space: nowrap;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        th {
+            font-size: 0.85rem;
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+
+        /* Fixed Left Column (Analytic Account) */
+        .o_grid_col_fixed_left {
+            position: sticky !important;
+            left: 0 !important;
+            min-width: 240px;
+            max-width: 280px;
+            box-shadow: 3px 0 6px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        thead th.o_grid_col_fixed_left {
+            z-index: 10 !important;
+            background-color: #f8f9fa !important;
+            border-right: 2px solid #dee2e6;
+        }
+
+        tbody td.o_grid_col_fixed_left {
+            z-index: 5 !important;
+            background-color: #ffffff !important;
+            border-right: 2px solid #e9ecef;
+        }
+
+        tbody tr.o_grid_subrow td.o_grid_col_fixed_left {
+            background-color: #f8f9fa !important;
+        }
+
+        tfoot td.o_grid_col_fixed_left {
+            z-index: 10 !important;
+            background-color: #f1f3f5 !important;
+            border-right: 2px solid #ced4da;
+        }
+
+        /* Fixed Right Column (Amount) - Always visible on horizontal scroll */
+        .o_grid_col_fixed_right {
+            position: sticky !important;
+            right: 0 !important;
+            min-width: 130px;
+            max-width: 150px;
+            box-shadow: -3px 0 8px -2px rgba(0, 0, 0, 0.15);
+        }
+
+        thead th.o_grid_header_total {
+            z-index: 10 !important;
+            background-color: #2b3035 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 0.85rem !important;
+            letter-spacing: 0.5px;
+            border-left: 2px solid #495057 !important;
+        }
+
+        tbody td.o_grid_row_total {
+            z-index: 5 !important;
+            background-color: #3b424a !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 0.875rem !important;
+            border-left: 2px solid #495057 !important;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+
+            span {
+                color: #ffffff !important;
+            }
+        }
+
+        tbody td.o_grid_subrow_total {
+            z-index: 5 !important;
+            border-left: 2px solid #dee2e6 !important;
+
+            &.o_grid_subrow_negative {
+                background-color: #e55353 !important; /* High-visibility coral/red background */
+                color: #ffffff !important;
+                font-weight: 700 !important;
+                border-left-color: #d93737 !important;
+                text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+
+                span {
+                    color: #ffffff !important;
+                }
+            }
+
+            &.o_grid_subrow_positive {
+                background-color: #f8f9fa !important;
+                color: #212529 !important;
+                font-weight: 600 !important;
+            }
+
+            &.o_grid_subrow_zero {
+                background-color: #f8f9fa !important;
+                color: #adb5bd !important;
+            }
+        }
+
+        tfoot td.o_grid_grand_total {
+            z-index: 10 !important;
+            background-color: #1a1e21 !important; /* High-contrast obsidian black */
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 0.95rem !important;
+            border-left: 2px solid #343a40 !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+
+            span {
+                color: #ffffff !important;
+            }
+        }
+
+        .o_grid_account_link {
+            color: #008784;
+            font-weight: 600;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+                color: #005f5d;
+            }
+        }
+
+        .o_grid_cell {
+            transition: background-color 0.15s ease;
+
+            &:hover {
+                background-color: rgba(0, 135, 132, 0.07);
+            }
+
+            &.o_grid_cell_selected {
+                outline: 2px solid #008784;
+                outline-offset: -2px;
+                background-color: rgba(0, 135, 132, 0.12);
+            }
+        }
+
+        .o_grid_subrow {
+            td {
+                font-size: 0.8rem;
+                background-color: #f8f9fa;
+            }
+        }
+    }
+
+    .o_grid_period_navigator {
+        .btn {
+            font-size: 0.875rem;
+        }
+    }
+}
+
+/* List View Clickable Rows & Cells */
+.o_analytic_reporting_list {
+    table.o_list_table {
+        tr.o_data_row {
+            cursor: pointer !important;
+            transition: background-color 0.12s ease-in-out;
+
+            &:hover {
+                background-color: rgba(0, 135, 132, 0.08) !important;
+            }
+
+            td {
+                cursor: pointer !important;
+            }
+        }
+    }
+}
+
+/* Kanban Cards Styling (Matching Image 3) */
+.o_analytic_reporting_kanban {
+    .o_kanban_record {
+        border-radius: 8px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        padding: 12px 16px !important;
+        cursor: pointer !important;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+
+        &:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+            transform: translateY(-1px);
+        }
+    }
+}

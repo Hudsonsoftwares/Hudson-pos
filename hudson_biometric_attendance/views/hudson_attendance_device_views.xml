@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Device Tree View -->
+    <record id="view_hudson_attendance_device_tree" model="ir.ui.view">
+        <field name="name">hudson.attendance.device.tree</field>
+        <field name="model">hudson.attendance.device</field>
+        <field name="arch" type="xml">
+            <list string="Attendance Devices" decoration-muted="not active">
+                <field name="name"/>
+                <field name="connection_type"/>
+                <field name="address"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Device Form View -->
+    <record id="view_hudson_attendance_device_form" model="ir.ui.view">
+        <field name="name">hudson.attendance.device.form</field>
+        <field name="model">hudson.attendance.device</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Device">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Main Office ZK Device"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="connection_details" string="Connection Info">
+                            <field name="connection_type"/>
+                            <field name="address" placeholder="e.g. 192.168.1.201 or https://api.example.com"/>
+                        </group>
+                        <group name="device_settings" string="Configuration">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Device Search View -->
+    <record id="view_hudson_attendance_device_search" model="ir.ui.view">
+        <field name="name">hudson.attendance.device.search</field>
+        <field name="model">hudson.attendance.device</field>
+        <field name="arch" type="xml">
+            <search string="Search Attendance Devices">
+                <field name="name"/>
+                <field name="address"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Connection Type" name="group_connection_type" context="{'group_by': 'connection_type'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Device Action -->
+    <record id="action_hudson_attendance_device" model="ir.actions.act_window">
+        <field name="name">Biometric Devices</field>
+        <field name="res_model">hudson.attendance.device</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hudson_attendance_device_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register your first attendance device or API endpoint!
+            </p>
+            <p>
+                Configure connection details for ZK-protocol devices, REST APIs, or Webhooks
+                to feed canonical raw punch logs into Odoo.
+            </p>
+        </field>
+    </record>
+</odoo>

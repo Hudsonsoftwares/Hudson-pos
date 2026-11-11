@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Rule Parameter Search View with UAE/GCC Statutory Pension Filters -->
+    <record id="hds_ae_hr_rule_parameter_view_search_inherit" model="ir.ui.view">
+        <field name="name">hr.rule.parameter.search.inherit.uae</field>
+        <field name="model">hr.rule.parameter</field>
+        <field name="inherit_id" ref="hudson_payroll_core.hds_in_hr_rule_parameter_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_admin" position="after">
+                <separator/>
+                <filter string="UAE GPSSA" name="filter_uae_gpssa" domain="[('category', '=', 'uae_gpssa')]"/>
+                <filter string="UAE ADPF" name="filter_uae_adpf" domain="[('category', '=', 'uae_adpf')]"/>
+                <filter string="GCC Pension" name="filter_gcc_pension" domain="[('category', '=', 'gcc_pension')]"/>
+            </filter>
+            <filter name="group_by_category" position="after">
+                <filter string="Pension Authority" name="group_by_pension_authority" context="{'group_by': 'pension_authority_id'}"/>
+                <filter string="Pension Scheme" name="group_by_pension_scheme" context="{'group_by': 'pension_scheme_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Extend Rule Parameter Form View with UAE Authority & Scheme fields -->
+    <record id="hds_ae_hr_rule_parameter_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.rule.parameter.form.inherit.uae</field>
+        <field name="model">hr.rule.parameter</field>
+        <field name="inherit_id" ref="hudson_payroll_core.hds_in_hr_rule_parameter_view_form"/>
+        <field name="arch" type="xml">
+            <field name="category" position="after">
+                <field name="pension_authority_id" invisible="category not in ('uae_gpssa', 'uae_adpf')"/>
+                <field name="pension_scheme_id" invisible="category not in ('uae_gpssa', 'uae_adpf')"/>
+            </field>
+        </field>
+    </record>
+</odoo>

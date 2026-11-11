@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Statutory Salary Rule Categories for Hudson Indian Payroll -->
+    <data noupdate="0">
+        <!-- PF Calculation Category -->
+        <record id="salary_rule_category_pf_calc" model="hr.salary.rule.category">
+            <field name="name">PF Calculation</field>
+            <field name="code">PF_CALC</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- ESIC Calculation Category -->
+        <record id="salary_rule_category_esic_calc" model="hr.salary.rule.category">
+            <field name="name">ESIC Calculation</field>
+            <field name="code">ESIC_CALC</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

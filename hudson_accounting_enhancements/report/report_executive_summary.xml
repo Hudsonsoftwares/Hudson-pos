@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_exec_sum">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <!-- Header -->
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <h2 style="font-weight:bold; color:#2c3e50;" t-out="report_data.get('title', 'Executive Summary')"/>
+                            <h4 t-out="company.name" style="color:#7f8c8d;"/>
+                            <p class="text-muted">
+                                <t t-out="data.get('date_from')"/> — <t t-out="data.get('date_to')"/>
+                                <t t-if="data.get('comparison')">
+                                    &#160;|&#160; vs &#160;<t t-out="data.get('compare_date_from')"/> — <t t-out="data.get('compare_date_to')"/>
+                                </t>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    
+                    <style>
+                        .table-reports th {
+                            background-color: #f8f9fa;
+                            color: #495057;
+                            font-weight: bold;
+                            padding: 8px;
+                            border-bottom: 2px solid #dee2e6;
+                        }
+                        .table-reports td {
+                            padding: 6px 8px;
+                            border-bottom: 1px solid #e9ecef;
+                            vertical-align: middle;
+                        }
+                        .row-header td {
+                            background-color: #e9ecef;
+                            font-weight: bold;
+                        }
+                        .row-total td {
+                            background-color: #ffffff;
+                            font-weight: bold;
+                            border-top: 2px solid #343a40 !important;
+                            border-bottom: 2px solid #343a40 !important;
+                        }
+                    </style>
+
+                    <table class="table table-sm table-reports" style="width: 100%; font-size: 13px;">
+                        <thead>
+                            <tr>
+                                <t t-foreach="report_data.get('columns', [])" t-as="col">
+                                    <th t-att-class="col.get('type') == 'monetary' and 'text-end' or ''">
+                                        <span t-out="col.get('label')"/>
+                                    </th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="report_data.get('lines', [])" t-as="line">
+                                <tr t-att-class="'row-header' if line.get('level') == 1 else 'row-normal'">
+                                    <t t-foreach="report_data.get('columns', [])" t-as="col">
+                                        <td t-att-class="col.get('type') == 'monetary' and 'text-end' or ''">
+                                            <t t-if="col.get('field') == 'name'">
+                                                <div t-att-style="'padding-left: ' + str((line.get('level', 1) - 1) * 20) + 'px;'">
+                                                    <span t-out="line.get(col.get('field'))"/>
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-if="line.get('level') == 1">
+                                                    <!-- Empty for group headers -->
+                                                    <span></span>
+                                                </t>
+                                                <t t-elif="line.get('type') == 'percent'">
+                                                    <span t-out="('%.2f' % (line.get(col.get('field')) or 0.0)) + ' %'"/>
+                                                </t>
+                                                <t t-elif="line.get('type') == 'number'">
+                                                    <span t-out="'%.2f' % (line.get(col.get('field')) or 0.0)"/>
+                                                </t>
+                                                <t t-elif="col.get('type') == 'monetary'">
+                                                    <span t-out="line.get(col.get('field')) or 0.0"
+                                                          t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-out="line.get(col.get('field'))"/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

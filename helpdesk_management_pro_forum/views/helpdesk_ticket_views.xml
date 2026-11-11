@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_view_form_inherit_forum" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.forum</field>
+        <field name="model">helpdesk.management.ticket</field>
+        <field name="inherit_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_ticket_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_share_on_forum" type="object" string="Share on Forum" invisible="not id or not use_website_helpdesk_forum"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_forum_posts" type="object" class="oe_stat_button" icon="fa-comments" invisible="forum_post_count == 0">
+                    <field name="forum_post_count" widget="statinfo" string="Forum Posts"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Community Forum" name="forum_content" invisible="not use_website_helpdesk_forum">
+                    <field name="use_website_helpdesk_forum" invisible="1"/>
+                    <field name="team_forum_id" invisible="1"/>
+                    <group>
+                        <field name="forum_post_id"
+                               domain="[('forum_id', '=', team_forum_id), ('parent_id', '=', False)]"
+                               context="{'default_forum_id': team_forum_id, 'default_name': subject, 'default_content': description}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

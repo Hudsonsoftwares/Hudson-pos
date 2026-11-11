@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. Extend Payslip Form View with Statutory Audits & Column Visibility Toggles -->
+    <record id="hds_in_view_hr_payslip_form" model="ir.ui.view">
+        <field name="name">hr.payslip.form.inherit.hudson.payroll</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_payslip_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='refund_sheet']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="hds_in_tds_applicable" invisible="1"/>
+                <button name="action_print_statutory_report"
+                        string="View Tax Calculation Report"
+                        type="object"
+                        class="btn-secondary"
+                        icon="description"
+                        invisible="not hds_in_tds_applicable"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_statutory_audits"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="security"
+                        invisible="hds_in_statutory_audit_count == 0">
+                    <field name="hds_in_statutory_audit_count" widget="statinfo" string="Audit Trail"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//page[@name='other_info']" position="inside">
+                <group string="ESIC Statutory Exemption (Rule 51-B)" name="esic_rule_51b_info">
+                    <group>
+                        <field name="hds_in_esic_daily_wage_exempt"/>
+                        <field name="hds_in_esic_average_daily_wage"/>
+                        <field name="hds_in_esic_paid_days"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <!-- Salary Computation Tab Column Toggles -->
+            <xpath expr="//field[@name='line_ids']/*[self::tree or self::list]/field[@name='code']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/*[self::tree or self::list]/field[@name='category_id']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/*[self::tree or self::list]/field[@name='sequence']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/*[self::tree or self::list]/field[@name='quantity']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/*[self::tree or self::list]/field[@name='rate']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/*[self::tree or self::list]/field[@name='amount']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+
+            <!-- Worked Days Tab Column Toggles -->
+            <xpath expr="//field[@name='worked_days_line_ids']/*[self::tree or self::list]/field[@name='code']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='worked_days_line_ids']/*[self::tree or self::list]/field[@name='number_of_hours']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+
+            <!-- Inputs Tab Column Toggles -->
+            <xpath expr="//field[@name='input_line_ids']/*[self::tree or self::list]/field[@name='code']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 2. Main Payslips List View Toggles -->
+    <record id="hds_in_view_hr_payslip_tree" model="ir.ui.view">
+        <field name="name">hr.payslip.tree.inherit.hudson.payroll</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_payslip_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_from']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_to']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 3. Payslip Batches List View Toggles -->
+    <record id="hds_in_view_hr_payslip_run_tree" model="ir.ui.view">
+        <field name="name">hr.payslip.run.tree.inherit.hudson.payroll</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_payslip_run_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_end']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 5. Salary Structures List View Toggles -->
+    <record id="hds_in_view_hr_payroll_structure_tree" model="ir.ui.view">
+        <field name="name">hr.payroll.structure.tree.inherit.hudson.payroll</field>
+        <field name="model">hr.payroll.structure</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_payroll_structure_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 6. Dedicated Statutory Compliance Summary (Employer Share) List View -->
+    <record id="view_hr_payslip_list_employer_statutory" model="ir.ui.view">
+        <field name="name">hr.payslip.list.employer.statutory</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Statutory Compliance Summary (Employer Share)" decoration-info="state == 'draft'" decoration-success="state in ('done', 'paid')" create="false">
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="date_from" string="Period From"/>
+                <field name="date_to" string="Period To"/>
+                <field name="gross_wage" widget="monetary" sum="Total Gross Wage" optional="show"/>
+                <field name="hds_in_employer_epf_share" string="EPF (3.67%)" widget="monetary" sum="Total EPF (3.67%)" optional="show"/>
+                <field name="hds_in_employer_eps" string="EPS (8.33%)" widget="monetary" sum="Total EPS (8.33%)" optional="show"/>
+                <field name="hds_in_employer_epf" string="Employer EPF (12%)" widget="monetary" sum="Total EPF (12%)" class="fw-bold text-info"/>
+                <field name="hds_in_employer_edli" string="EDLI (0.5%)" widget="monetary" sum="Total EDLI (0.5%)" optional="show"/>
+                <field name="hds_in_employer_epf_admin" string="EPF Admin (0.5%)" widget="monetary" sum="Total Admin (0.5%)" optional="show"/>
+                <field name="hds_in_employer_esic" string="Employer ESIC (3.25%)" widget="monetary" sum="Total Employer ESIC"/>
+                <field name="hds_in_employer_lwf" string="Employer LWF" widget="monetary" sum="Total Employer LWF" optional="show"/>
+                <field name="hds_in_total_employer_statutory" string="Total Statutory" widget="monetary" sum="Total Statutory Cost" class="fw-bold text-primary"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'verify'" decoration-success="state in ('done', 'paid')" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 7. Govt Deposit (Payroll dashboard card): statutory shares and TDS of each payslip -->
+    <record id="view_hr_payslip_list_govt_deposit" model="ir.ui.view">
+        <field name="name">hr.payslip.list.govt.deposit</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Govt Deposit" decoration-success="state in ('done', 'paid')" create="false">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="date_from" string="Period From"/>
+                <field name="date_to" string="Period To"/>
+                <field name="gross_wage" widget="monetary" sum="Total Gross Wage" optional="show"/>
+                <field name="hds_in_govt_ee_epf" widget="monetary" sum="Total Employee EPF"/>
+                <field name="hds_in_govt_er_epf" widget="monetary" sum="Total Employer EPF"/>
+                <field name="hds_in_govt_edli_admin" widget="monetary" sum="Total EDLI &amp; EPF Admin" optional="show"/>
+                <field name="hds_in_govt_ee_esic" widget="monetary" sum="Total Employee ESIC"/>
+                <field name="hds_in_govt_er_esic" widget="monetary" sum="Total Employer ESIC"/>
+                <field name="hds_in_govt_pt" widget="monetary" sum="Total Professional Tax"/>
+                <field name="hds_in_govt_ee_lwf" widget="monetary" sum="Total Employee LWF" optional="show"/>
+                <field name="hds_in_govt_er_lwf" widget="monetary" sum="Total Employer LWF" optional="show"/>
+                <field name="hds_in_govt_tds" widget="monetary" sum="Total TDS" class="fw-bold text-info"/>
+                <field name="hds_in_govt_deposit_total" widget="monetary" sum="Total Govt Deposit" class="fw-bold text-primary"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'verify'" decoration-success="state in ('done', 'paid')" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 9. TDS This Month (Payroll dashboard card): TDS of each payslip of the month -->
+    <record id="view_hr_payslip_list_tds" model="ir.ui.view">
+        <field name="name">hr.payslip.list.tds</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="TDS This Month" decoration-success="state in ('done', 'paid')" create="false">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="hds_in_employee_pan" optional="show" decoration-danger="not hds_in_employee_pan"/>
+                <field name="date_from" string="Period From"/>
+                <field name="date_to" string="Period To"/>
+                <field name="gross_wage" widget="monetary" sum="Total Gross Wage"/>
+                <field name="hds_in_govt_tds" widget="monetary" sum="Total TDS" class="fw-bold text-info"/>
+                <field name="net_wage" widget="monetary" sum="Total Net Salary" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'verify'" decoration-success="state in ('done', 'paid')" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 10. Net Salary (Payroll dashboard card): gross less the employee deductions of each payslip -->
+    <record id="view_hr_payslip_list_net" model="ir.ui.view">
+        <field name="name">hr.payslip.list.net</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Net Salary" decoration-success="state == 'paid'" create="false">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="date_from" string="Period From"/>
+                <field name="date_to" string="Period To"/>
+                <field name="gross_wage" string="Gross Salary" widget="monetary" sum="Total Gross Salary"/>
+                <field name="hds_in_govt_ee_epf" widget="monetary" sum="Total Employee EPF"/>
+                <field name="hds_in_govt_ee_esic" widget="monetary" sum="Total Employee ESIC"/>
+                <field name="hds_in_govt_pt" widget="monetary" sum="Total Professional Tax"/>
+                <field name="hds_in_govt_ee_lwf" widget="monetary" sum="Total Employee LWF" optional="show"/>
+                <field name="hds_in_govt_tds" widget="monetary" sum="Total TDS"/>
+                <field name="hds_in_net_other_deductions" widget="monetary" sum="Total Other Deductions" optional="show"/>
+                <field name="hds_in_net_salary" widget="monetary" sum="Total Net Salary" class="fw-bold text-primary"/>
+                <field name="hds_in_payment_mode" optional="hide"/>
+                <field name="payment_date" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'verify'" decoration-success="state in ('done', 'paid')" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 8. Total Payroll Cost (CTC) (Payroll dashboard card): gross salary and employer cost of each payslip -->
+    <record id="view_hr_payslip_list_ctc" model="ir.ui.view">
+        <field name="name">hr.payslip.list.ctc</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Total Payroll Cost (CTC)" decoration-success="state in ('done', 'paid')" create="false">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="date_from" string="Period From"/>
+                <field name="date_to" string="Period To"/>
+                <field name="hds_in_ctc_gross" widget="monetary" sum="Total Gross Salary"/>
+                <field name="hds_in_ctc_er_epf" widget="monetary" sum="Total Employer EPF"/>
+                <field name="hds_in_ctc_er_edli" widget="monetary" sum="Total EDLI" optional="show"/>
+                <field name="hds_in_ctc_er_admin" widget="monetary" sum="Total EPF Admin" optional="show"/>
+                <field name="hds_in_ctc_er_esic" widget="monetary" sum="Total Employer ESIC"/>
+                <field name="hds_in_ctc_er_lwf" widget="monetary" sum="Total Employer LWF" optional="show"/>
+                <field name="hds_in_ctc_er_other" widget="monetary" sum="Total Other Employer Cost" optional="hide"/>
+                <field name="hds_in_ctc_employer_cost" widget="monetary" sum="Total Employer Cost" class="fw-bold text-info"/>
+                <field name="hds_in_ctc_total" widget="monetary" sum="Total CTC" class="fw-bold text-primary"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'verify'" decoration-success="state in ('done', 'paid')" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+</odoo>

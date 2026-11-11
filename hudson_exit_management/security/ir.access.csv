@@ -1,0 +1,9 @@
+id,name,model_id,group_id/id,operation,domain
+access_hr_resignation_user,hr.resignation.user,hr.resignation,base.group_user,cru,"[('employee_id.user_id', '=', user.id)]"
+access_hr_resignation_officer,hr.resignation.officer,hr.resignation,hr.group_hr_user,crud,
+access_hr_resignation_manager,hr.resignation.manager,hr.resignation,hr.group_hr_manager,crud,
+access_hr_resignation_company,hr.resignation.company,hr.resignation,,crud,"[('company_id', 'in', company_ids + [False])]"
+access_hudson_exit_clearance_user,hudson.exit.clearance.user,hudson.exit.clearance,base.group_user,ru,"[('resignation_id.employee_id.user_id', '=', user.id)]"
+access_hudson_exit_clearance_officer,hudson.exit.clearance.officer,hudson.exit.clearance,hr.group_hr_user,crud,
+access_hudson_exit_clearance_manager,hudson.exit.clearance.manager,hudson.exit.clearance,hr.group_hr_manager,crud,
+access_hudson_exit_clearance_company,hudson.exit.clearance.company,hudson.exit.clearance,,crud,"[('resignation_id.company_id', 'in', company_ids + [False])]"

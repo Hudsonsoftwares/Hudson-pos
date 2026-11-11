@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Quick Create Form View for Bookings -->
+        <record id="appointment_booking_view_form_quick_create" model="ir.ui.view">
+            <field name="name">appointment.booking.view.form.quick_create</field>
+            <field name="model">appointment.booking</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <form string="Create Booking">
+                    <group>
+                        <field name="subject" string="Booking Title" placeholder='e.g. "John Doe - Tennis Court Booking"'/>
+                        <field name="appointment_type_id" string="Appointment Type" placeholder="Meeting"/>
+                        <label for="start_datetime" string="Date"/>
+                        <div class="o_row">
+                            <field name="start_datetime" widget="daterange" options="{'end_date_field': 'end_datetime'}"/>
+                        </div>
+                        <field name="partner_id" string="Participants"/>
+                        <field name="state" string="Status"/>
+                        <field name="staff_user_id" string="Staff"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- Quick Create Action -->
+        <record id="action_appointment_booking_quick_create" model="ir.actions.act_window">
+            <field name="name">Create Booking</field>
+            <field name="res_model">appointment.booking</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="appointment_booking_view_form_quick_create"/>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Schedule Actions -->
+        <record id="action_schedule_staff" model="ir.actions.act_window">
+            <field name="name">Staff Bookings</field>
+            <field name="res_model">appointment.booking</field>
+            <field name="view_mode">calendar,list,form</field>
+            <field name="domain">[('appointment_type_id.booking_target', '=', 'users')]</field>
+            <field name="context">{'default_staff_user_id': uid}</field>
+        </record>
+
+        <!-- Staff List View for Bookings -->
+        <record id="appointment_booking_view_list_staff" model="ir.ui.view">
+            <field name="name">appointment.booking.view.list.staff</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <list string="Staff Bookings" js_class="appointment_list">
+                    <field name="subject"/>
+                    <field name="appointment_type_id" string="Appointment"/>
+                    <field name="partner_id" string="Booked by"/>
+                    <field name="resource_ids" widget="many2many_tags" string="Appointment Resources"/>
+                    <field name="start_datetime" string="Start"/>
+                    <field name="end_datetime" string="Stop"/>
+                    <field name="party_size" string="Total Cap..."/>
+                    <field name="total_capacity_reserved" string="Total Cap..."/>
+                    <field name="state" string="Status"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_schedule_staff_view_list" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="appointment_booking_view_list_staff"/>
+            <field name="act_window_id" ref="action_schedule_staff"/>
+        </record>
+
+        <!-- Staff Calendar View for Bookings -->
+        <record id="appointment_booking_view_calendar_staff" model="ir.ui.view">
+            <field name="name">appointment.booking.view.calendar.staff</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <calendar string="Staff Bookings"
+                          js_class="appointment_calendar"
+                          date_start="start_datetime"
+                          date_stop="end_datetime"
+                          color="staff_user_id"
+                          mode="week"
+                          quick_create="true"
+                          quick_create_view_id="%(appointment.appointment_booking_view_form_quick_create)d"
+                          event_open_popup="true">
+                    <field name="partner_id" avatar_field="avatar_128"/>
+                    <field name="appointment_type_id" invisible="1"/>
+                    <field name="name" invisible="1"/>
+                    <field name="staff_user_id" filters="1" string="Calendars" invisible="1"/>
+                    <field name="party_size" string="guests" invisible="not party_size"/>
+                    <field name="state" string="Status"/>
+                    <field name="calendar_contact_details" widget="html" string="Contact Details"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="action_schedule_staff_view_calendar" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="appointment_booking_view_calendar_staff"/>
+            <field name="act_window_id" ref="action_schedule_staff"/>
+        </record>
+        
+        <record id="action_schedule_resources" model="ir.actions.act_window">
+            <field name="name">Resource Bookings</field>
+            <field name="res_model">appointment.booking</field>
+            <field name="view_mode">calendar,list,form</field>
+            <field name="domain">[('appointment_type_id.booking_target', '=', 'resources')]</field>
+        </record>
+
+        <!-- Resource List View for Bookings -->
+        <record id="appointment_booking_view_list_resource" model="ir.ui.view">
+            <field name="name">appointment.booking.view.list.resource</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <list string="Resource Bookings">
+                    <field name="subject"/>
+                    <field name="appointment_type_id" string="Appointment"/>
+                    <field name="partner_id" string="Booked by" widget="many2one_avatar"/>
+                    <field name="resource_ids" string="Appointment Resources" widget="many2many_tags"/>
+                    <field name="start_datetime" string="Start"/>
+                    <field name="end_datetime" string="Stop"/>
+                    <field name="asked_capacity" string="Total Capacity Asked" sum="Total"/>
+                    <field name="total_capacity_reserved" string="Total Capacity Reserved" sum="Total"/>
+                    <field name="state" string="Status"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Resource Calendar View for Bookings -->
+        <record id="appointment_booking_view_calendar_resource" model="ir.ui.view">
+            <field name="name">appointment.booking.view.calendar.resource</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <calendar string="Resource Bookings"
+                          js_class="appointment_calendar"
+                          date_start="start_datetime"
+                          date_stop="end_datetime"
+                          color="resource_ids"
+                          mode="month"
+                          quick_create="true"
+                          quick_create_view_id="%(appointment.appointment_booking_view_form_quick_create)d"
+                          event_open_popup="true">
+                    <field name="partner_id" avatar_field="avatar_128"/>
+                    <field name="appointment_type_id" invisible="1"/>
+                    <field name="name" invisible="1"/>
+                    <field name="party_size" string="guests" invisible="not party_size"/>
+                    <field name="state" string="Status"/>
+                    <field name="resource_ids" filters="1" invisible="1"/>
+                    <field name="calendar_contact_details" widget="html" string="Contact Details"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="action_schedule_resources_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="appointment_booking_view_list_resource"/>
+            <field name="act_window_id" ref="action_schedule_resources"/>
+        </record>
+
+        <record id="action_schedule_resources_view_calendar" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="appointment_booking_view_calendar_resource"/>
+            <field name="act_window_id" ref="action_schedule_resources"/>
+        </record>
+
+        <!-- Calendar View for Bookings -->
+        <record id="appointment_booking_view_calendar" model="ir.ui.view">
+            <field name="name">appointment.booking.view.calendar</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <calendar string="Bookings"
+                          js_class="appointment_calendar"
+                          date_start="start_datetime"
+                          date_stop="end_datetime"
+                          color="appointment_type_id"
+                          quick_create="true"
+                          quick_create_view_id="%(appointment.appointment_booking_view_form_quick_create)d"
+                          event_open_popup="true">
+                    <field name="partner_id" avatar_field="avatar_128"/>
+                    <field name="name" invisible="1"/>
+                    <field name="appointment_type_id" invisible="1"/>
+                    <field name="party_size" string="guests" invisible="not party_size"/>
+                    <field name="state" string="Status"/>
+                    <field name="calendar_contact_details" widget="html" string="Contact Details"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- List View for Bookings -->
+        <record id="appointment_booking_view_list" model="ir.ui.view">
+            <field name="name">appointment.booking.view.list</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <list string="Bookings">
+                    <field name="name"/>
+                    <field name="appointment_type_id"/>
+                    <field name="partner_id"/>
+                    <field name="start_datetime"/>
+                    <field name="end_datetime"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View for Bookings -->
+        <record id="appointment_booking_view_form" model="ir.ui.view">
+            <field name="name">appointment.booking.view.form</field>
+            <field name="model">appointment.booking</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="Booking">
+                    <header>
+                        <button name="action_send_email" type="object" string="Send email" class="oe_highlight"/>
+                        <button name="action_check_in" type="object" string="Check in" class="btn-secondary" invisible="state in ('checked_in', 'cancelled')"/>
+                        <button name="action_no_show" type="object" string="No show" class="btn-secondary" invisible="state in ('no_show', 'cancelled')"/>
+                        <button name="action_cancel" type="object" string="Cancel" class="btn-secondary" invisible="state == 'cancelled'"/>
+                        <field name="state" invisible="1"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="BOOKED" bg_color="text-bg-success" invisible="state != 'confirmed'"/>
+                        <widget name="web_ribbon" title="CHECKED-IN" bg_color="text-bg-info" invisible="state != 'checked_in'"/>
+                        <widget name="web_ribbon" title="NO SHOW" bg_color="text-bg-warning" invisible="state != 'no_show'"/>
+                        <widget name="web_ribbon" title="CANCELLED" bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+                        <div class="oe_title">
+                            <label for="subject" string="Meeting Subject"/>
+                            <h1><field name="subject" placeholder="Meeting Subject" class="text-break"/></h1>
+                            <field name="name" invisible="1"/>
+                        </div>
+                        <group>
+                            <group>
+                                <label for="start_datetime" string="Start"/>
+                                <div class="o_row">
+                                    <field name="start_datetime" widget="daterange" options="{'end_date_field': 'end_datetime'}"/>
+                                </div>
+                                <label for="duration" string="Duration"/>
+                                <div class="o_row">
+                                    <field name="duration" widget="float_time"/>
+                                    <span class="mx-2">or All Day</span>
+                                    <field name="allday" widget="boolean_toggle"/>
+                                </div>
+                                <field name="location" placeholder="e.g. Online Meeting"/>
+                                <field name="videocall_location" string="Video Link" widget="url"/>
+                                <field name="calendar_event_id" string="Linked to" readonly="1"/>
+                                <field name="appointment_type_id" invisible="1"/>
+                                <field name="partner_id" invisible="1"/>
+                                <field name="staff_user_id" invisible="1"/>
+                                <field name="resource_ids" widget="many2many_tags" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="show_as" widget="radio" options="{'horizontal': true}"/>
+                                <field name="privacy" widget="radio" options="{'horizontal': true}"/>
+                                <field name="attendee_ids" widget="many2many_tags_avatar" placeholder="Select attendees..." options="{'no_create': True}"/>
+                                <div class="o_row mt-1">
+                                    <span class="text-muted"><field name="party_size" nolabel="1" readonly="1" class="fw-bold oe_inline me-1"/> guests</span>
+                                </div>
+                                <div class="o_row mt-1">
+                                    <button name="action_send_email" type="object" icon="mail" icon_class="oi-filled" string="EMAIL" class="btn-sm btn-secondary"/>
+                                    <button name="action_send_sms" type="object" icon="smartphone" string="SMS" class="btn-sm btn-secondary ms-1"/>
+                                </div>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="description" placeholder="Add notes about this meeting..."/>
+                            </page>
+                            <page string="Questions" name="questions">
+                                <field name="answer_ids" nolabel="1">
+                                    <list editable="bottom" create="0">
+                                        <field name="question_id" readonly="1" string="Question"/>
+                                        <field name="question_type" readonly="1" string="Type"/>
+                                        <field name="value_text" string="Text Answer"/>
+                                    </list>
+                                </field>
+                                <group invisible="not guest_details">
+                                    <field name="guest_details" string="Additional Details" placeholder="Additional details..."/>
+                                </group>
+                            </page>
+                            <page string="Resources" name="resources">
+                                <field name="resource_ids">
+                                    <list>
+                                        <field name="name" string="Appointment Resource"/>
+                                        <field name="capacity" string="Capacity"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Options" name="options">
+                                <group>
+                                    <group>
+                                        <field name="staff_user_id" string="Organizer" widget="many2one_avatar_user"/>
+                                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                        <field name="appointment_type_id" string="Appointment"/>
+                                        <field name="state" string="Appointment Status"/>
+                                        <field name="resource_ids" widget="many2many_tags" string="Resources"/>
+                                        <field name="total_capacity_reserved" string="Booked Capacity"/>
+                                        <field name="description" string="Calendar description" widget="html"/>
+                                    </group>
+                                    <group>
+                                        <field name="alarm_ids" widget="many2many_tags" string="Reminders"/>
+                                        <field name="recurrency" widget="boolean_toggle" string="Recurrent"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Invitations" name="invitations">
+                                <button string="Send Invitations" type="object" name="action_send_email" icon="mail" icon_class="oi-filled" class="btn btn-link mb-3"/>
+                                <field name="event_attendee_ids" readonly="1">
+                                    <list>
+                                        <field name="partner_id" string="Attendee"/>
+                                        <field name="email" string="Email"/>
+                                        <field name="phone" string="Phone"/>
+                                        <field name="state" string="Status" widget="badge" decoration-success="state == 'accepted'" decoration-danger="state == 'declined'" decoration-warning="state == 'tentative'"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Reporting Pivot View for Bookings -->
+        <record id="appointment_booking_view_pivot" model="ir.ui.view">
+            <field name="name">appointment.booking.view.pivot</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <pivot string="Appointments" sample="1">
+                    <field name="start_datetime" type="row" interval="month"/>
+                    <field name="staff_user_id" type="row"/>
+                    <field name="name" type="row"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Search View for Bookings -->
+        <record id="appointment_booking_view_search" model="ir.ui.view">
+            <field name="name">appointment.booking.view.search</field>
+            <field name="model">appointment.booking</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Reporting List View for Answers -->
+        <record id="appointment_answer_view_list_reporting" model="ir.ui.view">
+            <field name="name">appointment.answer.view.list.reporting</field>
+            <field name="model">appointment.answer</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="question_id"/>
+                    <field name="value_text"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Reporting Actions -->
+        <record id="action_reporting_bookings" model="ir.actions.act_window">
+            <field name="name">Appointments</field>
+            <field name="res_model">appointment.booking</field>
+            <field name="view_mode">pivot,graph,list,form</field>
+        </record>
+
+        <record id="action_reporting_answers" model="ir.actions.act_window">
+            <field name="name">Answer Breakdown</field>
+            <field name="res_model">appointment.answer</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </data>
+</odoo>

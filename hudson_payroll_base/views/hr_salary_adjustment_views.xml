@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_hr_salary_adjustment_list" model="ir.ui.view">
+        <field name="name">hr.salary.adjustment.list</field>
+        <field name="model">hr.salary.adjustment</field>
+        <field name="arch" type="xml">
+            <list string="Salary Adjustments">
+                <header>
+                    <button string="Group Allocation" name="%(hudson_payroll_base.action_hr_salary_adjustment_wizard)d" type="action" class="btn-secondary" display="always"/>
+                </header>
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="date_start"/>
+                <field name="note"/>
+                <field name="input_type_id" string="Type"/>
+                <field name="amount"/>
+                <field name="until_amount" string="Until" optional="show"/>
+                <field name="beneficiary_bank_id" string="Beneficiary Bank Account" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'running'" decoration-muted="state == 'done'" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_hr_salary_adjustment_form" model="ir.ui.view">
+        <field name="name">hr.salary.adjustment.form</field>
+        <field name="model">hr.salary.adjustment</field>
+        <field name="arch" type="xml">
+            <form string="Salary Adjustment">
+                <header>
+                    <button name="action_done" string="Close / Mark as Completed" type="object" class="btn-secondary" invisible="state != 'running'" confirm="Are you sure you want to close this adjustment? It will no longer apply to payslips."/>
+                    <button name="action_reset_running" string="Reactivate / Set to Running" type="object" class="btn-primary" invisible="state == 'running'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state == 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="running,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_payslips" type="object" class="oe_stat_button" icon="description" invisible="applied_count == 0">
+                            <field name="applied_count" widget="statinfo" string="Payslips"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <field name="priority" widget="priority" class="mr-3"/>
+                        <h1><field name="name" placeholder="Salary Adjustment"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" widget="many2one_avatar_employee" readonly="state != 'running'"/>
+                            <field name="input_type_id" string="Type" readonly="state != 'running'"/>
+                            <label for="amount"/>
+                            <div class="o_row">
+                                <field name="amount" readonly="state != 'running'"/>
+                                <field name="currency_id" invisible="1"/>
+                            </div>
+                            <field name="negative" readonly="state != 'running'"/>
+                        </group>
+                        <group>
+                            <field name="duration" readonly="state != 'running'"/>
+                            <field name="date_start" readonly="state != 'running'"/>
+                            <field name="date_end" invisible="duration != 'limited'" required="duration == 'limited'" readonly="state != 'running'"/>
+                            <field name="until_amount" invisible="duration != 'limited'" readonly="state != 'running'"/>
+                            <field name="beneficiary_bank_id" readonly="state != 'running'" placeholder="Auto-fetched from employee (or select beneficiary)"/>
+                            <field name="contract_id" readonly="1" groups="base.group_no_one"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'running'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="e.g. Child Support, Attachment of Salary..." readonly="state != 'running'"/>
+                    </group>
+                    <notebook>
+                        <page string="Applied Payslips" invisible="applied_count == 0">
+                            <field name="payslip_input_ids" readonly="1">
+                                <list>
+                                    <field name="payslip_id"/>
+                                    <field name="code"/>
+                                    <field name="amount"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hr_salary_adjustment_search" model="ir.ui.view">
+        <field name="name">hr.salary.adjustment.search</field>
+        <field name="model">hr.salary.adjustment</field>
+        <field name="arch" type="xml">
+            <search string="Search Salary Adjustments">
+                <field name="employee_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="input_type_id"/>
+                <field name="note"/>
+                <separator/>
+                <filter string="Running" name="running" domain="[('state', '=', 'running')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="One Time" name="one_time" domain="[('duration', '=', 'one_time')]"/>
+                <filter string="Limited" name="limited" domain="[('duration', '=', 'limited')]"/>
+                <filter string="Unlimited" name="unlimited" domain="[('duration', '=', 'unlimited')]"/>
+                <group>
+                    <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'input_type_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Duration" name="group_duration" context="{'group_by': 'duration'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hr_salary_adjustment" model="ir.actions.act_window">
+        <field name="name">Salary Adjustments</field>
+        <field name="res_model">hr.salary.adjustment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_salary_adjustment_search"/>
+        <field name="context">{'search_default_running': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Salary Adjustment
+            </p>
+            <p>
+                Salary adjustments provide employee-specific recurring or one-time payroll inputs.
+            </p>
+        </field>
+    </record>
+
+    <!-- Employee form: 'Payslip Adjustments' tab (replaces the Payroll > Employees > Salary Adjustments menu) -->
+    <record id="hr_employee_view_form_inherit_payslip_adjustments" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit.payslip.adjustments</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='payroll_information']" position="after">
+                <page name="payslip_adjustments" string="Payslip Adjustments" groups="hudson_payroll_base.group_payroll_user">
+                    <field name="salary_adjustment_ids" mode="kanban" add-label="Add Adjustment"
+                           context="{'default_employee_id': id, 'default_company_id': company_id, 'payslip_adjustment_repeat_ui': True}">
+                        <kanban>
+                            <field name="currency_id"/>
+                            <field name="duration"/>
+                            <field name="date_end"/>
+                            <field name="state"/>
+                            <templates>
+                                <t t-name="card">
+                                    <div class="d-flex justify-content-between align-items-start gap-2">
+                                        <field name="input_type_id" class="fw-bold"/>
+                                        <field name="state" widget="badge"
+                                               decoration-success="state == 'running'"
+                                               decoration-muted="state == 'done'"
+                                               decoration-danger="state == 'cancel'"/>
+                                    </div>
+                                    <field name="amount" widget="monetary" class="fs-5"/>
+                                    <div class="text-muted small">
+                                        <field name="date_start"/>
+                                        <t t-if="record.duration.raw_value == 'limited'"> → <field name="date_end"/></t>
+                                        <t t-elif="record.duration.raw_value == 'unlimited'"> → Until end of contract</t>
+                                        <t t-else=""> · One time</t>
+                                    </div>
+                                    <field name="note" class="text-muted small"/>
+                                </t>
+                            </templates>
+                        </kanban>
+                        <form string="Payslip Adjustment">
+                            <header>
+                                <button name="action_done" string="Done" type="object"
+                                        invisible="not id or state != 'running'"/>
+                                <button name="action_reset_running" string="Set to Running" type="object"
+                                        invisible="not id or state == 'running'"/>
+                                <field name="state" widget="statusbar" statusbar_visible="running,done"/>
+                            </header>
+                            <sheet>
+                                <field name="employee_id" invisible="1"/>
+                                <field name="company_id" invisible="1"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="duration" invisible="1"/>
+                                <field name="until_amount" invisible="1"/>
+                                <group>
+                                    <group>
+                                        <field name="input_type_id" string="Salary Rule" options="{'no_create': True}" readonly="state != 'running'"/>
+                                        <field name="amount" readonly="state != 'running'"/>
+                                        <field name="date_start" readonly="state != 'running'"/>
+                                        <field name="repeat" readonly="state != 'running'"/>
+                                        <field name="date_end" string="End Date" invisible="not repeat" readonly="state != 'running'" placeholder="Until end of contract"/>
+                                        <field name="note" placeholder="Optional reason, or reference"/>
+                                    </group>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

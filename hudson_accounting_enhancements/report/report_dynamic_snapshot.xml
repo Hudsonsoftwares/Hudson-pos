@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- PDF of the report as displayed in the dynamic report screen
+         (used by "Copy to Documents"). Rendered on the current company. -->
+    <record id="action_report_dynamic_snapshot" model="ir.actions.report">
+        <field name="name">Accounting Report</field>
+        <field name="model">res.company</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_accounting_enhancements.report_dynamic_snapshot</field>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <template id="report_dynamic_snapshot">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="company" t-value="o"/>
+                <t t-call="web.external_layout">
+                    <div class="page o_hudson_snapshot">
+                        <style>
+                            .o_hudson_snapshot { font-size: 10.5px; color: #1e293b; }
+                            .o_hudson_snapshot h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 2px 0; }
+                            .o_hudson_snapshot .o_hs_subtitle { color: #64748b; margin-bottom: 14px; }
+                            .o_hudson_snapshot table { width: 100%; border-collapse: collapse; }
+                            .o_hudson_snapshot thead { display: table-header-group; }
+                            .o_hudson_snapshot tr { page-break-inside: avoid; }
+                            .o_hudson_snapshot th { padding: 6px 8px; font-size: 9px; font-weight: 600; text-transform: uppercase;
+                                                    letter-spacing: .04em; color: #475569; background-color: #f8fafc;
+                                                    border-bottom: 2px solid #cbd5e1; text-align: left; white-space: nowrap; }
+                            .o_hudson_snapshot td { padding: 4px 8px; border-bottom: 1px solid #f1f5f9; }
+                            .o_hudson_snapshot .o_hs_num { text-align: right; white-space: nowrap; }
+                            .o_hudson_snapshot .o_hs_neg { color: #dc2626; }
+                            .o_hudson_snapshot tr.o_hs_section td { font-weight: 700; color: #0f172a; background-color: #f8fafc;
+                                                                   border-top: 1px solid #e2e8f0; }
+                            .o_hudson_snapshot tr.o_hs_group td { font-weight: 600; }
+                            .o_hudson_snapshot tr.o_hs_line td { color: #334155; }
+                            .o_hudson_snapshot tr.o_hs_total td { font-weight: 700; color: #0f172a; background-color: #f8fafc;
+                                                                 border-top: 1px solid #94a3b8; }
+                        </style>
+                        <h2 t-out="report['title']"/>
+                        <div class="o_hs_subtitle">
+                            <span t-out="company.name"/>
+                            <t t-if="report.get('subtitle')"> · <span t-out="report['subtitle']"/></t>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <t t-foreach="report['columns']" t-as="col">
+                                        <th t-att-class="'o_hs_num' if col['numeric'] else ''" t-out="col['label']"/>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="report['rows']" t-as="row">
+                                    <tr t-att-class="'o_hs_' + row['kind']">
+                                        <t t-foreach="row['cells']" t-as="cell">
+                                            <td t-att-class="' '.join(filter(None, ['o_hs_num' if cell['numeric'] else '', 'o_hs_neg' if cell['negative'] else '']))"
+                                                t-att-style="('padding-left: %dpx;' % (8 + (row['level'] - 1) * 14)) if cell_first and row['level'] &gt; 1 and row['kind'] != 'total' else None"
+                                                t-out="cell['text']"/>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

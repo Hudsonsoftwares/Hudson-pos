@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu Action (Dashboard) -->
+    <record id="helpdesk_management_pro_action_dashboard" model="ir.actions.act_window">
+        <field name="name">Helpdesk Overview</field>
+        <field name="res_model">helpdesk.management.team</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Helpdesk Team
+            </p>
+        </field>
+    </record>
+
+    <!-- Root Menu -->
+    <menuitem id="helpdesk_management_pro_menu_root"
+              name="Helpdesk"
+              sequence="50"
+              web_icon="helpdesk_management_pro,static/description/icon.png"/>
+
+    <!-- Top Level Menus -->
+    <menuitem id="helpdesk_management_pro_menu_dashboard"
+              name="Overview"
+              parent="helpdesk_management_pro_menu_root"
+              action="helpdesk_management_pro_action_dashboard"
+              sequence="10"/>
+              
+    <menuitem id="helpdesk_management_pro_menu_tickets_main"
+              name="Tickets"
+              parent="helpdesk_management_pro_menu_root"
+              sequence="20"/>
+              
+
+
+    <menuitem id="helpdesk_management_pro_menu_reporting"
+              name="Reporting"
+              parent="helpdesk_management_pro_menu_root"
+              sequence="40"
+              groups="helpdesk_management_pro.group_helpdesk_manager"/>
+
+    <menuitem id="helpdesk_management_pro_menu_config"
+              name="Configuration"
+              parent="helpdesk_management_pro_menu_root"
+              sequence="100"
+              groups="helpdesk_management_pro.group_helpdesk_admin"/>
+
+    <!-- Configuration Sub-menus -->
+
+    <menuitem id="helpdesk_management_pro_menu_config_canned_responses"
+              name="Canned Responses"
+              parent="helpdesk_management_pro_menu_config"
+              action="mail.mail_canned_response_action"
+              sequence="30"/>
+</odoo>

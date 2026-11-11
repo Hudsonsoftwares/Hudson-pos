@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ir.actions.report for PF Register / Statement QWeb PDF -->
+    <record id="paperformat_pf_reports_landscape" model="report.paperformat">
+        <field name="name">PF Reports Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">6</field>
+        <field name="margin_right">6</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- ir.actions.report for PF Register / Statement QWeb PDF -->
+    <record id="action_report_pf_register" model="ir.actions.report">
+        <field name="name">Provident Fund Report PDF</field>
+        <field name="model">hds.pf.register.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_pf_reports.report_hds_pf_register_document</field>
+<field name="paperformat_id" ref="paperformat_pf_reports_landscape"/>
+        <field name="print_report_name">'PF_Report_%s' % (object.name or 'Statement')</field>
+    </record>
+
+    <!-- ir.actions.report for EPFO ECR Report QWeb PDF -->
+    <record id="action_report_pf_ecr" model="ir.actions.report">
+        <field name="name">EPFO ECR Report PDF</field>
+        <field name="model">hds.pf.ecr.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_pf_reports.report_hds_pf_ecr_document</field>
+<field name="paperformat_id" ref="paperformat_pf_reports_landscape"/>
+        <field name="print_report_name">'EPF_ECR_%s' % (object.name or 'Report')</field>
+    </record>
+</odoo>

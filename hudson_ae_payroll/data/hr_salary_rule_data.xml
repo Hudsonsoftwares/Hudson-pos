@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- ================================================================= -->
+        <!-- 0. UAE EVP ALLOWANCES (Category: EVP - Higher Authority / Exec)   -->
+        <!-- ================================================================= -->
+
+        <record id="hds_ae_rule_evp_housing" model="hr.salary.rule">
+            <field name="name">EVP Housing Allowance</field>
+            <field name="code">HOUALLOWINP</field>
+            <field name="sequence" eval="2"/>
+            <field name="category_id" ref="salary_rule_category_evp"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.HOUALLOWINP.amount if ('HOUALLOWINP' in inputs and inputs.HOUALLOWINP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_evp_conveyance" model="hr.salary.rule">
+            <field name="name">EVP Conveyance Allowance</field>
+            <field name="code">CONVALLOWINP</field>
+            <field name="sequence" eval="3"/>
+            <field name="category_id" ref="salary_rule_category_evp"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.CONVALLOWINP.amount if ('CONVALLOWINP' in inputs and inputs.CONVALLOWINP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_evp_medical" model="hr.salary.rule">
+            <field name="name">EVP Medical Allowance</field>
+            <field name="code">MEDALLOWINP</field>
+            <field name="sequence" eval="4"/>
+            <field name="category_id" ref="salary_rule_category_evp"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.MEDALLOWINP.amount if ('MEDALLOWINP' in inputs and inputs.MEDALLOWINP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_evp_annual_passage" model="hr.salary.rule">
+            <field name="name">EVP Annual Passage Allowance</field>
+            <field name="code">ANNUALPASSALLOWINP</field>
+            <field name="sequence" eval="5"/>
+            <field name="category_id" ref="salary_rule_category_evp"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.ANNUALPASSALLOWINP.amount if ('ANNUALPASSALLOWINP' in inputs and inputs.ANNUALPASSALLOWINP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_evp_overtime" model="hr.salary.rule">
+            <field name="name">EVP Overtime Allowance</field>
+            <field name="code">OVERTIMEALLOWINP</field>
+            <field name="sequence" eval="6"/>
+            <field name="category_id" ref="salary_rule_category_evp"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.OVERTIMEALLOWINP.amount if ('OVERTIMEALLOWINP' in inputs and inputs.OVERTIMEALLOWINP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_evp_other" model="hr.salary.rule">
+            <field name="name">EVP Other Allowance</field>
+            <field name="code">OTALL</field>
+            <field name="sequence" eval="7"/>
+            <field name="category_id" ref="salary_rule_category_evp"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.OTALL.amount if ('OTALL' in inputs and inputs.OTALL) else (inputs.OTALLOWINP.amount if ('OTALLOWINP' in inputs and inputs.OTALLOWINP) else 0.0)
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_evp_leave_encashment" model="hr.salary.rule">
+            <field name="name">EVP Leave Encashment</field>
+            <field name="code">LEAVEENCASHINP</field>
+            <field name="sequence" eval="8"/>
+            <field name="category_id" ref="salary_rule_category_evp"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.LEAVEENCASHINP.amount if ('LEAVEENCASHINP' in inputs and inputs.LEAVEENCASHINP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ================================================================= -->
+        <!-- 1. UAE EMPLOYEE EARNINGS & ADJUSTMENTS (Category: ALW)           -->
+        <!-- ================================================================= -->
+
+        <record id="hds_ae_rule_airfare_allowance" model="hr.salary.rule">
+            <field name="name">Airfare Allowance</field>
+            <field name="code">AIRFARE_ALLOWANCE</field>
+            <field name="sequence" eval="40"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = (contract.airfare_allowance if (hasattr(contract, 'airfare_allowance') and contract.airfare_allowance) else (inputs.AIRFARE_ALLOWANCE.amount if ('AIRFARE_ALLOWANCE' in inputs and inputs.AIRFARE_ALLOWANCE) else 0.0))
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_reimbursement" model="hr.salary.rule">
+            <field name="name">Reimbursement</field>
+            <field name="code">REIMBURSEMENT</field>
+            <field name="sequence" eval="41"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.REIMBURSEMENT.amount if ('REIMBURSEMENT' in inputs and inputs.REIMBURSEMENT) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_expenses" model="hr.salary.rule">
+            <field name="name">Expenses Reimbursement</field>
+            <field name="code">EXPENSES</field>
+            <field name="sequence" eval="42"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.EXPENSES.amount if ('EXPENSES' in inputs and inputs.EXPENSES) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_alea" model="hr.salary.rule">
+            <field name="name">Annual Leave Remaining Balance Allowance</field>
+            <field name="code">ALEA</field>
+            <field name="sequence" eval="43"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.ALEA.amount if ('ALEA' in inputs and inputs.ALEA) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_salary_arrears" model="hr.salary.rule">
+            <field name="name">Salary Arrears</field>
+            <field name="code">SALARY_ARREARS</field>
+            <field name="sequence" eval="44"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.SALARY_ARREARS.amount if ('SALARY_ARREARS' in inputs and inputs.SALARY_ARREARS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_other_earnings" model="hr.salary.rule">
+            <field name="name">Other Earnings</field>
+            <field name="code">OTHER_EARNINGS</field>
+            <field name="sequence" eval="45"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.OTHER_EARNINGS.amount if ('OTHER_EARNINGS' in inputs and inputs.OTHER_EARNINGS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_bonus" model="hr.salary.rule">
+            <field name="name">Bonus</field>
+            <field name="code">BONUS</field>
+            <field name="sequence" eval="46"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.BONUS.amount if ('BONUS' in inputs and inputs.BONUS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_eos" model="hr.salary.rule">
+            <field name="name">End of Service</field>
+            <field name="code">EOS</field>
+            <field name="sequence" eval="85"/>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.EOS.amount if ('EOS' in inputs and inputs.EOS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_alppout" model="hr.salary.rule">
+            <field name="name">Annual Leave Provision Payout</field>
+            <field name="code">ALPPOUT</field>
+            <field name="sequence" eval="86"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_prov_pout"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.ALPPOUT.amount if ('ALPPOUT' in inputs and inputs.ALPPOUT) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ================================================================= -->
+        <!-- 2. UAE EMPLOYEE DEDUCTIONS (Category: DED)                        -->
+        <!-- ================================================================= -->
+
+        <record id="hds_ae_rule_deduction" model="hr.salary.rule">
+            <field name="name">Deduction</field>
+            <field name="code">DEDUCTION</field>
+            <field name="sequence" eval="170"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - abs(inputs.DEDUCTION.amount) if ('DEDUCTION' in inputs and inputs.DEDUCTION) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_salary_deductions" model="hr.salary.rule">
+            <field name="name">Salary Deduction</field>
+            <field name="code">SALARY_DEDUCTIONS</field>
+            <field name="sequence" eval="171"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - abs(inputs.SALARY_DEDUCTIONS.amount) if ('SALARY_DEDUCTIONS' in inputs and inputs.SALARY_DEDUCTIONS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_other_deductions" model="hr.salary.rule">
+            <field name="name">Other Deduction</field>
+            <field name="code">OTHER_DEDUCTIONS</field>
+            <field name="sequence" eval="172"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - abs(inputs.OTHER_DEDUCTIONS.amount) if ('OTHER_DEDUCTIONS' in inputs and inputs.OTHER_DEDUCTIONS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_advrec" model="hr.salary.rule">
+            <field name="name">Advance Recovery</field>
+            <field name="code">ADVREC</field>
+            <field name="sequence" eval="173"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - abs(inputs.ADVREC.amount) if ('ADVREC' in inputs and inputs.ADVREC) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_assig_salary" model="hr.salary.rule">
+            <field name="name">Assignment of Salary</field>
+            <field name="code">ASSIG_SALARY</field>
+            <field name="sequence" eval="174"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - abs(inputs.ASSIG_SALARY.amount) if ('ASSIG_SALARY' in inputs and inputs.ASSIG_SALARY) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_attach_salary" model="hr.salary.rule">
+            <field name="name">Attachment of Salary</field>
+            <field name="code">ATTACH_SALARY</field>
+            <field name="sequence" eval="175"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - abs(inputs.ATTACH_SALARY.amount) if ('ATTACH_SALARY' in inputs and inputs.ATTACH_SALARY) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_child_support" model="hr.salary.rule">
+            <field name="name">Child Support</field>
+            <field name="code">CHILD_SUPPORT</field>
+            <field name="sequence" eval="176"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - abs(inputs.CHILD_SUPPORT.amount) if ('CHILD_SUPPORT' in inputs and inputs.CHILD_SUPPORT) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_aled" model="hr.salary.rule">
+            <field name="name">Annual Leave Remaining Balance Deduction</field>
+            <field name="code">ALED</field>
+            <field name="sequence" eval="177"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - (inputs.ALED.amount if ('ALED' in inputs and inputs.ALED) else 0.0)
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_sl" model="hr.salary.rule">
+            <field name="name">Sick Leave</field>
+            <field name="code">SL</field>
+            <field name="sequence" eval="178"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - (inputs.SL.amount if ('SL' in inputs and inputs.SL) else 0.0)
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_ooc" model="hr.salary.rule">
+            <field name="name">Out of Contract</field>
+            <field name="code">OOC</field>
+            <field name="sequence" eval="179"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - (inputs.OOC.amount if ('OOC' in inputs and inputs.OOC) else 0.0)
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_siec" model="hr.salary.rule">
+            <field name="name">Social Insurance Employee Contribution</field>
+            <field name="code">SIEC</field>
+            <field name="sequence" eval="180"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+if 'SIEC' in inputs and inputs.SIEC:
+    result = - inputs.SIEC.amount
+else:
+    result = - payslip.hds_ae_compute_pension_siec()
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_dewsemp" model="hr.salary.rule">
+            <field name="name">DEWS Employee Contribution</field>
+            <field name="code">DEWSEMP</field>
+            <field name="sequence" eval="181"/>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = - (inputs.DEWSEMP.amount if ('DEWSEMP' in inputs and inputs.DEWSEMP) else 0.0)
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ================================================================= -->
+        <!-- 3. EMPLOYER / STATUTORY CONTRIBUTIONS (Category: COMP)           -->
+        <!-- ================================================================= -->
+
+        <record id="hds_ae_rule_sicc" model="hr.salary.rule">
+            <field name="name">Social Insurance Company Contribution</field>
+            <field name="code">SICC</field>
+            <field name="sequence" eval="210"/>
+            <field name="category_id" ref="hr_payroll_community.COMP"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+if 'SICC' in inputs and inputs.SICC:
+    result = inputs.SICC.amount
+else:
+    result = payslip.hds_ae_compute_pension_sicc()
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_dewscomp" model="hr.salary.rule">
+            <field name="name">DEWS Company Contribution</field>
+            <field name="code">DEWSCOMP</field>
+            <field name="sequence" eval="211"/>
+            <field name="category_id" ref="hr_payroll_community.COMP"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.DEWSCOMP.amount if ('DEWSCOMP' in inputs and inputs.DEWSCOMP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ================================================================= -->
+        <!-- 4. EMPLOYER COMPLIANCE COSTS (Category: COMP_COST)               -->
+        <!-- ================================================================= -->
+
+        <record id="hds_ae_rule_medical_ins" model="hr.salary.rule">
+            <field name="name">Medical Insurance (Yearly)</field>
+            <field name="code">MEDICAL_INS</field>
+            <field name="sequence" eval="212"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_comp_cost"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.MEDICAL_INS.amount if ('MEDICAL_INS' in inputs and inputs.MEDICAL_INS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_work_permit" model="hr.salary.rule">
+            <field name="name">Work Permit (Yearly)</field>
+            <field name="code">WORK_PERMIT</field>
+            <field name="sequence" eval="213"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_comp_cost"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.WORK_PERMIT.amount if ('WORK_PERMIT' in inputs and inputs.WORK_PERMIT) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_employment_visa" model="hr.salary.rule">
+            <field name="name">Employment Visa (Yearly)</field>
+            <field name="code">EMPLOYMENT_VISA</field>
+            <field name="sequence" eval="214"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_comp_cost"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.EMPLOYMENT_VISA.amount if ('EMPLOYMENT_VISA' in inputs and inputs.EMPLOYMENT_VISA) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_other_costs" model="hr.salary.rule">
+            <field name="name">Other Costs</field>
+            <field name="code">OTHER_COSTS</field>
+            <field name="sequence" eval="215"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_comp_cost"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.OTHER_COSTS.amount if ('OTHER_COSTS' in inputs and inputs.OTHER_COSTS) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ================================================================= -->
+        <!-- 5. END OF SERVICE & PROVISIONS (Category: PROV)                  -->
+        <!-- ================================================================= -->
+
+        <record id="hds_ae_rule_eosp" model="hr.salary.rule">
+            <field name="name">End of Service Provision</field>
+            <field name="code">EOSP</field>
+            <field name="sequence" eval="220"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_prov"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.EOSP.amount if ('EOSP' in inputs and inputs.EOSP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_eospc" model="hr.salary.rule">
+            <field name="name">EOS Provision Correction</field>
+            <field name="code">EOSPC</field>
+            <field name="sequence" eval="221"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_prov"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.EOSPC.amount if ('EOSPC' in inputs and inputs.EOSPC) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_ae_rule_alp" model="hr.salary.rule">
+            <field name="name">Annual Leave Provision</field>
+            <field name="code">ALP</field>
+            <field name="sequence" eval="222"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_prov"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result = inputs.ALP.amount if ('ALP' in inputs and inputs.ALP) else 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ================================================================= -->
+        <!-- 6. NET COST AGGREGATION (Category: NETCOST)                      -->
+        <!-- ================================================================= -->
+
+        <record id="hds_ae_rule_netcost" model="hr.salary.rule">
+            <field name="name">Net Cost</field>
+            <field name="code">NETCOST</field>
+            <field name="sequence" eval="250"/>
+            <field name="category_id" ref="hudson_ae_payroll.salary_rule_category_netcost"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+net_val = categories.NET if isinstance(categories.NET, (int, float)) else 0.0
+comp_val = categories.COMP if isinstance(categories.COMP, (int, float)) else 0.0
+result = net_val + comp_val
+]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

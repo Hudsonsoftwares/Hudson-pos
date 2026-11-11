@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright 2024 Hudson Community
+    License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+
+    Creates the default root DMS directories for each business area.
+    These are used as default targets in the Files Centralization settings.
+    noupdate="0" ensures they are created and updated.
+-->
+<odoo noupdate="0">
+
+    <!-- ── Enterprise Access Group ────────────────────────────────── -->
+    <record id="dms_access_group_enterprise" model="dms.access.group">
+        <field name="name">Enterprise Folders (Full Access)</field>
+        <field name="perm_create">True</field>
+        <field name="perm_write">True</field>
+        <field name="perm_unlink">False</field>
+        <field name="group_ids" eval="[
+            (4, ref('dms.group_dms_manager')), 
+            (4, ref('dms_enterprise_features.group_dms_document_controller'))
+        ]"/>
+    </record>
+
+    <!-- ── Root: Projects ─────────────────────────────────────────── -->
+    <record id="dms_dir_projects" model="dms.directory">
+        <field name="name">Projects</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Products ─────────────────────────────────────────── -->
+    <record id="dms_dir_products" model="dms.directory">
+        <field name="name">Products</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Recruitment ──────────────────────────────────────── -->
+    <record id="dms_dir_recruitment" model="dms.directory">
+        <field name="name">Recruitment</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Human Resources ──────────────────────────────────── -->
+    <record id="dms_dir_employees" model="dms.directory">
+        <field name="name">Employees</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Finance (Accounting) ─────────────────────────────── -->
+    <record id="dms_dir_accounting" model="dms.directory">
+        <field name="name">Accounting</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <record id="dms_dir_finance" model="dms.directory">
+        <field name="name">Finance</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Approvals ────────────────────────────────────────── -->
+    <record id="dms_dir_approvals" model="dms.directory">
+        <field name="name">Approvals</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+    
+    <!-- ── Root: Signatures ───────────────────────────────────────── -->
+    <record id="dms_dir_signatures" model="dms.directory">
+        <field name="name">Signatures</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <record id="dms_dir_sign" model="dms.directory">
+        <field name="name">Sign (Legacy)</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Sales ────────────────────────────────────────────── -->
+    <record id="dms_dir_sales" model="dms.directory">
+        <field name="name">Sales</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Purchases ────────────────────────────────────────── -->
+    <record id="dms_dir_purchases" model="dms.directory">
+        <field name="name">Purchases</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- ── Root: Helpdesk ─────────────────────────────────────────── -->
+    <record id="dms_dir_helpdesk" model="dms.directory">
+        <field name="name">Helpdesk</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+        <field name="group_ids" eval="[(4, ref('dms_access_group_enterprise'))]"/>
+    </record>
+
+    <!-- Fleet -->
+    <record id="dms_directory_fleet" model="dms.directory">
+        <field name="name">Fleet</field>
+        <field name="is_root_directory">True</field>
+        <field name="storage_id" ref="dms_storage_enterprise"/>
+    </record>
+
+</odoo>

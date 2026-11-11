@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hds_tds_challan_view_list" model="ir.ui.view">
+        <field name="name">hds.tds.challan.list</field>
+        <field name="model">hds.tds.challan</field>
+        <field name="arch" type="xml">
+            <list string="TDS Challans" decoration-muted="state == 'draft'">
+                <field name="date_from" string="Challan Period" widget="daterange" options="{'end_date_field': 'date_to'}"/>
+                <field name="date_to" column_invisible="1"/>
+                <field name="paid_date"/>
+                <field name="challan_number"/>
+                <field name="bsr_code"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="line_count" optional="hide"/>
+                <field name="tds_amount" sum="Total"/>
+                <field name="penalty_amount" sum="Total"/>
+                <field name="interest_amount" sum="Total"/>
+                <field name="total_paid" sum="Total"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hds_tds_challan_view_form" model="ir.ui.view">
+        <field name="name">hds.tds.challan.form</field>
+        <field name="model">hds.tds.challan</field>
+        <field name="arch" type="xml">
+            <form string="TDS Challan">
+                <header>
+                    <button name="action_import_payslips" string="Import Payslips" type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_done" string="Mark as Done" type="object" invisible="state != 'draft'"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'done'"
+                            groups="hudson_payroll_base.group_payroll_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_form_138" type="object" class="oe_stat_button">
+                            <span class="o_stat_text">Form 138</span>
+                        </button>
+                    </div>
+                    <group>
+                        <group string="Challan Details" name="challan_details">
+                            <field name="date_from" string="Challan Period" widget="daterange"
+                                   options="{'end_date_field': 'date_to'}" readonly="state == 'done'"/>
+                            <field name="date_to" invisible="1" readonly="state == 'done'"/>
+                            <field name="paid_date" readonly="state == 'done'"/>
+                            <field name="challan_number" placeholder="e.g., 12345" readonly="state == 'done'"/>
+                            <field name="bsr_code" placeholder="e.g., 1234567" readonly="state == 'done'"/>
+                            <field name="minor_head" widget="radio" readonly="state == 'done'"/>
+                            <field name="payment_mode" widget="radio" readonly="state == 'done'"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state == 'done' or line_ids"/>
+                            <field name="financial_year_id" invisible="1"/>
+                        </group>
+                        <group string="Challan Amounts" name="challan_amounts">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="tds_amount"/>
+                            <field name="penalty_amount" readonly="state == 'done'"/>
+                            <field name="interest_amount" readonly="state == 'done'"/>
+                            <field name="total_paid" class="fw-bold"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Challan Lines" name="challan_lines">
+                            <field name="line_ids" readonly="state == 'done'">
+                                <list create="false" editable="bottom" decoration-danger="not pan">
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="payslip_id" column_invisible="1"/>
+                                    <field name="employee_id" widget="many2one_avatar_employee" readonly="1"/>
+                                    <field name="pan" readonly="1"/>
+                                    <field name="paid_date" readonly="1"/>
+                                    <field name="net_wage" readonly="1" sum="Total"/>
+                                    <field name="tds_amount" readonly="1" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hds_tds_challan_view_search" model="ir.ui.view">
+        <field name="name">hds.tds.challan.search</field>
+        <field name="model">hds.tds.challan</field>
+        <field name="arch" type="xml">
+            <search string="TDS Challans">
+                <field name="challan_number"/>
+                <field name="bsr_code"/>
+                <field name="line_ids" string="Employee" filter_domain="[('line_ids.employee_id.name', 'ilike', self)]"/>
+                <filter name="current_fy" string="Current FY"
+                        domain="[('financial_year_id.start_date', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                                 ('financial_year_id.end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="challan_period" string="Challan Period" date="date_from"/>
+                <group>
+                    <filter name="group_financial_year" string="Tax Year" context="{'group_by': 'financial_year_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_period" string="Challan Period" context="{'group_by': 'date_from:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hds_tds_challan" model="ir.actions.act_window">
+        <field name="name">TDS Challans</field>
+        <field name="res_model">hds.tds.challan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hds_tds_challan_view_search"/>
+        <field name="context">{'search_default_current_fy': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a TDS challan</p>
+            <p>Record the income tax deposited for a period and import the paid payslips whose TDS it covers.</p>
+        </field>
+    </record>
+
+    <!-- Import Payslips dialog of a challan: paid payslips of the period, with TDS, not in a challan -->
+    <record id="hds_tds_challan_import_payslip_list" model="ir.ui.view">
+        <field name="name">hr.payslip.list.tds.challan.import</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Import Payslips" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_hds_add_to_tds_challan" string="Add to Challan" type="object" class="btn-primary"/>
+                </header>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="date_from" string="Period" widget="daterange" options="{'end_date_field': 'date_to'}"/>
+                <field name="date_to" column_invisible="1"/>
+                <field name="payment_date" string="Paid Date"/>
+                <field name="net_wage"/>
+                <field name="hds_in_challan_tds_amount"/>
+                <field name="state" widget="badge" decoration-success="state == 'paid'"/>
+            </list>
+        </field>
+    </record>
+
+    <menuitem id="menu_hds_tds_challan"
+              name="TDS Challans"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_tds_challan"
+              sequence="72"/>
+</odoo>

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ================================================================
+         DEPARTMENTS FOR RESTAURANT & CAFE
+         ================================================================ -->
+    <record id="dept_kitchen" model="hr.department">
+        <field name="name">Kitchen &amp; Culinary</field>
+    </record>
+
+    <record id="dept_service" model="hr.department">
+        <field name="name">Service &amp; Hospitality</field>
+    </record>
+
+    <record id="dept_cafe" model="hr.department">
+        <field name="name">Bar &amp; Cafe</field>
+    </record>
+
+    <!-- ================================================================
+         1. RESTAURANT CHEF (PUBLISHED ON WEBSITE)
+         ================================================================ -->
+    <record id="job_resto_chef" model="hr.job">
+        <field name="name">Restaurant Chef</field>
+        <field name="department_id" ref="dept_kitchen"/>
+        <field name="no_of_recruitment">2</field>
+        <field name="is_published">True</field>
+        <field name="website_published">True</field>
+        <field name="salary_min">35000</field>
+        <field name="salary_max">50000</field>
+        <field name="requirements">Proven culinary experience in Kerala and South Indian cuisine. Strong knowledge of food safety, hygienic handling, menu plating, and high-volume kitchen coordination.</field>
+        <field name="description" type="html">
+            <p><strong>Passionate and detail-oriented Restaurant Chef</strong> with hands-on experience in <strong>Kerala and South Indian cuisine</strong>, specializing in consistent taste, hygienic food preparation, and fast-paced kitchen operations. Skilled in menu planning, preparation, plating, inventory control, and team coordination to deliver high-quality dishes on time. Committed to maintaining food safety standards, reducing wastage, and delivering authentic dining experiences.</p>
+            <h4>Key Responsibilities:</h4>
+            <ul>
+                <li>Prepare and present authentic Kerala culinary specialties, curries, and cafe dishes to high quality standards.</li>
+                <li>Monitor food inventory, control kitchen waste, and coordinate daily fresh raw ingredient supplies.</li>
+                <li>Ensure rigorous kitchen sanitation, compliance with hygiene standards, and food safety regulations.</li>
+                <li>Train and mentor junior kitchen staff and line cooks during busy dining shifts.</li>
+            </ul>
+        </field>
+        <field name="website_description" type="html">
+            <div class="lead">
+                <p>Passionate and detail-oriented <strong>Restaurant Chef</strong> with hands-on experience in <strong>Kerala and South Indian cuisine</strong>, specializing in consistent taste, hygienic food preparation, and fast-paced kitchen operations. Skilled in menu planning, preparation, plating, inventory control, and team coordination to deliver high-quality dishes on time.</p>
+            </div>
+            <div class="row mt24">
+                <div class="col-lg-8">
+                    <h4>What You Will Do:</h4>
+                    <ul>
+                        <li>Prepare authentic Kerala curries, biryanis, seafood specialties, and artisan cafe dishes.</li>
+                        <li>Maintain pristine culinary hygiene, portion control, and ingredient freshness.</li>
+                        <li>Coordinate smoothly with the front-of-house service staff and kitchen order displays.</li>
+                    </ul>
+                    <h4>What We Look For:</h4>
+                    <ul>
+                        <li>3+ years of professional culinary experience in busy restaurant environments.</li>
+                        <li>Expertise in traditional spice blends, slow-cooking methods, and contemporary plating.</li>
+                        <li>High energy, culinary discipline, and dedication to unforgettable dining experiences.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card p-3 bg-light border-0">
+                        <h5>Role Overview</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Position:</strong> Restaurant Chef</li>
+                            <li><strong>Type:</strong> Full-time / Permanent</li>
+                            <li><strong>Openings:</strong> 2 Openings</li>
+                            <li><strong>Compensation:</strong> ₹35,000 - ₹50,000 / month</li>
+                            <li><strong>Location:</strong> Resto Cafe Kerala</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </field>
+        <field name="website_rating" type="html">
+            <div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Culinary Expertise</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Team Coordination</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Food Safety &amp; Quality</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Autonomy &amp; Speed</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         2. RESTAURANT SUPERVISOR (PUBLISHED ON WEBSITE)
+         ================================================================ -->
+    <record id="job_resto_supervisor" model="hr.job">
+        <field name="name">Restaurant Supervisor</field>
+        <field name="department_id" ref="dept_service"/>
+        <field name="no_of_recruitment">1</field>
+        <field name="is_published">True</field>
+        <field name="website_published">True</field>
+        <field name="salary_min">28000</field>
+        <field name="salary_max">40000</field>
+        <field name="requirements">2+ years supervisory experience in restaurant, cafe, or hospitality operations. Strong leadership, POS familiarity, and customer service excellence.</field>
+        <field name="description" type="html">
+            <p>We are looking for a proactive <strong>Restaurant Supervisor</strong> to lead daily front-of-house operations at <strong>Resto Cafe – Kerala</strong>. In this role, you will supervise staff, ensure smooth service, handle guest feedback, and maintain high standards of cleanliness and operational efficiency. The ideal candidate has strong leadership and communication skills, experience in hospitality, and thrives in a fast-paced environment while delivering memorable dining experiences inspired by Kerala’s warm hospitality.</p>
+            <h4>Key Responsibilities:</h4>
+            <ul>
+                <li>Supervise floor staff, table assignments, and guest flow across dining floors and outdoor patio.</li>
+                <li>Operate and oversee Point of Sale (POS) checkout, discount vouchers, and daily shift closing reports.</li>
+                <li>Handle customer feedback, reservations, and special dining requests with poise and warmth.</li>
+                <li>Coordinate directly with kitchen chef teams to ensure fast order turnaround times.</li>
+            </ul>
+        </field>
+        <field name="website_description" type="html">
+            <div class="lead">
+                <p>We are looking for a proactive <strong>Restaurant Supervisor</strong> to lead daily front-of-house operations at <strong>Resto Cafe – Kerala</strong>. In this role, you will supervise staff, ensure smooth service, handle guest feedback, and maintain high standards of cleanliness and operational efficiency.</p>
+            </div>
+            <div class="row mt24">
+                <div class="col-lg-8">
+                    <h4>What You Will Do:</h4>
+                    <ul>
+                        <li>Lead the service team across dining floor and outdoor patio.</li>
+                        <li>Ensure guests receive attentive hospitality and authentic Kerala warmth.</li>
+                        <li>Supervise POS cashier registers, table floor plan allocations, and shift closures.</li>
+                    </ul>
+                    <h4>What We Look For:</h4>
+                    <ul>
+                        <li>2+ years in supervisory or shift lead roles in dining / hospitality.</li>
+                        <li>Excellent verbal communication and natural leadership instincts.</li>
+                        <li>Comfort with modern Restaurant POS software and floor management.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card p-3 bg-light border-0">
+                        <h5>Role Overview</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Position:</strong> Restaurant Supervisor</li>
+                            <li><strong>Type:</strong> Full-time / Shift</li>
+                            <li><strong>Openings:</strong> 1 Opening</li>
+                            <li><strong>Compensation:</strong> ₹28,000 - ₹40,000 / month</li>
+                            <li><strong>Location:</strong> Resto Cafe Kerala</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </field>
+        <field name="website_rating" type="html">
+            <div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Customer Relationship</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Leadership &amp; Coaching</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Operations &amp; POS Handling</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Autonomy &amp; Organization</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         3. BARISTA & CAFE SPECIALIST (PUBLISHED ON WEBSITE)
+         ================================================================ -->
+    <record id="job_barista" model="hr.job">
+        <field name="name">Barista &amp; Cafe Specialist</field>
+        <field name="department_id" ref="dept_cafe"/>
+        <field name="no_of_recruitment">2</field>
+        <field name="is_published">True</field>
+        <field name="website_published">True</field>
+        <field name="salary_min">22000</field>
+        <field name="salary_max">32000</field>
+        <field name="requirements">Experience in espresso calibration, specialty coffee brewing, latte art, mocktails, and milkshakes.</field>
+        <field name="description" type="html">
+            <p>Passionate <strong>Barista &amp; Cafe Specialist</strong> skilled in crafting premium specialty coffee, Kerala spiced chai, artisanal cold beverages, and cafe shakes. Responsible for maintaining cafe station cleanliness, espresso machine calibration, latte art, and welcoming guests with exceptional beverage craft.</p>
+        </field>
+        <field name="website_description" type="html">
+            <div class="lead">
+                <p>Passionate <strong>Barista &amp; Cafe Specialist</strong> skilled in crafting premium specialty coffee, Kerala spiced chai, artisanal cold beverages, and cafe shakes. Welcoming guests with exceptional beverage craft.</p>
+            </div>
+            <div class="row mt24">
+                <div class="col-lg-8">
+                    <h4>What You Will Do:</h4>
+                    <ul>
+                        <li>Brew artisanal espresso, pour-overs, cold brews, and seasonal signature mocktails.</li>
+                        <li>Practice beautiful latte art and maintain consistent beverage recipe portions.</li>
+                        <li>Maintain clean espresso machines, grinders, and cafe bar counter stations.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card p-3 bg-light border-0">
+                        <h5>Role Overview</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Position:</strong> Barista &amp; Cafe Specialist</li>
+                            <li><strong>Type:</strong> Full-time</li>
+                            <li><strong>Openings:</strong> 2 Openings</li>
+                            <li><strong>Compensation:</strong> ₹22,000 - ₹32,000 / month</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </field>
+        <field name="website_rating" type="html">
+            <div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Coffee &amp; Beverage Craft</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Customer Engagement</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         4. SERVICE CAPTAIN & FLOOR HOST (PUBLISHED ON WEBSITE)
+         ================================================================ -->
+    <record id="job_service_captain" model="hr.job">
+        <field name="name">Service Captain &amp; Floor Host</field>
+        <field name="department_id" ref="dept_service"/>
+        <field name="no_of_recruitment">3</field>
+        <field name="is_published">True</field>
+        <field name="website_published">True</field>
+        <field name="salary_min">20000</field>
+        <field name="salary_max">28000</field>
+        <field name="requirements">Strong interpersonal skills, pleasant grooming, experience with table service and dining room hospitality.</field>
+        <field name="description" type="html">
+            <p>Energetic and courteous <strong>Service Captain</strong> to guide diners through our traditional Kerala Sadya, specialty combos, and cafe offerings. Ensures table orders are accurately routed to the kitchen, beverages served promptly, and guests enjoy a seamless dining experience.</p>
+        </field>
+        <field name="website_description" type="html">
+            <div class="lead">
+                <p>Energetic and courteous <strong>Service Captain</strong> to guide diners through our traditional Kerala Sadya, specialty combos, and cafe offerings. Welcoming diners with warmth and efficiency.</p>
+            </div>
+            <div class="row mt24">
+                <div class="col-lg-8">
+                    <h4>What You Will Do:</h4>
+                    <ul>
+                        <li>Greet arriving guests, seat them at table reservations, and explain menu choices.</li>
+                        <li>Accurately take table orders using mobile/tablet POS.</li>
+                        <li>Coordinate course serving times from Starter to Dessert.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card p-3 bg-light border-0">
+                        <h5>Role Overview</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Position:</strong> Service Captain</li>
+                            <li><strong>Type:</strong> Full-time / Shift</li>
+                            <li><strong>Openings:</strong> 3 Openings</li>
+                            <li><strong>Compensation:</strong> ₹20,000 - ₹28,000 / month</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </field>
+        <field name="website_rating" type="html">
+            <div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Guest Hospitality</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="s_rating pb8" data-vcss="001" data-rating-icon="star" data-snippet="s_rating" data-name="Rating">
+                    <strong class="s_rating_title">Speed &amp; Coordination</strong>
+                    <div class="s_rating_icons o_not_editable">
+                        <span class="s_rating_active_icons text-primary">
+                            <i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/><i class="oi oi-filled" data-icon="star"/>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         SAMPLE APPLICANTS ACROSS RECRUITMENT KANBAN STAGES
+         ================================================================ -->
+    <record id="applicant_rahul_chef" model="hr.applicant">
+        <field name="partner_name">Rahul Nair</field>
+        <field name="email_from">rahul.nair@example.com</field>
+        <field name="partner_phone">+91 98470 12345</field>
+        <field name="job_id" ref="job_resto_chef"/>
+        <field name="department_id" ref="dept_kitchen"/>
+        <field name="stage_id" ref="hr_recruitment.stage_job2"/>
+        <field name="priority">2</field>
+        <field name="salary_expected">38000</field>
+        <field name="salary_proposed">36000</field>
+        <field name="applicant_notes">Strong 6-year background in authentic Malabar biryanis, seafood curries, and sadya preparations. Scheduled for practical culinary trial.</field>
+    </record>
+
+    <record id="applicant_anjali_sup" model="hr.applicant">
+        <field name="partner_name">Anjali Menon</field>
+        <field name="email_from">anjali.menon@example.com</field>
+        <field name="partner_phone">+91 94471 67890</field>
+        <field name="job_id" ref="job_resto_supervisor"/>
+        <field name="department_id" ref="dept_service"/>
+        <field name="stage_id" ref="hr_recruitment.stage_job1"/>
+        <field name="priority">1</field>
+        <field name="salary_expected">32000</field>
+        <field name="applicant_notes">Hotel management graduate with 3 years floor experience. Excellent communication and POS knowledge.</field>
+    </record>
+
+    <record id="applicant_fasil_barista" model="hr.applicant">
+        <field name="partner_name">Mohammed Fasil</field>
+        <field name="email_from">fasil.m@example.com</field>
+        <field name="partner_phone">+91 98952 34567</field>
+        <field name="job_id" ref="job_barista"/>
+        <field name="department_id" ref="dept_cafe"/>
+        <field name="stage_id" ref="hr_recruitment.stage_job4"/>
+        <field name="priority">3</field>
+        <field name="salary_expected">26000</field>
+        <field name="salary_proposed">26000</field>
+        <field name="applicant_notes">Certified specialty barista with creative latte art and tea mocktail skills. Contract offer sent.</field>
+    </record>
+
+    <record id="applicant_kavya_captain" model="hr.applicant">
+        <field name="partner_name">Kavya Pillai</field>
+        <field name="email_from">kavya.p@example.com</field>
+        <field name="partner_phone">+91 97455 89012</field>
+        <field name="job_id" ref="job_service_captain"/>
+        <field name="department_id" ref="dept_service"/>
+        <field name="stage_id" ref="hr_recruitment.stage_job3"/>
+        <field name="priority">2</field>
+        <field name="salary_expected">24000</field>
+        <field name="applicant_notes">2 years fine-dining hospitality service. Warm personality and great guest feedback.</field>
+    </record>
+
+    <record id="applicant_deepak_chef" model="hr.applicant">
+        <field name="partner_name">Deepak George</field>
+        <field name="email_from">deepak.george@example.com</field>
+        <field name="partner_phone">+91 96330 45678</field>
+        <field name="job_id" ref="job_resto_chef"/>
+        <field name="department_id" ref="dept_kitchen"/>
+        <field name="stage_id" ref="hr_recruitment.stage_job0"/>
+        <field name="priority">1</field>
+        <field name="salary_expected">42000</field>
+        <field name="applicant_notes">Applied via Resto Cafe Kerala website career portal. Resume received and pending initial screening.</field>
+    </record>
+
+    <record id="applicant_suresh_chef" model="hr.applicant">
+        <field name="partner_name">Suresh Babu</field>
+        <field name="email_from">suresh.babu@example.com</field>
+        <field name="partner_phone">+91 94002 98765</field>
+        <field name="job_id" ref="job_resto_chef"/>
+        <field name="department_id" ref="dept_kitchen"/>
+        <field name="stage_id" ref="hr_recruitment.stage_job5"/>
+        <field name="priority">3</field>
+        <field name="salary_expected">45000</field>
+        <field name="salary_proposed">45000</field>
+        <field name="applicant_notes">Senior traditional chef. Contract signed and joining next week.</field>
+    </record>
+
+</odoo>

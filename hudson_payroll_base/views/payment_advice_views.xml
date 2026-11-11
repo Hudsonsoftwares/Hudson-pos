@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hudson_payroll_payment_advice_view_form" model="ir.ui.view">
+        <field name="name">hudson.payroll.payment.advice.form</field>
+        <field name="model">hudson.payroll.payment.advice</field>
+        <field name="arch" type="xml">
+            <form string="Payment Advice">
+                <header>
+                    <button name="action_export_csv" string="Download Bank CSV" type="object" class="btn-primary" icon="download"/>
+                    <button name="action_export_enet" string="Download ENet CSV" type="object" class="btn-primary" icon="download"/>
+                    <button name="action_export_xlsx" string="Download Excel" type="object" class="btn-secondary" icon="table_chart"/>
+                    <button name="action_print_pdf" string="Print PDF Statement" type="object" class="btn-secondary" icon="print"/>
+                    <button name="action_confirm" string="Confirm Advice" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_set_to_draft" string="Set to Draft" type="object" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="payslip_run_id" invisible="not payslip_run_id"/>
+                            <field name="payslip_id" invisible="not payslip_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="company_partner_id" invisible="1"/>
+                            <field name="company_bank_id" required="1"
+                                   context="{'default_partner_id': company_partner_id, 'default_company_id': company_id}"
+                                   placeholder="Select or add Company Bank Account"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="enet_transaction_type"/>
+                            <field name="enet_client_code" placeholder="Optional HDFC Corporate Code"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="lines" string="Beneficiary Employees">
+                            <field name="line_ids">
+                                <list string="Payment Lines" decoration-warning="not has_bank_account">
+                                    <field name="employee_id"/>
+                                    <field name="department_id"/>
+                                    <field name="bank_name"/>
+                                    <field name="acc_number"/>
+                                    <field name="bank_bic"/>
+                                    <field name="net_amount" widget="monetary"/>
+                                    <field name="has_bank_account" invisible="1"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_amount" class="oe_subtotal_footer_separator" widget="monetary"/>
+                            </group>
+                        </page>
+                        <page name="notes" string="Instructions / Notes">
+                            <field name="note" placeholder="Add disbursement notes for the bank..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hudson_payroll_payment_advice_view_list" model="ir.ui.view">
+        <field name="name">hudson.payroll.payment.advice.list</field>
+        <field name="model">hudson.payroll.payment.advice</field>
+        <field name="arch" type="xml">
+            <list string="Payment Advices">
+                <field name="name"/>
+                <field name="payslip_run_id"/>
+                <field name="date"/>
+                <field name="company_bank_id"/>
+                <field name="total_amount" widget="monetary"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hudson_payroll_payment_advice" model="ir.actions.act_window">
+        <field name="name">Payment Advices</field>
+        <field name="res_model">hudson.payroll.payment.advice</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

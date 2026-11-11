@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════
+         Aged Receivable PDF Report — Enterprise-inspired layout
+         ═══════════════════════════════════════════════════════════════ -->
+    <template id="report_aged_receivable">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h2 style="color:#2c3e50; font-weight:bold; margin-bottom:2px;">Aged Receivable</h2>
+                            <p class="text-muted mb-1" style="font-size:13px;">
+                                <t t-foreach="docs" t-as="doc">
+                                    <t t-out="doc.company_id.name"/> | As of: <strong><t t-out="doc.as_of_date"/></strong>
+                                    | Period: <strong><t t-out="doc.period_length"/> days</strong>
+                                    | Moves: <strong>
+                                        <t t-if="doc.target_move == 'posted'">Posted Only</t>
+                                        <t t-if="doc.target_move == 'all'">All Entries</t>
+                                    </strong>
+                                </t>
+                            </p>
+                            <hr style="border-color:#2c3e50; border-width:2px; margin-top:4px;"/>
+                        </div>
+                    </div>
+                    <t t-foreach="docs" t-as="doc">
+                        <table class="table table-sm table-reports" style="font-size:11px;">
+                            <thead>
+                                <tr style="background:#2c3e50; color:white;">
+                                    <th style="width:22%; padding:5px 6px;">Partner</th>
+                                    <th class="text-end" style="padding:5px 6px;">Not Due</th>
+                                    <th class="text-end" style="padding:5px 6px;">1–<t t-out="doc.period_length"/></th>
+                                    <th class="text-end" style="padding:5px 6px;"><t t-out="doc.period_length + 1"/>–<t t-out="doc.period_length * 2"/></th>
+                                    <th class="text-end" style="padding:5px 6px;"><t t-out="doc.period_length * 2 + 1"/>–<t t-out="doc.period_length * 3"/></th>
+                                    <th class="text-end" style="padding:5px 6px;"><t t-out="doc.period_length * 3 + 1"/>–<t t-out="doc.period_length * 4"/></th>
+                                    <th class="text-end" style="padding:5px 6px;">Older</th>
+                                    <th class="text-end" style="padding:5px 6px; font-weight:bold;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.line_ids.filtered(lambda l: not l.is_total)" t-as="line">
+                                    <tr t-att-class="'table-danger' if line.total &lt; 0 else ''">
+                                        <td style="padding:4px 6px;"><t t-out="line.partner_name"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.not_due" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p0" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p1" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p2" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p3" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p4" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px; font-weight:bold;"
+                                            t-att-style="'color:#c0392b; font-weight:bold;' if line.total &lt; 0 else 'font-weight:bold;'">
+                                            <span t-out="line.total" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <t t-foreach="doc.line_ids.filtered(lambda l: l.is_total)" t-as="tl">
+                                    <tr style="background:#2c3e50; color:white; font-weight:bold;">
+                                        <td style="padding:6px;">TOTAL</td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.not_due" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p0" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p1" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p2" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p3" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p4" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.total" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                    </tr>
+                                </t>
+                            </tfoot>
+                        </table>
+                    </t>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <p class="text-muted" style="font-size:10px;">
+                                All amounts in <t t-foreach="docs" t-as="d"><t t-out="d.company_id.currency_id.name"/></t>.
+                                Amounts in red/negative indicate credit balances.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Aged Payable PDF Report
+         ═══════════════════════════════════════════════════════════════ -->
+    <template id="report_aged_payable">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h2 style="color:#2c3e50; font-weight:bold; margin-bottom:2px;">Aged Payable</h2>
+                            <p class="text-muted mb-1" style="font-size:13px;">
+                                <t t-foreach="docs" t-as="doc">
+                                    <t t-out="doc.company_id.name"/> | As of: <strong><t t-out="doc.as_of_date"/></strong>
+                                    | Period: <strong><t t-out="doc.period_length"/> days</strong>
+                                    | Moves: <strong>
+                                        <t t-if="doc.target_move == 'posted'">Posted Only</t>
+                                        <t t-if="doc.target_move == 'all'">All Entries</t>
+                                    </strong>
+                                </t>
+                            </p>
+                            <hr style="border-color:#e74c3c; border-width:2px; margin-top:4px;"/>
+                        </div>
+                    </div>
+                    <t t-foreach="docs" t-as="doc">
+                        <table class="table table-sm table-reports" style="font-size:11px;">
+                            <thead>
+                                <tr style="background:#c0392b; color:white;">
+                                    <th style="width:22%; padding:5px 6px;">Partner</th>
+                                    <th class="text-end" style="padding:5px 6px;">Not Due</th>
+                                    <th class="text-end" style="padding:5px 6px;">1–<t t-out="doc.period_length"/></th>
+                                    <th class="text-end" style="padding:5px 6px;"><t t-out="doc.period_length + 1"/>–<t t-out="doc.period_length * 2"/></th>
+                                    <th class="text-end" style="padding:5px 6px;"><t t-out="doc.period_length * 2 + 1"/>–<t t-out="doc.period_length * 3"/></th>
+                                    <th class="text-end" style="padding:5px 6px;"><t t-out="doc.period_length * 3 + 1"/>–<t t-out="doc.period_length * 4"/></th>
+                                    <th class="text-end" style="padding:5px 6px;">Older</th>
+                                    <th class="text-end" style="padding:5px 6px; font-weight:bold;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.line_ids.filtered(lambda l: not l.is_total)" t-as="line">
+                                    <tr>
+                                        <td style="padding:4px 6px;"><t t-out="line.partner_name"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.not_due" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p0" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p1" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p2" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p3" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px;"><span t-out="line.p4" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:4px 6px; font-weight:bold;">
+                                            <span t-out="line.total" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <t t-foreach="doc.line_ids.filtered(lambda l: l.is_total)" t-as="tl">
+                                    <tr style="background:#c0392b; color:white; font-weight:bold;">
+                                        <td style="padding:6px;">TOTAL</td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.not_due" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p0" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p1" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p2" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p3" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.p4" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        <td class="text-end" style="padding:6px;"><span t-out="tl.total" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                    </tr>
+                                </t>
+                            </tfoot>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ── IR Actions for PDF reports ────────────────────────────────── -->
+    <record id="action_report_aged_receivable" model="ir.actions.report">
+        <field name="name">Aged Receivable</field>
+        <field name="model">account.aged.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_accounting_enhancements.report_aged_receivable</field>
+        <field name="print_report_name">'Aged Receivable - %s' % object.company_id.name</field>
+    </record>
+
+    <record id="action_report_aged_payable" model="ir.actions.report">
+        <field name="name">Aged Payable</field>
+        <field name="model">account.aged.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_accounting_enhancements.report_aged_payable</field>
+        <field name="print_report_name">'Aged Payable - %s' % object.company_id.name</field>
+    </record>
+</odoo>

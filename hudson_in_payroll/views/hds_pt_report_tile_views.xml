@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vibrant Kanban View for Professional Tax Report Hub Tiles -->
+    <record id="hds_pt_report_tile_view_kanban" model="ir.ui.view">
+        <field name="name">hds.pt.report.tile.kanban</field>
+        <field name="model">hds.pt.report.tile</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="section" class="o_statutory_reports_kanban" create="false" edit="false">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="icon"/>
+                <field name="section"/>
+                <field name="featured"/>
+                <field name="report_type"/>
+                <templates>
+                    <t t-name="card">
+                        <div type="object" name="action_open_pt_report"
+                             t-attf-class="oe_kanban_global_click text-decoration-none d-block p-3 rounded-3 position-relative border-0 shadow-sm transition-all h-100 #{record.featured.raw_value ? 'bg-gradient-warning-subtle text-dark border-start border-4 border-warning' : 'bg-white text-dark border-start border-4 border-info'}" style="cursor: pointer;">
+                            
+                            <!-- Featured / Mandatory Ribbon Badge -->
+                            <t t-if="record.featured.raw_value">
+                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2 px-2 py-1 shadow-sm fw-bold rounded-pill" style="font-size: 0.75rem;">
+                                    <i class="fa fa-star me-1 text-danger" aria-label="Mandatory" role="img" title="Mandatory"/>Mandatory PT Filing
+                                </span>
+                            </t>
+
+                            <div class="d-flex align-items-start gap-3">
+                                <div t-attf-class="o_statutory_report_icon flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle p-3 shadow-xs #{record.featured.raw_value ? 'bg-warning text-dark' : 'bg-info text-dark'}" style="width: 52px; height: 52px;">
+                                    <i t-attf-class="fa #{record.icon.value} fa-lg"
+                                       aria-label="Report Icon" role="img" title="Report Icon"/>
+                                </div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span t-attf-class="badge #{record.section.raw_value == 'filing' ? 'bg-danger' : (record.section.raw_value == 'summary' ? 'bg-success' : (record.section.raw_value == 'analysis' ? 'bg-primary' : 'bg-secondary'))}" style="font-size: 0.65rem; text-transform: uppercase;">
+                                            <t t-out="record.section.value"/>
+                                        </span>
+                                    </div>
+                                    <h5 class="fw-bold mb-1 text-dark text-truncate pe-3" style="font-size: 1.05rem;">
+                                        <t t-out="record.name.value"/>
+                                    </h5>
+                                    <p class="text-muted small mb-0 text-wrap line-clamp-2" style="font-size: 0.85rem; line-height: 1.4;">
+                                        <t t-out="record.description.value"/>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Footer Launch Button Bar -->
+                            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-light">
+                                <span class="text-secondary small fw-medium">
+                                    <i class="fa fa-university me-1 text-info"/>PT Statutory Tool
+                                </span>
+                                <button type="object" name="action_open_pt_report" t-attf-class="btn btn-sm px-3 py-1 rounded-pill fw-bold shadow-xs #{record.featured.raw_value ? 'btn-warning text-dark' : 'btn-outline-info'}">
+                                    Generate Report <i class="fa fa-arrow-right ms-1"/>
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Window Action for PT Statutory Reports Hub -->
+    <record id="action_hds_pt_statutory_report_hub" model="ir.actions.act_window">
+        <field name="name">Professional Tax (PT) Reports Hub</field>
+        <field name="res_model">hds.pt.report.tile</field>
+        <field name="view_mode">kanban,list</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Professional Tax (PT) Statutory Reports Hub
+            </p>
+            <p>
+                Click any report tile to launch its generator wizard.
+            </p>
+        </field>
+    </record>
+
+</odoo>

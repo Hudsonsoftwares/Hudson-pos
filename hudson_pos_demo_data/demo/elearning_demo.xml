@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hudson POS Demo Data: eLearning / Courses (website_slides) -->
+<odoo noupdate="1">
+
+    <!-- ============================================================
+         SLIDE CHANNELS (Courses) - Restaurant & Cafe eLearning
+    ============================================================ -->
+
+    <!-- Course 1: Kerala Cuisine Masterclass -->
+    <record id="slide_channel_kerala_cuisine" model="slide.channel">
+        <field name="name">Kerala Cuisine Masterclass</field>
+        <field name="channel_type">training</field>
+        <field name="visibility">public</field>
+        <field name="enroll">public</field>
+        <field name="is_published">True</field>
+        <field name="sequence">1</field>
+        <field name="description_html">&lt;p&gt;Master the authentic flavours of Kerala — from aromatic fish curry to crispy banana chips. Learn traditional recipes, spice blending, and presentation techniques used in Kerala's finest restaurants.&lt;/p&gt;</field>
+    </record>
+
+    <!-- Course 2: Barista & Coffee Craft -->
+    <record id="slide_channel_barista_coffee" model="slide.channel">
+        <field name="name">Barista &amp; Coffee Craft</field>
+        <field name="channel_type">training</field>
+        <field name="visibility">public</field>
+        <field name="enroll">public</field>
+        <field name="is_published">True</field>
+        <field name="sequence">2</field>
+        <field name="description_html">&lt;p&gt;From espresso extraction to latte art, this course covers everything a professional barista needs to know. Perfect for cafe staff and coffee enthusiasts who want to master specialty coffee.&lt;/p&gt;</field>
+    </record>
+
+    <!-- Course 3: Restaurant Operations & Service Excellence -->
+    <record id="slide_channel_restaurant_ops" model="slide.channel">
+        <field name="name">Restaurant Operations &amp; Service Excellence</field>
+        <field name="channel_type">training</field>
+        <field name="visibility">public</field>
+        <field name="enroll">public</field>
+        <field name="is_published">True</field>
+        <field name="sequence">3</field>
+        <field name="description_html">&lt;p&gt;Train your team on hospitality excellence — from table service etiquette to handling guest complaints professionally. This course equips every front-of-house team member with world-class service skills.&lt;/p&gt;</field>
+    </record>
+
+    <!-- Course 4: Food Safety & Hygiene Certification -->
+    <record id="slide_channel_food_safety" model="slide.channel">
+        <field name="name">Food Safety &amp; Hygiene Certification</field>
+        <field name="channel_type">training</field>
+        <field name="visibility">public</field>
+        <field name="enroll">public</field>
+        <field name="is_published">True</field>
+        <field name="sequence">4</field>
+        <field name="description_html">&lt;p&gt;An essential certification course for all kitchen and food handling staff. Covers FSSAI guidelines, proper storage temperatures, cross-contamination prevention, and workplace hygiene best practices.&lt;/p&gt;</field>
+    </record>
+
+    <!-- ============================================================
+         SLIDES (Lessons) for Kerala Cuisine Masterclass
+    ============================================================ -->
+
+    <record id="slide_kerala_intro" model="slide.slide">
+        <field name="name">Introduction to Kerala Cuisine</field>
+        <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="is_preview">True</field>
+        <field name="sequence">1</field>
+        <field name="html_content">&lt;h2&gt;Welcome to Kerala Cuisine Masterclass&lt;/h2&gt;&lt;p&gt;Kerala cuisine is known for its rich use of coconut, curry leaves, and aromatic spices. This course will take you through the essential techniques and recipes that define Kerala's culinary identity.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Understanding Kerala spice palette&lt;/li&gt;&lt;li&gt;Coconut in every form: milk, oil, and fresh grated&lt;/li&gt;&lt;li&gt;Essential kitchen tools&lt;/li&gt;&lt;/ul&gt;</field>
+    </record>
+
+    <record id="slide_kerala_fish_curry" model="slide.slide">
+        <field name="name">Classic Kerala Fish Curry (Meen Curry)</field>
+        <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">2</field>
+        <field name="html_content">&lt;h2&gt;Meen Curry — Kerala's Signature Dish&lt;/h2&gt;&lt;p&gt;Learn to prepare the authentic Kerala fish curry using kudampuli (Gamboge), fresh coconut milk, and aromatic spices. This dish is the heart of Kerala cuisine.&lt;/p&gt;&lt;h3&gt;Ingredients&lt;/h3&gt;&lt;p&gt;Fresh fish, kudampuli, coconut milk, turmeric, chilli powder, curry leaves, mustard seeds, coconut oil.&lt;/p&gt;</field>
+    </record>
+
+    <record id="slide_kerala_appam" model="slide.slide">
+        <field name="name">Appam &amp; Stew — The Perfect Pair</field>
+        <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">3</field>
+        <field name="html_content">&lt;h2&gt;Soft Lacy Appam with Kerala Stew&lt;/h2&gt;&lt;p&gt;Appam is a delicate fermented rice hopper with crispy edges and a soft center. Paired with a mild coconut milk vegetable or chicken stew, this combination is beloved across Kerala.&lt;/p&gt;</field>
+    </record>
+
+    <!-- ============================================================
+         SLIDES (Lessons) for Barista & Coffee Craft
+    ============================================================ -->
+
+    <record id="slide_barista_intro" model="slide.slide">
+        <field name="name">The Art of Espresso</field>
+        <field name="channel_id" ref="slide_channel_barista_coffee"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="is_preview">True</field>
+        <field name="sequence">1</field>
+        <field name="html_content">&lt;h2&gt;Mastering Espresso Extraction&lt;/h2&gt;&lt;p&gt;A perfect espresso is the foundation of every great coffee drink. Learn about grind size, dose, extraction time, and the golden ratio for a balanced, rich shot.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Grind size and its effect on flavour&lt;/li&gt;&lt;li&gt;Tamping pressure and consistency&lt;/li&gt;&lt;li&gt;Extraction time: 25-30 seconds for the perfect shot&lt;/li&gt;&lt;/ul&gt;</field>
+    </record>
+
+    <record id="slide_barista_milk" model="slide.slide">
+        <field name="name">Milk Steaming &amp; Latte Art Basics</field>
+        <field name="channel_id" ref="slide_channel_barista_coffee"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">2</field>
+        <field name="html_content">&lt;h2&gt;Steaming Silky Microfoam&lt;/h2&gt;&lt;p&gt;The secret to great latte art lies in perfectly steamed milk. Learn how to create velvety microfoam and pour a classic heart, rosette, and tulip pattern.&lt;/p&gt;</field>
+    </record>
+
+    <record id="slide_barista_menu" model="slide.slide">
+        <field name="name">Specialty Coffee Menu &amp; Pricing</field>
+        <field name="channel_id" ref="slide_channel_barista_coffee"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">3</field>
+        <field name="html_content">&lt;h2&gt;Building a Specialty Coffee Menu&lt;/h2&gt;&lt;p&gt;Cappuccino, Flat White, Cortado, Cold Brew — understand the differences and learn how to describe each drink to customers confidently. Includes upselling tips and seasonal specials.&lt;/p&gt;</field>
+    </record>
+
+    <!-- ============================================================
+         SLIDES (Lessons) for Restaurant Operations & Service Excellence
+    ============================================================ -->
+
+    <record id="slide_ops_welcome" model="slide.slide">
+        <field name="name">Service Excellence Fundamentals</field>
+        <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="is_preview">True</field>
+        <field name="sequence">1</field>
+        <field name="html_content">&lt;h2&gt;The 5 Pillars of Great Restaurant Service&lt;/h2&gt;&lt;p&gt;Every great dining experience starts with the team's attitude and knowledge. Learn how to greet guests, present menus, take orders accurately, and ensure each guest feels valued.&lt;/p&gt;</field>
+    </record>
+
+    <record id="slide_ops_table" model="slide.slide">
+        <field name="name">Table Setting &amp; Etiquette</field>
+        <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">2</field>
+        <field name="html_content">&lt;h2&gt;Professional Table Setting Guide&lt;/h2&gt;&lt;p&gt;Learn the correct placement of cutlery, glassware, and napkins for different dining styles — from casual cafe to fine dining. Presentation is the first impression.&lt;/p&gt;</field>
+    </record>
+
+    <record id="slide_ops_complaint" model="slide.slide">
+        <field name="name">Handling Guest Complaints Gracefully</field>
+        <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">3</field>
+        <field name="html_content">&lt;h2&gt;Turn Complaints Into Compliments&lt;/h2&gt;&lt;p&gt;Every complaint is an opportunity. Learn the LAST method (Listen, Apologise, Solve, Thank) to handle difficult situations and retain guest loyalty.&lt;/p&gt;</field>
+    </record>
+
+    <!-- ============================================================
+         SLIDES (Lessons) for Food Safety & Hygiene
+    ============================================================ -->
+
+    <record id="slide_safety_intro" model="slide.slide">
+        <field name="name">Why Food Safety Matters</field>
+        <field name="channel_id" ref="slide_channel_food_safety"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="is_preview">True</field>
+        <field name="sequence">1</field>
+        <field name="html_content">&lt;h2&gt;Food Safety: The Foundation of Every Kitchen&lt;/h2&gt;&lt;p&gt;Food poisoning affects millions globally every year. As kitchen professionals, we have a duty to protect our guests. This module covers the basics of food safety and why it is non-negotiable.&lt;/p&gt;</field>
+    </record>
+
+    <record id="slide_safety_storage" model="slide.slide">
+        <field name="name">Proper Food Storage &amp; Temperature Control</field>
+        <field name="channel_id" ref="slide_channel_food_safety"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">2</field>
+        <field name="html_content">&lt;h2&gt;The Danger Zone: 4°C to 60°C&lt;/h2&gt;&lt;p&gt;Bacteria multiply rapidly between 4°C and 60°C. Learn correct refrigeration temperatures, FIFO (First In, First Out) stock rotation, and how to properly label stored food items.&lt;/p&gt;</field>
+    </record>
+
+    <record id="slide_safety_hygiene" model="slide.slide">
+        <field name="name">Personal Hygiene &amp; Cross-Contamination</field>
+        <field name="channel_id" ref="slide_channel_food_safety"/>
+        <field name="slide_type">article</field>
+        <field name="is_published">True</field>
+        <field name="sequence">3</field>
+        <field name="html_content">&lt;h2&gt;Preventing Cross-Contamination&lt;/h2&gt;&lt;p&gt;Use colour-coded chopping boards, wash hands for 20 seconds with soap, wear clean uniforms and gloves when required. Learn how small habits make a big difference in kitchen safety.&lt;/p&gt;</field>
+    </record>
+
+</odoo>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_version_view_form_inherit_account" model="ir.ui.view">
+        <field name="name">hr.version.form.inherit.account</field>
+        <field name="model">hr.version</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_version_view_form_inherit_hudson_payroll_base"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='schedule_pay']" position="after">
+                <field name="journal_id" options="{'no_create': True}"/>
+                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

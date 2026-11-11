@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="appointment_type_index" name="Appointments">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_appointment_index">
+                <style>
+                    .o_appointment_index { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh; padding-top: 40px; padding-bottom: 60px; }
+                    .premium-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); padding: 30px; transition: all 0.3s ease; text-decoration: none; color: inherit; display: block; }
+                    .premium-card:hover { box-shadow: 0 20px 45px rgba(0,0,0,0.08); transform: translateY(-5px); text-decoration: none; color: inherit; }
+                    .premium-card-title { font-weight: 700; color: #212529; font-size: 1.5rem; margin-bottom: 15px; }
+                    .premium-card-detail { color: #6c757d; font-size: 1rem; margin-bottom: 8px; }
+                </style>
+                <div class="container">
+                    <h1 class="text-center mb-5" style="font-weight: 700; color: #212529;">Schedule an Appointment</h1>
+                    <div class="row g-4 justify-content-center">
+                        <t t-if="not appointment_types">
+                            <div class="col-12 text-center">
+                                <p class="lead text-muted">No appointments are currently available for booking.</p>
+                            </div>
+                        </t>
+                        <t t-foreach="appointment_types" t-as="appt">
+                            <div class="col-md-6 col-lg-4">
+                                <a t-attf-href="/appointment/#{appt.id}" class="premium-card h-100">
+                                    <h3 class="premium-card-title" t-out="appt.name"/>
+                                    <div class="premium-card-detail">
+                                        <i class="oi me-2" data-icon="schedule"/> <t t-out="appt.appointment_duration"/> Hours
+                                    </div>
+                                    <div class="premium-card-detail" t-if="appt.location">
+                                        <i class="oi me-2" data-icon="location_on"/> 
+                                        <t t-if="appt.location == 'office'">Office</t>
+                                        <t t-if="appt.location == 'online'">Online Meeting</t>
+                                        <t t-if="appt.location == 'custom'"><t t-out="appt.location_details"/></t>
+                                    </div>
+                                </a>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="appointment_preview" name="Appointment Preview">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_appointment_preview">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;display=swap');
+                    .o_appointment_preview, .o_appointment_info, .o_appointment_confirmation { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh; padding-top: 20px; padding-bottom: 40px; }
+                    .premium-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); padding: 30px; transition: all 0.3s ease; }
+                    .premium-card:hover { box-shadow: 0 20px 45px rgba(0,0,0,0.08); }
+                    .premium-btn-primary { background: linear-gradient(135deg, #714B67 0%, #905d83 100%) !important; border: none !important; color: white !important; border-radius: 8px !important; font-weight: 600 !important; transition: all 0.3s ease !important; box-shadow: 0 8px 15px rgba(113, 75, 103, 0.25) !important; padding: 10px 24px !important; }
+                    .premium-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(113, 75, 103, 0.35) !important; }
+                    .slot-label { border-radius: 8px !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; font-weight: 500; color: #495057 !important; background: white; }
+                    .slot-label:hover { border-color: #714B67 !important; color: #714B67 !important; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(113, 75, 103, 0.1); }
+                    .slot-radio:checked + .slot-label { background: linear-gradient(135deg, #714B67 0%, #905d83 100%) !important; color: white !important; border-color: transparent !important; box-shadow: 0 6px 15px rgba(113, 75, 103, 0.3); }
+                    .premium-cal-day { transition: all 0.2s ease; border-radius: 8px !important; }
+                    .premium-cal-day:hover { transform: scale(1.1); background: #f8f9fa !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #714B67 !important; font-weight: bold; }
+                    .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; transition: all 0.2s ease; }
+                    .form-control:focus, .form-select:focus { border-color: #714B67; box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.15); }
+                </style>
+                
+                <!-- Preview Banner -->
+                <t t-if="preview">
+                    <div class="alert alert-info text-center m-0" style="background-color: #d1ecf1; color: #0c5460; border: none; border-radius: 0;">
+                        This is a preview of the customer appointment form. 
+                        <a t-attf-href="/web#id=#{appointment_type.id}&amp;model=appointment.type&amp;view_type=form" class="font-weight-bold" style="color: #0c5460; text-decoration: underline;">
+                            <i class="oi" data-icon="arrow_forward"/> Back to edit mode
+                        </a>
+                    </div>
+                </t>
+
+                <div class="container mt-4 mb-5 premium-card">
+                    <!-- Cancellation Alerts -->
+                    <t t-if="state == 'cancel-success'">
+                        <div class="alert alert-success mb-4" role="alert" style="background-color: #d4edda; border-color: #c3e6cb; color: #155724; border-radius: 4px; border-left: 5px solid #28a745;">
+                            <h5 class="alert-heading mb-1 font-weight-bold" style="color: #155724; font-size: 16px;">Appointment cancelled!</h5>
+                            <p class="mb-0" style="font-size: 14px;">You can now choose a different schedule that suits you better.</p>
+                        </div>
+                    </t>
+                    <t t-if="request.params.get('error') == 'cancel_too_late'">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Sorry!</strong> It is too late to cancel this appointment online. Please contact us directly.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </t>
+                    
+                    <div class="row">
+                        <!-- Left Column: Scheduling -->
+                        <div class="col-lg-8 pe-lg-5">
+                            <t t-if="existing_booking">
+                                <div class="alert alert-warning alert-dismissible fade show p-3 mb-4" role="alert" style="background-color: #fdf3d8; color: #856404; border: 1px solid #fce8b2; border-radius: 4px;">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div style="font-size: 14px;">
+                                            You already booked "<t t-out="appointment_type.name"/>" on <span class="font-weight-bold" style="color: #714B67;"><t t-out="existing_booking.start_datetime.strftime('%a, %d %b, %Y, %I:%M %p')"/></span>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #856404;">×</button>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            
+                            <form t-attf-action="/appointment/#{appointment_type.id}/info" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input t-if="invite_token" type="hidden" name="invite_token" t-att-value="invite_token"/>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label font-weight-bold" style="font-size: 14px;">Date</label>
+                                        <select class="form-select mb-3" name="date" onchange="this.form.submit()">
+                                            <!-- Simple dropdown matching the screenshot -->
+                                            <option t-att-value="selected_date"><t t-out="selected_date"/></option>
+                                        </select>
+                                    </div>
+                                    <t t-if="appointment_type.capacity > 1 or appointment_type.booking_target == 'resources'">
+                                        <div class="col-md-6">
+                                            <label class="form-label font-weight-bold" style="font-size: 14px;">Party size</label>
+                                            <select class="form-select mb-3" name="party_size" onchange="window.location.href = window.location.pathname + '?date=' + document.querySelector('select[name=date]').value + (document.querySelector('input[name=invite_token]') ? '&amp;invite_token=' + document.querySelector('input[name=invite_token]').value : '') + (document.querySelector('input[name=staff_user_id]') &amp;&amp; document.querySelector('input[name=staff_user_id]').value ? '&amp;staff_user_id=' + document.querySelector('input[name=staff_user_id]').value : '') + '&amp;party_size=' + this.value">
+                                                <t t-foreach="party_sizes" t-as="p_size">
+                                                    <option t-att-value="p_size" t-att-selected="p_size == selected_party_size"><t t-out="p_size"/></option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </t>
+                                </div>
+                                
+                                <!-- User Selection if Starts With = User -->
+                                <t t-if="assign_method == 'customer' and has_multiple_targets and schedule_based_on == 'users'">
+                                    <div class="mb-4">
+                                        <label class="form-label font-weight-bold" style="font-size: 14px;">
+                                            <t t-if="appointment_type.booking_target == 'resources'">Resource</t>
+                                            <t t-else="">With</t>
+                                        </label>
+                                        <div class="row g-2">
+                                            <div class="col-md-4 col-sm-6">
+                                                <a t-attf-href="?date=#{selected_date}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" class="text-decoration-none">
+                                                    <div t-attf-class="btn btn-outline-secondary w-100 py-2 text-center #{not staff_user_id and 'active' or ''}" t-att-style="not staff_user_id and 'border-color: #714B67; color: #714B67; background-color: #f8f9fa;' or 'color: #495057;'">
+                                                        <i class="oi oi-filled me-2" data-icon="group"></i> No Preference
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <t t-foreach="users_possible" t-as="u">
+                                                <div class="col-md-4 col-sm-6">
+                                                    <a t-attf-href="?date=#{selected_date}&amp;staff_user_id=#{u.id}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" class="text-decoration-none">
+                                                        <div t-attf-class="btn btn-outline-secondary w-100 py-2 text-center #{staff_user_id == str(u.id) and 'active' or ''}" t-att-style="staff_user_id == str(u.id) and 'border-color: #714B67; color: #714B67; background-color: #f8f9fa;' or 'color: #495057;'">
+                                                            <div class="d-flex align-items-center justify-content-center">
+                                                                <div class="rounded-circle d-inline-flex justify-content-center align-items-center me-2 text-white" t-att-style="'width: 24px; height: 24px; font-size: 12px; font-weight: bold; background-color: ' + (staff_user_id == str(u.id) and '#714B67' or '#6c757d') + ';'">
+                                                                    <t t-out="u.name[:1].upper()"/>
+                                                                </div>
+                                                                <t t-out="u.name"/>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="staff_user_id" t-att-value="staff_user_id or ''"/>
+                                </t>
+                                
+                                <!-- Calendar Widget -->
+                                <div class="border-0 rounded pt-3 pb-2 px-3 bg-white mb-4" style="box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                                    <div class="d-flex justify-content-center align-items-center mb-3 position-relative">
+                                        <a t-attf-href="?date=#{prev_month_date}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{staff_user_id and ('&amp;staff_user_id=' + staff_user_id) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" style="position: absolute; left: 10px; text-decoration: none;">
+                                            <i class="oi text-muted" data-icon="keyboard_arrow_left" style="cursor: pointer; font-size: 18px;"/>
+                                        </a>
+                                        <h5 class="mb-0 font-weight-bold" style="font-size: 15px;"><t t-out="month_name"/> <t t-out="year"/></h5>
+                                        <a t-attf-href="?date=#{next_month_date}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{staff_user_id and ('&amp;staff_user_id=' + staff_user_id) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" style="position: absolute; right: 10px; text-decoration: none;">
+                                            <i class="oi text-muted" data-icon="keyboard_arrow_right" style="cursor: pointer; font-size: 18px;"/>
+                                        </a>
+                                    </div>
+                                    <table class="table table-borderless text-center mb-0" style="table-layout: fixed; font-size: 13px;">
+                                        <thead>
+                                            <tr style="border-bottom: 1px solid #f0f0f0;">
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Sun</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Mon</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Tue</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Wed</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Thu</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Fri</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Sat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="month_grid" t-as="week">
+                                                <tr>
+                                                    <t t-foreach="week" t-as="day_info">
+                                                        <td class="p-1 align-middle" t-att-style="day_info_index == 0 and 'background-color: #f3f4f6;' or ''">
+                                                            <t t-if="day_info['is_current_month']">
+                                                                <t t-if="day_info['is_available']">
+                                                                    <a t-attf-href="?date=#{day_info['date_str']}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{staff_user_id and ('&amp;staff_user_id=' + staff_user_id) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" 
+                                                                         t-attf-class="d-flex justify-content-center align-items-center mx-auto text-decoration-none premium-cal-day"
+                                                                         t-att-style="
+                                                                            'width: 45px; height: 35px; ' +
+                                                                            (day_info['is_selected'] and 'background: linear-gradient(135deg, #714B67 0%, #905d83 100%); color: white; border: none; box-shadow: 0 4px 10px rgba(113,75,103,0.3);' or 
+                                                                            (day_info['is_today'] and 'border-bottom: 2px solid #714B67; color: #000;' or 
+                                                                            'color: #495057; border: 1px solid #f1f3f5;'))">
+                                                                        <t t-out="day_info['day']"/>
+                                                                    </a>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <div class="d-flex justify-content-center align-items-center mx-auto"
+                                                                         style="width: 45px; height: 35px; color: #adb5bd; cursor: not-allowed;">
+                                                                        <t t-out="day_info['day']"/>
+                                                                    </div>
+                                                                </t>
+                                                            </t>
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Old style block removed in favor of global block -->
+                                <t t-if="slots">
+                                    <div class="mb-3">
+                                        <label class="form-label font-weight-bold" style="font-size: 14px;">Pick a Time</label>
+                                        <div class="row g-2">
+                                            <t t-foreach="slots" t-as="slot">
+                                                <t t-if="slot.get('available', True)">
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <input type="radio" name="time" t-att-id="'slot_' + str(slot_index)" t-att-value="slot['val']" class="d-none slot-radio" t-att-checked="slot_index == 0"/>
+                                                        <label t-att-for="'slot_' + str(slot_index)" class="btn btn-outline-secondary w-100 py-2 slot-label text-center" style="cursor: pointer; border-radius: 4px;">
+                                                            <t t-out="slot['time']"/>
+                                                        </label>
+                                                    </div>
+                                                </t>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <t t-if="assign_method == 'customer' and has_multiple_targets and schedule_based_on == 'website'">
+                                        <div class="mb-3 mt-4" id="staff_selection_container" style="display: none;">
+                                            <label class="form-label font-weight-bold" style="font-size: 14px;">
+                                                <t t-if="appointment_type.booking_target == 'resources'">Resource</t>
+                                                <t t-else="">With</t>
+                                            </label>
+                                            <div class="row g-2" id="staff_selection_options"></div>
+                                            <input type="hidden" name="staff_user_id" id="selected_staff_id" value=""/>
+                                        </div>
+                                        <script>
+                                            var slotUserMap = {
+                                                <t t-foreach="slots" t-as="slot">
+                                                    <t t-if="slot.get('available', True)">
+                                                        "<t t-out="slot['val']"/>": [
+                                                            <t t-foreach="slot.get('available_users', [])" t-as="u">
+                                                                {"id": <t t-out="u['id']"/>, "name": "<t t-out="u['name']"/>", "capacity": <t t-out="u.get('capacity', 1)"/>},
+                                                            </t>
+                                                        ],
+                                                    </t>
+                                                </t>
+                                            };
+                                            
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                var radios = document.querySelectorAll('input[name="time"]');
+                                                var staffContainer = document.getElementById('staff_selection_container');
+                                                var staffOptions = document.getElementById('staff_selection_options');
+                                                var hiddenStaffInput = document.getElementById('selected_staff_id');
+                                                
+                                                function updateStaff() {
+                                                    var selectedTime = document.querySelector('input[name="time"]:checked');
+                                                    if (!selectedTime) return;
+                                                    
+                                                    var users = slotUserMap[selectedTime.value] || [];
+                                                    var partySizeSelect = document.querySelector('select[name="party_size"]');
+                                                    var selectedPartySize = partySizeSelect ? parseInt(partySizeSelect.value) : 1;
+                                                    
+                                                    staffOptions.innerHTML = '';
+                                                    
+                                                    var validUsers = users.filter(u => u.capacity >= selectedPartySize);
+                                                    
+                                                    if (validUsers.length > 0) {
+                                                        staffContainer.style.display = 'block';
+                                                        var noPrefHtml = `
+                                                            <div class="col-md-4 col-sm-6">
+                                                                <input type="radio" name="staff_user_id_radio" id="staff_none" value="" class="d-none slot-radio" checked="checked"/>
+                                                                <label for="staff_none" class="btn btn-outline-secondary w-100 py-2 slot-label text-center" style="cursor: pointer; border-radius: 4px;">
+                                                                    <div class="d-flex align-items-center justify-content-center">
+                                                                        <i class="oi oi-filled me-2" data-icon="group"></i> No Preference
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        `;
+                                                        staffOptions.innerHTML += noPrefHtml;
+                                                        
+                                                        validUsers.forEach(function(u) {
+                                                            var html = `
+                                                                <div class="col-md-4 col-sm-6">
+                                                                    <input type="radio" name="staff_user_id_radio" id="staff_${u.id}" value="${u.id}" class="d-none slot-radio"/>
+                                                                    <label for="staff_${u.id}" class="btn btn-outline-secondary w-100 py-2 slot-label text-center" style="cursor: pointer; border-radius: 4px;">
+                                                                        <div class="d-flex align-items-center justify-content-center">
+                                                                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center me-2 text-white" style="width: 24px; height: 24px; background-color: #714B67; font-size: 12px; font-weight: bold;">
+                                                                                ${u.name.charAt(0).toUpperCase()}
+                                                                            </div>
+                                                                            ${u.name}
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            `;
+                                                            staffOptions.innerHTML += html;
+                                                        });
+                                                        
+                                                        var staffRadios = document.querySelectorAll('input[name="staff_user_id_radio"]');
+                                                        staffRadios.forEach(function(r) {
+                                                            r.addEventListener('change', function() {
+                                                                hiddenStaffInput.value = this.value;
+                                                            });
+                                                        });
+                                                        hiddenStaffInput.value = "";
+                                                    } else {
+                                                        staffContainer.style.display = 'none';
+                                                        hiddenStaffInput.value = "";
+                                                    }
+                                                }
+                                                
+                                                radios.forEach(function(r) {
+                                                    r.addEventListener('change', updateStaff);
+                                                });
+                                                var partySizeSelect = document.querySelector('select[name="party_size"]');
+                                                if (partySizeSelect) {
+                                                    partySizeSelect.addEventListener('change', updateStaff);
+                                                }
+                                                
+                                                updateStaff();
+                                            });
+                                        </script>
+                                    </t>
+        
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-primary premium-btn-primary w-100">
+                                            Continue
+                                        </button>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="alert alert-warning mt-4 mb-0" role="alert" style="background-color: #fff3cd; color: #856404; border-color: #ffeeba;">
+                                        <i class="oi me-2" data-icon="warning"></i>
+                                        There are no available time slots on this date. Please select a different date.
+                                    </div>
+                                </t>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Info -->
+                        <div class="col-lg-4 mt-5 mt-lg-0 ps-lg-5">
+                            <!-- Appointment Name and Description -->
+                            <div class="d-flex align-items-center mb-3">
+                                <t t-if="appointment_type.image_1920">
+                                    <img t-attf-src="/web/image/appointment.type/#{appointment_type.id}/image_1920" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Appointment Image"/>
+                                </t>
+                                <h4 class="mb-0 font-weight-bold" style="color: #495057;"><t t-out="appointment_type.name"/></h4>
+                            </div>
+                            <t t-if="appointment_type.message_intro">
+                                <div class="text-muted mb-4" style="font-size: 14px;">
+                                    <t t-out="appointment_type.message_intro"/>
+                                </div>
+                            </t>
+                            
+                            <!-- Location -->
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="oi text-muted me-3 mt-1" data-icon="location_on" style="font-size: 18px; width: 24px; text-align: center;"/>
+                                <div>
+                                    <div class="font-weight-bold" style="font-size: 14px;">
+                                        <t t-if="appointment_type.location == 'online'">Online</t>
+                                        <t t-elif="appointment_type.location == 'office'">Office</t>
+                                        <t t-else=""><t t-out="appointment_type.location_details"/></t>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 13px;">India</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="appointment_info" name="Appointment Details">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_appointment_info">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;display=swap');
+                    .o_appointment_preview, .o_appointment_info, .o_appointment_confirmation { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh; padding-top: 20px; padding-bottom: 40px; }
+                    .premium-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); padding: 30px; transition: all 0.3s ease; }
+                    .premium-card:hover { box-shadow: 0 20px 45px rgba(0,0,0,0.08); }
+                    .premium-btn-primary { background: linear-gradient(135deg, #714B67 0%, #905d83 100%) !important; border: none !important; color: white !important; border-radius: 8px !important; font-weight: 600 !important; transition: all 0.3s ease !important; box-shadow: 0 8px 15px rgba(113, 75, 103, 0.25) !important; padding: 10px 24px !important; }
+                    .premium-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(113, 75, 103, 0.35) !important; }
+                    .slot-label { border-radius: 8px !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; font-weight: 500; color: #495057 !important; background: white; }
+                    .slot-label:hover { border-color: #714B67 !important; color: #714B67 !important; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(113, 75, 103, 0.1); }
+                    .slot-radio:checked + .slot-label { background: linear-gradient(135deg, #714B67 0%, #905d83 100%) !important; color: white !important; border-color: transparent !important; box-shadow: 0 6px 15px rgba(113, 75, 103, 0.3); }
+                    .premium-cal-day { transition: all 0.2s ease; border-radius: 8px !important; }
+                    .premium-cal-day:hover { transform: scale(1.1); background: #f8f9fa !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #714B67 !important; font-weight: bold; }
+                    .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; transition: all 0.2s ease; }
+                    .form-control:focus, .form-select:focus { border-color: #714B67; box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.15); }
+                </style>
+                
+                <div class="alert alert-info text-center m-0" style="background-color: #d1ecf1; color: #0c5460; border: none; border-radius: 0;">
+                    This is a preview of the customer appointment form. 
+                    <a t-attf-href="/web#id=#{appointment_type.id}&amp;model=appointment.type&amp;view_type=form" class="font-weight-bold" style="color: #0c5460; text-decoration: underline;">
+                        <i class="oi" data-icon="arrow_forward"/> Back to edit mode
+                    </a>
+                </div>
+
+                <div class="container mt-4 mb-5 premium-card">
+                    <div class="row">
+                        <!-- Left Column: User Details Form -->
+                        <div class="col-lg-8 pe-lg-5">
+                            <h3 class="mb-4 font-weight-bold">Your details</h3>
+                            
+                            <form t-attf-action="/appointment/#{appointment_type.id}/submit" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="date" t-att-value="selected_date"/>
+                                <input type="hidden" name="time" t-att-value="selected_time"/>
+                                <input type="hidden" name="party_size" t-att-value="party_size"/>
+                                <input type="hidden" name="invite_token" t-att-value="invite_token"/>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 14px;">Full name *</label>
+                                    <input type="text" name="name" class="form-control" required="1" t-att-value="user.name if user else ''"/>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label" style="font-size: 14px;">Email *</label>
+                                    <input type="email" name="email" class="form-control w-50" required="1" t-att-value="user.email if user else ''"/>
+                                </div>
+                                
+                                <div class="d-none">
+                                    <input type="tel" name="phone" class="form-control" t-att-value="user.partner_id.phone if user else '0000000000'"/>
+                                </div>
+                                
+                                <t t-foreach="appointment_type.question_ids" t-as="question">
+                                    <div class="mb-4">
+                                        <label class="form-label" style="font-size: 14px;">
+                                            <t t-out="question.name"/> <t t-if="question.is_required">*</t>
+                                        </label>
+                                        <t t-if="question.question_type == 'char'">
+                                            <input type="text" t-attf-name="question_#{question.id}" class="form-control" t-att-required="question.is_required" t-att-placeholder="question.placeholder"/>
+                                        </t>
+                                        <t t-elif="question.question_type == 'text'">
+                                            <textarea t-attf-name="question_#{question.id}" class="form-control" rows="4" t-att-required="question.is_required" t-att-placeholder="question.placeholder"></textarea>
+                                        </t>
+                                        <t t-elif="question.question_type == 'phone'">
+                                            <input type="tel" t-attf-name="question_#{question.id}" class="form-control" t-att-required="question.is_required" t-att-placeholder="question.placeholder"/>
+                                        </t>
+                                        <t t-elif="question.question_type == 'select'">
+                                            <select t-attf-name="question_#{question.id}" class="form-select w-50" t-att-required="question.is_required">
+                                                <t t-foreach="question.answer_ids" t-as="opt">
+                                                    <option t-att-value="opt.name"><t t-out="opt.name"/></option>
+                                                </t>
+                                            </select>
+                                        </t>
+                                        <t t-elif="question.question_type == 'radio'">
+                                            <t t-foreach="question.answer_ids" t-as="opt">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" t-attf-name="question_#{question.id}" t-att-id="'q_' + str(question.id) + '_' + str(opt_index)" t-att-value="opt.name" t-att-required="question.is_required"/>
+                                                    <label class="form-check-label" t-att-for="'q_' + str(question.id) + '_' + str(opt_index)">
+                                                        <t t-out="opt.name"/>
+                                                    </label>
+                                                </div>
+                                            </t>
+                                        </t>
+                                        <t t-elif="question.question_type == 'checkbox'">
+                                            <t t-foreach="question.answer_ids" t-as="opt">
+                                                <div class="form-check">
+                                                    <!-- For checkboxes, we append opt_index to the name so multiple values can be submitted if needed -->
+                                                    <input class="form-check-input" type="checkbox" t-attf-name="question_#{question.id}_#{opt_index}" t-att-id="'q_' + str(question.id) + '_' + str(opt_index)" t-att-value="opt.name"/>
+                                                    <label class="form-check-label" t-att-for="'q_' + str(question.id) + '_' + str(opt_index)">
+                                                        <t t-out="opt.name"/>
+                                                    </label>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </t>
+                                
+                                <t t-if="appointment_type.has_payment_step">
+                                    <button type="submit" class="btn btn-primary premium-btn-primary w-100 mt-4">
+                                        Proceed to Payment
+                                    </button>
+                                </t>
+                                <t t-else="">
+                                    <button type="submit" class="btn btn-primary premium-btn-primary w-100 mt-4">
+                                        Confirm Appointment
+                                    </button>
+                                </t>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Info -->
+                        <div class="col-lg-4 mt-5 mt-lg-0 ps-lg-5">
+                            <!-- Appointment Name and Description -->
+                            <div class="d-flex align-items-center mb-3">
+                                <t t-if="appointment_type.image_1920">
+                                    <img t-attf-src="/web/image/appointment.type/#{appointment_type.id}/image_1920" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Appointment Image"/>
+                                </t>
+                                <h4 class="mb-0" style="color: #495057; font-weight: bold;"><t t-out="appointment_type.name"/></h4>
+                            </div>
+                            <t t-if="appointment_type.message_intro">
+                                <div class="text-muted mb-4" style="font-size: 13px;">
+                                    <t t-out="appointment_type.message_intro"/>
+                                </div>
+                            </t>
+                            
+                            <t t-if="appointment_type.has_payment_step">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="oi text-muted me-3" data-icon="payments" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                    <span style="font-size: 14px;">
+                                        <t t-out="appointment_type.product_id.lst_price" t-options="{'widget': 'monetary', 'display_currency': request.env.company.currency_id}"/>
+                                    </span>
+                                </div>
+                            </t>
+                            
+                            <!-- Selected Date & Time -->
+                            <div class="d-flex align-items-start mb-3 font-weight-bold" style="font-size: 14px;">
+                                <i class="oi oi-filled text-muted me-3 mt-1" data-icon="calendar_today" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                <span><t t-out="start_dt.strftime('%d %b %Y - %I:%M %p')"/></span>
+                            </div>
+                        
+                            <!-- Location -->
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="oi text-muted me-3 mt-1" data-icon="location_on" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                <div>
+                                    <div class="font-weight-bold" style="font-size: 14px;">
+                                        <t t-if="appointment_type.location == 'online'">Online</t>
+                                        <t t-elif="appointment_type.location == 'office'">Office</t>
+                                        <t t-else=""><t t-out="appointment_type.location_details"/></t>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 13px;">India</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Party Size -->
+                            <div class="d-flex align-items-center mb-4">
+                                <i class="oi oi-filled text-muted me-3" data-icon="group" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                <span class="font-weight-bold" style="font-size: 14px;">
+                                    <t t-out="party_size"/> people
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="appointment_confirmation" name="Appointment Confirmation">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_appointment_confirmation pb-5">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;display=swap');
+                    .o_appointment_preview, .o_appointment_info, .o_appointment_confirmation { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh; padding-top: 20px; padding-bottom: 40px; }
+                    .premium-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); padding: 30px; transition: all 0.3s ease; }
+                    .premium-card:hover { box-shadow: 0 20px 45px rgba(0,0,0,0.08); }
+                    .premium-btn-primary { background: linear-gradient(135deg, #714B67 0%, #905d83 100%) !important; border: none !important; color: white !important; border-radius: 8px !important; font-weight: 600 !important; transition: all 0.3s ease !important; box-shadow: 0 8px 15px rgba(113, 75, 103, 0.25) !important; padding: 10px 24px !important; }
+                    .premium-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(113, 75, 103, 0.35) !important; }
+                    .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; transition: all 0.2s ease; }
+                    .form-control:focus, .form-select:focus { border-color: #714B67; box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.15); }
+                </style>
+                
+                <!-- Top Breadcrumbs -->
+                <div class="container mt-4 mb-3">
+                    <ol class="breadcrumb bg-transparent p-0 m-0" style="font-size: 14px;">
+                        <li class="breadcrumb-item"><a href="/" class="text-muted text-decoration-none"><i class="oi" data-icon="home"/></a></li>
+                        <li class="breadcrumb-item"><a href="/appointment" class="text-muted text-decoration-none">Appointments</a></li>
+                        <li class="breadcrumb-item active text-muted"><t t-out="appointment_type.name"/></li>
+                    </ol>
+                </div>
+
+                <!-- Preview Banner -->
+                <div class="container mb-4">
+                    <div class="alert alert-info alert-dismissible fade show text-center" style="background-color: #e0f2f1; border-color: #b2dfdb; color: #004d40; font-size: 14px;" role="alert">
+                        This is a preview of the customer appointment form. 
+                        <a t-attf-href="/web#id=#{appointment_type.id}&amp;model=appointment.type&amp;view_type=form" class="font-weight-bold text-dark text-decoration-none ms-1">
+                            <i class="oi" data-icon="arrow_forward"/> Back to edit mode
+                        </a>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="container mb-5 premium-card">
+                    <!-- Warning Banner (Dynamic) -->
+                    <t t-if="appointment_type.has_payment_step">
+                        <div id="paid_cancel_warning" class="alert alert-danger d-none mb-4" style="background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; border-radius: 4px; padding: 15px;">
+                            Oops! Paid appointment cannot be cancelled via our website.<br/>
+                            To make any changes, please contact <t t-out="request.env.company.name"/> at <t t-out="request.env.company.email"/> or <t t-out="request.env.company.phone"/>.
+                        </div>
+                    </t>
+
+                    <div class="row">
+                        <!-- Left Column: Details -->
+                        <div class="col-lg-7 pe-lg-5">
+                            <h2 class="font-weight-bold d-flex align-items-center mb-1">
+                                Appointment Scheduled! <i class="oi oi-filled text-success ms-2" data-icon="check_circle"/>
+                            </h2>
+                            <h4 class="mb-4 text-dark font-weight-normal"><t t-out="request.env.company.name"/> - <t t-out="appointment_type.name"/></h4>
+                            
+                            <!-- Date and Time -->
+                            <div class="d-flex align-items-start mb-4 text-muted">
+                                <i class="oi me-3 mt-1" data-icon="calendar_today" style="font-size: 18px; width: 20px; text-align: center;"/>
+                                <div>
+                                    <div class="font-weight-bold text-dark mb-1" style="font-size: 14px;">
+                                        <t t-out="start_dt.strftime('%d %b %Y')"/> (1 hour)
+                                    </div>
+                                    <div style="font-size: 13px;"><t t-out="start_dt.strftime('%I:%M %p')"/></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Operator Details -->
+                            <div class="d-flex align-items-start mb-4 text-muted">
+                                <div class="text-white text-center rounded me-3 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-weight: bold; font-size: 14px; background-color: #8f3448;">
+                                    <t t-out="request.env.company.name[0].upper()"/>
+                                </div>
+                                <div style="font-size: 13px;">
+                                    <div class="font-weight-bold text-dark mb-1"><t t-out="request.env.company.name"/></div>
+                                    <div class="mb-1"><i class="oi me-2" data-icon="mail" style="width: 14px; text-align: center;"/> <t t-out="request.env.company.email"/></div>
+                                    <div><i class="oi oi-filled me-2" data-icon="phone" style="width: 14px; text-align: center;"/> <t t-out="request.env.company.phone"/></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Calendar Buttons -->
+                            <div class="d-flex gap-2 mt-4">
+                                <a href="#" class="btn btn-outline-secondary btn-sm px-3 d-flex align-items-center" style="font-size: 12px; color: #6c757d; border-color: #dee2e6; padding-top: 6px; padding-bottom: 6px;">
+                                    <i class="oi me-2" data-icon="oi_windows" style="color: #0078d4; font-size: 14px;"/> Add to iCal/Outlook
+                                </a>
+                                <a href="#" class="btn btn-outline-secondary btn-sm px-3 d-flex align-items-center" style="font-size: 12px; color: #6c757d; border-color: #dee2e6; padding-top: 6px; padding-bottom: 6px;">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" style="height: 14px; margin-right: 6px;" alt="Google"/> Add to Google Calendar
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column: Your Details -->
+                        <div class="col-lg-5 mt-5 mt-lg-0 ps-lg-4">
+                            <h5 class="font-weight-bold mb-4">Your Details</h5>
+                            
+                            <div class="mb-4" style="font-size: 13px;">
+                                <div class="font-weight-bold text-dark mb-1">Contact Details</div>
+                                <div class="text-muted mb-1"><t t-out="partner_name"/></div>
+                                <div class="text-muted mb-1"><t t-out="partner_email"/></div>
+                                <div class="text-muted"><t t-out="partner_phone"/></div>
+                            </div>
+                            
+                            <div class="mb-4" style="font-size: 13px;">
+                                <div class="text-muted mb-1">Phone number <span class="ms-1"><t t-out="partner_phone"/></span></div>
+                            </div>
+                            
+                            <div class="mb-4" style="font-size: 13px;">
+                                <div class="font-weight-bold text-dark mb-2">Guests</div>
+                                <div class="text-dark"><i class="oi text-success me-2" data-icon="check"/> <t t-out="partner_name"/></div>
+                            </div>
+                            
+                            <hr class="mt-4 mb-4" style="border-top: 1px solid #e9ecef;"/>
+                            
+                            <div class="d-flex gap-3">
+                                <t t-if="appointment_type.has_payment_step">
+                                    <a href="#" class="btn btn-light w-50" style="background-color: #f4f5f6; border: 1px solid #e9ecef; font-size: 13px; font-weight: 500; color: #495057;" onclick="document.getElementById('paid_cancel_warning').classList.remove('d-none'); window.scrollTo(0, 0); return false;">
+                                        Reschedule
+                                    </a>
+                                    <a href="#" class="btn btn-danger w-50" style="background-color: #dc3545; font-size: 13px; font-weight: 500; border: none;" onclick="document.getElementById('paid_cancel_warning').classList.remove('d-none'); window.scrollTo(0, 0); return false;">
+                                        Cancel
+                                    </a>
+                                </t>
+                                <t t-else="">
+                                    <a t-attf-href="/appointment/cancel/#{booking.id}?token=#{booking.access_token}" class="btn btn-light w-50" style="background-color: #f4f5f6; border: 1px solid #e9ecef; font-size: 13px; font-weight: 500; color: #495057;">
+                                        Reschedule
+                                    </a>
+                                    <a t-attf-href="/appointment/cancel/#{booking.id}?token=#{booking.access_token}" class="btn btn-danger w-50" style="background-color: #dc3545; font-size: 13px; font-weight: 500; border: none;" onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                        Cancel
+                                    </a>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="appointment_invalid_country" name="Appointment Invalid Country">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_appointment_invalid_country">
+                <div class="container mt-5 mb-5 text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body p-5">
+                                    <i class="oi text-muted mb-4" data-icon="public" style="font-size: 64px;"/>
+                                    <h2 class="font-weight-bold mb-3">Not Available in Your Region</h2>
+                                    <p class="text-muted mb-4" style="font-size: 16px;">
+                                        We're sorry, but the <strong class="text-dark"><t t-out="appointment_type.name"/></strong> appointment is currently not available in your country.
+                                    </p>
+                                    <a href="/" class="btn btn-primary px-4 py-2" style="background-color: #714B67; border-color: #714B67;">Return to Home</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="appointment_payment" name="Appointment Payment">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_appointment_payment pb-5">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;display=swap');
+                    .o_appointment_preview, .o_appointment_info, .o_appointment_confirmation, .o_appointment_payment { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh; padding-top: 20px; padding-bottom: 40px; }
+                    .premium-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); padding: 30px; transition: all 0.3s ease; }
+                    .premium-card:hover { box-shadow: 0 20px 45px rgba(0,0,0,0.08); }
+                    .premium-btn-primary { background: linear-gradient(135deg, #714B67 0%, #905d83 100%) !important; border: none !important; color: white !important; border-radius: 8px !important; font-weight: 600 !important; transition: all 0.3s ease !important; box-shadow: 0 8px 15px rgba(113, 75, 103, 0.25) !important; padding: 10px 24px !important; }
+                    .premium-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(113, 75, 103, 0.35) !important; }
+                    .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; transition: all 0.2s ease; }
+                    .form-control:focus, .form-select:focus { border-color: #714B67; box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.15); }
+                </style>
+                <!-- Preview Alert Banner -->
+                <div class="alert alert-info text-center rounded-0 border-0 mb-5" style="background-color: #d1ecf1; color: #0c5460;">
+                    This is a preview of the customer appointment payment form. 
+                    <a t-attf-href="/web#id=#{booking.appointment_type_id.id}&amp;model=appointment.type&amp;view_type=form" class="font-weight-bold text-dark text-decoration-none">
+                        <i class="oi" data-icon="arrow_forward"/> Back to edit mode
+                    </a>
+                </div>
+
+                <div class="container premium-card mt-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0 font-weight-bold">Payment for "<t t-out="booking.appointment_type_id.name"/>"</h4>
+                        <a t-attf-href="/appointment/cancel/#{booking.id}?token=#{booking.access_token}" class="text-muted text-decoration-none" style="font-size: 14px;">
+                            <i class="oi oi-filled" data-icon="edit"/> Edit my appointment
+                        </a>
+                    </div>
+                    
+                    <!-- Summary Box -->
+                    <div class="card border-0 rounded-3 mb-4" style="background: rgba(255,255,255,0.7); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                        <div class="card-body p-4 text-center">
+                            <div class="row">
+                                <div class="col-md-6 border-end">
+                                    <span class="text-muted small text-uppercase font-weight-bold">Amount</span>
+                                    <h4 class="font-weight-bold mt-2 mb-0">
+                                        <t t-out="amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                    </h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="text-muted small text-uppercase font-weight-bold">Service</span>
+                                    <h4 class="font-weight-bold mt-2 mb-0">
+                                        Booking Fees
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Form Integration -->
+                    <h5 class="font-weight-bold mb-3">Payment method <i class="oi text-muted" data-icon="bug_report" title="Test Mode" style="font-size: 16px;"/></h5>
+                    <div class="card border-0 rounded-3" style="background: rgba(255,255,255,0.7); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                        <div class="card-body p-4">
+                            <t t-call="payment.form"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

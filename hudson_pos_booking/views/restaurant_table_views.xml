@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Add Allow Website Booking directly into Floor Form Tables List -->
+    <record id="view_restaurant_floor_form_inherit_pos_booking" model="ir.ui.view">
+        <field name="name">restaurant.floor.form.inherit.pos.booking</field>
+        <field name="model">restaurant.floor</field>
+        <field name="inherit_id" ref="pos_restaurant.view_restaurant_floor_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='table_ids']//field[@name='seats']" position="after">
+                <field name="allow_website_booking" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Table Form View -->
     <record id="view_restaurant_table_form_inherit_pos_booking" model="ir.ui.view">
         <field name="name">restaurant.table.form.inherit.pos.booking</field>
         <field name="model">restaurant.table</field>
         <field name="inherit_id" ref="pos_restaurant.view_restaurant_table_form"/>
         <field name="arch" type="xml">
             <field name="seats" position="after">
+                <field name="allow_website_booking" widget="boolean_toggle"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="appointment_resource_id" options="{'no_create_edit': False}"/>
             </field>
@@ -21,4 +35,3 @@
         </field>
     </record>
 </odoo>
-

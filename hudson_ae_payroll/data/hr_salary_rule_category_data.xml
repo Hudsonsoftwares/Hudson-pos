@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- EVP Allowances Category -->
+        <record id="salary_rule_category_evp" model="hr.salary.rule.category">
+            <field name="name">EVP Allowances</field>
+            <field name="code">EVP</field>
+            <field name="note">Allowances for higher authority / executive employees (EVP).</field>
+        </record>
+
+        <!-- Provision Category -->
+        <record id="salary_rule_category_prov" model="hr.salary.rule.category">
+            <field name="name">Provision</field>
+            <field name="code">PROV</field>
+            <field name="note">Monthly liability accruals for End of Service and Annual Leave obligations.</field>
+        </record>
+
+        <!-- Provision Payout Category (Child of Allowance) -->
+        <record id="salary_rule_category_prov_pout" model="hr.salary.rule.category">
+            <field name="name">Provision Payout</field>
+            <field name="code">PROV_POUT</field>
+            <field name="parent_id" ref="hr_payroll_community.ALW"/>
+            <field name="note">Settlement disbursements of accrued provisions.</field>
+        </record>
+
+        <!-- Labor Compliance Costs Category (Child of Company Contribution) -->
+        <record id="salary_rule_category_comp_cost" model="hr.salary.rule.category">
+            <field name="name">Labor Compliance Costs</field>
+            <field name="code">COMP_COST</field>
+            <field name="parent_id" ref="hr_payroll_community.COMP"/>
+            <field name="note">Employer yearly compliance and overhead costs (Visa, Work Permit, Medical Insurance).</field>
+        </record>
+
+        <!-- Net Cost Category -->
+        <record id="salary_rule_category_netcost" model="hr.salary.rule.category">
+            <field name="name">Net Cost</field>
+            <field name="code">NETCOST</field>
+            <field name="note">Total Employer Cost to Company (Net Salary + Company Contributions &amp; Compliance Costs).</field>
+        </record>
+    </data>
+</odoo>

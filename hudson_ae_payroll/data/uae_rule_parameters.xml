@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        STATUTORY UAE & GCC PENSION RULE PARAMETERS:
+        Configurable, effective-dated parameters for UAE GPSSA, ADPF, and GCC Extension schemes.
+        Zero hardcoded cutover dates: all historical versions are maintained via hr.rule.parameter.value (date_from).
+    -->
+    <data noupdate="0">
+        <!-- ========================================================================= -->
+        <!-- 1. UAE PENSION: GPSSA (Federal Authority)                                -->
+        <!-- ========================================================================= -->
+
+        <!-- GPSSA: Employee Contribution Rate -->
+        <record id="hds_ae_gpssa_ee_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA: Employee Contribution Rate</field>
+            <field name="code">hds_ae_gpssa_ee_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="description">Statutory Employee Pension contribution rate percentage under GPSSA (5% under Law 7/1999; 11% under Decree-Law 57/2023).</field>
+        </record>
+        <record id="hds_ae_gpssa_ee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_ee_rate"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">5.0</field>
+            <field name="description">Federal Law No. 7 of 1999 statutory employee contribution rate (5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_ee_rate_val_2" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_ee_rate"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">11.0</field>
+            <field name="description">Federal Decree-Law No. 57 of 2023 statutory employee contribution rate (11%).</field>
+        </record>
+
+        <!-- GPSSA: Employer Contribution Rate -->
+        <record id="hds_ae_gpssa_er_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA: Employer Contribution Rate</field>
+            <field name="code">hds_ae_gpssa_er_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="description">Statutory Employer Pension contribution rate percentage for private sector under GPSSA (12.5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_er_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_er_rate"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">12.5</field>
+            <field name="description">Federal Law No. 7 of 1999 private sector employer rate (12.5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_er_rate_val_2" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_er_rate"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">12.5</field>
+            <field name="description">Federal Decree-Law No. 57 of 2023 base private sector employer rate (12.5%).</field>
+        </record>
+
+        <!-- GPSSA: Government Subsidy Rate -->
+        <record id="hds_ae_gpssa_gov_subsidy_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA: Government Subsidy Rate</field>
+            <field name="code">hds_ae_gpssa_gov_subsidy_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="description">Statutory Government Contribution/Subsidy percentage supporting UAE Nationals in private sector.</field>
+        </record>
+        <record id="hds_ae_gpssa_gov_subsidy_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_gov_subsidy_rate"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">2.5</field>
+            <field name="description">Federal Government subsidy in private sector (2.5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_gov_subsidy_rate_val_2" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_gov_subsidy_rate"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">2.5</field>
+            <field name="description">Federal Decree-Law No. 57 of 2023 Nafis/Federal government subsidy (2.5%).</field>
+        </record>
+
+        <!-- GPSSA: Government Subsidy Wage Threshold (Hard Cliff: applies strictly below AED 20,000) -->
+        <record id="hds_ae_gpssa_subsidy_wage_threshold" model="hr.rule.parameter">
+            <field name="name">GPSSA: Government Subsidy Wage Threshold</field>
+            <field name="code">hds_ae_gpssa_subsidy_wage_threshold</field>
+            <field name="category">uae_gpssa</field>
+            <field name="description">Statutory pensionable salary threshold for GPSSA government subsidy eligibility (AED 20,000). Represents a hard cliff: subsidy applies only when applicable pensionable salary is strictly below the threshold; at or above the threshold, subsidy is zero.</field>
+        </record>
+        <record id="hds_ae_gpssa_subsidy_wage_threshold_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_subsidy_wage_threshold"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">20000</field>
+            <field name="description">Statutory Nafis / GPSSA private sector subsidy eligibility salary cliff (AED 20,000).</field>
+        </record>
+
+        <!-- GPSSA: Max Contributory Wage Ceiling -->
+        <record id="hds_ae_gpssa_max_wage" model="hr.rule.parameter">
+            <field name="name">GPSSA: Max Contributory Wage Ceiling</field>
+            <field name="code">hds_ae_gpssa_max_wage</field>
+            <field name="category">uae_gpssa</field>
+            <field name="description">Maximum monthly contributory wage limit for GPSSA (AED 50,000 under Law 7/1999; AED 70,000 under Decree-Law 57/2023).</field>
+        </record>
+        <record id="hds_ae_gpssa_max_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_max_wage"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">50000</field>
+            <field name="description">Statutory maximum contributory wage ceiling of AED 50,000.</field>
+        </record>
+        <record id="hds_ae_gpssa_max_wage_val_2" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_max_wage"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">70000</field>
+            <field name="description">Statutory maximum contributory wage ceiling raised to AED 70,000 under Decree-Law 57/2023.</field>
+        </record>
+
+        <!-- GPSSA: Min Contributory Wage Floor -->
+        <record id="hds_ae_gpssa_min_wage" model="hr.rule.parameter">
+            <field name="name">GPSSA: Min Contributory Wage Floor</field>
+            <field name="code">hds_ae_gpssa_min_wage</field>
+            <field name="category">uae_gpssa</field>
+            <field name="description">Minimum monthly contributory wage floor for GPSSA (AED 1,000 under Law 7/1999; AED 3,000 under Decree-Law 57/2023).</field>
+        </record>
+        <record id="hds_ae_gpssa_min_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_min_wage"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">1000</field>
+            <field name="description">Statutory minimum contributory salary floor of AED 1,000.</field>
+        </record>
+        <record id="hds_ae_gpssa_min_wage_val_2" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_min_wage"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">3000</field>
+            <field name="description">Statutory minimum contributory salary floor raised to AED 3,000.</field>
+        </record>
+
+        <!-- 1.1 GPSSA: Scheme-Specific Parameters for Concurrent Cohort Coexistence -->
+        <!-- GPSSA - Legacy Scheme (Federal Law No. 7 of 1999) Parameters -->
+        <record id="hds_ae_gpssa_legacy_ee_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA (Legacy): Employee Contribution Rate</field>
+            <field name="code">hds_ae_gpssa_legacy_ee_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">Federal Law No. 7 of 1999 statutory employee contribution rate (5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_legacy_ee_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_legacy_ee_rate"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">5.0</field>
+        </record>
+
+        <record id="hds_ae_gpssa_legacy_er_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA (Legacy): Employer Contribution Rate</field>
+            <field name="code">hds_ae_gpssa_legacy_er_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">Federal Law No. 7 of 1999 statutory employer contribution rate (12.5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_legacy_er_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_legacy_er_rate"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">12.5</field>
+        </record>
+
+        <record id="hds_ae_gpssa_legacy_gov_subsidy_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA (Legacy): Government Subsidy Rate</field>
+            <field name="code">hds_ae_gpssa_legacy_gov_subsidy_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">Federal Government subsidy in private sector (2.5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_legacy_gov_subsidy_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_legacy_gov_subsidy_rate"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">2.5</field>
+        </record>
+
+        <record id="hds_ae_gpssa_legacy_subsidy_wage_threshold" model="hr.rule.parameter">
+            <field name="name">GPSSA (Legacy): Government Subsidy Wage Threshold</field>
+            <field name="code">hds_ae_gpssa_legacy_subsidy_wage_threshold</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">Statutory pensionable salary threshold for GPSSA subsidy eligibility (AED 20,000).</field>
+        </record>
+        <record id="hds_ae_gpssa_legacy_subsidy_wage_threshold_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_legacy_subsidy_wage_threshold"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">20000</field>
+        </record>
+
+        <record id="hds_ae_gpssa_legacy_max_wage" model="hr.rule.parameter">
+            <field name="name">GPSSA (Legacy): Max Contributory Wage Ceiling</field>
+            <field name="code">hds_ae_gpssa_legacy_max_wage</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">Statutory maximum monthly contributory wage ceiling of AED 50,000.</field>
+        </record>
+        <record id="hds_ae_gpssa_legacy_max_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_legacy_max_wage"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">50000</field>
+        </record>
+
+        <record id="hds_ae_gpssa_legacy_min_wage" model="hr.rule.parameter">
+            <field name="name">GPSSA (Legacy): Min Contributory Wage Floor</field>
+            <field name="code">hds_ae_gpssa_legacy_min_wage</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">Statutory minimum contributory salary floor of AED 1,000.</field>
+        </record>
+        <record id="hds_ae_gpssa_legacy_min_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_legacy_min_wage"/>
+            <field name="date_from">1999-01-01</field>
+            <field name="parameter_value">1000</field>
+        </record>
+
+        <!-- GPSSA - New Law Scheme (Federal Decree-Law No. 57 of 2023) Parameters -->
+        <record id="hds_ae_gpssa_new_law_ee_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA (New Law): Employee Contribution Rate</field>
+            <field name="code">hds_ae_gpssa_new_law_ee_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">Federal Decree-Law No. 57 of 2023 statutory employee contribution rate (11%).</field>
+        </record>
+        <record id="hds_ae_gpssa_new_law_ee_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_new_law_ee_rate"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">11.0</field>
+        </record>
+
+        <record id="hds_ae_gpssa_new_law_er_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA (New Law): Employer Contribution Rate</field>
+            <field name="code">hds_ae_gpssa_new_law_er_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">Federal Decree-Law No. 57 of 2023 base private sector employer rate (12.5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_new_law_er_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_new_law_er_rate"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">12.5</field>
+        </record>
+
+        <record id="hds_ae_gpssa_new_law_gov_subsidy_rate" model="hr.rule.parameter">
+            <field name="name">GPSSA (New Law): Government Subsidy Rate</field>
+            <field name="code">hds_ae_gpssa_new_law_gov_subsidy_rate</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">Federal Decree-Law No. 57 of 2023 Nafis/Federal government subsidy (2.5%).</field>
+        </record>
+        <record id="hds_ae_gpssa_new_law_gov_subsidy_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_new_law_gov_subsidy_rate"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">2.5</field>
+        </record>
+
+        <record id="hds_ae_gpssa_new_law_subsidy_wage_threshold" model="hr.rule.parameter">
+            <field name="name">GPSSA (New Law): Government Subsidy Wage Threshold</field>
+            <field name="code">hds_ae_gpssa_new_law_subsidy_wage_threshold</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">Statutory pensionable salary threshold for GPSSA subsidy eligibility (AED 20,000).</field>
+        </record>
+        <record id="hds_ae_gpssa_new_law_subsidy_wage_threshold_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_new_law_subsidy_wage_threshold"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">20000</field>
+        </record>
+
+        <record id="hds_ae_gpssa_new_law_max_wage" model="hr.rule.parameter">
+            <field name="name">GPSSA (New Law): Max Contributory Wage Ceiling</field>
+            <field name="code">hds_ae_gpssa_new_law_max_wage</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">Statutory maximum contributory wage ceiling raised to AED 70,000 under Decree-Law 57/2023.</field>
+        </record>
+        <record id="hds_ae_gpssa_new_law_max_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_new_law_max_wage"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">70000</field>
+        </record>
+
+        <record id="hds_ae_gpssa_new_law_min_wage" model="hr.rule.parameter">
+            <field name="name">GPSSA (New Law): Min Contributory Wage Floor</field>
+            <field name="code">hds_ae_gpssa_new_law_min_wage</field>
+            <field name="category">uae_gpssa</field>
+            <field name="pension_authority_id" ref="pension_authority_gpssa"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">Statutory minimum contributory salary floor raised to AED 3,000 under Decree-Law 57/2023.</field>
+        </record>
+        <record id="hds_ae_gpssa_new_law_min_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_gpssa_new_law_min_wage"/>
+            <field name="date_from">2023-10-31</field>
+            <field name="parameter_value">3000</field>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 2. UAE PENSION: ADPF (Abu Dhabi Pension Fund)                            -->
+        <!-- ========================================================================= -->
+
+        <!-- ADPF: Employee Contribution Rate -->
+        <record id="hds_ae_adpf_ee_rate" model="hr.rule.parameter">
+            <field name="name">ADPF: Employee Contribution Rate</field>
+            <field name="code">hds_ae_adpf_ee_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="description">Statutory Employee Pension contribution rate percentage for Abu Dhabi Pension Fund (9% under Law 2/2000; 11% under Law 22/2023).</field>
+        </record>
+        <record id="hds_ae_adpf_ee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_ee_rate"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">9.0</field>
+            <field name="description">ADPF private sector employee contribution rate (9%).</field>
+        </record>
+        <record id="hds_ae_adpf_ee_rate_val_2" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_ee_rate"/>
+            <field name="date_from">2023-12-01</field>
+            <field name="parameter_value">11.0</field>
+            <field name="description">ADPF Law No. 22 of 2023 employee contribution rate (11%).</field>
+        </record>
+
+        <!-- ADPF: Employer Contribution Rate -->
+        <record id="hds_ae_adpf_er_rate" model="hr.rule.parameter">
+            <field name="name">ADPF: Employer Contribution Rate</field>
+            <field name="code">hds_ae_adpf_er_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="description">Statutory Employer Pension contribution rate percentage for Abu Dhabi Pension Fund (15%).</field>
+        </record>
+        <record id="hds_ae_adpf_er_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_er_rate"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">15.0</field>
+            <field name="description">ADPF statutory private sector employer rate (15%).</field>
+        </record>
+
+        <!-- ADPF: Government Subsidy Rate -->
+        <record id="hds_ae_adpf_gov_subsidy_rate" model="hr.rule.parameter">
+            <field name="name">ADPF: Government Subsidy Rate</field>
+            <field name="code">hds_ae_adpf_gov_subsidy_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="description">Government subsidy percentage for ADPF.</field>
+        </record>
+        <record id="hds_ae_adpf_gov_subsidy_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_gov_subsidy_rate"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">0.0</field>
+            <field name="description">ADPF government subsidy (0.0%).</field>
+        </record>
+
+        <!-- ADPF: Max Wage Ceiling (60,000 AED) -->
+        <record id="hds_ae_adpf_max_wage" model="hr.rule.parameter">
+            <field name="name">ADPF: Max Contributory Wage Ceiling (Private)</field>
+            <field name="code">hds_ae_adpf_max_wage</field>
+            <field name="category">uae_adpf</field>
+            <field name="description">Maximum monthly contributory wage limit for Abu Dhabi Pension Fund in the private sector (AED 60,000).</field>
+        </record>
+        <record id="hds_ae_adpf_max_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_max_wage"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">60000</field>
+            <field name="description">ADPF private sector maximum contributory ceiling of AED 60,000.</field>
+        </record>
+
+        <!-- ADPF: Min Wage Floor (1,000 AED) -->
+        <record id="hds_ae_adpf_min_wage" model="hr.rule.parameter">
+            <field name="name">ADPF: Min Contributory Wage Floor</field>
+            <field name="code">hds_ae_adpf_min_wage</field>
+            <field name="category">uae_adpf</field>
+            <field name="description">Minimum monthly contributory wage floor for Abu Dhabi Pension Fund (AED 1,000).</field>
+        </record>
+        <record id="hds_ae_adpf_min_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_min_wage"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">1000</field>
+            <field name="description">ADPF minimum contributory wage floor of AED 1,000.</field>
+        </record>
+
+        <!-- 2.1 ADPF: Scheme-Specific Parameters for Concurrent Cohort Coexistence -->
+        <!-- ADPF - Legacy Scheme (Law No. 2 of 2000) Parameters -->
+        <record id="hds_ae_adpf_legacy_ee_rate" model="hr.rule.parameter">
+            <field name="name">ADPF (Legacy): Employee Contribution Rate</field>
+            <field name="code">hds_ae_adpf_legacy_ee_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">ADPF Law No. 2 of 2000 employee contribution rate (9%).</field>
+        </record>
+        <record id="hds_ae_adpf_legacy_ee_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_legacy_ee_rate"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">9.0</field>
+        </record>
+
+        <record id="hds_ae_adpf_legacy_er_rate" model="hr.rule.parameter">
+            <field name="name">ADPF (Legacy): Employer Contribution Rate</field>
+            <field name="code">hds_ae_adpf_legacy_er_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">ADPF statutory private sector employer rate (15%).</field>
+        </record>
+        <record id="hds_ae_adpf_legacy_er_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_legacy_er_rate"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">15.0</field>
+        </record>
+
+        <record id="hds_ae_adpf_legacy_gov_subsidy_rate" model="hr.rule.parameter">
+            <field name="name">ADPF (Legacy): Government Subsidy Rate</field>
+            <field name="code">hds_ae_adpf_legacy_gov_subsidy_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">ADPF government subsidy (0.0%).</field>
+        </record>
+        <record id="hds_ae_adpf_legacy_gov_subsidy_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_legacy_gov_subsidy_rate"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">0.0</field>
+        </record>
+
+        <record id="hds_ae_adpf_legacy_max_wage" model="hr.rule.parameter">
+            <field name="name">ADPF (Legacy): Max Contributory Wage Ceiling</field>
+            <field name="code">hds_ae_adpf_legacy_max_wage</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">ADPF private sector maximum contributory ceiling of AED 60,000.</field>
+        </record>
+        <record id="hds_ae_adpf_legacy_max_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_legacy_max_wage"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">60000</field>
+        </record>
+
+        <record id="hds_ae_adpf_legacy_min_wage" model="hr.rule.parameter">
+            <field name="name">ADPF (Legacy): Min Contributory Wage Floor</field>
+            <field name="code">hds_ae_adpf_legacy_min_wage</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_legacy"/>
+            <field name="description">ADPF minimum contributory wage floor of AED 1,000.</field>
+        </record>
+        <record id="hds_ae_adpf_legacy_min_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_legacy_min_wage"/>
+            <field name="date_from">2020-01-01</field>
+            <field name="parameter_value">1000</field>
+        </record>
+
+        <!-- ADPF - New Law Scheme (Law No. 22 of 2023) Parameters -->
+        <record id="hds_ae_adpf_new_law_ee_rate" model="hr.rule.parameter">
+            <field name="name">ADPF (New Law): Employee Contribution Rate</field>
+            <field name="code">hds_ae_adpf_new_law_ee_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">ADPF Law No. 22 of 2023 employee contribution rate (11%).</field>
+        </record>
+        <record id="hds_ae_adpf_new_law_ee_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_new_law_ee_rate"/>
+            <field name="date_from">2023-12-01</field>
+            <field name="parameter_value">11.0</field>
+        </record>
+
+        <record id="hds_ae_adpf_new_law_er_rate" model="hr.rule.parameter">
+            <field name="name">ADPF (New Law): Employer Contribution Rate</field>
+            <field name="code">hds_ae_adpf_new_law_er_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">ADPF statutory private sector employer rate (15%).</field>
+        </record>
+        <record id="hds_ae_adpf_new_law_er_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_new_law_er_rate"/>
+            <field name="date_from">2023-12-01</field>
+            <field name="parameter_value">15.0</field>
+        </record>
+
+        <record id="hds_ae_adpf_new_law_gov_subsidy_rate" model="hr.rule.parameter">
+            <field name="name">ADPF (New Law): Government Subsidy Rate</field>
+            <field name="code">hds_ae_adpf_new_law_gov_subsidy_rate</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">ADPF government subsidy (0.0%).</field>
+        </record>
+        <record id="hds_ae_adpf_new_law_gov_subsidy_rate_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_new_law_gov_subsidy_rate"/>
+            <field name="date_from">2023-12-01</field>
+            <field name="parameter_value">0.0</field>
+        </record>
+
+        <record id="hds_ae_adpf_new_law_max_wage" model="hr.rule.parameter">
+            <field name="name">ADPF (New Law): Max Contributory Wage Ceiling</field>
+            <field name="code">hds_ae_adpf_new_law_max_wage</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">ADPF private sector maximum contributory ceiling of AED 60,000.</field>
+        </record>
+        <record id="hds_ae_adpf_new_law_max_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_new_law_max_wage"/>
+            <field name="date_from">2023-12-01</field>
+            <field name="parameter_value">60000</field>
+        </record>
+
+        <record id="hds_ae_adpf_new_law_min_wage" model="hr.rule.parameter">
+            <field name="name">ADPF (New Law): Min Contributory Wage Floor</field>
+            <field name="code">hds_ae_adpf_new_law_min_wage</field>
+            <field name="category">uae_adpf</field>
+            <field name="pension_authority_id" ref="pension_authority_adpf"/>
+            <field name="pension_scheme_id" ref="pension_scheme_new_law"/>
+            <field name="description">ADPF minimum contributory wage floor of AED 1,000.</field>
+        </record>
+        <record id="hds_ae_adpf_new_law_min_wage_val" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_ae_adpf_new_law_min_wage"/>
+            <field name="date_from">2023-12-01</field>
+            <field name="parameter_value">1000</field>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 3. GCC PENSION: Unified GCC Social Security Extension Schemes             -->
+        <!-- ========================================================================= -->
+
+        <!-- 3.1 Saudi Arabia (GOSI) -->
+        <record id="hds_gcc_sa_ee_rate" model="hr.rule.parameter">
+            <field name="name">GCC KSA (GOSI): Home Country Employee Rate</field>
+            <field name="code">hds_gcc_sa_ee_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employee Annuity rate for Saudi nationals under GOSI (9%).</field>
+        </record>
+        <record id="hds_gcc_sa_ee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_sa_ee_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">9.0</field>
+            <field name="description">Saudi GOSI employee annuity rate (9%).</field>
+        </record>
+
+        <record id="hds_gcc_sa_er_rate" model="hr.rule.parameter">
+            <field name="name">GCC KSA (GOSI): Home Country Employer Rate</field>
+            <field name="code">hds_gcc_sa_er_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employer Annuity rate for Saudi nationals under GOSI (9%).</field>
+        </record>
+        <record id="hds_gcc_sa_er_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_sa_er_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">9.0</field>
+            <field name="description">Saudi GOSI employer annuity rate (9%).</field>
+        </record>
+
+        <record id="hds_gcc_sa_er_cap" model="hr.rule.parameter">
+            <field name="name">GCC KSA (GOSI): Employer Contribution Cap</field>
+            <field name="code">hds_gcc_sa_er_cap</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable Employer Contribution Cap percentage for Saudi GOSI in UAE (default host rate 12.5%).</field>
+        </record>
+        <record id="hds_gcc_sa_er_cap_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_sa_er_cap"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">12.5</field>
+            <field name="description">Standard UAE private sector employer cap of 12.5%.</field>
+        </record>
+
+        <record id="hds_gcc_sa_absorb_shortfall" model="hr.rule.parameter">
+            <field name="name">GCC KSA (GOSI): Employee Absorbs Shortfall</field>
+            <field name="code">hds_gcc_sa_absorb_shortfall</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable flag: True if employee absorbs employer contribution shortfall when home rate exceeds host cap.</field>
+        </record>
+        <record id="hds_gcc_sa_absorb_shortfall_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_sa_absorb_shortfall"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Statutory default under Unified Extension Scheme.</field>
+        </record>
+
+        <record id="hds_gcc_sa_max_wage" model="hr.rule.parameter">
+            <field name="name">GCC KSA (GOSI): Wage Ceiling (SAR)</field>
+            <field name="code">hds_gcc_sa_max_wage</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory maximum monthly contributory wage ceiling for Saudi GOSI (SAR 45,000).</field>
+        </record>
+        <record id="hds_gcc_sa_max_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_sa_max_wage"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">45000</field>
+            <field name="description">Saudi GOSI maximum contributory wage ceiling of SAR 45,000.</field>
+        </record>
+
+        <!-- 3.2 Kuwait (PIFSS) -->
+        <record id="hds_gcc_kw_ee_rate" model="hr.rule.parameter">
+            <field name="name">GCC Kuwait (PIFSS): Home Country Employee Rate</field>
+            <field name="code">hds_gcc_kw_ee_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employee contribution rate for Kuwaiti nationals under PIFSS (8%).</field>
+        </record>
+        <record id="hds_gcc_kw_ee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_kw_ee_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">8.0</field>
+            <field name="description">Kuwait PIFSS employee basic contribution rate (8%).</field>
+        </record>
+
+        <record id="hds_gcc_kw_er_rate" model="hr.rule.parameter">
+            <field name="name">GCC Kuwait (PIFSS): Home Country Employer Rate</field>
+            <field name="code">hds_gcc_kw_er_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employer contribution rate for Kuwaiti nationals under PIFSS (11.5%).</field>
+        </record>
+        <record id="hds_gcc_kw_er_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_kw_er_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">11.5</field>
+            <field name="description">Kuwait PIFSS employer contribution rate (11.5%).</field>
+        </record>
+
+        <record id="hds_gcc_kw_er_cap" model="hr.rule.parameter">
+            <field name="name">GCC Kuwait (PIFSS): Employer Contribution Cap</field>
+            <field name="code">hds_gcc_kw_er_cap</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable Employer Contribution Cap percentage for Kuwait PIFSS (12.5%).</field>
+        </record>
+        <record id="hds_gcc_kw_er_cap_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_kw_er_cap"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">12.5</field>
+            <field name="description">Standard UAE private sector employer cap of 12.5%.</field>
+        </record>
+
+        <record id="hds_gcc_kw_absorb_shortfall" model="hr.rule.parameter">
+            <field name="name">GCC Kuwait (PIFSS): Employee Absorbs Shortfall</field>
+            <field name="code">hds_gcc_kw_absorb_shortfall</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable flag: True if employee absorbs employer contribution shortfall for Kuwait PIFSS.</field>
+        </record>
+        <record id="hds_gcc_kw_absorb_shortfall_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_kw_absorb_shortfall"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Statutory default under Unified Extension Scheme.</field>
+        </record>
+
+        <record id="hds_gcc_kw_max_wage" model="hr.rule.parameter">
+            <field name="name">GCC Kuwait (PIFSS): Wage Ceiling (KWD)</field>
+            <field name="code">hds_gcc_kw_max_wage</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory maximum monthly contributory wage ceiling for Kuwait PIFSS (KWD 3,000).</field>
+        </record>
+        <record id="hds_gcc_kw_max_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_kw_max_wage"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">3000</field>
+            <field name="description">Kuwait PIFSS maximum contributory wage ceiling of KWD 3,000.</field>
+        </record>
+
+        <!-- 3.3 Bahrain (SIO) -->
+        <record id="hds_gcc_bh_ee_rate" model="hr.rule.parameter">
+            <field name="name">GCC Bahrain (SIO): Home Country Employee Rate</field>
+            <field name="code">hds_gcc_bh_ee_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employee contribution rate for Bahraini nationals under SIO (7%).</field>
+        </record>
+        <record id="hds_gcc_bh_ee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_bh_ee_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">7.0</field>
+            <field name="description">Bahrain SIO statutory employee rate (7%).</field>
+        </record>
+
+        <record id="hds_gcc_bh_er_rate" model="hr.rule.parameter">
+            <field name="name">GCC Bahrain (SIO): Home Country Employer Rate</field>
+            <field name="code">hds_gcc_bh_er_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employer contribution rate for Bahraini nationals under SIO (12%).</field>
+        </record>
+        <record id="hds_gcc_bh_er_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_bh_er_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">12.0</field>
+            <field name="description">Bahrain SIO statutory employer rate (12%).</field>
+        </record>
+
+        <record id="hds_gcc_bh_er_cap" model="hr.rule.parameter">
+            <field name="name">GCC Bahrain (SIO): Employer Contribution Cap</field>
+            <field name="code">hds_gcc_bh_er_cap</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable Employer Contribution Cap percentage for Bahrain SIO (12.5%).</field>
+        </record>
+        <record id="hds_gcc_bh_er_cap_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_bh_er_cap"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">12.5</field>
+            <field name="description">Standard UAE private sector employer cap of 12.5%.</field>
+        </record>
+
+        <record id="hds_gcc_bh_absorb_shortfall" model="hr.rule.parameter">
+            <field name="name">GCC Bahrain (SIO): Employee Absorbs Shortfall</field>
+            <field name="code">hds_gcc_bh_absorb_shortfall</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable flag: True if employee absorbs employer contribution shortfall for Bahrain SIO.</field>
+        </record>
+        <record id="hds_gcc_bh_absorb_shortfall_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_bh_absorb_shortfall"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Statutory default under Unified Extension Scheme.</field>
+        </record>
+
+        <record id="hds_gcc_bh_max_wage" model="hr.rule.parameter">
+            <field name="name">GCC Bahrain (SIO): Wage Ceiling (BHD)</field>
+            <field name="code">hds_gcc_bh_max_wage</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory maximum monthly contributory wage ceiling for Bahrain SIO (BHD 4,000).</field>
+        </record>
+        <record id="hds_gcc_bh_max_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_bh_max_wage"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">4000</field>
+            <field name="description">Bahrain SIO maximum contributory wage ceiling of BHD 4,000.</field>
+        </record>
+
+        <!-- 3.4 Oman (SPF) -->
+        <record id="hds_gcc_om_ee_rate" model="hr.rule.parameter">
+            <field name="name">GCC Oman (SPF): Home Country Employee Rate</field>
+            <field name="code">hds_gcc_om_ee_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employee contribution rate for Omani nationals under SPF (7%).</field>
+        </record>
+        <record id="hds_gcc_om_ee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_om_ee_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">7.0</field>
+            <field name="description">Oman SPF statutory employee rate (7%).</field>
+        </record>
+
+        <record id="hds_gcc_om_er_rate" model="hr.rule.parameter">
+            <field name="name">GCC Oman (SPF): Home Country Employer Rate</field>
+            <field name="code">hds_gcc_om_er_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employer contribution rate for Omani nationals under SPF (11.5%).</field>
+        </record>
+        <record id="hds_gcc_om_er_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_om_er_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">11.5</field>
+            <field name="description">Oman SPF statutory employer rate (11.5%).</field>
+        </record>
+
+        <record id="hds_gcc_om_er_cap" model="hr.rule.parameter">
+            <field name="name">GCC Oman (SPF): Employer Contribution Cap</field>
+            <field name="code">hds_gcc_om_er_cap</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable Employer Contribution Cap percentage for Oman SPF (12.5%).</field>
+        </record>
+        <record id="hds_gcc_om_er_cap_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_om_er_cap"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">12.5</field>
+            <field name="description">Standard UAE private sector employer cap of 12.5%.</field>
+        </record>
+
+        <record id="hds_gcc_om_absorb_shortfall" model="hr.rule.parameter">
+            <field name="name">GCC Oman (SPF): Employee Absorbs Shortfall</field>
+            <field name="code">hds_gcc_om_absorb_shortfall</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable flag: True if employee absorbs employer contribution shortfall for Oman SPF.</field>
+        </record>
+        <record id="hds_gcc_om_absorb_shortfall_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_om_absorb_shortfall"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Statutory default under Unified Extension Scheme.</field>
+        </record>
+
+        <record id="hds_gcc_om_max_wage" model="hr.rule.parameter">
+            <field name="name">GCC Oman (SPF): Wage Ceiling (OMR)</field>
+            <field name="code">hds_gcc_om_max_wage</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory maximum monthly contributory wage ceiling for Oman SPF (OMR 3,000).</field>
+        </record>
+        <record id="hds_gcc_om_max_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_om_max_wage"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">3000</field>
+            <field name="description">Oman SPF maximum contributory wage ceiling of OMR 3,000.</field>
+        </record>
+
+        <!-- 3.5 Qatar (GRIA) -->
+        <record id="hds_gcc_qa_ee_rate" model="hr.rule.parameter">
+            <field name="name">GCC Qatar (GRIA): Home Country Employee Rate</field>
+            <field name="code">hds_gcc_qa_ee_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employee contribution rate for Qatari nationals under GRIA (5%).</field>
+        </record>
+        <record id="hds_gcc_qa_ee_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_qa_ee_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">5.0</field>
+            <field name="description">Qatar GRIA statutory employee rate (5%).</field>
+        </record>
+
+        <record id="hds_gcc_qa_er_rate" model="hr.rule.parameter">
+            <field name="name">GCC Qatar (GRIA): Home Country Employer Rate</field>
+            <field name="code">hds_gcc_qa_er_rate</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory Employer contribution rate for Qatari nationals under GRIA (14%).</field>
+        </record>
+        <record id="hds_gcc_qa_er_rate_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_qa_er_rate"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">14.0</field>
+            <field name="description">Qatar GRIA statutory employer rate (14%).</field>
+        </record>
+
+        <record id="hds_gcc_qa_er_cap" model="hr.rule.parameter">
+            <field name="name">GCC Qatar (GRIA): Employer Contribution Cap</field>
+            <field name="code">hds_gcc_qa_er_cap</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable Employer Contribution Cap percentage for Qatar GRIA (12.5%).</field>
+        </record>
+        <record id="hds_gcc_qa_er_cap_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_qa_er_cap"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">12.5</field>
+            <field name="description">Standard UAE private sector employer cap of 12.5%.</field>
+        </record>
+
+        <record id="hds_gcc_qa_absorb_shortfall" model="hr.rule.parameter">
+            <field name="name">GCC Qatar (GRIA): Employee Absorbs Shortfall</field>
+            <field name="code">hds_gcc_qa_absorb_shortfall</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Configurable flag: True if employee absorbs employer contribution shortfall for Qatar GRIA.</field>
+        </record>
+        <record id="hds_gcc_qa_absorb_shortfall_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_qa_absorb_shortfall"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Statutory default under Unified Extension Scheme.</field>
+        </record>
+
+        <record id="hds_gcc_qa_max_wage" model="hr.rule.parameter">
+            <field name="name">GCC Qatar (GRIA): Wage Ceiling (QAR)</field>
+            <field name="code">hds_gcc_qa_max_wage</field>
+            <field name="category">gcc_pension</field>
+            <field name="description">Statutory maximum monthly contributory wage ceiling for Qatar GRIA (QAR 100,000).</field>
+        </record>
+        <record id="hds_gcc_qa_max_wage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_gcc_qa_max_wage"/>
+            <field name="date_from">2006-01-01</field>
+            <field name="parameter_value">100000</field>
+            <field name="description">Qatar GRIA maximum contributory wage ceiling of QAR 100,000.</field>
+        </record>
+    </data>
+</odoo>

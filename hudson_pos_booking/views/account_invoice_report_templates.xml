@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_document_inherit_table_booking" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@id='informations']" position="before">
+            <t t-set="booking" t-value="o.booking_id or request.env['appointment.booking'].sudo().search([('sale_order_id', 'in', o.invoice_line_ids.sale_line_ids.order_id.ids)], limit=1)"/>
+            <t t-if="booking">
+                <div class="card my-3 p-3" style="border: 1.5px solid #008784; border-radius: 8px; background-color: #f0fdfa; margin-bottom: 20px;">
+                    <div class="row align-items-center mb-2">
+                        <div class="col-8">
+                            <span style="font-size: 16px; font-weight: bold; color: #007a78;">
+                                🍽️ Dine-In Table Reservation Confirmed
+                            </span>
+                        </div>
+                        <div class="col-4 text-end">
+                            <span class="badge" style="background-color: #008784; color: #ffffff; padding: 6px 12px; font-size: 12px; border-radius: 6px; text-transform: uppercase;">
+                                <t t-out="booking.state.replace('_', ' ')"/>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row pt-2 pb-2" style="border-top: 1px solid #ccfbf1; border-bottom: 1px solid #ccfbf1; font-size: 13px;">
+                        <div class="col-4">
+                            <span style="color: #64748b; font-weight: 500;">Assigned Table:</span><br/>
+                            <strong style="color: #0f172a; font-size: 14px;">
+                                <t t-if="booking.table_names">
+                                    <t t-out="booking.table_names"/>
+                                </t>
+                                <t t-elif="booking.table_ids">
+                                    <t t-out="', '.join(booking.table_ids.mapped('display_name'))"/>
+                                </t>
+                                <t t-else="">Table Assigned</t>
+                            </strong>
+                        </div>
+                        <div class="col-4 text-center">
+                            <span style="color: #64748b; font-weight: 500;">Party Size:</span><br/>
+                            <strong style="color: #0f172a; font-size: 14px;">
+                                <t t-out="booking.party_size or 1"/> Guests
+                            </strong>
+                        </div>
+                        <div class="col-4 text-end">
+                            <span style="color: #64748b; font-weight: 500;">Reservation Time:</span><br/>
+                            <strong style="color: #0f172a; font-size: 14px;">
+                                <span t-if="booking.start_datetime" t-field="booking.start_datetime"/>
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 pt-1" style="font-size: 13px; color: #1e293b; font-style: italic;">
+                        ✨ <strong>Warm Welcome:</strong> We look forward to welcoming you! Your table is reserved and your pre-ordered food will be prepared and served fresh upon your arrival. Have a wonderful dining experience!
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- India-specific components.
+             Reads from contract/version salary breakdown (contract.hra / contract.da / contract.fixed_allowance)
+             with automatic fallback to company policy percentages of BASIC if not set. -->
+        <record id="hr_rule_hra_india" model="hr.salary.rule">
+            <field name="name">House Rent Allowance</field>
+            <field name="code">HRA</field>
+            <field name="sequence">15</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+nominal = contract.hra or 0.0
+if nominal > 0.0:
+    sched_data = payslip._get_attendance_vs_schedule(contract, payslip.date_from, payslip.date_to)
+    total_sched = sched_data.get('total_period_scheduled_hours') or (sched_data.get('scheduled_hours', 0.0) + sched_data.get('out_of_contract_hours', 0.0))
+    if contract.pay_by_attendance:
+        work_line = worked_days.WORK100
+        earned_hours = work_line.number_of_hours if work_line else 0.0
+        result = round(nominal * (earned_hours / total_sched), 2) if total_sched > 0.0 else 0.0
+    else:
+        factor = payslip._get_fixed_salary_attendance_factor(contract)
+        result = round(nominal * factor, 2)
+else:
+    result = 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_da_india" model="hr.salary.rule">
+            <field name="name">Dearness Allowance</field>
+            <field name="code">DA</field>
+            <field name="sequence">16</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+nominal = contract.da or 0.0
+if nominal > 0.0:
+    sched_data = payslip._get_attendance_vs_schedule(contract, payslip.date_from, payslip.date_to)
+    total_sched = sched_data.get('total_period_scheduled_hours') or (sched_data.get('scheduled_hours', 0.0) + sched_data.get('out_of_contract_hours', 0.0))
+    if contract.pay_by_attendance:
+        work_line = worked_days.WORK100
+        earned_hours = work_line.number_of_hours if work_line else 0.0
+        result = round(nominal * (earned_hours / total_sched), 2) if total_sched > 0.0 else 0.0
+    else:
+        factor = payslip._get_fixed_salary_attendance_factor(contract)
+        result = round(nominal * factor, 2)
+else:
+    result = 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_fixed_allowance_india" model="hr.salary.rule">
+            <field name="name">Fixed Allowance</field>
+            <field name="code">FIXED</field>
+            <field name="sequence">17</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+nominal = contract.fixed_allowance or 0.0
+if nominal > 0.0:
+    sched_data = payslip._get_attendance_vs_schedule(contract, payslip.date_from, payslip.date_to)
+    total_sched = sched_data.get('total_period_scheduled_hours') or (sched_data.get('scheduled_hours', 0.0) + sched_data.get('out_of_contract_hours', 0.0))
+    if contract.pay_by_attendance:
+        work_line = worked_days.WORK100
+        earned_hours = work_line.number_of_hours if work_line else 0.0
+        result = round(nominal * (earned_hours / total_sched), 2) if total_sched > 0.0 else 0.0
+    else:
+        factor = payslip._get_fixed_salary_attendance_factor(contract)
+        result = round(nominal * factor, 2)
+else:
+    result = 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_standard_allowance_india" model="hr.salary.rule">
+            <field name="name">Standard Allowance</field>
+            <field name="code">STD_ALW</field>
+            <field name="sequence">18</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+nominal = contract.standard_allowance or 0.0
+if nominal > 0.0:
+    sched_data = payslip._get_attendance_vs_schedule(contract, payslip.date_from, payslip.date_to)
+    total_sched = sched_data.get('total_period_scheduled_hours') or (sched_data.get('scheduled_hours', 0.0) + sched_data.get('out_of_contract_hours', 0.0))
+    if contract.pay_by_attendance:
+        work_line = worked_days.WORK100
+        earned_hours = work_line.number_of_hours if work_line else 0.0
+        result = round(nominal * (earned_hours / total_sched), 2) if total_sched > 0.0 else 0.0
+    else:
+        factor = payslip._get_fixed_salary_attendance_factor(contract)
+        result = round(nominal * factor, 2)
+else:
+    result = 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_performance_bonus_india" model="hr.salary.rule">
+            <field name="name">Performance Bonus</field>
+            <field name="code">PERF_BONUS</field>
+            <field name="sequence">19</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_performance_bonus() if payslip_record else payslip.hds_in_compute_performance_bonus()]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_retention_bonus_india" model="hr.salary.rule">
+            <field name="name">Retention Bonus</field>
+            <field name="code">RETENTION_BONUS</field>
+            <field name="sequence">19</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_retention_bonus() if payslip_record else payslip.hds_in_compute_retention_bonus()]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_lta_india" model="hr.salary.rule">
+            <field name="name">Leave Travel Allowance</field>
+            <field name="code">LTA</field>
+            <field name="sequence">20</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+nominal = contract.lta_allowance or 0.0
+if nominal > 0.0:
+    if contract.pay_by_attendance:
+        sched_data = payslip._get_attendance_vs_schedule(contract, payslip.date_from, payslip.date_to)
+        total_sched = sched_data.get('total_period_scheduled_hours') or (sched_data.get('scheduled_hours', 0.0) + sched_data.get('out_of_contract_hours', 0.0))
+        work_line = worked_days.WORK100
+        earned_hours = work_line.number_of_hours if work_line else 0.0
+        result = round(nominal * (earned_hours / total_sched), 2) if total_sched > 0.0 else 0.0
+    else:
+        factor = payslip._get_fixed_salary_attendance_factor(contract)
+        result = round(nominal * factor, 2)
+else:
+    result = 0.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <!-- Indian Payroll Benefit Rules (Flat Nominal - 100% Paid Regardless of Attendance) -->
+        <record id="hr_rule_benefit_phone_india" model="hr.salary.rule">
+            <field name="name">Phone Subscription</field>
+            <field name="code">BENEFIT_PHONE</field>
+            <field name="sequence">21</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = bool(getattr(contract, 'benefit_phone', 0.0) and contract.benefit_phone > 0.0)]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = float(getattr(contract, 'benefit_phone', 0.0) or 0.0)]]></field>
+            <field name="hds_in_include_in_pf_wage" eval="False"/>
+            <field name="hds_in_apply_tds" eval="True"/>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_benefit_internet_india" model="hr.salary.rule">
+            <field name="name">Internet Subscription</field>
+            <field name="code">BENEFIT_INTERNET</field>
+            <field name="sequence">22</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = bool(getattr(contract, 'benefit_internet', 0.0) and contract.benefit_internet > 0.0)]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = float(getattr(contract, 'benefit_internet', 0.0) or 0.0)]]></field>
+            <field name="hds_in_include_in_pf_wage" eval="False"/>
+            <field name="hds_in_apply_tds" eval="True"/>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_benefit_meal_india" model="hr.salary.rule">
+            <field name="name">Meal Vouchers</field>
+            <field name="code">BENEFIT_MEAL</field>
+            <field name="sequence">23</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = bool(getattr(contract, 'benefit_meal_vouchers', 0.0) and contract.benefit_meal_vouchers > 0.0)]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = float(getattr(contract, 'benefit_meal_vouchers', 0.0) or 0.0)]]></field>
+            <field name="hds_in_include_in_pf_wage" eval="False"/>
+            <field name="hds_in_apply_tds" eval="True"/>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <record id="hr_rule_benefit_transport_india" model="hr.salary.rule">
+            <field name="name">Company Transport</field>
+            <field name="code">BENEFIT_TRANSPORT</field>
+            <field name="sequence">24</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = bool(getattr(contract, 'benefit_transport', 0.0) and contract.benefit_transport > 0.0)]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = float(getattr(contract, 'benefit_transport', 0.0) or 0.0)]]></field>
+            <field name="hds_in_include_in_pf_wage" eval="False"/>
+            <field name="hds_in_apply_tds" eval="True"/>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

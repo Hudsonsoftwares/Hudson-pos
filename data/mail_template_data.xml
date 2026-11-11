@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Email Template for Booking Confirmation -->
+        <record id="email_template_booking_confirmation" model="mail.template">
+            <field name="name">Appointment Booking Confirmation</field>
+            <field name="model_id" ref="appointment.model_appointment_booking"/>
+            <field name="subject">Booking Confirmation: {{ object.appointment_type_id.name }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+        Hello <t t-out="object.partner_id.name or 'Customer'"/>,<br/><br/>
+        
+        Your appointment for <strong><t t-out="object.appointment_type_id.name"/></strong> has been successfully confirmed.<br/><br/>
+        
+        <strong>Details:</strong><br/>
+        Date &amp; Time: <t t-out="format_datetime(object.start_datetime, tz=object.appointment_type_id.appointment_tz, dt_format='medium')"/><br/>
+        Duration: <t t-out="object.duration"/> hours<br/>
+        Party Size: <t t-out="object.party_size"/><br/>
+        <t t-if="object.appointment_type_id.location == 'online'">
+            Location: Online<br/>
+        </t>
+        <t t-elif="object.appointment_type_id.location == 'office'">
+            Location: Office<br/>
+        </t>
+        <t t-else="">
+            Location: <t t-out="object.appointment_type_id.location_details"/><br/>
+        </t>
+        <br/><br/>
+        
+        If you need to view, reschedule, or cancel your appointment, please use the button below:<br/><br/>
+        
+        <div style="text-align: center; margin-top: 16px; margin-bottom: 16px;">
+            <a t-attf-href="/appointment/manage/{{ object.id }}?token={{ object.access_token }}"
+               style="padding: 8px 16px; color: #FFFFFF; text-decoration: none; background-color: #714B67; border: 1px solid #714B67; border-radius: 4px;">
+                Manage / Cancel Appointment
+            </a>
+        </div>
+        <br/><br/>
+        
+        Thank you!
+    </p>
+</div>
+            </field>
+        </record>
+        <!-- Email Template for Booking Cancellation -->
+        <record id="email_template_booking_cancellation" model="mail.template">
+            <field name="name">Appointment Booking Cancellation</field>
+            <field name="model_id" ref="appointment.model_appointment_booking"/>
+            <field name="subject">Cancellation Confirmed: {{ object.appointment_type_id.name }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+        Hello <t t-out="object.partner_id.name or 'Customer'"/>,<br/><br/>
+        
+        This email is to confirm that your appointment for <strong><t t-out="object.appointment_type_id.name"/></strong> has been successfully cancelled.<br/><br/>
+        
+        <strong>Cancelled Appointment Details:</strong><br/>
+        Date &amp; Time: <t t-out="format_datetime(object.start_datetime, tz=object.appointment_type_id.appointment_tz, dt_format='medium')"/><br/>
+        <t t-if="object.appointment_type_id.location == 'online'">
+            Location: Online<br/>
+        </t>
+        <t t-elif="object.appointment_type_id.location == 'office'">
+            Location: Office<br/>
+        </t>
+        <t t-else="">
+            Location: <t t-out="object.appointment_type_id.location_details"/><br/>
+        </t>
+        <br/><br/>
+        
+        If you would like to book a new appointment, you can do so through our website at any time.<br/><br/>
+        
+        Thank you!
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

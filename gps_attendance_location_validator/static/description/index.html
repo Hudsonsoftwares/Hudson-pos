@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Location Validator</title>
+</head>
+
+<body
+    style="margin: 0; padding: 0; font-family: 'Montserrat', 'Segoe UI', Roboto, sans-serif; color: #333; background-color: #ffffff;">
+
+    <section
+        style="padding: 80px 20px; text-align: center; background: linear-gradient(135deg, rgba(113,75,103,0.85) 0%, rgba(78,51,71,0.9) 100%), url('banner.png') center/cover no-repeat; color: white;">
+        <h1 style="font-size: 42px; margin-bottom: 15px; font-weight: 700;">Attendance Location Validator</h1>
+        <p style="font-size: 20px; max-width: 800px; margin: 0 auto; opacity: 0.9; line-height: 1.5;">
+            Stop "Buddy Punching" and off-site check-ins. Secure your Odoo Attendance with GPS Geofencing.
+        </p>
+    </section>
+
+    <section style="max-width: 1100px; margin: -40px auto 40px auto; padding: 0 20px;">
+        <img src="banner.png" alt="Attendance GPS Validator"
+            style="width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: block;" />
+    </section>
+
+    <section style="max-width: 1000px; margin: 60px auto; padding: 0 20px;">
+        <div style="display: flex; align-items: center; gap: 50px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <h2 style="color: #714B67; font-size: 32px; margin-bottom: 20px;">Precision Geofencing</h2>
+                <p style="font-size: 17px; line-height: 1.8; color: #555;">
+                    Using the industry-standard <strong>Haversine Formula</strong>, this module calculates the real-time
+                    distance between your staff and the office. If they aren't within the allowed radius, Odoo blocks
+                    the check-in immediately.
+                </p>
+                <ul style="list-style: none; padding: 0; margin-top: 25px;">
+                    <li style="margin-bottom: 12px; display: flex; align-items: center;"><span
+                            style="color: #714B67; margin-right: 10px;">✔</span> Eliminate attendance fraud</li>
+                    <li style="margin-bottom: 12px; display: flex; align-items: center;"><span
+                            style="color: #714B67; margin-right: 10px;">✔</span> Easy setup via Work Locations</li>
+                    <li style="margin-bottom: 12px; display: flex; align-items: center;"><span
+                            style="color: #714B67; margin-right: 10px;">✔</span> Native Odoo User Experience</li>
+                </ul>
+            </div>
+
+            <div style="flex: 1; min-width: 300px;">
+                <img src="image-1.png" alt="Work Location Settings"
+                    style="width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" />
+            </div>
+        </div>
+    </section>
+
+    <section style="max-width: 1000px; margin: 80px auto; padding: 0 20px;">
+        <h2 style="text-align: center; color: #714B67; margin-bottom: 50px;">Configuration is Simple</h2>
+
+        <div style="display: flex; flex-direction: column; gap: 40px;">
+            <div style="display: flex; align-items: flex-start; gap: 25px;">
+                <span
+                    style="background: #714B67; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; flex-shrink: 0;">1</span>
+                <div>
+                    <h4 style="margin: 0 0 10px 0; font-size: 20px;">Set Work Location Coordinates</h4>
+                    <p style="color: #666; margin-bottom: 20px;">Go to <strong>Employees → Configuration → Work
+                            Locations</strong>. Fill in the Latitude, Longitude, and Radius (km).</p>
+                    <img src="image-1.png" alt="Work Location Form View"
+                        style="width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" />
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 25px;">
+                <span
+                    style="background: #714B67; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; flex-shrink: 0;">2</span>
+                <div>
+                    <h4 style="margin: 0 0 10px 0; font-size: 20px;">Enable Validation</h4>
+                    <p style="color: #666; margin-bottom: 20px;">The system automatically checks the distance whenever a
+                        user clicks Check-In or Check-Out.</p>
+                    <img src="image-2.png" alt="Error Notification"
+                        style="width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" />
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 25px;">
+                <span
+                    style="background: #714B67; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; flex-shrink: 0;">3</span>
+                <div>
+                    <h4 style="margin: 0 0 10px 0; font-size: 20px;">Manage Remote Exceptions</h4>
+                    <p style="color: #666; margin-bottom: 20px;">On the <strong>Employee</strong> form, toggle
+                        <strong>Allow Remote Check-In</strong> for employees who should be exempt from location
+                        validation.
+                    </p>
+                    <img src="image-3.png" alt="Employee Allow Remote Check-In Toggle"
+                        style="width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: #333; color: #eee; padding: 60px 20px;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3 style="text-align: center; margin-bottom: 30px; color: white;">Module Specifications</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+                <tr style="border-bottom: 1px solid #444;">
+                    <td style="padding: 15px; font-weight: bold; color: #aaa;">Dependencies</td>
+                    <td style="padding: 15px; font-family: monospace;">hr, hr_attendance, base_geolocalize, web</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #444;">
+                    <td style="padding: 15px; font-weight: bold; color: #aaa;">Odoo Versions</td>
+                    <td style="padding: 15px;">19.0 (Community & Enterprise)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px; font-weight: bold; color: #aaa;">Calculation Method</td>
+                    <td style="padding: 15px;">Haversine Spherical Geometry</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 50px; background: #fff; border-top: 1px solid #eee; color: #999;">
+        <p>Built for modern HR management. Secure your attendance workflow today.</p>
+    </footer>
+
+</body>
+
+</html>

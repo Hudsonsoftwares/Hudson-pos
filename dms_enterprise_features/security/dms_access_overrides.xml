@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!--
+            Odoo 20 uses ir.access (not ir.rule) for record-level security.
+            The base DMS module defines rules with EMPTY domains, which grants
+            unrestricted access to all DMS Users and internal users.
+            
+            We override those rules here with our permission-based domains so
+            that regular users can only see content explicitly assigned to them.
+            
+            DMS Managers keep unrestricted access (their rules are left untouched).
+        -->
+
+        <!-- DIRECTORY: restrict base.group_user (internal users) to assigned content only -->
+        <record id="dms.access_dms_directory_base_user" model="ir.access">
+            <field name="domain">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+
+        <!-- DIRECTORY: restrict dms.group_dms_user (DMS users) to assigned content only -->
+        <record id="dms.access_dms_directory_user" model="ir.access">
+            <field name="domain">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+
+        <!-- DIRECTORY: restrict portal users to assigned directories only -->
+        <record id="dms.access_dms_directory_portal" model="ir.access">
+            <field name="domain">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+
+        <!-- DIRECTORY: restrict public users - no access by default -->
+        <record id="dms.access_dms_directory_public" model="ir.access">
+            <field name="domain">[(0, '=', 1)]</field>
+        </record>
+
+        <!-- FILE: restrict base.group_user (internal users) to assigned files only -->
+        <record id="dms.access_dms_file_base_user" model="ir.access">
+            <field name="domain">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+
+        <!-- FILE: restrict dms.group_dms_user (DMS users) to assigned files only -->
+        <record id="dms.access_dms_file_user" model="ir.access">
+            <field name="domain">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+
+        <!-- FILE: restrict portal users to assigned files only -->
+        <record id="dms.access_dms_file_portal" model="ir.access">
+            <field name="domain">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+
+        <!-- FILE: restrict public users - no access by default -->
+        <record id="dms.access_dms_file_public" model="ir.access">
+            <field name="domain">[(0, '=', 1)]</field>
+        </record>
+
+        <!-- Override base computed global rules to use boolean True instead of user.id to prevent Odoo 20 warnings -->
+        <record id="dms.rule_directory_computed_read" model="ir.access">
+            <field name="domain">[('permission_read', '=', True)]</field>
+        </record>
+        <record id="dms.rule_directory_computed_write" model="ir.access">
+            <field name="domain">[('permission_write', '=', True)]</field>
+        </record>
+        <record id="dms.rule_directory_computed_create" model="ir.access">
+            <field name="domain">[('permission_create', '=', True)]</field>
+        </record>
+        <record id="dms.rule_directory_computed_unlink" model="ir.access">
+            <field name="domain">[('permission_unlink', '=', True)]</field>
+        </record>
+
+        <record id="dms.rule_file_computed_read" model="ir.access">
+            <field name="domain">[('permission_read', '=', True)]</field>
+        </record>
+        <record id="dms.rule_file_computed_write" model="ir.access">
+            <field name="domain">[('permission_write', '=', True)]</field>
+        </record>
+        <record id="dms.rule_file_computed_create" model="ir.access">
+            <field name="domain">[('permission_create', '=', True)]</field>
+        </record>
+        <record id="dms.rule_file_computed_unlink" model="ir.access">
+            <field name="domain">[('permission_unlink', '=', True)]</field>
+        </record>
+
+    </data>
+</odoo>

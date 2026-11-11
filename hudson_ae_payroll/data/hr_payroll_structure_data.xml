@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- UAE Structure Type: United Arab Emirates Employee Structure -->
+        <record id="structure_type_ae_employee" model="hr.payroll.structure.type">
+            <field name="name">United Arab Emirates Employee Structure</field>
+            <field name="country_id" ref="base.ae"/>
+            <field name="wage_type">monthly</field>
+            <field name="schedule_pay">monthly</field>
+            <field name="time_type">full_time</field>
+        </record>
+
+        <!-- 1. United Arab Emirates: Monthly Pay (Standalone, Parent = False) -->
+        <record id="structure_ae_monthly" model="hr.payroll.structure">
+            <field name="name">United Arab Emirates: Monthly Pay</field>
+            <field name="code">UAE_MONTHLY</field>
+            <field name="parent_id" eval="False"/>
+            <field name="company_id" eval="False"/>
+            <field name="type_id" ref="structure_type_ae_employee"/>
+            <field name="note">Standard Monthly Pay Structure for UAE Payroll Localization (WPS / MOHRE compliant)</field>
+            <field name="rule_ids" eval="[(6, 0, [
+                ref('hr_payroll_community.hr_rule_basic'),
+                ref('hds_ae_rule_evp_housing'),
+                ref('hds_ae_rule_evp_conveyance'),
+                ref('hds_ae_rule_evp_medical'),
+                ref('hds_ae_rule_evp_annual_passage'),
+                ref('hds_ae_rule_evp_overtime'),
+                ref('hds_ae_rule_evp_other'),
+                ref('hds_ae_rule_evp_leave_encashment'),
+                ref('hr_payroll_community.hr_rule_hra'),
+                ref('hr_payroll_community.hr_rule_travel'),
+                ref('hr_payroll_community.hr_rule_other'),
+                ref('hr_payroll_community.hr_rule_fixed'),
+                ref('hds_ae_rule_airfare_allowance'),
+                ref('hds_ae_rule_reimbursement'),
+                ref('hds_ae_rule_expenses'),
+                ref('hds_ae_rule_salary_arrears'),
+                ref('hds_ae_rule_other_earnings'),
+                ref('hds_ae_rule_bonus'),
+                ref('hudson_attendance_payroll_link.hr_rule_overtime_pay'),
+                ref('hr_payroll_community.hr_rule_taxable'),
+                ref('hudson_attendance_payroll_link.hr_rule_shortage_deduction'),
+                ref('hr_payroll_community.hr_rule_unpaid'),
+                ref('hds_ae_rule_deduction'),
+                ref('hds_ae_rule_salary_deductions'),
+                ref('hds_ae_rule_other_deductions'),
+                ref('hds_ae_rule_advrec'),
+                ref('hds_ae_rule_assig_salary'),
+                ref('hds_ae_rule_attach_salary'),
+                ref('hds_ae_rule_child_support'),
+                ref('hds_ae_rule_sl'),
+                ref('hds_ae_rule_ooc'),
+                ref('hds_ae_rule_siec'),
+                ref('hds_ae_rule_dewsemp'),
+                ref('hr_payroll_community.hr_rule_net'),
+                ref('hds_ae_rule_sicc'),
+                ref('hds_ae_rule_dewscomp'),
+                ref('hds_ae_rule_medical_ins'),
+                ref('hds_ae_rule_work_permit'),
+                ref('hds_ae_rule_employment_visa'),
+                ref('hds_ae_rule_other_costs'),
+                ref('hds_ae_rule_eosp'),
+                ref('hds_ae_rule_eospc'),
+                ref('hds_ae_rule_alp'),
+                ref('hds_ae_rule_netcost')
+            ])]"/>
+        </record>
+
+        <!-- 2. United Arab Emirates: Instant Pay (Standalone, Parent = False) -->
+        <record id="structure_ae_instant" model="hr.payroll.structure">
+            <field name="name">United Arab Emirates: Instant Pay</field>
+            <field name="code">UAE_INSTANT</field>
+            <field name="parent_id" eval="False"/>
+            <field name="company_id" eval="False"/>
+            <field name="type_id" ref="structure_type_ae_employee"/>
+            <field name="note">Ad-hoc, Off-cycle, and Final Settlement Pay Structure for UAE Payroll Localization</field>
+            <field name="rule_ids" eval="[(6, 0, [
+                ref('hr_payroll_community.hr_rule_basic'),
+                ref('hr_payroll_community.hr_rule_hra'),
+                ref('hds_ae_rule_eos'),
+                ref('hds_ae_rule_alea'),
+                ref('hds_ae_rule_alppout'),
+                ref('hr_payroll_community.hr_rule_taxable'),
+                ref('hds_ae_rule_aled'),
+                ref('hds_ae_rule_deduction'),
+                ref('hds_ae_rule_advrec'),
+                ref('hr_payroll_community.hr_rule_net')
+            ])]"/>
+        </record>
+
+        <!-- Set Monthly Pay as the Default Pay Structure for UAE Structure Type -->
+        <record id="structure_type_ae_employee" model="hr.payroll.structure.type">
+            <field name="default_struct_id" ref="structure_ae_monthly"/>
+        </record>
+
+        <!-- Safe Database Cleanup: Remove obsolete UAE_ROOT if present in existing database -->
+        <delete model="hr.payroll.structure" search="[('code', '=', 'UAE_ROOT')]"/>
+    </data>
+</odoo>

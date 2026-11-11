@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_menu_helpdesk" name="Portal layout : helpdesk tickets menu entries" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'ticket' or ticket" t-attf-class="breadcrumb-item #{'active ' if not ticket else ''}">
+                <a t-if="ticket" t-attf-href="/my/tickets?{{ keep_query() }}">Tickets</a>
+                <t t-else="">Tickets</t>
+            </li>
+            <li t-if="ticket" class="breadcrumb-item active">
+                <t t-out="ticket.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_helpdesk" name="Show Tickets" customize_show="True" inherit_id="portal.portal_my_home" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Tickets</t>
+                <t t-set="url" t-value="'/my/tickets'"/>
+                <t t-set="placeholder_count" t-value="'ticket_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_tickets" name="My Tickets">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Tickets</t>
+            </t>
+            <t t-if="not tickets">
+                <p>There are currently no tickets for your account.</p>
+            </t>
+            <t t-if="tickets" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Ticket</th>
+                        <th>Subject</th>
+                        <th>Stage</th>
+                    </tr>
+                </thead>
+                <t t-foreach="tickets" t-as="ticket">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/ticket/#{ticket.id}"><t t-out="ticket.name"/></a>
+                        </td>
+                        <td><span t-field="ticket.subject"/></td>
+                        <td>
+                            <span class="badge rounded-pill text-bg-info" t-field="ticket.stage_id.name"/>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_ticket_page" name="Ticket">
+        <t t-call="portal.portal_layout">
+            <div id="optional_layout">
+                <div class="container">
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-lg-12 d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0">
+                                        <span t-field="ticket.name"/> - <span t-field="ticket.subject"/>
+                                    </h4>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <form t-if="ticket.team_id.use_closure_by_customer and not ticket.stage_id.is_close"
+                                              t-attf-action="/my/ticket/#{ticket.id}/close" method="post" class="d-inline">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input t-if="token" type="hidden" name="access_token" t-att-value="token"/>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to close this ticket?');">
+                                                <i class="fa fa-times-circle me-1"/> Close Ticket
+                                            </button>
+                                        </form>
+                                        <span class="badge rounded-pill text-bg-info" t-field="ticket.stage_id.name"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div t-if="ticket.description" t-field="ticket.description"/>
+                        </div>
+                    </div>
+                    
+                    <div t-if="('forum_post_id' in ticket and ticket.forum_post_id) or ('slide_id' in ticket and ticket.slide_id) or ('course_id' in ticket and ticket.course_id)" class="mt-4">
+                        <h4>Helpful Resources</h4>
+                        <div class="row">
+                            <div t-if="('forum_post_id' in ticket and ticket.forum_post_id)" class="col-md-6 mb-3">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-comments fa-3x text-primary mb-3"></i>
+                                        <h5 class="card-title">Community Forum</h5>
+                                        <p class="card-text text-truncate" t-out="ticket.forum_post_id.name"/>
+                                        <a t-att-href="ticket.forum_post_id.website_url" class="btn btn-outline-primary btn-sm">View Discussion</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div t-if="('slide_id' in ticket and ticket.slide_id) or ('course_id' in ticket and ticket.course_id)" class="col-md-6 mb-3">
+                                <t t-set="learning" t-value="('slide_id' in ticket and ticket.slide_id) or ('course_id' in ticket and ticket.course_id)"/>
+                                <div class="card h-100 border-success">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-graduation-cap fa-3x text-success mb-3"></i>
+                                        <h5 class="card-title">eLearning</h5>
+                                        <p class="card-text text-truncate" t-out="learning.name"/>
+                                        <a t-att-href="learning.website_url" class="btn btn-outline-success btn-sm">Take Course</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h4>Communication</h4>
+                        <t t-call="portal.message_thread" object="ticket" token="ticket.access_token"/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Website Ticket Submission -->
+    <template id="helpdesk_submit_ticket" name="Submit Ticket">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container mt-4 mb-4">
+                    <h1>Submit a Ticket</h1>
+                    <form action="/helpdesk/submit/process" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" required="1" t-att-value="request.env.user.name if request.env.user != request.env.ref('base.public_user') else ''"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required="1" t-att-value="request.env.user.email if request.env.user != request.env.ref('base.public_user') else ''"/>
+                        </div>
+                        <div class="mb-3" t-if="len(teams) &gt; 1">
+                            <label for="team_id" class="form-label">Team</label>
+                            <select name="team_id" class="form-select" required="1">
+                                <t t-foreach="teams" t-as="t">
+                                    <option t-att-value="t.id" t-att-selected="t == selected_team"><t t-out="t.name"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <input t-else="" type="hidden" name="team_id" t-att-value="selected_team.id"/>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" name="subject" required="1"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Category</label>
+                            <select name="category_id" class="form-select">
+                                <option value="">Select a Category...</option>
+                                <t t-foreach="categories" t-as="cat">
+                                    <option t-att-value="cat.id"><t t-out="cat.name"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="5" required="1"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Ticket</button>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="helpdesk_submit_success" name="Ticket Submitted Successfully">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container mt-5 mb-5 text-center">
+                    <div class="alert alert-success d-inline-block px-5 py-4">
+                        <i class="fa fa-check-circle fa-4x mb-3 text-success"></i>
+                        <h2 class="mb-3">Thank you!</h2>
+                        <p class="lead">Your ticket <strong><t t-out="ticket_name"/></strong> has been submitted successfully.</p>
+                        <p>We will get back to you shortly.</p>
+                        <div class="mt-4">
+                            <a href="/" class="btn btn-primary">Return to Home</a>
+                            <a href="/my/tickets" class="btn btn-outline-primary ms-2">View My Tickets</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="helpdesk_rating_success" name="Ticket Rating Submitted">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container mt-5 mb-5 text-center">
+                    <div class="alert alert-info d-inline-block px-5 py-4">
+                        <t t-if="rating == 5">
+                            <i class="fa fa-smile-o fa-4x mb-3 text-success"></i>
+                            <h2 class="mb-3">Awesome!</h2>
+                            <p class="lead">We're glad we could help you with ticket <strong><t t-out="ticket.name"/></strong>.</p>
+                        </t>
+                        <t t-elif="rating == 3">
+                            <i class="fa fa-meh-o fa-4x mb-3 text-warning"></i>
+                            <h2 class="mb-3">Thank You</h2>
+                            <p class="lead">Your feedback for ticket <strong><t t-out="ticket.name"/></strong> has been recorded.</p>
+                        </t>
+                        <t t-else="">
+                            <i class="fa fa-frown-o fa-4x mb-3 text-danger"></i>
+                            <h2 class="mb-3">We're Sorry</h2>
+                            <p class="lead">We will work on improving our service for ticket <strong><t t-out="ticket.name"/></strong>.</p>
+                        </t>
+                        <p>Thank you for taking the time to provide your feedback!</p>
+                        <div class="mt-4">
+                            <a href="/" class="btn btn-primary">Return to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Unified Help Center Landing Page -->
+    <template id="helpdesk_landing_page" name="Help Center">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <!-- Top Hero Section -->
+                <section class="pt64 pb128" style="background-color: #F8E2CD;">
+                    <div class="container text-center">
+                        <h1 class="display-4 fw-bold mb-4" style="color: #2b2b2b;">How can we help you?</h1>
+                        <p t-if="team" class="lead mb-4" style="color: #2b2b2b;"><t t-out="team.name"/></p>
+                        <form t-att-action="team.website_url if team else '/helpdesk'" method="get" class="d-inline-block w-100" style="max-width: 600px;">
+                            <div class="input-group input-group-lg bg-white rounded shadow-sm overflow-hidden" style="border: 1px solid #e0e0e0;">
+                                <input type="text" name="search" t-att-value="search" class="form-control border-0 shadow-none" placeholder="Search for articles, best practices and more..." style="font-size: 16px;"/>
+                                <button type="submit" class="btn btn-link text-dark bg-white border-0"><i class="fa fa-search"/></button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                
+                <!-- Search Results -->
+                <section t-if="search" class="container" style="margin-top: -60px; margin-bottom: 40px;">
+                    <div class="card border-0 rounded shadow">
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold mb-3">Results for "<t t-out="search"/>"</h4>
+                            <p t-if="not has_results" class="text-muted mb-0">
+                                No results found. <a t-if="form_teams" t-att-href="submit_url">Submit a ticket</a> and our team will help you.
+                            </p>
+                            <div class="list-group list-group-flush" id="helpdesk_search_results">
+                                <a t-foreach="search_results.get('posts', [])" t-as="post" t-att-href="post.website_url" class="list-group-item list-group-item-action px-0">
+                                    <span class="badge text-bg-light border me-2">Forum</span><t t-out="post.name"/>
+                                </a>
+                                <a t-foreach="search_results.get('slides', [])" t-as="slide" t-att-href="slide.website_url" class="list-group-item list-group-item-action px-0">
+                                    <span class="badge text-bg-light border me-2">eLearning</span><t t-out="slide.name"/>
+                                    <small class="text-muted ms-1">(<t t-out="slide.channel_id.name"/>)</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dynamic Cards Section (Floating over the hero background) -->
+                <section class="container" t-attf-style="margin-top: {{ '0' if search else '-60px' }}; margin-bottom: 80px;">
+                    <div class="row justify-content-center" id="helpdesk_help_center_cards">
+
+                        <!-- Community Forum Card -->
+                        <div class="col-md-4 mb-4" t-if="show_forum">
+                            <div class="card border-0 rounded shadow h-100" style="border-radius: 8px !important;">
+                                <div style="position: absolute; top: -20px; right: 20px; z-index: 10;">
+                                    <span class="fa-stack fa-2x">
+                                        <i class="fa fa-comments fa-stack-1x text-warning" style="opacity: 0.8; font-size: 35px;"></i>
+                                        <i class="fa fa-commenting fa-stack-1x text-primary" style="font-size: 35px; margin-left: 10px; margin-top: -10px;"></i>
+                                    </span>
+                                </div>
+                                <div class="card-body p-4 pt-5 d-flex flex-column">
+                                    <h3 class="fw-bold text-dark mb-2">Community Forum</h3>
+                                    <p class="text-muted mb-4 flex-grow-1">Join the discussion, ask questions, and get help from other community members.</p>
+                                    <div class="mb-4" t-if="forums">
+                                        <h6 class="text-muted small fw-bold text-uppercase mb-2">Quick Links</h6>
+                                        <t t-foreach="forums" t-as="forum">
+                                            <a t-att-href="forum.website_url" class="d-block p-2 bg-light rounded text-dark text-decoration-none border mb-2">
+                                                <t t-out="forum.name"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                    <a t-att-href="forums[0].website_url if len(forums) == 1 else '/forum'" class="btn w-100 fw-bold mt-auto" style="background-color: #D3E6E8; color: #2C5E63; border: none;">Visit Forums</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- eLearning Card -->
+                        <div class="col-md-4 mb-4" t-if="show_elearning">
+                            <div class="card border-0 rounded shadow h-100" style="border-radius: 8px !important;">
+                                <div style="position: absolute; top: -20px; right: 20px; z-index: 10;">
+                                    <span class="fa-stack fa-2x">
+                                        <i class="fa fa-graduation-cap fa-stack-1x text-success" style="opacity: 0.8; font-size: 35px;"></i>
+                                        <i class="fa fa-play-circle fa-stack-1x text-info" style="font-size: 35px; margin-left: 10px; margin-top: -10px;"></i>
+                                    </span>
+                                </div>
+                                <div class="card-body p-4 pt-5 d-flex flex-column">
+                                    <h3 class="fw-bold text-dark mb-2">eLearning</h3>
+                                    <p class="text-muted mb-4 flex-grow-1">Take comprehensive courses and follow slide presentations to master our products.</p>
+                                    <div class="mb-4">
+                                        <h6 class="text-muted small fw-bold text-uppercase mb-2">Quick Links</h6>
+                                        <t t-if="courses">
+                                            <t t-foreach="courses" t-as="course">
+                                                <a t-att-href="course.website_url" class="d-block p-2 bg-light rounded text-dark text-decoration-none border mb-2">
+                                                    <t t-out="course.name"/>
+                                                </a>
+                                            </t>
+                                        </t>
+                                        <a t-else="" href="/slides" class="d-block p-2 bg-light rounded text-dark text-decoration-none border">
+                                            Training Courses
+                                        </a>
+                                    </div>
+                                    <a href="/slides" class="btn w-100 fw-bold mt-auto" style="background-color: #D8F1D4; color: #3A6635; border: none;">View Courses</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bottom Support Banner -->
+                <section t-if="form_teams" class="py-5" style="background-color: #F8E2CD;">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="fw-bold mb-2 text-dark">Can't find your answer?</h2>
+                                <p class="lead mb-0 text-dark">Our support team is here to help.</p>
+                            </div>
+                            <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+                                <a t-att-href="submit_url" class="btn btn-lg px-4" style="background-color: #6C5570; color: #fff; border-radius: 20px;">
+                                    Contact Us
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

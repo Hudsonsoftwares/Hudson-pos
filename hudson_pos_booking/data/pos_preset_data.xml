@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Configure Opening Time Resource Calendar for Pre-Order Food (7 days, 11 hours daily: 11:00 AM - 10:00 PM) -->
+        <record id="pos_restaurant.pos_resource_preset" model="resource.calendar">
+            <field name="name">Opening time</field>
+            <field name="attendance_ids" eval="[(5, 0, 0),
+                (0, 0, {'dayofweek': '0', 'hour_from': 11.0, 'hour_to': 22.0, 'day_period': 'full_day'}),
+                (0, 0, {'dayofweek': '1', 'hour_from': 11.0, 'hour_to': 22.0, 'day_period': 'full_day'}),
+                (0, 0, {'dayofweek': '2', 'hour_from': 11.0, 'hour_to': 22.0, 'day_period': 'full_day'}),
+                (0, 0, {'dayofweek': '3', 'hour_from': 11.0, 'hour_to': 22.0, 'day_period': 'full_day'}),
+                (0, 0, {'dayofweek': '4', 'hour_from': 11.0, 'hour_to': 22.0, 'day_period': 'full_day'}),
+                (0, 0, {'dayofweek': '5', 'hour_from': 11.0, 'hour_to': 22.0, 'day_period': 'full_day'}),
+                (0, 0, {'dayofweek': '6', 'hour_from': 11.0, 'hour_to': 22.0, 'day_period': 'full_day'}),
+            ]"/>
+        </record>
+
+        <!-- Configure Pre-Order Food preset -->
+        <record id="pos_restaurant.pos_takeout_preset" model="pos.preset">
+            <field name="name">Pre-Order Food</field>
+            <field name="color">3</field>
+            <field name="identification">name</field>
+            <field name="use_timing">True</field>
+            <field name="slots_per_interval">5</field>
+            <field name="interval_time">20</field>
+            <field name="available_in_self">True</field>
+            <field name="service_at">counter</field>
+            <field name="resource_calendar_id" ref="pos_restaurant.pos_resource_preset"/>
+            <field name="mail_template_id" ref="pos_self_order.takeout_email_template"/>
+            <field name="image_512" type="bytes" file="pos_self_order/static/img/take_out.jpg"/>
+        </record>
+    </data>
+</odoo>
+

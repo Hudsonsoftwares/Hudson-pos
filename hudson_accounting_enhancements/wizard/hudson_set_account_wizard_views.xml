@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hudson_set_account_wizard_form" model="ir.ui.view">
+        <field name="name">hudson.set.account.wizard.form</field>
+        <field name="model">hudson.set.account.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Search: Account">
+                <group>
+                    <field name="account_id" nolabel="1" placeholder="Search Account..." options="{'no_create': False}"/>
+                </group>
+                <footer>
+                    <button string="Apply" type="object" name="action_apply" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

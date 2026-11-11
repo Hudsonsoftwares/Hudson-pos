@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <!-- Indian payment modes (Bank Transfer, Cheque and Cash come from hudson_payroll_base) -->
+    <record id="payment_mode_neft_rtgs" model="hds.payment.mode">
+        <field name="name">NEFT / RTGS</field>
+        <field name="code">neft_rtgs</field>
+        <field name="is_cash">False</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="payment_mode_upi" model="hds.payment.mode">
+        <field name="name">UPI</field>
+        <field name="code">upi</field>
+        <field name="is_cash">False</field>
+        <field name="sequence">5</field>
+    </record>
+</odoo>

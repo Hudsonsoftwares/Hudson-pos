@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_unreal_ccy">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="row mb-3">
+                        <div class="col-12 text-center">
+                            <h2 style="font-weight:bold; color:#2c3e50;">
+                                Unrealized Foreign Currency Gains / Losses
+                            </h2>
+                            <h4 t-out="company.name" style="color:#7f8c8d;"/>
+                            <p class="text-muted">
+                                As of <strong><t t-out="data.get('as_of_date')"/></strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+
+                    <t t-if="not data.get('results')">
+                        <div class="alert alert-info">
+                            No open foreign currency items found as of the selected date.
+                            All receivables and payables are in the company's base currency.
+                        </div>
+                    </t>
+
+                    <t t-foreach="data.get('results', [])" t-as="group">
+                        <h5 style="color:#2c3e50; font-weight:bold; margin-top:20px;">
+                            Currency: <t t-out="group.get('currency_name')"/>
+                            (<t t-out="group.get('currency_symbol')"/>)
+                        </h5>
+                        <table class="table table-sm table-reports" style="font-size:12px;">
+                            <thead>
+                                <tr style="background:#34495e; color:white;">
+                                    <th>Partner</th>
+                                    <th>Date</th>
+                                    <th>Reference</th>
+                                    <th>Account</th>
+                                    <th class="text-end">Foreign Amount</th>
+                                    <th class="text-end">Book Value (<t t-out="currency.name"/>)</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Current Value (<t t-out="currency.name"/>)</th>
+                                    <th class="text-end">Unrealized Gain/(Loss)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="group.get('items', [])" t-as="item">
+                                    <tr>
+                                        <td><t t-out="item.get('partner')"/></td>
+                                        <td><t t-out="item.get('date')"/></td>
+                                        <td><t t-out="item.get('ref')"/></td>
+                                        <td><t t-out="item.get('account')"/></td>
+                                        <td class="text-end">
+                                            <t t-out="item.get('amount_foreign')"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-out="item.get('original_company', 0)"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <t t-out="item.get('current_rate')"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-out="item.get('current_company', 0)"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                        </td>
+                                        <td class="text-end"
+                                            t-attf-style="color: {{ 'green' if item.get('unrealized', 0) >= 0 else 'red' }}; font-weight:bold;">
+                                            <span t-out="item.get('unrealized', 0)"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <!-- Currency subtotal -->
+                                <tr style="background:#f0f0f0; font-weight:bold;">
+                                    <td colspan="5">Subtotal — <t t-out="group.get('currency_name')"/></td>
+                                    <td class="text-end">
+                                        <span t-out="group.get('total_original', 0)"
+                                              t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                    </td>
+                                    <td></td>
+                                    <td class="text-end">
+                                        <span t-out="group.get('total_current', 0)"
+                                              t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                    </td>
+                                    <td class="text-end"
+                                        t-attf-style="color: {{ 'green' if group.get('total_gain_loss', 0) >= 0 else 'red' }}; font-weight:bold;">
+                                        <span t-out="group.get('total_gain_loss', 0)"
+                                              t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <!-- Grand Total -->
+                    <t t-if="data.get('results')">
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table table-sm" style="max-width:400px; float:right; font-size:14px;">
+                                    <tr style="background:#2c3e50; color:white; font-weight:bold;">
+                                        <td style="padding:10px;">Total Unrealized Gain / (Loss)</td>
+                                        <td class="text-end" style="padding:10px;"
+                                            t-attf-style="color: {{ 'lightgreen' if data.get('total_unrealized', 0) >= 0 else '#ff6b6b' }}; background:#2c3e50;">
+                                            <span t-out="data.get('total_unrealized', 0)"
+                                                  t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <p class="text-muted small">
+                                <strong>Note:</strong> Unrealized gains/losses are calculated on unreconciled
+                                receivable and payable items denominated in foreign currencies. Positive values
+                                indicate an unrealized gain; negative values indicate an unrealized loss.
+                                These amounts should be considered for period-end adjustment journal entries.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

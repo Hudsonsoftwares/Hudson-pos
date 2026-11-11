@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tds_financial_year_wizard_form" model="ir.ui.view">
+        <field name="name">tds.financial.year.wizard.form</field>
+        <field name="model">tds.financial.year.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Annual Financial Year Roll-Over Wizard">
+                <p class="text-muted">
+                    This wizard prepares statutory configurations for the next Financial Year. It copies tax slabs, surcharge slabs, and default settings from the previous year as editable templates for administrative review before activation.
+                </p>
+                <group>
+                    <group string="Source Financial Year">
+                        <field name="source_fy_id" options="{'no_create': True}"/>
+                    </group>
+                    <group string="New Financial Year Target">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="assessment_year"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+                <group string="Statutory Master Copy Options">
+                    <group>
+                        <field name="copy_tax_slabs"/>
+                        <field name="copy_surcharge_slabs"/>
+                    </group>
+                    <group>
+                        <field name="set_as_company_default"/>
+                        <field name="close_previous_fy"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_create_financial_year" string="Generate Financial Year &amp; Copy Masters" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tds_financial_year_wizard" model="ir.actions.act_window">
+        <field name="name">Financial Year Roll-Over Wizard</field>
+        <field name="res_model">tds.financial.year.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

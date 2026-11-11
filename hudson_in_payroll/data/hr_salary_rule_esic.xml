@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Statutory ESIC Wage Calculation Rule (Thin HrPayslip API Delegated) -->
+        <record id="hds_in_rule_esic_wage" model="hr.salary.rule">
+            <field name="name">ESIC Contributable Wage</field>
+            <field name="code">ESIC_WAGE</field>
+            <field name="sequence" eval="159"/>
+            <field name="category_id" ref="hudson_in_payroll.salary_rule_category_esic_calc"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_esic_wage()]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Employee ESIC Deduction Rule -->
+        <record id="hds_in_rule_esic_ee" model="hr.salary.rule">
+            <field name="name">Employee ESIC</field>
+            <field name="code">ESIC_EE</field>
+            <field name="sequence" eval="160"/>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_ded"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_esic_employee()]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Employer ESIC Contribution Rule (CTC Contributor) -->
+        <record id="hds_in_rule_esic_er" model="hr.salary.rule">
+            <field name="name">Employer ESIC Contribution</field>
+            <field name="code">ESIC_ER</field>
+            <field name="sequence" eval="161"/>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_esic_employer()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="hds_in_contributes_to_employer_cost" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- ============================================================= -->
+        <!-- TAX DECLARATION SECTION CONFIGURATIONS                        -->
+        <!-- ============================================================= -->
+
+        <!-- 1. SECTION 80C -->
+        <record id="hds_in_tds_section_80c" model="tds.tax.section.config">
+            <field name="name">Section 80C Investments</field>
+            <field name="code">80C</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">10</field>
+            <field name="eligibility_guidance">Deduction allowed for specified life insurance premiums, provident fund contributions, ELSS mutual funds, tuition fees, and housing loan principal repayments. Subject to a combined statutory aggregate ceiling across all 80C components.</field>
+            <field name="typical_documents">PPF Passbook, ELSS Statement, EPF Slip, LIC Premium Receipt, NSC Certificate, SSY Passbook, 5-Year FD Certificate, Tuition Fee Receipt, Housing Loan Principal Certificate.</field>
+        </record>
+
+        <!-- 80C Sub-Components -->
+        <record id="hds_in_tds_comp_80c_ppf" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Public Provident Fund (PPF)</field>
+            <field name="code">80c_ppf</field>
+            <field name="python_field_name">decl_80c_ppf</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_elss" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Equity Linked Savings Scheme (ELSS)</field>
+            <field name="code">80c_elss</field>
+            <field name="python_field_name">decl_80c_elss</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_epf" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Employees Provident Fund / VPF</field>
+            <field name="code">80c_epf</field>
+            <field name="python_field_name">decl_80c_epf</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_lic" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Life Insurance Premium (LIC)</field>
+            <field name="code">80c_lic</field>
+            <field name="python_field_name">decl_80c_lic</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_nsc" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">National Savings Certificate (NSC)</field>
+            <field name="code">80c_nsc</field>
+            <field name="python_field_name">decl_80c_nsc</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_ssy" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Sukanya Samriddhi Yojana (SSY)</field>
+            <field name="code">80c_ssy</field>
+            <field name="python_field_name">decl_80c_ssy</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2015-04-01</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_fd" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Tax Saving 5-Year Fixed Deposit</field>
+            <field name="code">80c_fd</field>
+            <field name="python_field_name">decl_80c_fd</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_tuition" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Tuition Fees for Children Education</field>
+            <field name="code">80c_tuition</field>
+            <field name="python_field_name">decl_80c_tuition</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">80</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_housing_principal" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Housing Loan Principal Repayment</field>
+            <field name="code">80c_housing_principal</field>
+            <field name="python_field_name">decl_80c_housing_principal</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">90</field>
+        </record>
+        <record id="hds_in_tds_comp_80c_other" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Other Eligible 80C Investments</field>
+            <field name="code">80c_other</field>
+            <field name="python_field_name">decl_80c_other</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">100</field>
+        </record>
+
+        <!-- 2. SECTION 80CCD(1B) -->
+        <record id="hds_in_tds_section_80ccd1b" model="tds.tax.section.config">
+            <field name="name">Section 80CCD(1B) Voluntary NPS</field>
+            <field name="code">80CCD1B</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2015-04-01</field>
+            <field name="sequence">20</field>
+            <field name="eligibility_guidance">Additional deduction allowed for individual voluntary contributions to National Pension System (NPS Tier-I account), over and above Section 80C limit.</field>
+            <field name="typical_documents">NPS Tier-I Contribution Statement, PRAN Card / Statement.</field>
+        </record>
+        <record id="hds_in_tds_comp_80ccd1b_nps" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80ccd1b"/>
+            <field name="name">Employee Voluntary NPS Contribution</field>
+            <field name="code">80ccd1b</field>
+            <field name="python_field_name">decl_80ccd1b_nps</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2015-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- 3. SECTION 80D -->
+        <record id="hds_in_tds_section_80d" model="tds.tax.section.config">
+            <field name="name">Section 80D Health Insurance Premiums</field>
+            <field name="code">80D</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">30</field>
+            <field name="eligibility_guidance">Deduction allowed for health insurance premiums paid for self, spouse, dependent children, and parents.</field>
+            <field name="typical_documents">Health Insurance Premium Receipt, 80D Certificate from Insurance Company.</field>
+        </record>
+
+        <!-- 80D Sub-Components -->
+        <record id="hds_in_tds_comp_80d_self" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80d"/>
+            <field name="name">Medical Insurance Self &amp; Family</field>
+            <field name="code">80d_self</field>
+            <field name="python_field_name">decl_80d_self</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="hds_in_tds_comp_80d_parents" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80d"/>
+            <field name="name">Medical Insurance Parents</field>
+            <field name="code">80d_parents</field>
+            <field name="python_field_name">decl_80d_parents</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="hds_in_tds_comp_80d_preventive" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80d"/>
+            <field name="name">Preventive Health Checkup</field>
+            <field name="code">80d_preventive</field>
+            <field name="python_field_name">decl_80d_preventive</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- 4. SECTION 80E -->
+        <record id="hds_in_tds_section_80e" model="tds.tax.section.config">
+            <field name="name">Section 80E Education Loan Interest</field>
+            <field name="code">80E</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="hds_in_tds_comp_80e" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80e"/>
+            <field name="name">Education Loan Interest (Section 80E)</field>
+            <field name="code">80e</field>
+            <field name="python_field_name">decl_80e_interest</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- 5. SECTION 80G -->
+        <record id="hds_in_tds_section_80g" model="tds.tax.section.config">
+            <field name="name">Section 80G Charitable Donations</field>
+            <field name="code">80G</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="hds_in_tds_comp_80g" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80g"/>
+            <field name="name">Charitable Donations (Section 80G)</field>
+            <field name="code">80g</field>
+            <field name="python_field_name">decl_80g_donation</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- 6. SECTION 80TTA & 80TTB -->
+        <record id="hds_in_tds_section_80tta" model="tds.tax.section.config">
+            <field name="name">Section 80TTA / 80TTB Savings Bank Interest</field>
+            <field name="code">80TTA</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="hds_in_tds_comp_80tta" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80tta"/>
+            <field name="name">Savings Bank Interest Non-Senior (Section 80TTA)</field>
+            <field name="code">80tta</field>
+            <field name="python_field_name">decl_80tta_interest</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="hds_in_tds_comp_80ttb" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80tta"/>
+            <field name="name">Savings/Deposit Interest Senior Citizen (Section 80TTB)</field>
+            <field name="code">80ttb</field>
+            <field name="python_field_name">decl_80ttb_interest</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2018-04-01</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- 7. SECTION 24(B) & HRA -->
+        <record id="hds_in_tds_section_hra_home" model="tds.tax.section.config">
+            <field name="name">HRA Exemption &amp; Home Loan Interest</field>
+            <field name="code">HRA_HOME</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="hds_in_tds_comp_24b" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">Housing Loan Interest (Section 24(b))</field>
+            <field name="code">24b</field>
+            <field name="python_field_name">decl_24b_self_interest</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="hds_in_tds_comp_80eea" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">First-Time Home Buyer Interest (Section 80EEA)</field>
+            <field name="code">80eea</field>
+            <field name="python_field_name">decl_80eea_interest</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2019-04-01</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="hds_in_tds_comp_hra" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">House Rent Allowance Exemption (Section 10(13A))</field>
+            <field name="code">hra</field>
+            <field name="python_field_name">decl_hra_annual_rent</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="hds_in_tds_comp_80gg" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">Rent Paid Without HRA (Section 80GG)</field>
+            <field name="code">80gg</field>
+            <field name="python_field_name">decl_80gg_rent</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <!-- ADDITIONAL STATUTORY COMPONENT CONFIGURATIONS -->
+        <record id="hds_in_tds_comp_80c_agg" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Section 80C Aggregated Claims</field>
+            <field name="code">80c</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">110</field>
+        </record>
+        <record id="hds_in_tds_comp_nps_emp" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80ccd1b"/>
+            <field name="name">Employee NPS Contribution (Section 80CCD(1))</field>
+            <field name="code">nps_employee</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="hds_in_tds_comp_80dd" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Dependent Disability Maintenance (Section 80DD)</field>
+            <field name="code">80dd</field>
+            <field name="python_field_name">decl_80dd_amount</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">120</field>
+        </record>
+        <record id="hds_in_tds_comp_80u" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Employee Person with Disability (Section 80U)</field>
+            <field name="code">80u</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">130</field>
+        </record>
+        <record id="hds_in_tds_comp_children_edu" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">Children Education Allowance (Section 10(14))</field>
+            <field name="code">children_edu</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="hds_in_tds_comp_hostel" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">Hostel Expenditure Allowance (Section 10(14))</field>
+            <field name="code">hostel</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="hds_in_tds_comp_lta" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">Leave Travel Assistance (Section 10(5))</field>
+            <field name="code">lta</field>
+            <field name="python_field_name">decl_lta_declared_fare</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="hds_in_tds_comp_leave_encashment" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">Leave Encashment Exemption (Section 10(10AA))</field>
+            <field name="code">leave_encashment</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">80</field>
+        </record>
+        <record id="hds_in_tds_comp_vrs" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_hra_home"/>
+            <field name="name">VRS Compensation Exemption (Section 10(10C))</field>
+            <field name="code">vrs</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">90</field>
+        </record>
+        <record id="hds_in_tds_comp_other" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_80c"/>
+            <field name="name">Other Statutory Deductions</field>
+            <field name="code">other</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">0</field>
+            <field name="effective_from">2014-04-01</field>
+            <field name="sequence">140</field>
+        </record>
+
+        <!-- 8. BOTH REGIME SECTIONS (80CCD(2), 57(iia), 80CCH) -->
+        <record id="hds_in_tds_section_both_regimes" model="tds.tax.section.config">
+            <field name="name">Other Tax-Eligible Adjustments</field>
+            <field name="code">BOTH_REGIMES</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">1</field>
+            <field name="effective_from">2020-04-01</field>
+            <field name="sequence">80</field>
+        </record>
+        <record id="hds_in_tds_comp_80ccd2" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_both_regimes"/>
+            <field name="name">Employer NPS Contribution — Section 124</field>
+            <field name="code">80ccd2</field>
+            <field name="python_field_name">decl_80ccd2_employer_nps</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">1</field>
+            <field name="effective_from">2020-04-01</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="hds_in_tds_comp_57iia" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_both_regimes"/>
+            <field name="name">Family Pension Section 93(1)(d)</field>
+            <field name="code">57iia</field>
+            <field name="python_field_name">decl_57iia_family_pension</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">1</field>
+            <field name="effective_from">2020-04-01</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="hds_in_tds_comp_80cch" model="tds.tax.component.config">
+            <field name="section_id" ref="hds_in_tds_section_both_regimes"/>
+            <field name="name">Agniveer Corpus Fund (Section 80CCH)</field>
+            <field name="code">80cch</field>
+            <field name="python_field_name">decl_80cch_agniveer</field>
+            <field name="old_regime_allowed">1</field>
+            <field name="new_regime_allowed">1</field>
+            <field name="effective_from">2022-04-01</field>
+            <field name="sequence">30</field>
+        </record>
+    </data>
+</odoo>

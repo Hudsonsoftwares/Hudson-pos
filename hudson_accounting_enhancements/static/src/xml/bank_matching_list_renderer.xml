@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hudson_accounting_enhancements.BankMatchingListRenderer">
+        <div class="o_hudson_bank_matching_container o_list_renderer w-100 h-100 d-flex flex-column bg-white overflow-auto">
+            <!-- 1. Top Balance Banner: Current Balance | $ 2,540.93 -->
+            <div class="o_hudson_bank_matching_top_banner d-flex align-items-center justify-content-between px-4 py-3 bg-white border-bottom">
+                <span class="fw-bold" style="color: #0f172a; font-size: 1.05rem;">Current Balance</span>
+                <span class="fw-bold" style="color: #00878a; font-size: 1.15rem;" t-out="this.totalBalanceFormatted"/>
+            </div>
+
+            <!-- Inline New Transaction Creation Row (As in Screenshot 1) -->
+            <div t-if="this.state.showNewTransaction" class="o_hudson_new_transaction_box px-4 py-3 border-bottom">
+                <div class="d-flex align-items-center gap-3 flex-wrap mb-2">
+                    <!-- Date Input (e.g. 28 Sept) -->
+                    <div style="width: 100px;">
+                        <input type="date" class="form-control form-control-sm o_hudson_underlined_input" t-att-value="this.state.newDate" t-on-input="(ev) => this.state.newDate = ev.target.value" placeholder="Date"/>
+                    </div>
+                    <!-- Label Input (Write a label ...) -->
+                    <div class="flex-grow-1" style="min-width: 220px;">
+                        <input type="text" class="form-control form-control-sm o_hudson_underlined_input" t-att-value="this.state.newLabel" t-on-input="(ev) => this.state.newLabel = ev.target.value" placeholder="Write a label (Required) *" required="required"/>
+                    </div>
+                    <!-- Partner Dropdown -->
+                    <div style="width: 180px;">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control form-control-sm o_hudson_underlined_input cursor-pointer" readonly="readonly" t-att-value="this.state.newPartnerName || ''" placeholder="Partner" t-on-click="this.onSelectNewPartner"/>
+                            <button class="btn btn-sm text-secondary p-0 ms-1" type="button" t-on-click="this.onSelectNewPartner">
+                                <i class="fa fa-caret-down"/>
+                            </button>
+                            <i t-if="this.state.newPartnerId" class="fa fa-times text-muted cursor-pointer ms-1 align-self-center" style="font-size: 0.75rem;" title="Clear Partner" t-on-click="this.onClearNewPartner"/>
+                        </div>
+                    </div>
+                    <!-- Amount Input -->
+                    <div style="width: 110px;">
+                        <input type="number" step="0.01" class="form-control form-control-sm o_hudson_underlined_input text-end" t-att-value="this.state.newAmount" t-on-input="(ev) => this.state.newAmount = ev.target.value" t-att-placeholder="this.currencyPlaceholder"/>
+                    </div>
+                    <!-- Reconciliation Model Dropdown -->
+                    <div style="width: 200px;">
+                        <select class="form-select form-select-sm o_hudson_underlined_input" t-att-value="this.state.newModelId" t-on-change="(ev) => this.state.newModelId = ev.target.value">
+                            <option value="">Reconciliation model</option>
+                            <t t-foreach="this.state.reconcileModels" t-as="m" t-key="m.id">
+                                <option t-att-value="m.id" t-out="m.name"/>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+                <!-- Action Buttons: Add & New | Add & Close | Discard -->
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <button class="btn btn-sm text-white fw-semibold px-3 py-1" style="background-color: #714B67; border-radius: 4px;" t-on-click="() => this.onSaveNewTransaction(false)">
+                        Add &amp; New
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="() => this.onSaveNewTransaction(true)">
+                        Add &amp; Close
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="this.onDiscardNewTransaction">
+                        Discard
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. Records List Container -->
+            <div class="o_hudson_bank_matching_list flex-grow-1 overflow-auto">
+                <t t-if="!this.props.list or !this.props.list.records or !this.props.list.records.length">
+                    <div class="text-center text-muted p-5">
+                        <i class="fa fa-university fa-3x mb-3 text-secondary opacity-50"/>
+                        <p class="fs-6 mb-0">No bank transactions found.</p>
+                    </div>
+                </t>
+                <t t-else="">
+                    <t t-foreach="this.statementGroups" t-as="group" t-key="group.key">
+                        <!-- Statement Section Header if statement exists -->
+                        <div t-if="group.statementName" class="o_hudson_bank_matching_group_header d-flex align-items-center justify-content-between px-4 py-2 border-top border-bottom">
+                            <span class="fw-bold" style="color: #00878a; font-size: 0.95rem;" t-out="group.statementName"/>
+                            <span class="fw-bold" style="color: #00878a; font-size: 0.95rem;" t-out="(group.dateRange ? group.dateRange + ' ' : '') + group.totalFormatted"/>
+                        </div>
+
+                        <!-- Transaction Rows -->
+                        <t t-foreach="group.records" t-as="record" t-key="record.resId">
+                            <div class="o_hudson_bank_matching_row d-flex align-items-center justify-content-between px-4 py-2 border-bottom">
+                                <!-- Left: Date & Icons & Partner & Label -->
+                                <div class="d-flex align-items-center flex-grow-1 me-3 text-truncate" style="min-width: 0;">
+                                    <!-- Date (e.g. 28 Sept) -->
+                                    <span class="o_hudson_row_date me-3 text-nowrap" t-out="this.formatDisplayDate(record.data.date)"/>
+
+                                    <!-- Icons (Attachments / Chatter) -->
+                                    <span class="d-inline-flex align-items-center me-2" style="min-width: 18px; color: #64748b;">
+                                        <i t-if="this.hasAttachments(record)" class="fa fa-paperclip me-1" style="font-size: 0.85rem;" title="Attachments"/>
+                                        <i t-if="this.hasNotes(record)" class="fa fa-comment-o" style="font-size: 0.85rem;" title="Notes"/>
+                                    </span>
+
+                                    <!-- If Partner exists -->
+                                    <t t-if="record.data.partner_id">
+                                        <span class="o_hudson_partner_name text-truncate me-1" t-on-click="(ev) => this.onOpenPartner(record, ev)">
+                                            <t t-out="this.getPartnerName(record)"/>
+                                        </span>
+                                        <i t-if="!record.data.is_reconciled" class="fa fa-times cursor-pointer me-2" style="font-size: 0.75rem; color: #94a3b8;" title="Remove Partner" t-on-click="(ev) => this.onClearPartner(record, ev)"/>
+                                        <!-- Transaction Reference / Memo alongside partner -->
+                                        <span t-if="record.data.payment_ref" class="o_hudson_partner_ref text-truncate" t-out="record.data.payment_ref"/>
+                                    </t>
+                                    <!-- If No Partner: payment_ref is the main label -->
+                                    <t t-else="">
+                                        <span class="o_hudson_primary_label text-truncate" t-out="record.data.payment_ref || '(No description)'"/>
+                                    </t>
+                                </div>
+
+                                <!-- Center: Matched Status / Actions -->
+                                <div class="d-flex align-items-center flex-shrink-0 mx-3">
+                                    <!-- Reconciled State (With Checkmark, Matched Name, Pencil Edit, and U-turn Undo) -->
+                                    <t t-if="record.data.is_reconciled">
+                                        <span class="me-1 d-inline-flex align-items-center" title="Matched" style="color: #16a34a;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                                <polyline points="22 4 12 14.01 9 11.01"/>
+                                            </svg>
+                                        </span>
+                                        <span class="fw-semibold small me-2 text-truncate" style="font-size: 0.85rem; color: #047857; max-width: 280px;" t-out="record.data.hudson_matched_account_name || 'Reconciled'"/>
+                                        
+                                        <!-- Pencil / Edit Line Button (Opens Edit Line Modal) -->
+                                        <button class="o_hudson_icon_btn o_hudson_edit_btn me-2" title="Edit Line" t-on-click="(ev) => this.onEditLine(record, ev)">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                                <path d="m15 5 4 4"/>
+                                            </svg>
+                                        </button>
+
+                                        <!-- Undo Reconciliation Button (U-turn Arrow) -->
+                                        <button class="o_hudson_icon_btn o_hudson_undo_btn me-1" title="Undo Reconciliation" t-on-click="(ev) => this.onResetMatch(record, ev)">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M9 14 4 9l5-5"/>
+                                                <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
+                                            </svg>
+                                        </button>
+
+                                        <!-- 3-Dots Dropdown with Delete Option on Reconciled lines -->
+                                        <Dropdown>
+                                            <button class="o_hudson_dots_btn btn btn-sm shadow-none ms-1" title="Options">
+                                                <svg class="o_hudson_dots_icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                                                    <circle cx="8" cy="2.5" r="1.6"/>
+                                                    <circle cx="8" cy="8" r="1.6"/>
+                                                    <circle cx="8" cy="13.5" r="1.6"/>
+                                                </svg>
+                                            </button>
+                                            <t t-set-slot="content">
+                                                <DropdownItem onSelected="() => this.onEditLine(record)">
+                                                    Edit Line
+                                                </DropdownItem>
+                                                <DropdownItem onSelected="() => this.onResetMatch(record)">
+                                                    Undo Reconciliation
+                                                </DropdownItem>
+                                                <div class="dropdown-divider"/>
+                                                <DropdownItem onSelected="() => this.onDelete(record)">
+                                                    Delete Transaction
+                                                </DropdownItem>
+                                            </t>
+                                        </Dropdown>
+                                    </t>
+
+                                    <!-- Unreconciled State -->
+                                    <t t-else="">
+                                        <!-- Matching Count Button if matches with same value exist -->
+                                        <button t-if="record.data.hudson_match_count > 0" class="btn btn-hudson-purple btn-sm d-inline-flex align-items-center me-1" t-on-click="(ev) => this.onReconcile(record, ev)" title="View and reconcile matching journal items">
+                                            <span>Reconcile</span>
+                                            <span class="badge rounded-pill bg-white text-dark ms-1 px-1" t-out="record.data.hudson_match_count" style="font-size: 0.72rem; font-weight: bold;"/>
+                                        </button>
+
+                                        <!-- If No Partner -->
+                                        <t t-if="!record.data.partner_id">
+                                            <button class="btn btn-hudson-purple btn-sm me-1" t-on-click="(ev) => this.onSetPartner(record, ev)">
+                                                Set Partner
+                                            </button>
+                                            <button class="btn btn-hudson-purple btn-sm me-1" t-on-click="(ev) => this.onSetAccount(record, ev)">
+                                                Set Account
+                                            </button>
+                                        </t>
+
+                                        <!-- If Partner Set -->
+                                        <t t-else="">
+                                            <!-- Suggested Account Button -->
+                                            <button class="btn btn-hudson-purple btn-sm me-1" t-on-click="(ev) => this.onApplySuggested(record, ev)" t-att-title="'Match with ' + (record.data.hudson_suggested_account_name || 'Receivable')">
+                                                <span t-out="record.data.hudson_suggested_account_name || 'Receivable'"/>
+                                            </button>
+                                        </t>
+
+                                        <!-- Pencil / Edit Line Button for Unreconciled Line -->
+                                        <button class="o_hudson_icon_btn o_hudson_edit_btn me-1" title="Edit Line" t-on-click="(ev) => this.onEditLine(record, ev)">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                                <path d="m15 5 4 4"/>
+                                            </svg>
+                                        </button>
+
+                                        <!-- 3-Dots Dropdown with Blue Notification Badge -->
+                                        <Dropdown>
+                                            <button class="o_hudson_dots_btn btn btn-sm shadow-none ms-1" title="Options">
+                                                <svg class="o_hudson_dots_icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                                                    <circle cx="8" cy="2.5" r="1.6"/>
+                                                    <circle cx="8" cy="8" r="1.6"/>
+                                                    <circle cx="8" cy="13.5" r="1.6"/>
+                                                </svg>
+                                                <span t-if="record.data.hudson_has_matches" class="o_hudson_dot_badge" title="Matching Suggestion Available"/>
+                                            </button>
+                                            <t t-set-slot="content">
+                                                <DropdownItem onSelected="() => this.onEditLine(record)">
+                                                    Edit Line
+                                                </DropdownItem>
+                                                <DropdownItem onSelected="() => this.onReconcile(record)">
+                                                    <span class="badge rounded-pill text-bg-primary me-2" t-if="record.data.hudson_has_matches">Suggestion</span>
+                                                    Reconcile
+                                                </DropdownItem>
+                                                <DropdownItem onSelected="() => this.onSetPartner(record)">
+                                                    Set Partner
+                                                </DropdownItem>
+                                                <DropdownItem onSelected="() => this.onSetAccount(record)">
+                                                    Set Account
+                                                </DropdownItem>
+                                                <DropdownItem onSelected="() => this.onUploadBills(record)">
+                                                    Upload Bills
+                                                </DropdownItem>
+                                                <div class="dropdown-divider"/>
+                                                <DropdownItem onSelected="() => this.onInternalTransfers(record)">
+                                                    Internal Transfers
+                                                </DropdownItem>
+                                                <div class="dropdown-divider"/>
+                                                <DropdownItem onSelected="() => this.onManageModels(record)">
+                                                    Manage Models
+                                                </DropdownItem>
+                                                <DropdownItem onSelected="() => this.onDelete(record)">
+                                                    Delete Transaction
+                                                </DropdownItem>
+                                            </t>
+                                        </Dropdown>
+                                    </t>
+                                </div>
+
+                                <!-- Right: Amount & Chevron -->
+                                <div class="d-flex align-items-center flex-shrink-0 text-end" style="min-width: 130px; justify-content: flex-end;">
+                                    <span t-att-class="this.isNegative(record) ? 'o_hudson_amount_neg text-nowrap' : 'o_hudson_amount_pos text-nowrap'" t-out="this.formatRecordAmount(record)"/>
+                                    <i class="fa fa-chevron-down ms-3 cursor-pointer opacity-75 hover-opacity-100" style="font-size: 0.72rem; color: #64748b;" title="Open Details" t-on-click="(ev) => this.onOpenRecord(record, ev)"/>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <!-- 3. Edit Line Popup Dialog Template (As in Screenshot 2) -->
+    <t t-name="hudson_accounting_enhancements.EditLineDialog">
+        <Dialog title="'Edit Line'" size="'md'" close="this.props.close">
+            <t t-set-slot="default">
+                <div t-if="this.state.loading" class="text-center p-4">
+                    <i class="fa fa-spinner fa-spin fa-2x text-muted"/>
+                </div>
+                <div t-else="" class="o_hudson_edit_line_body px-2 py-1">
+                    <!-- Row 1: Balance & Date -->
+                    <div class="row mb-3 align-items-baseline">
+                        <div class="col-7">
+                            <div class="d-flex align-items-baseline">
+                                <span class="fw-bold me-3" style="min-width: 70px; color: #1e293b;">Balance</span>
+                                <div class="d-flex align-items-baseline">
+                                    <span class="fw-semibold me-2" style="font-size: 1.1rem; color: #00878a;" t-out="this.state.data.balance_formatted"/>
+                                    <span class="text-muted small" t-out="this.state.data.currency_name"/>
+                                </div>
+                            </div>
+                            <!-- Subtitle: Matched Bill notice in italics teal -->
+                            <div t-if="this.state.data.matched_bill_text" class="mt-1 ps-5" style="color: #00878a; font-style: italic; font-size: 0.85rem;">
+                                <t t-out="this.state.data.matched_bill_text"/>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="d-flex align-items-baseline">
+                                <span class="text-muted me-3" style="min-width: 60px;">Date</span>
+                                <span class="fw-normal" t-out="this.state.data.date"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Account & Analytic Distribution -->
+                    <div class="row mb-3 align-items-baseline">
+                        <div class="col-7">
+                            <div class="d-flex align-items-baseline">
+                                <span class="text-muted me-3" style="min-width: 70px;">Account</span>
+                                <!-- Read-only if matched to bill -->
+                                <t t-if="!this.state.data.is_account_editable">
+                                    <span class="cursor-pointer fw-medium" style="color: #00878a;" t-on-click="this.onOpenAccount" t-out="this.state.accountDisplayName"/>
+                                </t>
+                                <!-- Editable if direct writeoff / counterpart -->
+                                <t t-else="">
+                                    <div class="d-flex align-items-center">
+                                        <span class="cursor-pointer fw-medium text-decoration-underline" style="color: #00878a;" t-on-click="this.onSelectAccount" t-out="this.state.accountDisplayName || 'Select Account'"/>
+                                        <svg class="ms-2 text-muted cursor-pointer" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Change Account" t-on-click="this.onSelectAccount">
+                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                            <path d="m15 5 4 4"/>
+                                        </svg>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="d-flex align-items-baseline">
+                                <span class="fw-semibold me-3" style="font-size: 0.85rem; color: #1e293b;">Analytic Distribution</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Partner & Vehicle -->
+                    <div class="row mb-3 align-items-baseline">
+                        <div class="col-7">
+                            <div class="d-flex align-items-baseline">
+                                <span class="text-muted me-3" style="min-width: 70px;">Partner</span>
+                                <!-- Read-only if matched to bill -->
+                                <t t-if="!this.state.data.is_partner_editable">
+                                    <span class="cursor-pointer fw-medium" style="color: #00878a;" t-on-click="this.onOpenPartner" t-out="this.state.partnerDisplayName || '(No partner)'"/>
+                                </t>
+                                <!-- Editable if direct counterpart -->
+                                <t t-else="">
+                                    <div class="d-flex align-items-center">
+                                        <span class="cursor-pointer fw-medium text-decoration-underline" style="color: #00878a;" t-on-click="this.onSelectPartner" t-out="this.state.partnerDisplayName || 'Select Partner'"/>
+                                        <svg class="ms-2 text-muted cursor-pointer" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Change Partner" t-on-click="this.onSelectPartner">
+                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                            <path d="m15 5 4 4"/>
+                                        </svg>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="d-flex align-items-baseline">
+                                <span class="fw-semibold me-3" style="font-size: 0.85rem; color: #1e293b;">Vehicle</span>
+                                <span t-if="this.state.data.vehicle" t-out="this.state.data.vehicle"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Description -->
+                    <div class="row mb-2 align-items-baseline">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center">
+                                <span class="text-muted me-3" style="min-width: 70px;">Description</span>
+                                <input type="text" class="form-control form-control-sm" style="max-width: 380px; border-radius: 4px;" t-att-value="this.state.description" t-on-input="(ev) => this.state.description = ev.target.value" placeholder="Description"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+            <t t-set-slot="footer">
+                <button class="btn btn-sm text-white fw-semibold px-4 py-1 me-2" style="background-color: #714B67; border-radius: 4px;" t-on-click="this.onSave">
+                    Save
+                </button>
+                <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="this.props.close">
+                    Discard
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- 4. Search: Journal Items to Match Dialog Template (Enterprise Style Matching Modal) -->
+    <t t-name="hudson_accounting_enhancements.MatchJournalItemsDialog">
+        <Dialog title="'Search: Journal Items to Match'" size="'xl'" close="this.props.close">
+            <t t-set-slot="default">
+                <div class="o_hudson_match_dialog_container d-flex flex-column h-100">
+                    <!-- Top Search Bar and Pagination Row -->
+                    <div class="d-flex align-items-center justify-content-between px-3 pt-2 pb-2 border-bottom">
+                        <div class="flex-grow-1 d-flex justify-content-center">
+                            <div class="position-relative" style="width: 440px; max-width: 100%;">
+                                <i class="fa fa-search position-absolute text-muted" style="left: 14px; top: 10px; font-size: 0.85rem;"/>
+                                <input type="text" class="form-control rounded-pill ps-5 pe-3 py-1 text-sm" style="border-color: #00878a;" placeholder="Search..." t-att-value="this.state.searchTerm" t-on-input="this.onSearchInput"/>
+                            </div>
+                        </div>
+                        <!-- Pagination (1-30 / 30 < >) -->
+                        <div class="d-flex align-items-center text-muted small ms-3">
+                            <span class="me-2" t-out="this.paginationText"/>
+                            <button class="btn btn-sm btn-link text-secondary p-0 me-1" t-att-disabled="!this.hasPrevious" t-on-click="this.onPreviousPage">
+                                <i class="fa fa-chevron-left"/>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary p-0" t-att-disabled="!this.hasNext" t-on-click="this.onNextPage">
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sub-header banner: Left: Date - Label, Right: Balance: Amount -->
+                    <div class="d-flex align-items-center justify-content-between px-4 py-2 border-bottom bg-light bg-opacity-25" style="font-size: 0.95rem;">
+                        <div class="fw-medium text-dark">
+                            <span t-out="this.props.statementLineDate"/>
+                            <span t-if="this.props.statementLineLabel"> - </span>
+                            <span t-out="this.props.statementLineLabel"/>
+                        </div>
+                        <div>
+                            <span class="text-muted">Balance: </span>
+                            <span class="fw-bold text-dark" t-out="this.formattedBalance"/>
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <div class="table-responsive flex-grow-1" style="max-height: 500px; min-height: 250px; overflow-y: auto;">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light sticky-top" style="border-top: none;">
+                                <tr class="text-secondary small fw-bold" style="font-size: 0.82rem; border-bottom: 2px solid #e2e8f0;">
+                                    <th style="width: 40px;" class="text-center">
+                                        <input type="checkbox" class="form-check-input" t-att-checked="this.isAllSelected" t-on-change="this.onToggleSelectAll"/>
+                                    </th>
+                                    <th style="min-width: 80px;">Date</th>
+                                    <th style="min-width: 150px;">Journal Entry</th>
+                                    <th style="min-width: 140px;">Partner</th>
+                                    <th style="min-width: 220px;">Description</th>
+                                    <th class="text-end" style="min-width: 150px;">Amount Due</th>
+                                    <th style="width: 70px;" class="text-center">
+                                        <i class="fa fa-sliders text-secondary" style="font-size: 0.85rem;" title="Columns"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="this.state.loading">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <i class="fa fa-spinner fa-spin fa-2x mb-2 text-secondary"/>
+                                            <div>Loading matching items...</div>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-elif="!this.state.candidates.length">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <p class="mb-0">No journal items to match found.</p>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <t t-foreach="this.state.candidates" t-as="item" t-key="item.id">
+                                        <tr t-att-class="this.state.selectedIds.has(item.id) ? 'table-info bg-opacity-25' : ''" style="cursor: pointer;" t-on-click="(ev) => this.onRowClick(item, ev)">
+                                            <td class="text-center" t-on-click.stop="">
+                                                <input type="checkbox" class="form-check-input" t-att-checked="this.state.selectedIds.has(item.id)" t-on-change="() => this.onToggleSelect(item.id)"/>
+                                            </td>
+                                            <td class="text-nowrap" style="color: #334155; font-size: 0.875rem;" t-out="item.date"/>
+                                            <td class="text-nowrap fw-medium" style="color: #475569; font-size: 0.875rem;" t-out="item.move_name"/>
+                                            <td class="text-truncate" style="max-width: 180px; font-size: 0.875rem;" t-att-style="item.move_name ? 'color: #334155;' : 'color: #00878a; font-weight: 500;'" t-out="item.partner_name"/>
+                                            <td class="text-truncate text-muted" style="max-width: 240px; font-size: 0.85rem;" t-out="item.name"/>
+                                            <td class="text-end text-nowrap" style="font-size: 0.875rem;">
+                                                <span t-if="item.has_foreign_currency" class="me-3 text-secondary" t-out="item.foreign_amount_due_str"/>
+                                                <span t-att-class="item.is_negative ? 'text-dark' : 'text-dark'" t-out="item.amount_due_str"/>
+                                            </td>
+                                            <td class="text-center" t-on-click.stop="">
+                                                <button class="btn btn-link p-0 fw-semibold" style="color: #00878a; text-decoration: none; font-size: 0.875rem;" t-on-click="(ev) => this.onViewCandidate(item, ev)">
+                                                    View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+            <t t-set-slot="footer">
+                <div class="d-flex align-items-center justify-content-start w-100 gap-2">
+                    <button class="btn btn-sm text-white fw-semibold px-3 py-1" style="background-color: #714B67; border-radius: 4px;" t-att-disabled="!this.state.selectedIds.size" t-on-click="this.onSelect">
+                        Select
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="this.props.close">
+                        Close
+                    </button>
+                </div>
+            </t>
+        </Dialog>
+    </t>
+</templates>
+

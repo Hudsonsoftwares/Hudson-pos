@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Leave Encashment Request -->
+        <record id="seq_hds_leave_encashment_request" model="ir.sequence">
+            <field name="name">Leave Encashment Request Sequence</field>
+            <field name="code">hds.leave.encashment.request</field>
+            <field name="prefix">LER/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Default Standard Leave Encashment Policy -->
+        <record id="hds_policy_standard_earned_leave" model="hds.leave.encashment.policy">
+            <field name="name">Standard Statutory Leave Encashment Policy</field>
+            <field name="company_id" eval="False"/>
+            <field name="min_service_period_days">180</field>
+            <field name="min_balance_to_maintain">5.0</field>
+            <field name="max_encashable_days_per_year">15.0</field>
+            <field name="max_encashable_days_per_request">10.0</field>
+            <field name="calculation_basis">statutory_26</field>
+            <field name="taxable_for_tds">True</field>
+            <field name="include_in_pf_wage">False</field>
+            <field name="include_in_esic_wage">False</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

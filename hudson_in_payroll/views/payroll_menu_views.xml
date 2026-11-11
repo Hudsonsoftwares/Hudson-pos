@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- India Group Header under Unified Reporting Menu -->
+    <menuitem id="menu_hds_statutory_reports"
+              name="India"
+              parent="hudson_payroll_base.menu_hr_payroll_reporting"
+              sequence="60"/>
+
+    <!-- India Section Submenus -->
+    <menuitem id="menu_hds_pt_statutory_report"
+              name="Professional Tax (PT) Report"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_pt_report_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_hds_esic_statutory_report"
+              name="Employees' State Insurance (ESIC) Report"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_esic_report_wizard"
+              sequence="30"/>
+
+    <menuitem id="menu_hds_lwf_statutory_report"
+              name="Labour Welfare Fund (LWF) Report"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_lwf_report_wizard"
+              sequence="40"/>
+
+    <menuitem id="menu_hds_gratuity_statutory_report"
+              name="Gratuity Calculation Report"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_gratuity_report_wizard"
+              sequence="50"/>
+
+    <menuitem id="menu_hds_salary_register_report"
+              name="Salary Register"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_salary_register_report_wizard"
+              sequence="60"/>
+
+    <menuitem id="menu_hds_salary_statement_report"
+              name="Salary Statement Report"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_salary_statement_report"
+              sequence="70"/>
+
+    <menuitem id="menu_hds_yearly_salary_employee_report"
+              name="Yearly Salary by Employee"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_yearly_salary_employee_wizard"
+              sequence="80"/>
+</odoo>

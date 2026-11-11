@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- UAE Emirate Views -->
+    <record id="view_uae_emirate_tree" model="ir.ui.view">
+        <field name="name">uae.emirate.list</field>
+        <field name="model">uae.emirate</field>
+        <field name="arch" type="xml">
+            <list string="UAE Emirates">
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="pension_authority_id"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_uae_emirate_form" model="ir.ui.view">
+        <field name="name">uae.emirate.form</field>
+        <field name="model">uae.emirate</field>
+        <field name="arch" type="xml">
+            <form string="UAE Emirate">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="pension_authority_id"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_uae_emirate" model="ir.actions.act_window">
+        <field name="name">UAE Emirates</field>
+        <field name="res_model">uae.emirate</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- UAE Labour Authority Views -->
+    <record id="view_uae_labour_authority_tree" model="ir.ui.view">
+        <field name="name">uae.labour.authority.list</field>
+        <field name="model">uae.labour.authority</field>
+        <field name="arch" type="xml">
+            <list string="UAE Labour Authorities">
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="authority_type" optional="show"/>
+                <field name="jurisdiction_type" optional="show"/>
+                <field name="emirate_id" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_uae_labour_authority_form" model="ir.ui.view">
+        <field name="name">uae.labour.authority.form</field>
+        <field name="model">uae.labour.authority</field>
+        <field name="arch" type="xml">
+            <form string="UAE Labour Authority">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="authority_type"/>
+                        </group>
+                        <group>
+                            <field name="jurisdiction_type"/>
+                            <field name="emirate_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_uae_labour_authority" model="ir.actions.act_window">
+        <field name="name">UAE Labour Authorities</field>
+        <field name="res_model">uae.labour.authority</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- UAE Payroll Jurisdiction Views -->
+    <record id="view_uae_payroll_jurisdiction_tree" model="ir.ui.view">
+        <field name="name">uae.payroll.jurisdiction.list</field>
+        <field name="model">uae.payroll.jurisdiction</field>
+        <field name="arch" type="xml">
+            <list string="UAE Payroll Jurisdictions">
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="jurisdiction_type" optional="show"/>
+                <field name="emirate_id" optional="show"/>
+                <field name="labour_authority_id" optional="show"/>
+                <field name="pension_authority_id" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_uae_payroll_jurisdiction_form" model="ir.ui.view">
+        <field name="name">uae.payroll.jurisdiction.form</field>
+        <field name="model">uae.payroll.jurisdiction</field>
+        <field name="arch" type="xml">
+            <form string="UAE Payroll Jurisdiction">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="jurisdiction_type"/>
+                        </group>
+                        <group>
+                            <field name="emirate_id"/>
+                            <field name="labour_authority_id"/>
+                            <field name="pension_authority_id" placeholder="Default from Emirate"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Regulatory Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_uae_payroll_jurisdiction" model="ir.actions.act_window">
+        <field name="name">UAE Jurisdictions</field>
+        <field name="res_model">uae.payroll.jurisdiction</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- UAE Pension Authority Views -->
+    <record id="view_uae_pension_authority_tree" model="ir.ui.view">
+        <field name="name">uae.pension.authority.list</field>
+        <field name="model">uae.pension.authority</field>
+        <field name="arch" type="xml">
+            <list string="UAE Pension Authorities">
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="authority_type" optional="show"/>
+                <field name="emirate_id" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_uae_pension_authority_form" model="ir.ui.view">
+        <field name="name">uae.pension.authority.form</field>
+        <field name="model">uae.pension.authority</field>
+        <field name="arch" type="xml">
+            <form string="UAE Pension Authority">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="authority_type"/>
+                        </group>
+                        <group>
+                            <field name="emirate_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_uae_pension_authority" model="ir.actions.act_window">
+        <field name="name">UAE Pension Authorities</field>
+        <field name="res_model">uae.pension.authority</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- UAE Pension Scheme Views -->
+    <record id="view_uae_pension_scheme_tree" model="ir.ui.view">
+        <field name="name">uae.pension.scheme.list</field>
+        <field name="model">uae.pension.scheme</field>
+        <field name="arch" type="xml">
+            <list string="UAE Pension Schemes" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="pension_authority_ids" widget="many2many_tags"/>
+                <field name="status" widget="badge" decoration-success="status == 'active'" decoration-danger="status == 'inactive'"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_uae_pension_scheme_form" model="ir.ui.view">
+        <field name="name">uae.pension.scheme.form</field>
+        <field name="model">uae.pension.scheme</field>
+        <field name="arch" type="xml">
+            <form string="UAE Pension Scheme">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived / Inactive" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Scheme Identification">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="pension_authority_ids" widget="many2many_tags" placeholder="All Authorities Applicable"/>
+                            <field name="status" widget="badge" decoration-success="status == 'active'" decoration-danger="status == 'inactive'"/>
+                        </group>
+                        <group string="Configuration &amp; Status">
+                            <field name="sequence"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Statutory Legal Basis &amp; Guidelines">
+                        <field name="description" nolabel="1" placeholder="Statutory references, decree-law citations, and cohort eligibility..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_uae_pension_scheme_search" model="ir.ui.view">
+        <field name="name">uae.pension.scheme.search</field>
+        <field name="model">uae.pension.scheme</field>
+        <field name="arch" type="xml">
+            <search string="Search UAE Pension Schemes">
+                <field name="name" string="Scheme Name"/>
+                <field name="code"/>
+                <separator/>
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Archived / Inactive" name="filter_archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Status" name="group_by_active" context="{'group_by': 'active'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_uae_pension_scheme" model="ir.actions.act_window">
+        <field name="name">UAE Pension Schemes</field>
+        <field name="res_model">uae.pension.scheme</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="search_view_id" ref="view_uae_pension_scheme_search"/>
+    </record>
+
+    <!-- Menu Items under Payroll Configuration -->
+    <menuitem id="menu_uae_payroll_root"
+              name="UAE Localization"
+              parent="hr_payroll_community.menu_hr_payroll_community_configuration"
+              sequence="50"/>
+
+    <menuitem id="menu_uae_payroll_jurisdictions"
+              name="Jurisdictions"
+              parent="menu_uae_payroll_root"
+              action="action_uae_payroll_jurisdiction"
+              sequence="10"/>
+
+    <menuitem id="menu_uae_labour_authorities"
+              name="Labour Authorities"
+              parent="menu_uae_payroll_root"
+              action="action_uae_labour_authority"
+              sequence="20"/>
+
+    <menuitem id="menu_uae_pension_authorities"
+              name="Pension Authorities"
+              parent="menu_uae_payroll_root"
+              action="action_uae_pension_authority"
+              sequence="30"/>
+
+    <menuitem id="menu_uae_pension_schemes"
+              name="Pension Schemes"
+              parent="menu_uae_payroll_root"
+              action="action_uae_pension_scheme"
+              sequence="35"/>
+
+    <menuitem id="menu_uae_emirates"
+              name="Emirates"
+              parent="menu_uae_payroll_root"
+              action="action_uae_emirate"
+              sequence="40"/>
+</odoo>

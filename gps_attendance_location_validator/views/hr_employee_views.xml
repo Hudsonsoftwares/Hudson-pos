@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+   <record id="view_hr_employee_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.allow.remote.checkin</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='work_location_id']" position="after">
+                <field name="allow_remote_checkin" widget="boolean_toggle" />
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>

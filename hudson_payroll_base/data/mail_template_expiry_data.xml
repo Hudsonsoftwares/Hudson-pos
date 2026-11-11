@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- ======================================================== -->
+    <!-- 1. CONTRACT EXPIRY NOTICE TO EMPLOYEE                     -->
+    <!-- ======================================================== -->
+    <record id="mail_template_contract_expiry_employee" model="mail.template">
+        <field name="name">Contract Expiry: Notice to Employee</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="subject">Notice: Your Employment Contract is Expiring Soon - {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or object.company_id.email or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.work_email or object.user_id.email or (object.work_contact_id.email if object.work_contact_id else '') }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+                <div style="border-bottom: 2px solid #3b82f6; padding-bottom: 12px; margin-bottom: 16px;">
+                    <h3 style="color: #1e40af; margin: 0; font-size: 18px;">Employment Contract Expiration Notice</h3>
+                    <p style="color: #64748b; margin: 4px 0 0 0; font-size: 13px;"><t t-out="object.company_id.name"/></p>
+                </div>
+                <p>Dear <strong><t t-out="object.name"/></strong>,</p>
+                <p>
+                    This is an automated notification to inform you that your employment contract with 
+                    <strong><t t-out="object.company_id.name"/></strong> is scheduled to conclude on 
+                    <strong style="color: #dc2626;"><t t-out="object.contract_expiry_display_date"/></strong>.
+                </p>
+                
+                <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Employee Name:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.name"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Department:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.department_id.name or 'N/A'"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Job Position:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.job_title or object.job_id.name or 'N/A'"/></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0; color: #64748b; font-weight: bold;">Expiration Date:</td>
+                            <td style="padding: 6px 0; font-weight: bold; color: #dc2626; text-align: right;"><t t-out="object.contract_expiry_display_date"/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; margin: 16px 0; border-radius: 4px;">
+                    <p style="margin: 0; font-size: 13px; color: #1e40af;">
+                        <strong>Next Steps:</strong> If your contract is eligible for renewal, our Human Resources team will be in touch with you shortly. If you have questions regarding the renewal process or terms, please feel free to reach out to the HR department directly.
+                    </p>
+                </div>
+
+                <p style="margin-top: 20px;">Thank you for your valued contributions to <t t-out="object.company_id.name"/>.</p>
+                <br/>
+                <p style="color: #64748b; font-size: 13px; margin: 0;">
+                    Best regards,<br/>
+                    <strong>Human Resources &amp; Payroll Team</strong><br/>
+                    <t t-out="object.company_id.name"/>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <!-- ======================================================== -->
+    <!-- 2. CONTRACT EXPIRY ALERT TO HR / MANAGEMENT               -->
+    <!-- ======================================================== -->
+    <record id="mail_template_contract_expiry_hr" model="mail.template">
+        <field name="name">Contract Expiry: Alert to HR</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="subject">[HR Alert] Contract Expiring Soon: {{ object.name }} (Expires {{ object.contract_expiry_display_date }})</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or object.company_id.email or user.email_formatted) }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.6; max-width: 620px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+                <div style="border-bottom: 2px solid #ea580c; padding-bottom: 12px; margin-bottom: 16px;">
+                    <span style="background-color: #ffedd5; color: #c2410c; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">HR Action Required</span>
+                    <h3 style="color: #9a3412; margin: 8px 0 0 0; font-size: 18px;">Upcoming Contract Expiration</h3>
+                </div>
+                <p>Hello HR Team,</p>
+                <p>
+                    Please be advised that the employment contract for 
+                    <strong><t t-out="object.name"/></strong> is due to expire on 
+                    <strong style="color: #ea580c;"><t t-out="object.contract_expiry_display_date"/></strong>.
+                </p>
+                
+                <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Employee Name:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.name"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Department:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.department_id.name or 'N/A'"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Job Position:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.job_title or object.job_id.name or 'N/A'"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">HR Responsible:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.hr_responsible_id.name or 'Not Assigned'"/></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0; color: #64748b; font-weight: bold;">Expiration Date:</td>
+                            <td style="padding: 6px 0; font-weight: bold; color: #ea580c; text-align: right;"><t t-out="object.contract_expiry_display_date"/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="background-color: #fff7ed; border-left: 4px solid #ea580c; padding: 12px; margin: 16px 0; border-radius: 4px;">
+                    <p style="margin: 0; font-size: 13px; color: #9a3412;">
+                        <strong>Action Needed:</strong> Please review this employee's contract status and initiate contract renewal, salary revision, or departure/exit procedures in Odoo as appropriate.
+                    </p>
+                </div>
+                <br/>
+                <p style="color: #64748b; font-size: 13px; margin: 0;">
+                    Automated notification generated by <strong>Payroll &amp; HR System</strong><br/>
+                    <t t-out="object.company_id.name"/>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <!-- ======================================================== -->
+    <!-- 3. WORK PERMIT EXPIRY NOTICE TO EMPLOYEE                  -->
+    <!-- ======================================================== -->
+    <record id="mail_template_work_permit_expiry_employee" model="mail.template">
+        <field name="name">Work Permit Expiry: Notice to Employee</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="subject">Important: Your Work Permit is Expiring Soon - {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or object.company_id.email or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.work_email or object.user_id.email or (object.work_contact_id.email if object.work_contact_id else '') }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+                <div style="border-bottom: 2px solid #7c3aed; padding-bottom: 12px; margin-bottom: 16px;">
+                    <h3 style="color: #6d28d9; margin: 0; font-size: 18px;">Work Permit Expiration Notice</h3>
+                    <p style="color: #64748b; margin: 4px 0 0 0; font-size: 13px;"><t t-out="object.company_id.name"/></p>
+                </div>
+                <p>Dear <strong><t t-out="object.name"/></strong>,</p>
+                <p>
+                    This is an important reminder regarding your official work permit / visa authorization with 
+                    <strong><t t-out="object.company_id.name"/></strong>.
+                </p>
+                
+                <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Employee Name:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.name"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Work Permit / Visa No:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.permit_no or 'N/A'"/></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0; color: #64748b; font-weight: bold;">Expiration Date:</td>
+                            <td style="padding: 6px 0; font-weight: bold; color: #7c3aed; text-align: right;"><t t-out="object.work_permit_expiry_display_date"/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="background-color: #f5f3ff; border-left: 4px solid #7c3aed; padding: 12px; margin: 16px 0; border-radius: 4px;">
+                    <p style="margin: 0; font-size: 13px; color: #5b21b6;">
+                        <strong>Mandatory Action:</strong> To maintain compliant employment status, please submit any required renewal documentation to the HR team as early as possible before the expiration date.
+                    </p>
+                </div>
+
+                <p>Please contact HR immediately if you need assistance or have questions regarding renewal requirements.</p>
+                <br/>
+                <p style="color: #64748b; font-size: 13px; margin: 0;">
+                    Best regards,<br/>
+                    <strong>Human Resources &amp; Compliance Team</strong><br/>
+                    <t t-out="object.company_id.name"/>
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <!-- ======================================================== -->
+    <!-- 4. WORK PERMIT EXPIRY ALERT TO HR / MANAGEMENT            -->
+    <!-- ======================================================== -->
+    <record id="mail_template_work_permit_expiry_hr" model="mail.template">
+        <field name="name">Work Permit Expiry: Alert to HR</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="subject">[Compliance Alert] Work Permit Expiring Soon: {{ object.name }} (Expires {{ object.work_permit_expiry_display_date }})</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or object.company_id.email or user.email_formatted) }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.6; max-width: 620px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+                <div style="border-bottom: 2px solid #7c3aed; padding-bottom: 12px; margin-bottom: 16px;">
+                    <span style="background-color: #ede9fe; color: #6d28d9; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">Immigration / Compliance Alert</span>
+                    <h3 style="color: #5b21b6; margin: 8px 0 0 0; font-size: 18px;">Upcoming Work Permit Expiration</h3>
+                </div>
+                <p>Hello HR Team,</p>
+                <p>
+                    The work permit / visa for employee 
+                    <strong><t t-out="object.name"/></strong> is scheduled to expire on 
+                    <strong style="color: #7c3aed;"><t t-out="object.work_permit_expiry_display_date"/></strong>.
+                </p>
+                
+                <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Employee Name:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.name"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Department:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.department_id.name or 'N/A'"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Work Permit / Visa No:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.permit_no or 'N/A'"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">HR Responsible:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.hr_responsible_id.name or 'Not Assigned'"/></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0; color: #64748b; font-weight: bold;">Expiration Date:</td>
+                            <td style="padding: 6px 0; font-weight: bold; color: #7c3aed; text-align: right;"><t t-out="object.work_permit_expiry_display_date"/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="background-color: #f5f3ff; border-left: 4px solid #7c3aed; padding: 12px; margin: 16px 0; border-radius: 4px;">
+                    <p style="margin: 0; font-size: 13px; color: #5b21b6;">
+                        <strong>Compliance Action:</strong> Ensure renewal filing is initiated with regulatory authorities or employee immigration sponsors to prevent gaps in work authorization.
+                    </p>
+                </div>
+                <br/>
+                <p style="color: #64748b; font-size: 13px; margin: 0;">
+                    Automated notification generated by <strong>Payroll &amp; HR Compliance System</strong><br/>
+                    <t t-out="object.company_id.name"/>
+                </p>
+            </div>
+        </field>
+    </record>
+</odoo>

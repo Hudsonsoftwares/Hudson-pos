@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_payslip_view_form_inherit_account" model="ir.ui.view">
+        <field name="name">hr.payslip.form.inherit.account</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_payslip_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Smart Button for Accounting Entry -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_account_move"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="attach_money"
+                        invisible="not move_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Journal Entry</span>
+                        <span class="o_stat_text">(<field name="move_state" readonly="1"/>)</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Accounting Fields under Other Info Tab -->
+            <xpath expr="//field[@name='payment_date']" position="after">
+                <field name="date" string="Accounting Date" readonly="state != 'draft'" help="Keep empty to use the payslip payment date."/>
+                <field name="journal_id" invisible="1"/>
+                <label for="journal_id" string="Salary Journal"/>
+                <div class="d-flex align-items-center">
+                    <button name="action_open_salary_journal_entries"
+                            type="object"
+                            class="btn btn-link p-0 text-decoration-none fw-semibold"
+                            style="color: var(--o-view-highlight-color, #017e84); font-size: inherit; vertical-align: baseline;"
+                            title="Click to view journal entries">
+                        <field name="journal_name"/>
+                    </button>
+                </div>
+                <field name="move_id" string="Accounting Entry" readonly="1" invisible="not move_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

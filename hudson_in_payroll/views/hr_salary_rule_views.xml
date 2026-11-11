@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Salary Rule Form View with Include in PF Wage Checkbox -->
+    <record id="hds_in_hr_salary_rule_view_form" model="ir.ui.view">
+        <field name="name">hr.salary.rule.form.inherit.hudson.payroll</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_salary_rule_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='struct_id']" position="after">
+                <field name="hds_in_is_bonus"/>
+                <field name="hds_in_exclude_notice_period" invisible="not hds_in_is_bonus"/>
+                <field name="hds_in_apply_tds" invisible="not hds_in_is_bonus"/>
+            </xpath>
+            <xpath expr="//field[@name='sequence']" position="after">
+                <field name="hds_in_include_in_pf_wage"/>
+                <field name="hds_in_contributes_to_employer_cost"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Salary Rule Tree View to show Include in PF Wage Column -->
+    <record id="hds_in_hr_salary_rule_view_tree" model="ir.ui.view">
+        <field name="name">hr.salary.rule.tree.inherit.hudson.payroll</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_salary_rule_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="hds_in_include_in_pf_wage"/>
+                <field name="hds_in_contributes_to_employer_cost"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

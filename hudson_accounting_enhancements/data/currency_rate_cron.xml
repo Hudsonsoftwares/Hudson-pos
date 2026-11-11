@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- noupdate: an upgrade must not switch the cron off again once a user enabled it -->
+    <!-- Daily cron job to auto-fetch ECB currency rates at 17:00 (after ECB publishes at ~16:00 CET) -->
+    <record id="ir_cron_fetch_ecb_currency_rates" model="ir.cron">
+        <field name="name">Fetch ECB Currency Rates (Daily)</field>
+        <field name="model_id" ref="base.model_res_currency"/>
+        <field name="state">code</field>
+        <field name="code">model._update_currency_rates()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">False</field>
+        <field name="priority">100</field>
+    </record>
+</odoo>

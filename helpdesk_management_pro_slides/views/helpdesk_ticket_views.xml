@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_view_form_inherit_slides" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.slides</field>
+        <field name="model">helpdesk.management.ticket</field>
+        <field name="inherit_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_ticket_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="eLearning" name="elearning_content" invisible="not use_website_helpdesk_elearning">
+                    <field name="use_website_helpdesk_elearning" invisible="1"/>
+                    <field name="team_course_ids" invisible="1"/>
+                    <group>
+                        <field name="course_id" domain="[('id', 'in', team_course_ids)]" options="{'no_create': True}"/>
+                        <field name="slide_id" domain="[('channel_id', '=', course_id)] if course_id else [('channel_id', 'in', team_course_ids)]" options="{'no_create': True}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

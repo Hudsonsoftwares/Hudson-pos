@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_work_location_attendance_form_view_ext" model="ir.ui.view">
+        <field name="name">hr.work.location.attendance.view.form</field>
+        <field name="model">hr.work.location</field>
+        <field name="inherit_id" ref="hr.hr_work_location_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group name="Geolocation Attendance" string="Geolocation Attendance">
+                    <field name="attendance_latitude" string="Latitude"/>
+                    <field name="attendance_longitude" string="Longitude"/>
+                    <field name="attendance_radius_km" string="Radius (Km)"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

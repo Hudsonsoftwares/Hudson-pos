@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hds_payroll_analysis_view_search" model="ir.ui.view">
+        <field name="name">hds.payroll.analysis.search</field>
+        <field name="model">hds.payroll.analysis</field>
+        <field name="arch" type="xml">
+            <search string="Payroll Analysis">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="payslip_run_id"/>
+                <filter string="Validated" name="validated" domain="[('state', '=', 'done')]"/>
+                <filter string="Paid" name="paid" domain="[('state', '=', 'paid')]"/>
+                <separator/>
+                <filter string="New Regime" name="new_regime" domain="[('tax_regime', '=', 'new')]"/>
+                <filter string="Old Regime" name="old_regime" domain="[('tax_regime', '=', 'old')]"/>
+                <separator/>
+                <filter string="Payroll Month" name="filter_date" date="date"/>
+                <group>
+                    <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Pay Run" name="group_payslip_run" context="{'group_by': 'payslip_run_id'}"/>
+                    <filter string="Tax Regime" name="group_tax_regime" context="{'group_by': 'tax_regime'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter string="Payroll Month" name="group_month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hds_payroll_analysis_view_pivot" model="ir.ui.view">
+        <field name="name">hds.payroll.analysis.pivot</field>
+        <field name="model">hds.payroll.analysis</field>
+        <field name="arch" type="xml">
+            <pivot string="Payroll Analysis" sample="1">
+                <field name="date" interval="month" type="col"/>
+                <field name="department_id" type="row"/>
+                <field name="gross_wage" type="measure"/>
+                <field name="employer_statutory" type="measure"/>
+                <field name="ctc" type="measure"/>
+                <field name="net_wage" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="hds_payroll_analysis_view_graph" model="ir.ui.view">
+        <field name="name">hds.payroll.analysis.graph</field>
+        <field name="model">hds.payroll.analysis</field>
+        <field name="arch" type="xml">
+            <graph string="Payroll Analysis" type="bar" sample="1">
+                <field name="date" interval="month"/>
+                <field name="ctc" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="hds_payroll_analysis_view_list" model="ir.ui.view">
+        <field name="name">hds.payroll.analysis.list</field>
+        <field name="model">hds.payroll.analysis</field>
+        <field name="arch" type="xml">
+            <list string="Payroll Analysis" create="false" edit="false" delete="false">
+                <field name="date"/>
+                <field name="payslip_id"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="department_id"/>
+                <field name="payslip_run_id" optional="hide"/>
+                <field name="tax_regime" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'done'" decoration-success="state == 'paid'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="gross_wage" sum="Total"/>
+                <field name="employer_statutory" sum="Total" optional="show"/>
+                <field name="ctc" sum="Total"/>
+                <field name="tds" sum="Total" optional="show"/>
+                <field name="professional_tax" sum="Total" optional="hide"/>
+                <field name="employee_epf" sum="Total" optional="hide"/>
+                <field name="employee_esic" sum="Total" optional="hide"/>
+                <field name="net_wage" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hds_payroll_analysis" model="ir.actions.act_window">
+        <field name="name">Payroll Analysis</field>
+        <field name="res_model">hds.payroll.analysis</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="hds_payroll_analysis_view_search"/>
+        <field name="context">{'search_default_filter_date': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No validated payslips yet</p>
+            <p>Validated and paid payslips appear here, one line per payslip.</p>
+        </field>
+    </record>
+
+    <!-- Opened by the "Employer Statutory" card of the Payroll spreadsheet dashboard: the payroll
+         dashboard's employer share list (EPF / EDLI / ESIC / LWF columns) -->
+    <record id="action_hds_payroll_employer_statutory" model="ir.actions.act_window">
+        <field name="name">Employer Statutory</field>
+        <field name="res_model">hr.payslip</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('hudson_in_payroll.view_hr_payslip_list_employer_statutory')}),
+            (0, 0, {'view_mode': 'form'})]"/>
+    </record>
+
+    <menuitem id="menu_hds_payroll_analysis"
+              name="Payroll Analysis"
+              parent="hudson_payroll_base.menu_hr_payroll_reporting"
+              action="action_hds_payroll_analysis"
+              sequence="10"/>
+</odoo>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="warning_no_running_contracts" model="hr.payroll.dashboard.warning">
+            <field name="name">Employees Without Running Contracts</field>
+            <field name="sequence">1</field>
+            <field name="color">#f87171</field>
+        </record>
+
+        <record id="warning_multiple_open_payslips" model="hr.payroll.dashboard.warning">
+            <field name="name">Employees With Multiple Open Payslips of Same Type</field>
+            <field name="sequence">2</field>
+            <field name="color">#facc15</field>
+        </record>
+
+        <record id="warning_missing_from_open_batches" model="hr.payroll.dashboard.warning">
+            <field name="name">Employees (With Running Contracts) missing from open batches</field>
+            <field name="sequence">3</field>
+            <field name="color">#fb923c</field>
+        </record>
+
+        <record id="warning_conflicts" model="hr.payroll.dashboard.warning">
+            <field name="name">Conflicts</field>
+            <field name="sequence">4</field>
+            <field name="color">#c084fc</field>
+        </record>
+
+        <record id="warning_contracts_ending" model="hr.payroll.dashboard.warning">
+            <field name="name">Employees with running contracts coming to an end</field>
+            <field name="sequence">5</field>
+            <field name="color">#e879f9</field>
+        </record>
+
+        <record id="warning_payslips_previous_contract" model="hr.payroll.dashboard.warning">
+            <field name="name">Payslips Generated On Previous Contract</field>
+            <field name="sequence">6</field>
+            <field name="color">#fdba74</field>
+        </record>
+
+        <record id="warning_negative_net" model="hr.payroll.dashboard.warning">
+            <field name="name">Payslips With Negative NET</field>
+            <field name="sequence">7</field>
+            <field name="color">#2dd4bf</field>
+        </record>
+
+        <record id="warning_no_id_number" model="hr.payroll.dashboard.warning">
+            <field name="name">Employees Without Identification Number</field>
+            <field name="sequence">8</field>
+            <field name="color">#818cf8</field>
+        </record>
+
+        <record id="warning_no_bank_account" model="hr.payroll.dashboard.warning">
+            <field name="name">Employees Without Bank account Number</field>
+            <field name="sequence">9</field>
+            <field name="color">#f472b6</field>
+        </record>
+
+        <record id="warning_untrusted_bank_account" model="hr.payroll.dashboard.warning">
+            <field name="name">Employees with untrusted Bank Account numbers</field>
+            <field name="sequence">10</field>
+            <field name="color">#4ade80</field>
+        </record>
+
+        <record id="warning_overdue_payments" model="hr.payroll.dashboard.warning">
+            <field name="name">Payslips are overdue for payments</field>
+            <field name="sequence">11</field>
+            <field name="color">#94a3b8</field>
+        </record>
+    </data>
+</odoo>

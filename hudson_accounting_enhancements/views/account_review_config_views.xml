@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- account.working.file -->
+    <record id="view_account_working_file_tree" model="ir.ui.view">
+        <field name="name">account.working.file.list</field>
+        <field name="model">account.working.file</field>
+        <field name="arch" type="xml">
+            <list string="Working Files">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state in ('validated', 'closed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_working_file_form" model="ir.ui.view">
+        <field name="name">account.working.file.form</field>
+        <field name="model">account.working.file</field>
+        <field name="arch" type="xml">
+            <form string="Working File">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,validated,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Audit Cycle Reference..."/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Objectives &amp; Notes">
+                            <field name="description" placeholder="Document review scope, audit tasks, and conclusions..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_working_file" model="ir.actions.act_window">
+        <field name="name">Working Files</field>
+        <field name="res_model">account.working.file</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first audit working file!
+            </p>
+        </field>
+    </record>
+
+    <!-- account.tax.unit -->
+    <record id="view_account_tax_unit_tree" model="ir.ui.view">
+        <field name="name">account.tax.unit.list</field>
+        <field name="model">account.tax.unit</field>
+        <field name="arch" type="xml">
+            <list string="Tax Units">
+                <field name="name"/>
+                <field name="country_id"/>
+                <field name="vat"/>
+                <field name="main_company_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_tax_unit_form" model="ir.ui.view">
+        <field name="name">account.tax.unit.form</field>
+        <field name="model">account.tax.unit</field>
+        <field name="arch" type="xml">
+            <form string="Tax Unit">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. US Tax Group Unit"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="country_id"/>
+                            <field name="vat"/>
+                        </group>
+                        <group>
+                            <field name="main_company_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Companies">
+                            <field name="company_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_tax_unit" model="ir.actions.act_window">
+        <field name="name">Tax Units</field>
+        <field name="res_model">account.tax.unit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- account.horizontal.group -->
+    <record id="view_account_horizontal_group_tree" model="ir.ui.view">
+        <field name="name">account.horizontal.group.list</field>
+        <field name="model">account.horizontal.group</field>
+        <field name="arch" type="xml">
+            <list string="Horizontal Groups">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_horizontal_group_form" model="ir.ui.view">
+        <field name="name">account.horizontal.group.form</field>
+        <field name="model">account.horizontal.group</field>
+        <field name="arch" type="xml">
+            <form string="Horizontal Group">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_horizontal_group" model="ir.actions.act_window">
+        <field name="name">Horizontal Groups</field>
+        <field name="res_model">account.horizontal.group</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- account.fiscal.category -->
+    <record id="view_account_fiscal_category_tree" model="ir.ui.view">
+        <field name="name">account.fiscal.category.list</field>
+        <field name="model">account.fiscal.category</field>
+        <field name="arch" type="xml">
+            <list string="Fiscal Categories">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_fiscal_category_form" model="ir.ui.view">
+        <field name="name">account.fiscal.category.form</field>
+        <field name="model">account.fiscal.category</field>
+        <field name="arch" type="xml">
+            <form string="Fiscal Category">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_fiscal_category" model="ir.actions.act_window">
+        <field name="name">Fiscal Categories</field>
+        <field name="res_model">account.fiscal.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- account.return.type -->
+    <record id="view_account_return_type_tree" model="ir.ui.view">
+        <field name="name">account.return.type.list</field>
+        <field name="model">account.return.type</field>
+        <field name="arch" type="xml">
+            <list string="Return Types">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="country_id"/>
+                <field name="periodicity"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_return_type_form" model="ir.ui.view">
+        <field name="name">account.return.type.form</field>
+        <field name="model">account.return.type</field>
+        <field name="arch" type="xml">
+            <form string="Return Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="country_id"/>
+                        <field name="periodicity"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_return_type" model="ir.actions.act_window">
+        <field name="name">Return Types</field>
+        <field name="res_model">account.return.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- account.online.sync -->
+    <record id="view_account_online_sync_tree" model="ir.ui.view">
+        <field name="name">account.online.sync.list</field>
+        <field name="model">account.online.sync</field>
+        <field name="arch" type="xml">
+            <list string="Online Synchronization">
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="status" widget="badge" decoration-success="status == 'connected'" decoration-warning="status == 'disconnected'" decoration-danger="status == 'error'"/>
+                <field name="last_sync"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_online_sync_form" model="ir.ui.view">
+        <field name="name">account.online.sync.form</field>
+        <field name="model">account.online.sync</field>
+        <field name="arch" type="xml">
+            <form string="Online Synchronization">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="journal_id"/>
+                        <field name="status"/>
+                        <field name="last_sync"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_online_sync" model="ir.actions.act_window">
+        <field name="name">Online Synchronization</field>
+        <field name="res_model">account.online.sync</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

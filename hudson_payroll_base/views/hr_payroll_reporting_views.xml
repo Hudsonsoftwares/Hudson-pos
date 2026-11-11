@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ========================================== -->
+        <!-- 0. WORK ENTRIES REPORTING                 -->
+        <!-- ========================================== -->
+        
+
+        <!-- ========================================== -->
+        <!-- 1. PAYSLIP LINE REPORTING (PIVOT / LIST / GRAPH)  -->
+        <!-- ========================================== -->
+        <record id="hr_payslip_line_view_pivot" model="ir.ui.view">
+            <field name="name">hr.payslip.line.pivot</field>
+            <field name="model">hr.payslip.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Payslip Lines Report" sample="1">
+                    <field name="code" type="row"/>
+                    <field name="payslip_run_id" type="col"/>
+                    <field name="total" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="hr_payslip_line_view_list_report" model="ir.ui.view">
+            <field name="name">hr.payslip.line.list.report</field>
+            <field name="model">hr.payslip.line</field>
+            <field name="arch" type="xml">
+                <list string="Payslip Lines Report" sample="1">
+                    <field name="slip_id"/>
+                    <field name="employee_id"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="quantity"/>
+                    <field name="rate"/>
+                    <field name="amount"/>
+                    <field name="total" sum="Total"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hr_payslip_line_view_graph" model="ir.ui.view">
+            <field name="name">hr.payslip.line.graph</field>
+            <field name="model">hr.payslip.line</field>
+            <field name="arch" type="xml">
+                <graph string="Salary Lines Analysis" type="bar">
+                    <field name="employee_id" type="row"/>
+                    <field name="code" type="col"/>
+                    <field name="total" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="hr_payslip_line_view_search_report" model="ir.ui.view">
+            <field name="name">hr.payslip.line.search.report</field>
+            <field name="model">hr.payslip.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Salary Lines">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="category_id"/>
+                    <field name="payslip_run_id"/>
+                    <group>
+                        <filter string="Code" name="group_code" context="{'group_by': 'code'}"/>
+                        <filter string="Pay Run" name="group_payrun" context="{'group_by': 'payslip_run_id'}"/>
+                        <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Salary Rule" name="group_rule" context="{'group_by': 'salary_rule_id'}"/>
+                        <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hr_payslip_line_report" model="ir.actions.act_window">
+            <field name="name">Payslip Lines Report</field>
+            <field name="res_model">hr.payslip.line</field>
+            <field name="view_mode">pivot,list,graph</field>
+            <field name="search_view_id" ref="hr_payslip_line_view_search_report"/>
+            <field name="context">{'search_default_group_code': 1}</field>
+        </record>
+
+        <!-- ========================================== -->
+        <!-- 2. WORKED DAYS REPORTING (PIVOT / LIST / GRAPH)   -->
+        <!-- ========================================== -->
+        <record id="hr_payslip_worked_days_view_pivot" model="ir.ui.view">
+            <field name="name">hr.payslip.worked.days.pivot</field>
+            <field name="model">hr.payslip.worked.days</field>
+            <field name="arch" type="xml">
+                <pivot string="Payslip Work Days Lines Report" sample="1">
+                    <field name="code" type="row"/>
+                    <field name="payslip_run_id" type="col"/>
+                    <field name="amount" type="measure"/>
+                    <field name="number_of_days" type="measure"/>
+                    <field name="number_of_hours" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="hr_payslip_worked_days_view_list_report" model="ir.ui.view">
+            <field name="name">hr.payslip.worked.days.list.report</field>
+            <field name="model">hr.payslip.worked.days</field>
+            <field name="arch" type="xml">
+                <list string="Payslip Work Days Lines Report" sample="1">
+                    <field name="payslip_id"/>
+                    <field name="employee_id"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="number_of_days" sum="Total Days"/>
+                    <field name="number_of_hours" sum="Total Hours"/>
+                    <field name="amount" sum="Total Amount"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hr_payslip_worked_days_view_graph" model="ir.ui.view">
+            <field name="name">hr.payslip.worked.days.graph</field>
+            <field name="model">hr.payslip.worked.days</field>
+            <field name="arch" type="xml">
+                <graph string="Worked Days Analysis" type="bar">
+                    <field name="employee_id" type="row"/>
+                    <field name="code" type="col"/>
+                    <field name="number_of_days" type="measure"/>
+                    <field name="number_of_hours" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="hr_payslip_worked_days_view_search_report" model="ir.ui.view">
+            <field name="name">hr.payslip.worked.days.search.report</field>
+            <field name="model">hr.payslip.worked.days</field>
+            <field name="arch" type="xml">
+                <search string="Search Worked Days">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="payslip_run_id"/>
+                    <group>
+                        <filter string="Code" name="group_code" context="{'group_by': 'code'}"/>
+                        <filter string="Pay Run" name="group_payrun" context="{'group_by': 'payslip_run_id'}"/>
+                        <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hr_payslip_worked_days_report" model="ir.actions.act_window">
+            <field name="name">Payslip Work Days Lines Report</field>
+            <field name="res_model">hr.payslip.worked.days</field>
+            <field name="view_mode">pivot,list,graph</field>
+            <field name="search_view_id" ref="hr_payslip_worked_days_view_search_report"/>
+            <field name="context">{'search_default_group_code': 1}</field>
+        </record>
+
+        <!-- ========================================== -->
+        <!-- 3. INPUTS REPORTING (PIVOT / GRAPH)        -->
+        <!-- ========================================== -->
+        <record id="hr_payslip_input_view_pivot" model="ir.ui.view">
+            <field name="name">hr.payslip.input.pivot</field>
+            <field name="model">hr.payslip.input</field>
+            <field name="arch" type="xml">
+                <pivot string="Inputs Analysis">
+                    <field name="employee_id" type="row"/>
+                    <field name="code" type="col"/>
+                    <field name="amount" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="hr_payslip_input_view_graph" model="ir.ui.view">
+            <field name="name">hr.payslip.input.graph</field>
+            <field name="model">hr.payslip.input</field>
+            <field name="arch" type="xml">
+                <graph string="Inputs Analysis" type="bar">
+                    <field name="employee_id" type="row"/>
+                    <field name="code" type="col"/>
+                    <field name="amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="hr_payslip_input_view_search_report" model="ir.ui.view">
+            <field name="name">hr.payslip.input.search.report</field>
+            <field name="model">hr.payslip.input</field>
+            <field name="arch" type="xml">
+                <search string="Search Inputs">
+                    <field name="employee_id"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <group>
+                        <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Input Code" name="group_code" context="{'group_by': 'code'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hr_payslip_input_report" model="ir.actions.act_window">
+            <field name="name">Payslip Other Inputs</field>
+            <field name="res_model">hr.payslip.input</field>
+            <field name="view_mode">pivot,graph,list</field>
+            <field name="search_view_id" ref="hr_payslip_input_view_search_report"/>
+            <field name="context">{'search_default_group_employee': 1}</field>
+        </record>
+    </data>
+</odoo>

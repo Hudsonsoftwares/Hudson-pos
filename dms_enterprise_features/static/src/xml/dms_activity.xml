@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.ActivityViewFooter" t-inherit-mode="extension">
+        <xpath expr="//span[hasclass('o_record_selector')]" position="after">
+            <t t-if="this.props.resModel === 'dms.file'">
+                <span class="btn btn-link text-primary cursor-pointer ms-3 o_folder_activity_scheduler"
+                      t-on-click.prevent.stop="this.props.scheduleFolderActivity">
+                    <i class="fa fa-folder-open-o pe-1"/>
+                    <t t-if="this.props.activeDirectory">
+                        Schedule activity on folder '<t t-out="this.props.activeDirectory.name"/>'
+                    </t>
+                    <t t-else="">
+                        Schedule activity on a folder
+                    </t>
+                </span>
+            </t>
+        </xpath>
+    </t>
+</templates>

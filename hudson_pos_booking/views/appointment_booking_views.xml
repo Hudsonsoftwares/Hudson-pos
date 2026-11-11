@@ -5,6 +5,12 @@
         <field name="model">appointment.booking</field>
         <field name="inherit_id" ref="appointment.appointment_booking_view_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='resource_ids']" position="before">
+                <field name="allowed_resource_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='resource_ids']" position="attributes">
+                <attribute name="domain">[('id', 'in', allowed_resource_ids)]</attribute>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Point of Sale" name="pos_booking_page">
                     <group>
@@ -22,6 +28,21 @@
                         </list>
                     </field>
                 </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Quick Create Form View Inherit: Filter resources to only enabled tables -->
+    <record id="appointment_booking_view_form_quick_create_inherit_pos" model="ir.ui.view">
+        <field name="name">appointment.booking.view.form.quick_create.inherit.pos</field>
+        <field name="model">appointment.booking</field>
+        <field name="inherit_id" ref="appointment.appointment_booking_view_form_quick_create"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resource_ids']" position="before">
+                <field name="allowed_resource_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='resource_ids']" position="attributes">
+                <attribute name="domain">[('id', 'in', allowed_resource_ids)]</attribute>
             </xpath>
         </field>
     </record>

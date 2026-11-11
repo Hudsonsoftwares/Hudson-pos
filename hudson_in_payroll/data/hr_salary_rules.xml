@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Initial Statutory PF Wage Basis Configuration for Standard Salary Rules -->
+    <data noupdate="0">
+        <!-- Basic Salary (BASIC) -> Include in PF Wage = True -->
+        <record id="hudson_payroll_base.hr_rule_basic" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">True</field>
+        </record>
+
+        <!-- Dearness Allowance (DA) -> Include in PF Wage = True -->
+        <record id="hr_rule_da_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">True</field>
+        </record>
+
+        <!-- House Rent Allowance (HRA) -> Include in PF Wage = False -->
+        <record id="hr_rule_hra_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+
+        <!-- Standard Allowance -> Include in PF Wage = False -->
+        <record id="hr_rule_standard_allowance_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+
+        <!-- Performance Bonus -> Include in PF Wage = False, Is Bonus = True -->
+        <record id="hr_rule_performance_bonus_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+            <field name="hds_in_is_bonus">True</field>
+            <field name="hds_in_exclude_notice_period">True</field>
+            <field name="hds_in_apply_tds">True</field>
+        </record>
+
+        <!-- Retention Bonus -> Include in PF Wage = False, Is Bonus = True -->
+        <record id="hr_rule_retention_bonus_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+            <field name="hds_in_is_bonus">True</field>
+            <field name="hds_in_exclude_notice_period">True</field>
+            <field name="hds_in_apply_tds">True</field>
+        </record>
+
+        <!-- Leave Travel Allowance (LTA) -> Include in PF Wage = False -->
+        <record id="hr_rule_lta_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+
+        <!-- Fixed Allowance -> Include in PF Wage = False -->
+        <record id="hr_rule_fixed_allowance_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+
+        <!-- Unpaid Leave Deduction (UNPAID) -> Include in PF Wage = False -->
+        <record id="hudson_attendance_payroll_link.hr_rule_unpaid" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+
+        <!-- Benefits -> Include in PF Wage = False -->
+        <record id="hr_rule_benefit_phone_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+        <record id="hr_rule_benefit_internet_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+        <record id="hr_rule_benefit_meal_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+        <record id="hr_rule_benefit_transport_india" model="hr.salary.rule">
+            <field name="hds_in_include_in_pf_wage">False</field>
+        </record>
+
+        <!-- Enterprise In-Service Leave Encashment Rule (Earnings) -->
+        <record id="hds_in_rule_leave_encash" model="hr.salary.rule">
+            <field name="name">Leave Encashment</field>
+            <field name="sequence" eval="88"/>
+            <field name="code">LEAVE_ENCASH</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_has_approved_leave_encashment()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_in_service_leave_encashment()]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="hds_in_include_in_pf_wage" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Enterprise Statutory PF Rules (Thin HrPayslip API Delegated) -->
+        <record id="hds_in_rule_epf" model="hr.salary.rule">
+            <field name="name">Employee Provident Fund (EPF)</field>
+            <field name="sequence" eval="150"/>
+            <field name="code">EPF</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_ded"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_is_epf_applicable()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_employee_epf()]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_in_rule_epf_er" model="hr.salary.rule">
+            <field name="name">Employer EPF Contribution</field>
+            <field name="sequence" eval="151"/>
+            <field name="code">EMPLOYER_EPF</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_is_epf_applicable()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_employer_epf()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="hds_in_contributes_to_employer_cost" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_in_rule_eps" model="hr.salary.rule">
+            <field name="name">Employer Pension Scheme (EPS)</field>
+            <field name="sequence" eval="152"/>
+            <field name="code">EPS</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_is_epf_applicable()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_employer_eps()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_in_rule_epf_share" model="hr.salary.rule">
+            <field name="name">Employer EPF Share</field>
+            <field name="sequence" eval="153"/>
+            <field name="code">EPF_SHARE</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_is_epf_applicable()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_employer_epf_share()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_in_rule_edli" model="hr.salary.rule">
+            <field name="name">Employer EDLI Contribution</field>
+            <field name="sequence" eval="154"/>
+            <field name="code">EDLI</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_is_epf_applicable()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_employer_edli()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="hds_in_contributes_to_employer_cost" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_in_rule_epf_admin" model="hr.salary.rule">
+            <field name="name">EPF Admin Charges</field>
+            <field name="sequence" eval="155"/>
+            <field name="code">EPF_ADMIN</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_is_epf_applicable()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_epf_admin()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="hds_in_contributes_to_employer_cost" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hds_in_rule_edli_admin" model="hr.salary.rule">
+            <field name="name">EDLI Admin Charges</field>
+            <field name="sequence" eval="156"/>
+            <field name="code">EDLI_ADMIN</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python"><![CDATA[result = payslip_record.hds_in_is_epf_applicable()]]></field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_edli_admin()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="hds_in_contributes_to_employer_cost" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Enterprise Statutory TDS Rule (Thin HrPayslip API Delegated) -->
+        <record id="hds_in_rule_tds" model="hr.salary.rule">
+            <field name="name">Tax Deducted at Source (TDS)</field>
+            <field name="sequence" eval="190"/>
+            <field name="code">HDS_IN_TDS</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_ded"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+net_before_tds = (categories.BASIC or 0.0) + (categories.ALW or 0.0) + (categories.DED or 0.0)
+if net_before_tds <= 0.0:
+    result = 0.0
+else:
+    result = payslip_record.hds_in_compute_tds()
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="uae_res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hudson.ae.payroll</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_payroll_community.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//*[@data-key='hr_payroll_community']" position="inside">
+                <field name="uae_is_uae_company" invisible="1"/>
+                <div class="uae_payroll_localization_container" invisible="not uae_is_uae_company">
+                    <h2 class="mt32">UAE Payroll Localization</h2>
+                    <div class="row mt16 o_settings_container">
+                        <!-- Left Column: Sector, Emirate & Jurisdiction Type -->
+                        <div class="col-12 col-lg-6 o_setting_box" id="uae_jurisdiction_setting">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label fw-bold">Emirate &amp; Classification</span>
+                                <div class="text-muted">
+                                    Configure operating sector, registered Emirate, and jurisdiction classification.
+                                </div>
+                                <div class="content-group mt8">
+                                    <div class="row mt8">
+                                        <label for="uae_employment_sector" class="col-lg-5 o_light_label" string="Employment Sector"/>
+                                        <field name="uae_employment_sector" class="col-lg-7" placeholder="e.g. Private Sector"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="uae_emirate_id" class="col-lg-5 o_light_label" string="Emirate"/>
+                                        <field name="uae_emirate_id" class="col-lg-7" placeholder="Select Emirate" options="{'no_create': True}"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="uae_jurisdiction_type" class="col-lg-5 o_light_label" string="Jurisdiction Type"/>
+                                        <field name="uae_jurisdiction_type" class="col-lg-7"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Jurisdiction & Labour Authority -->
+                        <div class="col-12 col-lg-6 o_setting_box" id="uae_authority_setting">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label fw-bold">Operating Jurisdiction &amp; Authority</span>
+                                <div class="text-muted">
+                                    Select operating jurisdiction profile and view the auto-resolved regulatory authority.
+                                </div>
+                                <div class="content-group mt8">
+                                    <div class="row mt8">
+                                        <label for="uae_jurisdiction_id" class="col-lg-5 o_light_label" string="Jurisdiction"/>
+                                        <field name="uae_jurisdiction_id" class="col-lg-7" placeholder="Select Jurisdiction Profile"
+                                               domain="[('emirate_id', '=', uae_emirate_id), ('jurisdiction_type', '=', uae_jurisdiction_type)]"
+                                               options="{'no_create': True, 'no_create_edit': True}"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="uae_labour_authority_id" class="col-lg-5 o_light_label" string="Labour Authority"/>
+                                        <field name="uae_labour_authority_id" class="col-lg-7" readonly="1" options="{'no_open': True}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Left Column: GPSSA Pension Authority -->
+                        <div class="col-12 col-lg-6 o_setting_box" id="uae_gpssa_setting">
+                            <div class="o_setting_left_pane">
+                                <field name="hds_ae_enable_gpssa"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="hds_ae_enable_gpssa" string="General Pension &amp; Social Security Authority (GPSSA)" class="fw-bold"/>
+                                <div class="text-muted">
+                                    Enable statutory GPSSA pension compliance for UAE national employees.
+                                </div>
+                                <div class="content-group mt8" invisible="not hds_ae_enable_gpssa">
+                                    <div class="row mt8">
+                                        <label for="hds_ae_gpssa_employer_number" class="col-lg-5 o_light_label" string="GPSSA Employer Number"/>
+                                        <field name="hds_ae_gpssa_employer_number" class="col-lg-7" placeholder="e.g. GPSSA-123456" required="hds_ae_enable_gpssa"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: ADPF Pension Authority -->
+                        <div class="col-12 col-lg-6 o_setting_box" id="uae_adpf_setting">
+                            <div class="o_setting_left_pane">
+                                <field name="hds_ae_enable_adpf"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="hds_ae_enable_adpf" string="Abu Dhabi Pension Fund (ADPF)" class="fw-bold"/>
+                                <div class="text-muted">
+                                    Enable statutory ADPF pension compliance for Abu Dhabi UAE national employees.
+                                </div>
+                                <div class="content-group mt8" invisible="not hds_ae_enable_adpf">
+                                    <div class="row mt8">
+                                        <label for="hds_ae_adpf_employer_number" class="col-lg-5 o_light_label" string="ADPF Employer Number"/>
+                                        <field name="hds_ae_adpf_employer_number" class="col-lg-7" placeholder="e.g. ADPF-123456" required="hds_ae_enable_adpf"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full Width / Left Column: Permitted Pension Schemes -->
+                        <div class="col-12 col-lg-6 o_setting_box" id="uae_pension_schemes_setting">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label fw-bold">Permitted Pension Schemes</span>
+                                <div class="text-muted">
+                                    Define active statutory pension schemes permitted for workforce cohorts (Legacy vs New Law).
+                                </div>
+                                <div class="content-group mt8">
+                                    <field name="uae_pension_scheme_ids" widget="many2many_tags" placeholder="All Active Schemes Permitted"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

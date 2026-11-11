@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_version_view_form_inherit_hudson_payroll_base" model="ir.ui.view">
+            <field name="name">hr.version.form.inherit.hudson.payroll.base</field>
+            <field name="model">hr.version</field>
+            <field name="inherit_id" ref="hr.hr_contract_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='job_id']" position="after">
+                    <field name="country_code" invisible="1"/>
+                    <field name="company_country_code" invisible="1"/>
+                    <field name="is_india_localization" invisible="1"/>
+                    <field name="is_uae_localization" invisible="1"/>
+                    <field name="structure_type_id"/>
+                    <field name="struct_id"/>
+                    <field name="schedule_pay"/>
+                </xpath>
+                <xpath expr="//div[@name='wage']" position="after">
+                    <field name="pay_by_attendance" widget="boolean_toggle"/>
+                    <field name="enable_attendance_threshold" invisible="pay_by_attendance"/>
+                    <field name="threshold_days_manually_set" invisible="1"/>
+                    <field name="threshold_enabled_manually_set" invisible="1"/>
+                    <label for="min_attendance_threshold_days" invisible="pay_by_attendance or not enable_attendance_threshold"/>
+                    <div class="o_row" invisible="pay_by_attendance or not enable_attendance_threshold">
+                        <field name="min_attendance_threshold_days" class="oe_inline"/>
+                        <span>days</span>
+                        <button name="action_reset_to_company_threshold"
+                                string="Reset to Company Default"
+                                type="object"
+                                class="btn btn-sm btn-link p-0 text-decoration-none"
+                                invisible="not threshold_days_manually_set and not threshold_enabled_manually_set"
+                                help="Reset threshold to follow company global setting"/>
+                    </div>
+                </xpath>
+                <xpath expr="//group[@name='contract']" position="after">
+                    <group string="Salary Breakdown" name="salary_breakdown">
+                        <label for="basic_salary"/>
+                        <div class="o_row">
+                            <field name="basic_salary" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="basic_salary_percent" readonly="1"/>%)</span>
+                        </div>
+                        <label for="hra"/>
+                        <div class="o_row">
+                            <field name="hra" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="hra_percent" readonly="1"/>%)</span>
+                        </div>
+                        <label for="da"/>
+                        <div class="o_row">
+                            <field name="da" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="da_percent" readonly="1"/>%)</span>
+                        </div>
+                        <label for="standard_allowance"/>
+                        <div class="o_row">
+                            <field name="standard_allowance" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="standard_allowance_percent" readonly="1"/>%)</span>
+                        </div>
+                        <label for="performance_bonus"/>
+                        <div class="o_row">
+                            <field name="performance_bonus" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="performance_bonus_percent" readonly="1"/>%)</span>
+                        </div>
+                        <label for="retention_bonus"/>
+                        <div class="o_row">
+                            <field name="retention_bonus" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="retention_bonus_percent" readonly="1"/>%)</span>
+                        </div>
+                        <label for="lta_allowance"/>
+                        <div class="o_row">
+                            <field name="lta_allowance" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="lta_percent" readonly="1"/>%)</span>
+                        </div>
+                        <label for="fixed_allowance"/>
+                        <div class="o_row">
+                            <field name="fixed_allowance" nolabel="1"/>
+                            <span>/ month</span>
+                            <span class="ms-2 text-muted">(<field name="fixed_allowance_percent" readonly="1"/>%)</span>
+                        </div>
+                        <field name="breakdown_total" widget="monetary"/>
+                        <field name="breakdown_diff" widget="monetary" decoration-danger="breakdown_diff != 0"/>
+                        <field name="breakdown_is_equal" invisible="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr_employee_view_form_inherit_hudson_payroll_contract" model="ir.ui.view">
+            <field name="name">hr.employee.view.form.inherit.hudson.payroll.contract</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='wage']" position="after">
+                    <field name="pay_by_attendance" widget="boolean_toggle"/>
+                    <field name="enable_attendance_threshold" invisible="pay_by_attendance"/>
+                    <field name="threshold_days_manually_set" invisible="1"/>
+                    <field name="threshold_enabled_manually_set" invisible="1"/>
+                    <label for="min_attendance_threshold_days" invisible="pay_by_attendance or not enable_attendance_threshold"/>
+                    <div class="o_row" invisible="pay_by_attendance or not enable_attendance_threshold">
+                        <field name="min_attendance_threshold_days" class="oe_inline"/>
+                        <span>days</span>
+                        <button name="action_reset_to_company_threshold"
+                                string="Reset to Company Default"
+                                type="object"
+                                class="btn btn-sm btn-link p-0 text-decoration-none"
+                                invisible="not threshold_days_manually_set and not threshold_enabled_manually_set"
+                                help="Reset threshold to follow company global setting"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A working helpdesk chatbot to start from: it can be duplicated / adapted / deleted -->
+    <data noupdate="1">
+        <record id="chatbot_script_helpdesk_bot" model="chatbot.script">
+            <field name="title">Helpdesk Bot</field>
+            <field name="image_1920" type="bytes" file="mail/static/src/img/odoobot.webp"/>
+        </record>
+
+        <record id="chatbot_script_helpdesk_step_welcome" model="chatbot.script.step">
+            <field name="sequence">1</field>
+            <field name="step_type">text</field>
+            <field name="message">Hello! I am the support assistant. I will open a ticket for our helpdesk team.</field>
+            <field name="chatbot_script_id" ref="chatbot_script_helpdesk_bot"/>
+        </record>
+        <record id="chatbot_script_helpdesk_step_issue" model="chatbot.script.step">
+            <field name="sequence">2</field>
+            <field name="step_type">free_input_multi</field>
+            <field name="message">Please describe your issue.</field>
+            <field name="chatbot_script_id" ref="chatbot_script_helpdesk_bot"/>
+        </record>
+        <record id="chatbot_script_helpdesk_step_email" model="chatbot.script.step">
+            <field name="sequence">3</field>
+            <field name="step_type">question_email</field>
+            <field name="message">What is your email address, so that we can keep you updated?</field>
+            <field name="chatbot_script_id" ref="chatbot_script_helpdesk_bot"/>
+        </record>
+        <record id="chatbot_script_helpdesk_step_phone" model="chatbot.script.step">
+            <field name="sequence">4</field>
+            <field name="step_type">question_phone</field>
+            <field name="message">And your phone number?</field>
+            <field name="chatbot_script_id" ref="chatbot_script_helpdesk_bot"/>
+        </record>
+        <record id="chatbot_script_helpdesk_step_create_ticket" model="chatbot.script.step">
+            <field name="sequence">5</field>
+            <field name="step_type">create_ticket</field>
+            <field name="message">Thank you! A ticket has been created and our team will get back to you soon.</field>
+            <field name="chatbot_script_id" ref="chatbot_script_helpdesk_bot"/>
+        </record>
+    </data>
+</odoo>

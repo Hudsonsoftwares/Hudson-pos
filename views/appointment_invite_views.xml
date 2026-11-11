@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_appointment_invite_wizard" model="ir.actions.act_window">
+        <field name="name">Create a Share Link</field>
+        <field name="res_model">appointment.invite</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="appointment_invite_view_form" model="ir.ui.view">
+        <field name="name">appointment.invite.view.form</field>
+        <field name="model">appointment.invite</field>
+        <field name="arch" type="xml">
+            <form string="Create a Share Link">
+                <sheet>
+                    <group>
+                        <field name="appointment_type_ids" widget="many2many_tags" options="{'no_create': True}" placeholder="Select Appointments to share..."/>
+                        <field name="assign_method" widget="radio" options="{'horizontal': false}"/>
+                        <field name="staff_user_ids" widget="many2many_tags" invisible="assign_method != 'specific'"/>
+                        <field name="resource_ids" widget="many2many_tags" invisible="assign_method != 'specific'"/>
+                        <field name="book_url" widget="CopyClipboardChar" readonly="1" string="Link"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Copy Link &amp; Close" class="btn btn-primary" type="object" name="action_copy_and_close"/>
+                    <button string="Discard" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="appointment_invite_view_list" model="ir.ui.view">
+        <field name="name">appointment.invite.view.list</field>
+        <field name="model">appointment.invite</field>
+        <field name="arch" type="xml">
+            <list string="Shared Links" create="0">
+                <header>
+                    <button name="%(action_appointment_invite_wizard)d" type="action" string="New" class="btn btn-primary" display="always"/>
+                </header>
+                <field name="appointment_type_ids" widget="many2many_tags" string="Appointments"/>
+                <field name="appointment_count" string="# Bookings"/>
+                <button name="action_copy_link" type="object" string="Copy Link" class="btn btn-link text-success text-decoration-none fw-bold" icon="content_copy"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="appointment_invite_action" model="ir.actions.act_window">
+        <field name="name">Shared Links</field>
+        <field name="res_model">appointment.invite</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No shared links created yet!
+            </p>
+        </field>
+    </record>
+</odoo>

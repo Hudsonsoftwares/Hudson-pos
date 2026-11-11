@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hudson_auto_reconcile_wizard_form" model="ir.ui.view">
+        <field name="name">hudson.auto.reconcile.wizard.form</field>
+        <field name="model">hudson.auto.reconcile.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reconcile automatically">
+                <group>
+                    <field name="reconcile_mode" widget="radio" options="{'horizontal': true}"/>
+                    <field name="account_ids" widget="many2many_tags" 
+                           options="{'no_create': True}" 
+                           placeholder="Select Accounts..."/>
+                    <field name="partner_ids" widget="many2many_tags" 
+                           options="{'no_create': True}" 
+                           placeholder="Select Partners..."/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <footer>
+                    <button name="action_reconcile" string="Reconcile" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_auto_reconcile_wizard" model="ir.actions.act_window">
+        <field name="name">Reconcile automatically</field>
+        <field name="res_model">hudson.auto.reconcile.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

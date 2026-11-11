@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_management_pro_view_team_form_knowledge" model="ir.ui.view">
+        <field name="name">helpdesk.management.team.form.knowledge</field>
+        <field name="model">helpdesk.management.team</field>
+        <field name="inherit_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_team_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='use_website_helpdesk_form']" position="after">
+                <setting id="use_website_helpdesk_knowledge" help="Publish an article and its sub-articles from the Knowledge app so customers can find answers in the help center.">
+                    <field name="use_website_helpdesk_knowledge"/>
+                    <div invisible="not use_website_helpdesk_knowledge">
+                        <div class="o_helpdesk_setting_row">
+                            <label for="website_article_id" string="Article" class="o_light_label"/>
+                            <field name="website_article_id" required="use_website_helpdesk_knowledge"/>
+                        </div>
+                        <div class="text-muted mt-2">The article and its sub-articles are shared to the web.</div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

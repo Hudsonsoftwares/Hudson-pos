@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. FIELD MAPPINGS -->
+    <record id="view_hudson_attendance_field_mapping_tree" model="ir.ui.view">
+        <field name="name">hudson.attendance.field.mapping.tree</field>
+        <field name="model">hudson.attendance.field.mapping</field>
+        <field name="arch" type="xml">
+            <list string="Field Mappings">
+                <field name="device_id"/>
+                <field name="src_path"/>
+                <field name="target_field"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hudson_attendance_field_mapping_form" model="ir.ui.view">
+        <field name="name">hudson.attendance.field.mapping.form</field>
+        <field name="model">hudson.attendance.field.mapping</field>
+        <field name="arch" type="xml">
+            <form string="Field Mapping">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="device_id"/>
+                            <field name="target_field"/>
+                        </group>
+                        <group>
+                            <field name="src_path"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="value_mappings" string="Value Mappings" invisible="target_field != 'punch_type'">
+                            <field name="value_mapping_ids">
+                                <list editable="bottom">
+                                    <field name="src_value"/>
+                                    <field name="target_value"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hudson_attendance_field_mapping" model="ir.actions.act_window">
+        <field name="name">Field Mappings</field>
+        <field name="res_model">hudson.attendance.field.mapping</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- 2. EMPLOYEE MAPPINGS -->
+    <record id="view_hudson_attendance_employee_mapping_tree" model="ir.ui.view">
+        <field name="name">hudson.attendance.employee.mapping.tree</field>
+        <field name="model">hudson.attendance.employee.mapping</field>
+        <field name="arch" type="xml">
+            <list string="Employee Mappings" editable="bottom">
+                <field name="device_id"/>
+                <field name="external_employee_code"/>
+                <field name="employee_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hudson_attendance_employee_mapping" model="ir.actions.act_window">
+        <field name="name">Employee Mappings</field>
+        <field name="res_model">hudson.attendance.employee.mapping</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- 3. WEBHOOK LOGS -->
+    <record id="view_hudson_attendance_webhook_log_tree" model="ir.ui.view">
+        <field name="name">hudson.attendance.webhook.log.tree</field>
+        <field name="model">hudson.attendance.webhook.log</field>
+        <field name="arch" type="xml">
+            <list string="Webhook Ingest Logs" create="false" edit="false">
+                <field name="timestamp"/>
+                <field name="device_id"/>
+                <field name="source_ip"/>
+                <field name="payload_size"/>
+                <field name="result" widget="badge" decoration-success="result == 'success'" decoration-danger="result == 'failed'"/>
+                <field name="error_message"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hudson_attendance_webhook_log_form" model="ir.ui.view">
+        <field name="name">hudson.attendance.webhook.log.form</field>
+        <field name="model">hudson.attendance.webhook.log</field>
+        <field name="arch" type="xml">
+            <form string="Webhook Log" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="timestamp"/>
+                            <field name="device_id"/>
+                            <field name="source_ip"/>
+                        </group>
+                        <group>
+                            <field name="payload_size"/>
+                            <field name="result"/>
+                        </group>
+                    </group>
+                    <group string="Error Message" invisible="not error_message">
+                        <field name="error_message" readonly="1" nolabel="1"/>
+                    </group>
+                    <group string="Payload Content">
+                        <field name="payload" readonly="1" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hudson_attendance_webhook_log" model="ir.actions.act_window">
+        <field name="name">Webhook Ingest Logs</field>
+        <field name="res_model">hudson.attendance.webhook.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- 4. SYNC JOBS -->
+    <record id="view_hudson_attendance_sync_job_tree" model="ir.ui.view">
+        <field name="name">hudson.attendance.sync.job.tree</field>
+        <field name="model">hudson.attendance.sync.job</field>
+        <field name="arch" type="xml">
+            <list string="Biometric Sync Jobs" create="false">
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="device_id"/>
+                <field name="records_received"/>
+                <field name="records_processed"/>
+                <field name="records_failed"/>
+                <field name="records_duplicate"/>
+                <field name="records_unmapped"/>
+                <field name="state" widget="badge" decoration-info="state == 'running'" decoration-success="state == 'completed'" decoration-danger="state == 'failed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hudson_attendance_sync_job_form" model="ir.ui.view">
+        <field name="name">hudson.attendance.sync.job.form</field>
+        <field name="model">hudson.attendance.sync.job</field>
+        <field name="arch" type="xml">
+            <form string="Sync Job" create="false">
+                <header>
+                    <button name="action_retry_failed" string="Retry Failed" type="object" class="oe_highlight" invisible="state == 'running'"/>
+                    <button name="action_reprocess_all" string="Reprocess All" type="object" invisible="state == 'running'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="device_id" readonly="1"/>
+                            <field name="start_time" readonly="1"/>
+                            <field name="end_time" readonly="1"/>
+                        </group>
+                        <group string="Metrics">
+                            <field name="records_received" readonly="1"/>
+                            <field name="records_processed" readonly="1"/>
+                            <field name="records_failed" readonly="1"/>
+                            <field name="records_duplicate" readonly="1"/>
+                            <field name="records_unmapped" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hudson_attendance_sync_job" model="ir.actions.act_window">
+        <field name="name">Biometric Sync Jobs</field>
+        <field name="res_model">hudson.attendance.sync.job</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- 5. ANOMALIES -->
+    <record id="view_hudson_attendance_anomaly_tree" model="ir.ui.view">
+        <field name="name">hudson.attendance.anomaly.tree</field>
+        <field name="model">hudson.attendance.anomaly</field>
+        <field name="arch" type="xml">
+            <list string="Attendance Anomalies" create="false" edit="false">
+                <field name="detection_time"/>
+                <field name="name"/>
+                <field name="anomaly_type" widget="badge"/>
+                <field name="employee_id"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="attendance_id"/>
+                <field name="raw_punch_id"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hudson_attendance_anomaly" model="ir.actions.act_window">
+        <field name="name">Attendance Anomalies</field>
+        <field name="res_model">hudson.attendance.anomaly</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- 6. REGULARIZATION WORKFLOWS -->
+    <record id="view_hudson_attendance_regularization_tree" model="ir.ui.view">
+        <field name="name">hudson.attendance.regularization.tree</field>
+        <field name="model">hudson.attendance.regularization</field>
+        <field name="arch" type="xml">
+            <list string="Regularization Requests">
+                <field name="create_date" string="Request Date"/>
+                <field name="employee_id"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="anomaly_id"/>
+                <field name="corrected_check_in"/>
+                <field name="corrected_check_out"/>
+                <field name="state" widget="badge" decoration-info="state in ('draft','submitted')" decoration-success="state in ('approved','applied')" decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hudson_attendance_regularization_form" model="ir.ui.view">
+        <field name="name">hudson.attendance.regularization.form</field>
+        <field name="model">hudson.attendance.regularization</field>
+        <field name="arch" type="xml">
+            <form string="Regularization Request">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="hr_attendance.group_hr_attendance_manager" invisible="state != 'submitted'"/>
+                    <button name="action_reject" string="Reject" type="object" groups="hr_attendance.group_hr_attendance_manager" invisible="state != 'submitted'"/>
+                    <button name="action_apply" string="Apply Changes" type="object" class="oe_highlight" groups="hr_attendance.group_hr_attendance_manager" invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,applied"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Source &amp; Context">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="anomaly_id" readonly="state != 'draft'"/>
+                            <field name="attendance_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Original Times" invisible="not attendance_id">
+                            <field name="orig_check_in"/>
+                            <field name="orig_check_out"/>
+                        </group>
+                    </group>
+                    <group string="Correction Details">
+                        <group>
+                            <field name="corrected_check_in" readonly="state != 'draft'"/>
+                            <field name="corrected_check_out" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="reason" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hudson_attendance_regularization" model="ir.actions.act_window">
+        <field name="name">Regularization Requests</field>
+        <field name="res_model">hudson.attendance.regularization</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

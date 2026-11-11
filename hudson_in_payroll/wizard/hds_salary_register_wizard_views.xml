@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hds_salary_register_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.salary.register.wizard.view.form</field>
+        <field name="model">hds.salary.register.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Salary Register">
+                <p class="text-muted mb-3">
+                    Generate an Excel report based on payslips for the selected period of time.
+                </p>
+                <group>
+                    <group>
+                        <field name="date_from" string="Start Date" required="1"/>
+                        <field name="date_to" string="End Date" required="1"/>
+                        <field name="struct_id" string="Pay Structure" options="{'no_create': True}" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                        <label for="status_paid" string="Payslip Status"/>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="d-flex align-items-center gap-1">
+                                <span class="me-1">Paid</span>
+                                <field name="status_paid"/>
+                            </span>
+                            <span class="d-flex align-items-center gap-1">
+                                <span class="me-1">Done</span>
+                                <field name="status_done"/>
+                            </span>
+                        </div>
+                        <field name="company_id" invisible="1"/>
+                    </group>
+                </group>
+
+                <div class="mt-4 mb-2">
+                    <strong class="text-uppercase" style="letter-spacing: 0.5px; font-size: 13px;">EMPLOYEES</strong>
+                </div>
+                <field name="employee_ids" widget="many2many" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]">
+                    <list string="Employees">
+                        <field name="name" string="Employee Name"/>
+                        <field name="registration_number" string="Employee Reference" optional="show"/>
+                        <field name="department_id" string="Department" optional="show"/>
+                        <field name="job_id" string="Job Position" optional="show"/>
+                    </list>
+                </field>
+
+                <field name="xlsx_filename" invisible="1"/>
+                <field name="xlsx_file" invisible="1"/>
+
+                <footer>
+                    <button name="action_export_xlsx"
+                            string="Export XLSX"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Discard"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_salary_register_report_wizard" model="ir.actions.act_window">
+        <field name="name">Salary Register</field>
+        <field name="res_model">hds.salary.register.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dms_file_log_tree" model="ir.ui.view">
+        <field name="name">dms.file.log.list</field>
+        <field name="model">dms.file.log</field>
+        <field name="arch" type="xml">
+            <list string="Document Logs" create="false" edit="false" delete="false">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="action" widget="badge"
+                       decoration-success="action == 'create'"
+                       decoration-info="action == 'edit'"
+                       decoration-danger="action == 'delete'"/>
+                <field name="details"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="file_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dms_file_log_form" model="ir.ui.view">
+        <field name="name">dms.file.log.form</field>
+        <field name="model">dms.file.log</field>
+        <field name="arch" type="xml">
+            <form string="Document Log" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="file_id"/>
+                            <field name="action" widget="badge"
+                                   decoration-success="action == 'create'"
+                                   decoration-info="action == 'edit'"
+                                   decoration-danger="action == 'delete'"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <field name="details" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dms_file_log_search" model="ir.ui.view">
+        <field name="name">dms.file.log.search</field>
+        <field name="model">dms.file.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Document Logs">
+                <field name="name" string="Document Name"/>
+                <field name="details" string="Details"/>
+                <field name="user_id" string="User"/>
+                <field name="file_id" string="Document"/>
+                <filter string="Created" name="filter_created" domain="[('action', '=', 'create')]"/>
+                <filter string="Edited" name="filter_edited" domain="[('action', '=', 'edit')]"/>
+                <filter string="Deleted" name="filter_deleted" domain="[('action', '=', 'delete')]"/>
+                <group>
+                    <filter string="Document" name="group_by_file" context="{'group_by': 'file_id'}"/>
+                    <filter string="Action" name="group_by_action" context="{'group_by': 'action'}"/>
+                    <filter string="User" name="group_by_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dms_file_log" model="ir.actions.act_window">
+        <field name="name">Document Logs</field>
+        <field name="res_model">dms.file.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_dms_file_log_search"/>
+    </record>
+
+    <menuitem id="menu_dms_file_log"
+              name="Logs"
+              parent="dms.main_menu_dms"
+              action="action_dms_file_log"
+              groups="dms.group_dms_manager"
+              sequence="99"/>
+</odoo>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dms_file_share_wizard_form" model="ir.ui.view">
+        <field name="name">dms.file.share.wizard.form</field>
+        <field name="model">dms.file.share.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Share" dialog_size="md">
+                <field name="file_id" invisible="1"/>
+                <field name="file_name" invisible="1"/>
+
+                <div class="w-100 py-1">
+                    <!-- Share Mode Selector: Add People vs Add Groups -->
+                    <div class="mb-3">
+                        <field name="share_mode" widget="radio" options="{'horizontal': True}" class="fw-semibold" nolabel="1"/>
+                    </div>
+
+                    <!-- Input Row with role selector and Add button -->
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <i class="fa fa-user-plus text-muted fs-5 me-1" invisible="share_mode != 'people'"/>
+                        <i class="fa fa-users text-muted fs-5 me-1" invisible="share_mode != 'groups'"/>
+                        <div class="flex-grow-1" invisible="share_mode != 'people'">
+                            <field name="partner_ids" widget="many2many_tags" placeholder="Add people or email addresses" options="{'no_create_edit': True}" nolabel="1" class="w-100 border-0 shadow-none"/>
+                        </div>
+                        <div class="flex-grow-1" invisible="share_mode != 'groups'">
+                            <field name="group_ids" widget="many2many_tags" placeholder="Add groups" options="{'no_create': True, 'no_create_edit': True}" nolabel="1" class="w-100 border-0 shadow-none"/>
+                        </div>
+                        <div style="width: 110px;">
+                            <field name="new_access_role" nolabel="1" class="form-select form-select-sm fw-semibold"/>
+                        </div>
+                        <button name="action_add_access" string="Add" type="object" class="btn btn-sm btn-outline-primary px-3"/>
+                    </div>
+
+                    <!-- People with access section -->
+                    <div class="mb-4" invisible="not people_with_access_html">
+                        <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;">People with access</h6>
+                        <field name="people_with_access_html" nolabel="1"/>
+                    </div>
+
+                    <!-- General Access Section -->
+                    <div class="mb-3">
+                        <h5 class="fw-bold text-dark mb-3" style="font-size: 1.15rem;">General Access</h5>
+                        
+                        <!-- Internal Users -->
+                        <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                            <div>
+                                <div class="fw-semibold text-dark">Internal users</div>
+                                <div class="text-muted small" invisible="share_internal_access != 'editor'">Can modify, delete, and rename.</div>
+                                <div class="text-muted small" invisible="share_internal_access != 'viewer'">Can view and download.</div>
+                                <div class="text-muted small" invisible="share_internal_access != 'none'">Only people with access can open with the link</div>
+                            </div>
+                            <div style="min-width: 120px;" class="text-end">
+                                <field name="share_internal_access" class="border-0 bg-transparent text-end fw-semibold text-secondary" nolabel="1" style="cursor: pointer; width: auto;"/>
+                            </div>
+                        </div>
+
+                        <!-- Access through link -->
+                        <div class="d-flex align-items-center justify-content-between py-2">
+                            <div>
+                                <div class="fw-semibold text-dark">Access through link</div>
+                                <div class="text-muted small" invisible="share_link_access != 'none'">No one on the internet can access</div>
+                                <div class="text-muted small" invisible="share_link_access != 'viewer'">Anyone on the internet with this link can view</div>
+                                <div class="text-muted small" invisible="share_link_access != 'editor'">Anyone on the internet with this link can edit</div>
+                            </div>
+                            <div style="min-width: 120px;" class="text-end">
+                                <field name="share_link_access" class="border-0 bg-transparent text-end fw-semibold text-secondary" nolabel="1" style="cursor: pointer; width: auto;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer: Save button shown BEFORE Copy Link button -->
+                <footer class="d-flex align-items-center justify-content-between pt-3 border-top w-100">
+                    <div class="d-flex align-items-center gap-2">
+                        <button name="action_save" string="Save" type="object" class="btn btn-primary px-4 fw-bold" style="background-color: #714B67; border-color: #714B67;"/>
+                        <field name="share_link_url" widget="CopyClipboardButton" string="Copy Link" options="{'btn_class': 'outline-secondary'}" nolabel="1"/>
+                    </div>
+                    <div>
+                        <button string="Close" class="btn btn-outline-secondary px-3" special="cancel"/>
+                    </div>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Share Wizard -->
+    <record id="action_dms_file_share_wizard" model="ir.actions.act_window">
+        <field name="name">Share</field>
+        <field name="res_model">dms.file.share.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'dialog_size': 'md'}</field>
+        <field name="view_id" ref="view_dms_file_share_wizard_form"/>
+    </record>
+</odoo>

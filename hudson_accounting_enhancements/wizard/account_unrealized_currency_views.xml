@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_unrealized_currency_wizard" model="ir.ui.view">
+        <field name="name">account.unrealized.currency.wizard.form</field>
+        <field name="model">account.unrealized.currency.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Unrealized Currency Gains/Losses">
+                <group>
+                    <group string="Parameters">
+                        <field name="as_of_date"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                    <group string="Information">
+                        <div class="o_form_label"/>
+                        <div>
+                            <p class="text-muted">
+                                This report shows unrealized foreign exchange gains and losses
+                                on open receivables and payables in foreign currencies,
+                                based on the exchange rates as of the selected date.
+                            </p>
+                        </div>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_report"
+                            string="Generate Report"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_unrealized_currency_wizard" model="ir.actions.act_window">
+        <field name="name">Unrealized Currency Gains/Losses</field>
+        <field name="res_model">account.unrealized.currency.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_account_unrealized_currency_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Make Adjustment Entry Wizard View -->
+    <record id="view_account_unrealized_currency_adjustment_wizard" model="ir.ui.view">
+        <field name="name">account.unrealized.currency.adjustment.wizard.form</field>
+        <field name="model">account.unrealized.currency.adjustment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Make Adjustment Entry">
+                <group>
+                    <group>
+                        <field name="company_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="journal_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="expense_account_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="income_account_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="reversal_date"/>
+                    </group>
+                </group>
+                <div invisible="not header_note" class="alert py-2 px-3 mb-2 font-weight-bold" style="background-color: #dbeafe; color: #1e3a8a; border-radius: 4px; border: 1px solid #bfdbfe;">
+                    <field name="header_note" readonly="1" class="fw-bold"/>
+                </div>
+                <field name="line_ids">
+                    <list editable="bottom" create="0" delete="1">
+                        <field name="currency_id" column_invisible="1"/>
+                        <field name="account_id" readonly="1"/>
+                        <field name="partner_id" readonly="1" optional="show"/>
+                        <field name="name"/>
+                        <field name="debit" sum="Total Debit"/>
+                        <field name="credit" sum="Total Credit"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_create_entry"
+                            string="Create Entry"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Discard"
+                            class="btn-secondary"
+                            special="cancel"
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_unrealized_currency_adjustment_wizard" model="ir.actions.act_window">
+        <field name="name">Make Adjustment Entry</field>
+        <field name="res_model">account.unrealized.currency.adjustment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_account_unrealized_currency_adjustment_wizard"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

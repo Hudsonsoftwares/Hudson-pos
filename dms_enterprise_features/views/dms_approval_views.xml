@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Standalone File Approval List View -->
+    <record id="view_dms_file_approval_tree" model="ir.ui.view">
+        <field name="name">dms.file.approval.tree</field>
+        <field name="model">dms.file.approval</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-success="status == 'approved'" decoration-danger="status == 'rejected'" decoration-warning="status == 'pending'">
+                <field name="file_id"/>
+                <field name="sequence" widget="handle"/>
+                <field name="approver_id"/>
+                <field name="status" widget="badge" decoration-success="status == 'approved'" decoration-danger="status == 'rejected'" decoration-warning="status == 'pending'"/>
+                <field name="date"/>
+                <field name="comments"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Dedicated Approval Requests List View on dms.file -->
+    <record id="view_dms_file_approval_list" model="ir.ui.view">
+        <field name="name">dms.file.list.approvals</field>
+        <field name="model">dms.file</field>
+        <!-- Only used explicitly by the Approvals action; at the default
+             priority it became the default dms.file list, so My Documents /
+             Trash showed approval columns and no folder rows. -->
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list string="Approval Requests" create="0">
+                <field name="name" string="Document"/>
+                <field name="directory_id" string="Folder"/>
+                <field name="create_uid" string="Requested By" widget="many2one_avatar_user"/>
+                <field name="document_owner_id" string="Owner" widget="many2one_avatar_user" optional="hide"/>
+                <field name="create_date" string="Request Date" optional="show"/>
+                <field name="current_approver_ids" string="Pending Approver(s)" widget="many2many_tags"/>
+                <field name="approval_state" string="Approval Status" widget="badge"
+                       decoration-warning="approval_state == 'in_approval'"
+                       decoration-success="approval_state == 'approved'"
+                       decoration-danger="approval_state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Specific Search View for Approval Requests without Searchpanel -->
+    <record id="view_dms_file_approval_search" model="ir.ui.view">
+        <field name="name">dms.file.search.approvals</field>
+        <field name="model">dms.file</field>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <search string="Search Approval Requests">
+                <field name="name" string="Document"/>
+                <field name="directory_id" string="Folder"/>
+                <field name="create_uid" string="Requested By"/>
+                <field name="document_owner_id" string="Owner"/>
+                <filter string="Sent by Me" name="sent_by_me" domain="[('create_uid', '=', uid)]"/>
+                <filter string="Awaiting My Approval" name="awaiting_my_approval" domain="[('current_approver_ids', 'in', [uid])]"/>
+                <separator/>
+                <filter string="In Approval" name="in_approval" domain="[('approval_state', '=', 'in_approval')]"/>
+                <filter string="Approved" name="approved" domain="[('approval_state', '=', 'approved')]"/>
+                <filter string="Rejected" name="rejected" domain="[('approval_state', '=', 'rejected')]"/>
+                <separator/>
+                <filter string="Approval Status" name="group_by_approval_state" context="{'group_by': 'approval_state'}"/>
+                <filter string="Folder" name="group_by_directory" context="{'group_by': 'directory_id'}"/>
+                <filter string="Requested By" name="group_by_create_uid" context="{'group_by': 'create_uid'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- User Preferences Extension for Default Document Approvers -->
+    <record id="view_users_form_inherit_dms_approval" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.dms.approval</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Document Approvals" name="page_dms_default_approvals">
+                    <group>
+                        <field name="default_is_sequential_approval" widget="boolean_toggle"/>
+                    </group>
+                    <field name="default_approval_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="approver_id" required="1" options="{'no_create': True, 'no_open': True}"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

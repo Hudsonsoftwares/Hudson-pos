@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Federal Pension Authority (GPSSA) -->
+        <record id="pension_authority_gpssa" model="uae.pension.authority">
+            <field name="name">General Pension &amp; Social Security Authority (GPSSA)</field>
+            <field name="code">GPSSA</field>
+            <field name="authority_type">federal</field>
+            <field name="description">Federal authority governing pensions and social security for UAE nationals in Dubai, Sharjah, Ajman, RAK, UAQ, Fujairah, and federal entities.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Abu Dhabi Pension Fund (ADPF / ADFCA) -->
+        <record id="pension_authority_adpf" model="uae.pension.authority">
+            <field name="name">Abu Dhabi Pension Fund (ADPF)</field>
+            <field name="code">ADPF</field>
+            <field name="authority_type">emirate</field>
+            <field name="emirate_id" ref="emirate_auh"/>
+            <field name="description">Emirate-level pension authority administering retirement and social benefits for UAE nationals employed in the Emirate of Abu Dhabi.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- DIFC Employee Workplace Savings (DEWS) -->
+        <record id="pension_authority_dews" model="uae.pension.authority">
+            <field name="name">DIFC Employee Workplace Savings Scheme (DEWS)</field>
+            <field name="code">DEWS</field>
+            <field name="authority_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Master savings and end-of-service workplace pension scheme operating under DIFC regulatory jurisdiction.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- GCC Unified Social Security Scheme -->
+        <record id="pension_authority_gcc_unified" model="uae.pension.authority">
+            <field name="name">GCC Unified Social Security Insurance Protection Scheme</field>
+            <field name="code">GCC_UNIFIED</field>
+            <field name="authority_type">gcc</field>
+            <field name="description">Reciprocal social security framework enabling GCC nationals employed in the UAE to maintain home country pension schemes.</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

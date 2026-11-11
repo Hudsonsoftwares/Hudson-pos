@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Overtime Pay Salary Rule — Standard Odoo 19 Overtime Rulesets Integration -->
+        <record id="hr_rule_overtime_pay" model="hr.salary.rule">
+            <field name="name">Overtime Pay</field>
+            <field name="sequence" eval="25"/>
+            <field name="code">OT</field>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_alw"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+result, result_rate, result_qty = payslip._get_dynamic_overtime_values(contract, worked_days)
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <!-- Unpaid Leave Deduction Salary Rule
+             In the Earned Proration model (pay_by_attendance=True), unpaid leave hours
+             are already excluded from WORK100, so BASIC/HRA/DA are already prorated strictly
+             to earned hours. Applying an additional deduction here would cause double deduction.
+             Therefore, for pay_by_attendance contracts, this rule returns 0.0.
+             For non-attendance contracts paying 100% nominal wage, LOP deduction is deducted here.
+             The unpaid leave days/hours remain fully tracked in the Worked Days tab for audit. -->
+        <record id="hr_rule_unpaid" model="hr.salary.rule">
+            <field name="name">Unpaid Leave Deduction</field>
+            <field name="code">UNPAID</field>
+            <field name="sequence" eval="27"/>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_ded"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[
+if contract.pay_by_attendance or contract.enable_attendance_threshold:
+    # In Earned Proration (pay_by_attendance) or Attendance Threshold model,
+    # earnings (BASIC, HRA, DA, etc.) are already directly adjusted by the attendance factor.
+    # Applying an additional deduction here would cause double deduction.
+    # Therefore, the deduction is 0.0 so the employee is not deducted twice.
+    # Unpaid leave days/hours remain fully tracked in the Worked Days tab for audit & statutory compliance.
+    result = 0.0
+    result_qty = 1.0
+else:
+    # Legacy fixed monthly salary model (threshold disabled): nominal wage is paid in full,
+    # so formal unpaid leave days must be deducted from total earnings.
+    if worked_days.UNPAID:
+        raw_ded = abs(float(worked_days.UNPAID.amount or 0.0))
+        if not raw_ded:
+            sched_data = payslip._get_attendance_vs_schedule(contract, payslip.date_from, payslip.date_to)
+            sched_hours = sched_data.get('scheduled_hours', 0.0)
+            wage = float((contract.wage or contract.basic_salary or 0.0))
+            if sched_hours > 0.0:
+                raw_ded = round((worked_days.UNPAID.number_of_hours or 0.0) * (wage / sched_hours), 2)
+            elif hasattr(contract, 'get_period_day_rate'):
+                raw_ded = round((worked_days.UNPAID.number_of_days or 0.0) * contract.get_period_day_rate(payslip.date_from, payslip.date_to), 2)
+        total_earnings = categories.BASIC + categories.ALW
+        result = -min(raw_ded, total_earnings) if total_earnings > 0.0 else 0.0
+        result_qty = 1.0
+    else:
+        result = 0.0
+        result_qty = 1.0
+]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <!-- struct_id set directly on each rule above - no separate
+             rule_ids wiring block needed (hr.payroll.structure.rule_ids
+             is a One2many, not a stored Many2many; setting struct_id on
+             the rule is the reliable way to attach it, rather than an
+             (4, ref(...)) command whose behaviour on a One2many field
+             is not guaranteed across Odoo versions). -->
+    </data>
+</odoo>

@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Employee Form View with Statutory Information and CTC under Payroll Tab -->
+    <record id="hds_in_view_employee_form" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.hudson.payroll</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="hds_in_tds_applicable" invisible="1"/>
+                <field name="hds_in_enable_professional_tax" invisible="1"/>
+                <field name="hds_in_enable_lwf" invisible="1"/>
+                <field name="hds_in_enable_epf" invisible="1"/>
+                <field name="hds_in_enable_esic" invisible="1"/>
+                <field name="hds_in_enable_tds" invisible="1"/>
+                <button name="action_view_statutory_audits"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="security"
+                        invisible="hds_in_statutory_audit_count == 0">
+                    <field name="hds_in_statutory_audit_count" widget="statinfo" string="Audit Trail"/>
+                </button>
+                <button name="action_view_tax_regimes"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="list_alt"
+                        invisible="not hds_in_enable_tds or not hds_in_tds_applicable"
+                        groups="hudson_payroll_base.group_payroll_user">
+                    <field name="hds_in_tax_regime_count" widget="statinfo" string="Tax Regimes"/>
+                </button>
+                <button name="action_open_tax_declaration_dashboard"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="calculate"
+                        invisible="not hds_in_enable_tds or not hds_in_tds_applicable">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Tax</span>
+                        <span class="o_stat_text">Declarations</span>
+                    </div>
+                </button>
+            </xpath>
+
+
+            <!-- Employee Code under Work Information -->
+            <xpath expr="//page[@name='work_information']//field[@name='department_id']" position="before">
+                <field name="registration_number" string="Employee Code" placeholder="e.g. EMP001"/>
+            </xpath>
+
+            <!-- Position Employer Cost fields in Left Column (Contract Overview) right below wage -->
+            <xpath expr="//div[@name='wage']" position="after">
+                <label for="hds_in_employer_cost_monthly" string="Employer Cost (Monthly)"/>
+                <div class="o_row" name="employer_cost_monthly_row">
+                    <field name="hds_in_employer_cost_monthly" class="oe_inline o_hr_narrow_field" widget="monetary" readonly="1" nolabel="1"/>
+                    <span class="text-muted ms-2">/ month</span>
+                </div>
+                <label for="hds_in_employer_cost_annual" string="Employer Cost (Annual CTC)"/>
+                <div class="o_row" name="employer_cost_row">
+                    <field name="hds_in_employer_cost_annual" class="oe_inline o_hr_narrow_field" widget="monetary" readonly="1" nolabel="1"/>
+                    <span class="text-muted ms-2">/ year</span>
+                </div>
+            </xpath>
+
+            <!-- Left Column: Place Schedule, Provident Fund, and Professional Tax inside Left Column (group contract) -->
+            <xpath expr="//group[@name='contract']" position="inside">
+                <div colspan="2" class="col-lg-6 w-100 mt-4 mb-3 o_horizontal_separator text-uppercase fw-bolder small d-flex">
+                    <span>Schedule</span>
+                </div>
+                <field name="resource_calendar_id" help="The default working hours are set in configuration." context="{'employee_id': id}"/>
+
+                <separator string="Provident Fund" class="mt-4 mb-2" invisible="not hds_in_enable_epf"/>
+                <field name="hds_in_epf_applicable" string="EPF Applicable" invisible="not hds_in_enable_epf"/>
+                <field name="hds_in_is_international_worker" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+
+                <!-- Employee Contribution Subdivision -->
+                <separator string="Employee Contribution" class="mt-3 mb-2" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+                <field name="hds_in_pf_contribution_basis" string="Contribution Basis" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+                <field name="hds_in_pf_wage_is_below_ceiling" invisible="1"/>
+                <div class="text-info small mt-1 mb-2" invisible="not hds_in_enable_epf or not hds_in_epf_applicable or not hds_in_pf_wage_is_below_ceiling or hds_in_pf_contribution_basis != 'statutory_ceiling'">
+                    <i class="fa fa-info-circle me-1"/>
+                    <field name="hds_in_pf_wage_info_note" readonly="1" class="d-inline"/>
+                </div>
+
+                <!-- Employer Contribution Subdivision -->
+                <separator string="Employer Contribution" class="mt-3 mb-2" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+                <field name="hds_in_pf_employer_basis" string="Contribution Basis" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+                <field name="hds_in_eps_applicable" string="EPS Applicable" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+
+                <separator string="Professional Tax (PT)" class="mt-4 mb-2" invisible="not hds_in_enable_professional_tax"/>
+                <field name="hds_in_pt_applicable" string="PT Applicable" invisible="not hds_in_enable_professional_tax"/>
+
+                <!-- Employer NPS Contribution (Section 124) directly below Professional Tax (PT) -->
+                <separator string="Employer NPS Contribution (Section 124)" class="mt-4 mb-2" invisible="not hds_in_enable_tds or not hds_in_tds_applicable"/>
+                <field name="hds_in_decl_80ccd2_employer_nps" string="Employer NPS Contribution — Section 124 (₹)" invisible="not hds_in_enable_tds or not hds_in_tds_applicable"/>
+            </xpath>
+
+            <!-- Remove separate schedule group to eliminate grid-row height lock and unwanted white spaces -->
+            <xpath expr="//group[@name='schedule']" position="replace"/>
+
+            <!-- Right Column: Salary Components and Benefits stacked in 2nd column matching Screenshot 5 -->
+            <xpath expr="//group[@name='contract']" position="after">
+                <group name="salary_components_and_benefits">
+                    <div colspan="2" class="col-lg-6 w-100 mt-4 mb-3 o_horizontal_separator text-uppercase fw-bolder small d-flex">
+                        <span>Salary Components</span>
+                    </div>
+
+                    <label for="basic_salary"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="basic_salary" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="basic_salary_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="da" string="Dearness Allowance"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="da" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="da_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="hra" string="House Rent Allowance"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="hra" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="hra_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="standard_allowance"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="standard_allowance" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="standard_allowance_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="performance_bonus"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="performance_bonus" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="performance_bonus_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="retention_bonus"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="retention_bonus" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="retention_bonus_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="lta_allowance"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="lta_allowance" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="lta_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="fixed_allowance"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="fixed_allowance" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1" style="max-width: 120px;"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="ms-auto text-muted text-nowrap text-end pe-2" style="min-width: 4.5rem;"><field name="fixed_allowance_percent" readonly="1"/> %</span>
+                    </div>
+
+                    <label for="breakdown_total" string="Total Breakdown"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="breakdown_total" class="oe_inline o_hr_narrow_field fw-bold" widget="monetary" nolabel="1" style="max-width: 120px;" readonly="1"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                    </div>
+
+                    <label for="breakdown_diff" string="Difference"/>
+                    <div class="o_row w-100 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <field name="breakdown_diff" class="oe_inline o_hr_narrow_field fw-bold" widget="monetary" decoration-danger="breakdown_diff != 0" decoration-success="breakdown_diff == 0" nolabel="1" style="max-width: 120px;" readonly="1"/>
+                            <span class="text-muted ms-2 text-nowrap">/ month</span>
+                        </div>
+                        <span class="badge rounded-pill text-bg-danger ms-auto" invisible="breakdown_is_equal">Mismatch</span>
+                        <span class="badge rounded-pill text-bg-success ms-auto" invisible="not breakdown_is_equal">Balanced</span>
+                    </div>
+                    <field name="breakdown_is_equal" invisible="1"/>
+
+                    <div colspan="2" class="col-lg-6 w-100 mt-4 mb-3 o_horizontal_separator text-uppercase fw-bolder small d-flex">
+                        <span>Benefits</span>
+                    </div>
+                    <label for="benefit_phone" string="Phone Subscription"/>
+                    <div class="o_row" name="benefit_phone_row">
+                        <field name="benefit_phone" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1"/>
+                        <span class="text-muted ms-2">/ month</span>
+                    </div>
+                    <label for="benefit_internet" string="Internet Subscription"/>
+                    <div class="o_row" name="benefit_internet_row">
+                        <field name="benefit_internet" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1"/>
+                        <span class="text-muted ms-2">/ month</span>
+                    </div>
+                    <label for="benefit_meal_vouchers" string="Meal Vouchers"/>
+                    <div class="o_row" name="benefit_meal_vouchers_row">
+                        <field name="benefit_meal_vouchers" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1"/>
+                        <span class="text-muted ms-2">/ month</span>
+                    </div>
+                    <label for="benefit_transport" string="Company Transport"/>
+                    <div class="o_row" name="benefit_transport_row">
+                        <field name="benefit_transport" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1"/>
+                        <span class="text-muted ms-2">/ month</span>
+                    </div>
+
+                    <div colspan="2" class="col-lg-6 w-100 mt-4 mb-3 o_horizontal_separator text-uppercase fw-bolder small d-flex">
+                        <span>Insurance Benefits</span>
+                    </div>
+                    <label for="benefit_medical_insurance_per_person" string="Medical Insurance" help="Monthly medical insurance premium rate per person."/>
+                    <div class="o_row" name="benefit_medical_insurance_per_person_row">
+                        <field name="benefit_medical_insurance_per_person" class="oe_inline o_hr_narrow_field" widget="monetary" nolabel="1"/>
+                        <span class="text-muted ms-2">/ person</span>
+                    </div>
+                    <field name="benefit_insured_spouse" string="Insured Spouse" invisible="not benefit_medical_insurance_per_person or benefit_medical_insurance_per_person &lt;= 0"/>
+                    <field name="benefit_insured_first_child" string="Insured First-Child" invisible="not benefit_medical_insurance_per_person or benefit_medical_insurance_per_person &lt;= 0"/>
+                    <field name="benefit_insured_second_child" string="Insured Second-Child" invisible="not benefit_medical_insurance_per_person or benefit_medical_insurance_per_person &lt;= 0"/>
+                    <label for="benefit_medical_insurance_amount" string="Medical Insurance Amount" invisible="not benefit_medical_insurance_per_person or benefit_medical_insurance_per_person &lt;= 0"/>
+                    <div class="o_row" name="benefit_medical_insurance_amount_row" invisible="not benefit_medical_insurance_per_person or benefit_medical_insurance_per_person &lt;= 0">
+                        <field name="benefit_medical_insurance_amount" class="oe_inline o_hr_narrow_field fw-bold" widget="monetary" readonly="1" nolabel="1"/>
+                    </div>
+
+                    <label for="benefit_employer_cost_monthly" string="Employer Benefit Cost (Monthly)"/>
+                    <div class="o_row" name="benefit_employer_cost_monthly_row">
+                        <field name="benefit_employer_cost_monthly" class="oe_inline o_hr_narrow_field fw-bold" widget="monetary" readonly="1" nolabel="1"/>
+                        <span class="text-muted ms-2">/ month</span>
+                    </div>
+                    <label for="benefit_employer_cost_yearly" string="Employer Benefit Cost (Yearly)"/>
+                    <div class="o_row" name="benefit_employer_cost_yearly_row">
+                        <field name="benefit_employer_cost_yearly" class="oe_inline o_hr_narrow_field fw-bold" widget="monetary" readonly="1" nolabel="1"/>
+                        <span class="text-muted ms-2">/ year</span>
+                    </div>
+
+                    <!-- ESIC Module with clean separator and standard checkbox directly under Benefits -->
+                    <separator string="Employees' State Insurance (ESIC)" class="mt-4 mb-2" invisible="not hds_in_enable_esic"/>
+                    <field name="hds_in_esic_applicable" string="ESIC Applicable" invisible="not hds_in_enable_esic"/>
+                    <field name="hds_in_esic_contribution_period" string="Contribution Period" readonly="1" invisible="not hds_in_enable_esic or not hds_in_esic_applicable"/>
+                    <field name="hds_in_esic_ip_status" widget="badge"
+                           invisible="not hds_in_enable_esic or not hds_in_esic_applicable"
+                           decoration-success="hds_in_esic_ip_status == 'active'"
+                           decoration-warning="hds_in_esic_ip_status == 'exempt'"
+                           decoration-danger="hds_in_esic_ip_status == 'resigned'"
+                           decoration-muted="hds_in_esic_ip_status == 'disabled'"/>
+
+                    <!-- Labour Welfare Fund (LWF) directly below ESIC -->
+                    <separator string="Labour Welfare Fund (LWF)" class="mt-4 mb-2" invisible="not hds_in_enable_lwf"/>
+                    <field name="hds_in_lwf_applicable" string="LWF Applicable" invisible="not hds_in_enable_lwf"/>
+
+                    <!-- Tax Deducted at Source (TDS) directly below LWF -->
+                    <separator string="Tax Deducted at Source (TDS)" class="mt-4 mb-2" invisible="not hds_in_enable_tds"/>
+                    <field name="hds_in_tds_applicable" string="Enable TDS" invisible="not hds_in_enable_tds"/>
+                    <field name="hds_in_tds_month_division" string="TDS Month Division" readonly="1" invisible="not hds_in_enable_tds or not hds_in_tds_applicable or not hds_in_tds_month_division"/>
+                    <field name="hds_in_is_agnipath" string="Employee under Agnipath Scheme" invisible="not hds_in_enable_tds or not hds_in_tds_applicable"/>
+                </group>
+            </xpath>
+
+            <!-- Aadhaar under Citizenship in Personal Information Tab -->
+            <xpath expr="//group[@name='citizenship']" position="inside">
+                <field name="hds_in_aadhaar" string="Aadhaar Number" placeholder="e.g. 123456789012"/>
+            </xpath>
+
+            <!-- Statutory Information (PAN, UAN, PF Account Number, LWF Account Number, ESIC Number) matching Screenshot 2 -->
+            <xpath expr="//page[@name='personal_information']/group" position="inside">
+                <group string="Statutory Information" name="group_statutory_information">
+                    <field name="hds_in_pan" string="PAN" placeholder="e.g. ABCDE1234F"/>
+                    <field name="hds_in_uan" string="UAN" placeholder="12 digit Universal Account Number" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+                    <field name="hds_in_pf_member_id" string="PF Account Number" placeholder="22 character PF A/c Number" invisible="not hds_in_enable_epf or not hds_in_epf_applicable"/>
+                    <field name="hds_in_lwf_number" string="LWF Account Number" placeholder="Labour Welfare Fund Account Number" invisible="not hds_in_enable_lwf or not hds_in_lwf_applicable"/>
+                    <field name="hds_in_esic_ip_number" string="ESIC Number" placeholder="e.g. 1234567890" invisible="not hds_in_enable_esic or not hds_in_esic_applicable"/>
+                </group>
+                <group string="Disability &amp; Special Status" name="group_disability_status">
+                    <field name="hds_in_is_pwd"/>
+                </group>
+            </xpath>
+
+            <!-- ======================================================= -->
+            <!-- 3. INDIAN INCOME TAX (TDS) PROFILE NOTEBOOK PAGE       -->
+            <!-- ======================================================= -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Income Tax (TDS)" name="income_tax_tds_profile" invisible="not hds_in_enable_tds or not hds_in_tds_applicable">
+
+                    <!-- Section 2: Active Tax Year Configuration & Summary Figures -->
+                    <separator string="Section 2: Active Tax Year Configuration &amp; Summary Figures"/>
+                    <group>
+                        <group string="Tax Period &amp; Regime">
+                            <field name="hds_in_is_new_tax_regime" invisible="1"/>
+                            <field name="hds_in_can_choose_regime" invisible="1"/>
+                            <field name="hds_in_company_tax_regime" invisible="1"/>
+                            <field name="hds_in_current_fy_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="hds_in_current_tax_regime_id" widget="radio" options="{'horizontal': true}" readonly="not hds_in_can_choose_regime"/>
+                            <div class="alert alert-info py-1 px-2 mt-1 mb-0 small" invisible="hds_in_can_choose_regime or hds_in_company_tax_regime != 'new'">
+                                <i class="fa fa-lock me-1"/><strong>Company Policy:</strong> Mandated New Tax Regime Income-tax Act, 2025 — Section 202(1). Individual selection locked.
+                            </div>
+                            <div class="alert alert-warning py-1 px-2 mt-1 mb-0 small" invisible="hds_in_can_choose_regime or hds_in_company_tax_regime != 'old'">
+                                <i class="fa fa-lock me-1"/><strong>Company Policy:</strong> Mandated Old Tax Regime. Individual selection locked.
+                            </div>
+                        </group>
+                        <group string="Tax Deductions &amp; Liability Summary">
+                            <field name="hds_in_decl_total_declared" widget="monetary"/>
+                            <field name="hds_in_decl_80ccd2_employer_nps" string="Employer NPS Contribution (Section 124)" widget="monetary" readonly="1"/>
+                            <field name="hds_in_decl_total_approved" widget="monetary"/>
+                            <field name="hds_in_decl_net_estimated_tax" widget="monetary" class="fw-bold text-danger"/>
+                        </group>
+                    </group>
+
+                    <!-- 1-Click Complete Declaration & Approval Action Banner -->
+                    <div class="d-flex justify-content-between align-items-center p-3 mt-3 mb-4 bg-light rounded border shadow-sm">
+                        <div>
+                            <h5 class="mb-1 text-primary fw-bold">
+                                <i class="fa fa-calculator me-2"/>Complete Tax Declaration &amp; Statutory Approval
+                            </h5>
+                            <p class="text-muted mb-0 small">
+                                Manage investment declaration proofs, Chapter VI-A line items, tax declarations, and statutory tax calculation reports.
+                            </p>
+                        </div>
+                        <button name="action_open_tax_declaration_dashboard"
+                                type="object"
+                                class="btn btn-primary btn-lg shadow-sm"
+                                icon="arrow_forward"
+                                string="Manage &amp; Approve Full Tax Declaration"/>
+                    </div>
+                    <!-- Previous Employer LTA History (Section 10(5) — Old Regime Only) -->
+                    <div class="card mb-3 border-0 shadow-sm rounded-3" invisible="hds_in_is_new_tax_regime">
+                        <div class="card-header py-2 px-3 d-flex justify-content-between align-items-center border-bottom" style="background: rgba(125, 125, 125, 0.08);">
+                            <div class="fw-bold d-flex align-items-center gap-2" style="font-size: 14px;">
+                                <i class="fa fa-plane text-info fs-5"/>
+                                <span>Previous Employer LTA History (Section 10(5) — Old Regime Only)</span>
+                            </div>
+                            <span class="badge rounded-pill shadow-sm" style="background-color: #d97706; color: #ffffff; font-weight: 600; font-size: 11px; padding: 5px 12px; letter-spacing: 0.3px;">Old Regime Only</span>
+                        </div>
+                        <div class="card-body p-3">
+                            <p class="text-muted small mb-2">
+                                Verify previous employer LTA claims and carry-forward entitlement for the current 4-year statutory block under Section 10(5).
+                            </p>
+                            <field name="previous_lta_history_ids" nolabel="1">
+                                <list decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                                    <field name="previous_employer_name"/>
+                                    <field name="employment_from" optional="show"/>
+                                    <field name="employment_to" optional="show"/>
+                                    <field name="previous_block_period" optional="show"/>
+                                    <field name="previous_lta_claims_used" optional="show"/>
+                                    <field name="carry_forward_requested" optional="show"/>
+                                    <field name="carry_forward_eligible" widget="badge" decoration-success="carry_forward_eligible == 'eligible'" decoration-danger="carry_forward_eligible == 'ineligible'" decoration-warning="carry_forward_eligible == 'pending'" optional="show"/>
+                                    <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                    <field name="verified_by" optional="hide"/>
+                                    <field name="verified_on" optional="hide"/>
+                                </list>
+                            </field>
+                        </div>
+                    </div>
+
+
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Position Residential Status between Nationality and Non-resident checkbox -->
+    <record id="hds_in_view_employee_form_citizenship_residence" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.citizenship.residence</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hudson_employee_info.view_employee_form_inherit_hudson_employee_info"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_non_resident']" position="before">
+                <field name="hds_in_residential_status" string="Residential Status"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Employee Tree View: Show Employee Code -->
+    <record id="hds_in_view_employee_tree" model="ir.ui.view">
+        <field name="name">hr.employee.tree.inherit.hds.code</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="registration_number" string="Employee Code" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Employee Search View: Search by Employee Code -->
+    <record id="hds_in_view_employee_filter" model="ir.ui.view">
+        <field name="name">hr.employee.search.inherit.hds.code</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="registration_number" string="Employee Code"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Contract dates of employees (Payroll dashboard: Employees Without Running Contract cards) -->
+    <record id="view_hr_employee_list_contract_status" model="ir.ui.view">
+        <field name="name">hr.employee.list.contract.status</field>
+        <field name="model">hr.employee</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Employees" create="false">
+                <field name="name"/>
+                <field name="registration_number" string="Employee Code" optional="show"/>
+                <field name="department_id" optional="show"/>
+                <field name="job_id" optional="show"/>
+                <field name="structure_type_id" optional="hide"/>
+                <field name="first_contract_date" optional="show"/>
+                <field name="contract_date_start"/>
+                <field name="contract_date_end"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+</odoo>

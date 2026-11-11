@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    ============================================================
+    PROFIT AND LOSS RESTRUCTURE (Standard Odoo Online Format)
+    ============================================================
+    Report: Profit and Loss (root, type=sum, sign=-1)
+      ├── 1. Revenue (sequence 10, type=account_type: income, sign=-1)
+      ├── 2. Costs of Revenue (sequence 20, type=account_type: direct_costs, sign=1)
+      │      >> Gross Profit Summary Bar (computed: Revenue - Costs of Revenue)
+      ├── 3. Operating Expenses (sequence 30, type=account_type: expenses+depreciation, sign=1)
+      │      >> Operating Income (or Loss) Summary Bar (computed: Gross Profit - Operating Expenses)
+      ├── 4. Other Income (sequence 40, type=account_type: income_other, sign=-1)
+      ├── 5. Other Expenses (sequence 50, type=account_type, sign=1)
+      │      >> Net Profit Summary Bar (computed: Operating Income + Other Income - Other Expenses)
+      └── 6. Allocations and Withdrawals (sequence 60, type=account_type, sign=1)
+             >> Net Profit Left After Allocations and Withdrawals Summary Bar
+    ============================================================
+    -->
+
+    <!-- STEP 1: Update P&L root name and type -->
+    <record id="accounting_pdf_reports.account_financial_report_profitandloss0" model="account.financial.report">
+        <field name="name">Profit and Loss</field>
+        <field name="sign">-1</field>
+        <field name="type">sum</field>
+        <field name="style_overwrite">1</field>
+    </record>
+
+    <!-- STEP 2: Section 1 - Revenue -->
+    <record id="accounting_pdf_reports.account_financial_report_income0" model="account.financial.report">
+        <field name="name">Revenue</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_profitandloss0"/>
+        <field name="type">account_type</field>
+        <field name="sign">-1</field>
+        <field name="sequence">10</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (5, 0, 0),
+            (4, ref('accounting_pdf_reports.data_account_type_revenue'))
+        ]"/>
+    </record>
+
+    <!-- STEP 3: Section 2 - Costs of Revenue -->
+    <record id="accounting_pdf_reports.account_financial_report_expense0" model="account.financial.report">
+        <field name="name">Costs of Revenue</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_profitandloss0"/>
+        <field name="type">account_type</field>
+        <field name="sign">1</field>
+        <field name="sequence">20</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (5, 0, 0),
+            (4, ref('accounting_pdf_reports.data_account_type_direct_costs'))
+        ]"/>
+    </record>
+
+    <!-- STEP 4: Section 3 - Operating Expenses -->
+    <record id="account_financial_report_operating_expenses" model="account.financial.report">
+        <field name="name">Operating Expenses</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_profitandloss0"/>
+        <field name="type">account_type</field>
+        <field name="sign">1</field>
+        <field name="sequence">30</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (5, 0, 0),
+            (4, ref('accounting_pdf_reports.data_account_type_expenses')),
+            (4, ref('accounting_pdf_reports.data_account_type_depreciation'))
+        ]"/>
+    </record>
+
+    <!-- STEP 5: Section 4 - Other Income -->
+    <record id="account_financial_report_other_income" model="account.financial.report">
+        <field name="name">Other Income</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_profitandloss0"/>
+        <field name="type">account_type</field>
+        <field name="sign">-1</field>
+        <field name="sequence">40</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (5, 0, 0),
+            (4, ref('accounting_pdf_reports.data_account_type_other_income'))
+        ]"/>
+    </record>
+
+    <!-- STEP 6: Section 5 - Other Expenses -->
+    <record id="account_financial_report_other_expenses" model="account.financial.report">
+        <field name="name">Other Expenses</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_profitandloss0"/>
+        <field name="type">account_type</field>
+        <field name="sign">1</field>
+        <field name="sequence">50</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[(5, 0, 0)]"/>
+    </record>
+
+    <!-- STEP 7: Section 6 - Allocations and Withdrawals -->
+    <record id="account_financial_report_allocations_withdrawals" model="account.financial.report">
+        <field name="name">Allocations and Withdrawals</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_profitandloss0"/>
+        <field name="type">account_type</field>
+        <field name="sign">1</field>
+        <field name="sequence">60</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[(5, 0, 0)]"/>
+    </record>
+
+
+    <!--
+    ============================================================
+    BALANCE SHEET RESTRUCTURE
+    ============================================================
+    New hierarchy:
+      Balance Sheet (root, type=sum)
+      ├── Assets (type=sum)
+      │   ├── Current Assets (type=account_type: receivable, cash, current, prepayments)
+      │   └── Non-Current Assets (type=account_type: non_current, fixed)
+      ├── Liabilities (type=sum)
+      │   ├── Current Liabilities (type=account_type: payable, credit_card, current_liabilities)
+      │   └── Non-Current Liabilities (type=account_type: non_current_liabilities)
+      └── Equity (type=sum)
+          ├── Share Capital & Reserves (type=account_type: equity)
+          ├── Retained Earnings (type=account_type: equity_unaffected)
+          └── Current Year Profit/(Loss) (type=account_report → P&L)
+
+    Sign logic for BS:
+      Assets: debit-normal → raw balance positive → sign=1 (shown as positive) ✓
+      Liabilities: credit-normal → raw balance negative → sign=-1 (flips to positive) ✓
+      Equity: credit-normal → raw balance negative → sign=-1 (flips to positive) ✓
+      BS total: Assets.raw + Liabilities.raw + Equity.raw ≈ 0 (balanced) ✓
+    ============================================================
+    -->
+
+    <!-- STEP 5: Create new sub-sections for Assets -->
+    <record id="account_financial_report_current_assets" model="account.financial.report">
+        <field name="name">Current Assets</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_assets0"/>
+        <field name="type">account_type</field>
+        <field name="sign">1</field>
+        <field name="sequence">10</field>
+        <field name="style_overwrite">2</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (4, ref('accounting_pdf_reports.data_account_type_receivable')),
+            (4, ref('accounting_pdf_reports.data_account_type_liquidity')),
+            (4, ref('accounting_pdf_reports.data_account_type_current_assets')),
+            (4, ref('accounting_pdf_reports.data_account_type_prepayments'))
+        ]"/>
+    </record>
+
+    <record id="account_financial_report_noncurrent_assets" model="account.financial.report">
+        <field name="name">Non-Current Assets</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_assets0"/>
+        <field name="type">account_type</field>
+        <field name="sign">1</field>
+        <field name="sequence">20</field>
+        <field name="style_overwrite">2</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (4, ref('accounting_pdf_reports.data_account_type_non_current_assets')),
+            (4, ref('accounting_pdf_reports.data_account_type_fixed_assets'))
+        ]"/>
+    </record>
+
+    <!-- STEP 6: Update existing Assets root to be a summary (type=sum, no direct account_types) -->
+    <record id="accounting_pdf_reports.account_financial_report_assets0" model="account.financial.report">
+        <field name="name">Assets</field>
+        <field name="type">sum</field>
+        <field name="sign">1</field>
+        <field name="sequence">10</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[(5, 0, 0)]"/>
+    </record>
+
+    <!-- STEP 7: Create Liabilities sub-sections -->
+    <record id="account_financial_report_current_liabilities" model="account.financial.report">
+        <field name="name">Current Liabilities</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_liabilitysum0"/>
+        <field name="type">account_type</field>
+        <field name="sign">-1</field>
+        <field name="sequence">10</field>
+        <field name="style_overwrite">2</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (4, ref('accounting_pdf_reports.data_account_type_payable')),
+            (4, ref('accounting_pdf_reports.data_account_type_credit_card')),
+            (4, ref('accounting_pdf_reports.data_account_type_current_liabilities'))
+        ]"/>
+    </record>
+
+    <record id="account_financial_report_noncurrent_liabilities" model="account.financial.report">
+        <field name="name">Non-Current Liabilities</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_liabilitysum0"/>
+        <field name="type">account_type</field>
+        <field name="sign">-1</field>
+        <field name="sequence">20</field>
+        <field name="style_overwrite">2</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (4, ref('accounting_pdf_reports.data_account_type_non_current_liabilities'))
+        ]"/>
+    </record>
+
+    <!-- STEP 8: Update Liability sum to be just Liabilities (remove equity from it) -->
+    <record id="accounting_pdf_reports.account_financial_report_liabilitysum0" model="account.financial.report">
+        <field name="name">Liabilities</field>
+        <field name="type">sum</field>
+        <field name="sign">-1</field>
+        <field name="sequence">20</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+    </record>
+
+    <!-- STEP 9: The old liability0 (which had equity+liabilities mixed) → ORPHAN it.
+         Set parent_id=False so it is removed from the BS tree entirely.
+         Its accounts are now covered by current_liabilities and noncurrent_liabilities above.
+         Account_type_ids cleared so balance = 0 even if it somehow appears. -->
+    <record id="accounting_pdf_reports.account_financial_report_liability0" model="account.financial.report">
+        <field name="name">_legacy_combined_liability_unused</field>
+        <field name="parent_id" eval="False"/>
+        <field name="account_type_ids" eval="[(5, 0, 0)]"/>
+    </record>
+
+    <!-- STEP 10: Create separate Equity section -->
+    <record id="account_financial_report_equity_section" model="account.financial.report">
+        <field name="name">Equity</field>
+        <field name="parent_id" ref="accounting_pdf_reports.account_financial_report_balancesheet0"/>
+        <field name="type">sum</field>
+        <field name="sign">-1</field>
+        <field name="sequence">30</field>
+        <field name="style_overwrite">1</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+    </record>
+
+    <record id="account_financial_report_share_capital" model="account.financial.report">
+        <field name="name">Share Capital &amp; Reserves</field>
+        <field name="parent_id" ref="account_financial_report_equity_section"/>
+        <field name="type">account_type</field>
+        <field name="sign">-1</field>
+        <field name="sequence">10</field>
+        <field name="style_overwrite">2</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (4, ref('accounting_pdf_reports.data_account_type_equity'))
+        ]"/>
+    </record>
+
+    <record id="account_financial_report_retained_earnings" model="account.financial.report">
+        <field name="name">Retained Earnings</field>
+        <field name="parent_id" ref="account_financial_report_equity_section"/>
+        <field name="type">account_type</field>
+        <field name="sign">-1</field>
+        <field name="sequence">20</field>
+        <field name="style_overwrite">2</field>
+        <field name="display_detail">detail_with_hierarchy</field>
+        <field name="account_type_ids" eval="[
+            (4, ref('accounting_pdf_reports.data_unaffected_earnings'))
+        ]"/>
+    </record>
+
+    <!-- STEP 11: Move "Profit (Loss) to report" from liabilitysum to equity section -->
+    <record id="accounting_pdf_reports.account_financial_report_profitloss_toreport0" model="account.financial.report">
+        <field name="name">Current Year Profit / (Loss)</field>
+        <field name="parent_id" ref="account_financial_report_equity_section"/>
+        <field name="sequence">30</field>
+        <field name="style_overwrite">2</field>
+    </record>
+
+    <!-- STEP 12: Update Balance Sheet root label and sequence -->
+    <record id="accounting_pdf_reports.account_financial_report_balancesheet0" model="account.financial.report">
+        <field name="name">Balance Sheet</field>
+        <field name="style_overwrite">1</field>
+    </record>
+
+</odoo>

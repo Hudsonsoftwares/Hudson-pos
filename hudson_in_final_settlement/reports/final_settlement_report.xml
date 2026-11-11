@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- IR.ACTIONS.REPORT: FULL & FINAL SETTLEMENT STATEMENT                -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_report_final_settlement" model="ir.actions.report">
+        <field name="name">Full &amp; Final Settlement Statement</field>
+        <field name="model">final.settlement</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_final_settlement.report_final_settlement_document</field>
+        <field name="print_report_name">'Settlement_Statement_' + (object.name or '').replace('/', '_')</field>
+        <field name="binding_model_id" ref="model_final_settlement"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- QWEB TEMPLATE: FULL & FINAL SETTLEMENT STATEMENT DOCUMENT           -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_final_settlement_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="info" t-value="o._get_settlement_report_data()"/>
+                    <div class="page" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11px; color: #212529; line-height: 1.45;">
+
+                        <!-- Title Header -->
+                        <div class="text-center mb-3 pb-2" style="border-bottom: 2px solid #0f3460;">
+                            <h3 style="font-weight: 700; color: #0f3460; letter-spacing: 0.5px; margin-bottom: 2px; text-transform: uppercase;">
+                                Full &amp; Final Settlement Statement
+                            </h3>
+                            <div style="font-size: 11px; color: #6c757d;">
+                                Reference: <strong><span t-field="o.name"/></strong> |
+                                Settlement Date: <strong><span t-field="o.settlement_date"/></strong> |
+                                Status: <strong style="text-transform: uppercase;"><span t-field="o.state"/></strong>
+                            </div>
+                        </div>
+
+                        <!-- Employee & Exit Information Table -->
+                        <table class="table table-sm table-bordered mb-3" style="border-color: #dee2e6;">
+                            <thead style="background-color: #f1f4f9;">
+                                <tr>
+                                    <th colspan="2" style="color: #0f3460; font-weight: 600; width: 50%;">EMPLOYEE DETAILS</th>
+                                    <th colspan="2" style="color: #0f3460; font-weight: 600; width: 50%;">EXIT &amp; STATUTORY DETAILS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 20%; background-color: #fafbfc;"><strong>Employee Name:</strong></td>
+                                    <td style="width: 30%;"><span t-field="o.employee_id.name"/></td>
+                                    <td style="width: 20%; background-color: #fafbfc;"><strong>Last Working Day:</strong></td>
+                                    <td style="width: 30%;"><span t-field="o.last_working_day"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: #fafbfc;"><strong>Employee Code:</strong></td>
+                                    <td><span t-out="info['emp_code']"/></td>
+                                    <td style="background-color: #fafbfc;"><strong>Exit Reason:</strong></td>
+                                    <td><span t-out="info['exit_reason_label']"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: #fafbfc;"><strong>Designation:</strong></td>
+                                    <td><span t-field="o.job_id.name or o.employee_id.job_title"/></td>
+                                    <td style="background-color: #fafbfc;"><strong>Date of Joining:</strong></td>
+                                    <td><span t-out="info['doj']"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: #fafbfc;"><strong>Department:</strong></td>
+                                    <td><span t-field="o.department_id.name"/></td>
+                                    <td style="background-color: #fafbfc;"><strong>PAN / UAN:</strong></td>
+                                    <td>
+                                        PAN: <span t-out="info['pan']"/> | UAN: <span t-out="info['uan']"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: #fafbfc;"><strong>Bank &amp; Account:</strong></td>
+                                    <td>
+                                        <span t-out="info['bank_name']"/> (<span t-out="info['bank_no']"/>)
+                                    </td>
+                                    <td style="background-color: #fafbfc;"><strong>IFSC / PF Member ID:</strong></td>
+                                    <td>
+                                        IFSC: <span t-out="info['ifsc']"/> | PF: <span t-out="info['epf']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Settlement Breakdown Section -->
+                        <div class="row mb-3">
+                            <!-- Earnings Column -->
+                            <div class="col-6 pe-1">
+                                <div style="background-color: #e8f5e9; padding: 5px 8px; font-weight: 600; color: #2e7d32; border: 1px solid #c8e6c9; border-bottom: none;">
+                                    EARNINGS / ADDITIONS
+                                </div>
+                                <table class="table table-sm table-bordered mb-0" style="font-size: 10.5px; border-color: #dee2e6;">
+                                    <thead style="background-color: #f9fbf9;">
+                                        <tr>
+                                            <th>Component</th>
+                                            <th>Description</th>
+                                            <th class="text-end" style="width: 25%;">Amount (<span t-field="o.currency_id.symbol"/>)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="earnings" t-value="o.line_ids.filtered(lambda l: l.line_type == 'earning')"/>
+                                        <t t-if="earnings">
+                                            <t t-foreach="earnings" t-as="el">
+                                                <tr>
+                                                    <td><strong><span t-field="el.component_name"/></strong></td>
+                                                    <td style="font-size: 9.5px; color: #555;"><span t-field="el.description"/></td>
+                                                    <td class="text-end">
+                                                        <span t-field="el.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">No earning components</td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background-color: #e8f5e9; font-weight: bold;">
+                                            <td colspan="2">TOTAL GROSS EARNINGS (A):</td>
+                                            <td class="text-end">
+                                                <span t-field="o.total_earnings" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <!-- Deductions Column -->
+                            <div class="col-6 ps-1">
+                                <div style="background-color: #ffebee; padding: 5px 8px; font-weight: 600; color: #c62828; border: 1px solid #ffcdd2; border-bottom: none;">
+                                    DEDUCTIONS / RECOVERIES
+                                </div>
+                                <table class="table table-sm table-bordered mb-0" style="font-size: 10.5px; border-color: #dee2e6;">
+                                    <thead style="background-color: #fdf9f9;">
+                                        <tr>
+                                            <th>Component</th>
+                                            <th>Description</th>
+                                            <th class="text-end" style="width: 25%;">Amount (<span t-field="o.currency_id.symbol"/>)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="deductions" t-value="o.line_ids.filtered(lambda l: l.line_type == 'deduction')"/>
+                                        <t t-if="deductions">
+                                            <t t-foreach="deductions" t-as="dl">
+                                                <tr>
+                                                    <td><strong><span t-field="dl.component_name"/></strong></td>
+                                                    <td style="font-size: 9.5px; color: #555;"><span t-field="dl.description"/></td>
+                                                    <td class="text-end">
+                                                        <span t-field="dl.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">No deduction components</td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background-color: #ffebee; font-weight: bold;">
+                                            <td colspan="2">TOTAL DEDUCTIONS (B):</td>
+                                            <td class="text-end">
+                                                <span t-field="o.total_deductions" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Net Settlement Payable Highlight Card -->
+                        <div class="p-3 mb-3" style="background-color: #f0f4f8; border: 1.5px solid #0f3460; border-radius: 4px;">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <div style="font-size: 13px; font-weight: 700; color: #0f3460; text-transform: uppercase;">
+                                        Net Settlement Payable (A - B)
+                                    </div>
+                                    <t t-if="info['amount_in_words']">
+                                        <div style="font-size: 10px; color: #333; margin-top: 3px;">
+                                            <strong>Amount in Words:</strong> <span t-out="info['amount_in_words']"/>
+                                        </div>
+                                    </t>
+                                    <t t-if="o.exit_leave_encash_days">
+                                        <div style="font-size: 9.5px; color: #555; margin-top: 2px;">
+                                            * Exit leave encashment includes <strong><t t-out="'%.2f' % o.exit_leave_encash_days"/></strong> eligible leave days.
+                                            <t t-if="o.exit_reason == 'retirement' and o.leave_encash_exemption_amount">
+                                                (Section 10(10AA) Exemption: <span t-field="o.leave_encash_exemption_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>, Taxable: <span t-field="o.leave_encash_taxable_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>)
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <span style="font-size: 18px; font-weight: bold; color: #0f3460;">
+                                        <span t-field="o.net_settlement_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes & Remarks (if any) -->
+                        <t t-if="o.notes">
+                            <div class="mb-3 p-2" style="background-color: #fafbfc; border: 1px solid #e9ecef; border-radius: 3px; font-size: 10px;">
+                                <strong>Notes / Remarks:</strong> <span t-field="o.notes"/>
+                            </div>
+                        </t>
+
+                        <!-- Employee Acknowledgment and Acceptance Text -->
+                        <div class="mb-4 p-2" style="font-size: 9.5px; color: #495057; border-left: 3px solid #0f3460; background-color: #f8f9fa;">
+                            <strong>EMPLOYEE ACKNOWLEDGMENT &amp; ACCEPTANCE:</strong><br/>
+                            I hereby confirm and declare that I have received and verified the above Full &amp; Final Settlement statement. I confirm that all calculations, encashments, and statutory contributions/deductions have been correctly accounted for. I acknowledge receipt / acceptance of the net settlement amount in full satisfaction of all my claims and dues from <strong><span t-field="o.company_id.name"/></strong>, and confirm that no further dues remain outstanding.
+                        </div>
+
+                        <!-- Signatures Block -->
+                        <div class="row pt-4 mt-2" style="page-break-inside: avoid;">
+                            <div class="col-4 text-center">
+                                <div style="border-top: 1px solid #333; padding-top: 5px; margin: 0 15px;">
+                                    <strong>Prepared By</strong><br/>
+                                    <span style="font-size: 9px; color: #666;">(HR &amp; Payroll Executive)</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div style="border-top: 1px solid #333; padding-top: 5px; margin: 0 15px;">
+                                    <strong>Verified &amp; Approved By</strong><br/>
+                                    <span style="font-size: 9px; color: #666;">(Finance / Authorized Signatory)</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div style="border-top: 1px solid #333; padding-top: 5px; margin: 0 15px;">
+                                    <strong>Employee Signature</strong><br/>
+                                    <span style="font-size: 9px; color: #666;">Date: ____________________</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

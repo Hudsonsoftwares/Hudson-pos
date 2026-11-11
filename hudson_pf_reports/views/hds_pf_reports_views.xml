@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Monthly PF Summary -->
+    <record id="hds_pf_monthly_summary_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.monthly.summary.wizard.view.form</field>
+        <field name="model">hds.pf.monthly.summary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Monthly PF Summary Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Year &amp; Scope">
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Report File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_monthly_summary_wizard" model="ir.actions.act_window">
+        <field name="name">Monthly PF Summary</field>
+        <field name="res_model">hds.pf.monthly.summary.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+    <!-- PF Contribution Wizard -->
+    <record id="hds_pf_contribution_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.contribution.wizard.view.form</field>
+        <field name="model">hds.pf.contribution.wizard</field>
+        <field name="arch" type="xml">
+            <form string="PF Contribution Report Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Period &amp; Type">
+                            <field name="report_type" required="1"/>
+                            <field name="month" required="1"/>
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Report File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_employee_contribution" model="ir.actions.act_window">
+        <field name="name">Employee PF Contribution Report</field>
+        <field name="res_model">hds.pf.contribution.wizard</field>
+        <field name="view_mode">form,list</field>
+        <field name="context">{'default_report_type': 'employee'}</field>
+    </record>
+
+    <record id="action_hds_pf_employer_contribution" model="ir.actions.act_window">
+        <field name="name">Employer Contribution Report</field>
+        <field name="res_model">hds.pf.contribution.wizard</field>
+        <field name="view_mode">form,list</field>
+        <field name="context">{'default_report_type': 'employer'}</field>
+    </record>
+
+    <!-- Employee PF Ledger Wizard -->
+    <record id="hds_pf_ledger_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.ledger.wizard.view.form</field>
+        <field name="model">hds.pf.ledger.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Employee PF Ledger Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Year Range">
+                            <field name="employee_id" required="1"/>
+                            <field name="year_from" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="year_to" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Ledger File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_ledger_wizard" model="ir.actions.act_window">
+        <field name="name">Employee PF Ledger</field>
+        <field name="res_model">hds.pf.ledger.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+    <!-- Contribution Basis Wizard -->
+    <record id="hds_pf_basis_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.basis.wizard.view.form</field>
+        <field name="model">hds.pf.basis.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Contribution Basis Report Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Period &amp; Scope">
+                            <field name="month" required="1"/>
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Report File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_basis_wizard" model="ir.actions.act_window">
+        <field name="name">Contribution Basis Report</field>
+        <field name="res_model">hds.pf.basis.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+    <!-- Ceiling Exception Wizard -->
+    <record id="hds_pf_ceiling_exception_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.ceiling.exception.wizard.view.form</field>
+        <field name="model">hds.pf.ceiling.exception.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Wage Ceiling Exception Report Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Period &amp; Scope">
+                            <field name="month" required="1"/>
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Results" invisible="state == 'draft'">
+                            <field name="exception_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Generated Report File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_ceiling_exception_wizard" model="ir.actions.act_window">
+        <field name="name">Wage Ceiling Exception Report</field>
+        <field name="res_model">hds.pf.ceiling.exception.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+    <!-- PF Variance Wizard -->
+    <record id="hds_pf_variance_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.variance.wizard.view.form</field>
+        <field name="model">hds.pf.variance.wizard</field>
+        <field name="arch" type="xml">
+            <form string="PF Variance Report Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Baseline Period 1">
+                            <field name="from_month" required="1"/>
+                            <field name="from_year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                        </group>
+                        <group string="Comparison Period 2">
+                            <field name="to_month" required="1"/>
+                            <field name="to_year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Variance File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_variance_wizard" model="ir.actions.act_window">
+        <field name="name">PF Variance Report</field>
+        <field name="res_model">hds.pf.variance.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+    <!-- New Joiners & Resigned Wizard -->
+    <record id="hds_pf_joiners_resigned_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.joiners.resigned.wizard.view.form</field>
+        <field name="model">hds.pf.joiners.resigned.wizard</field>
+        <field name="arch" type="xml">
+            <form string="New Joiners &amp; Resigned PF Report Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Report Type &amp; Scope">
+                            <field name="report_type" required="1"/>
+                            <field name="month" required="1"/>
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Report File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_new_joiners" model="ir.actions.act_window">
+        <field name="name">New Joiners PF Report</field>
+        <field name="res_model">hds.pf.joiners.resigned.wizard</field>
+        <field name="view_mode">form,list</field>
+        <field name="context">{'default_report_type': 'joiners'}</field>
+    </record>
+
+    <record id="action_hds_pf_resigned" model="ir.actions.act_window">
+        <field name="name">Resigned Employees PF Report</field>
+        <field name="res_model">hds.pf.joiners.resigned.wizard</field>
+        <field name="view_mode">form,list</field>
+        <field name="context">{'default_report_type': 'resigned'}</field>
+    </record>
+
+    <!-- HR Snapshot Report View Action
+    <record id="hds_hr_snapshot_view_tree_pf_report" model="ir.ui.view">
+        <field name="name">hds.hr.snapshot.view.list.pf.report</field>
+        <field name="model">hds.hr.snapshot</field>
+        <field name="arch" type="xml">
+            <list string="HR Snapshot PF Report" create="false" edit="false" delete="false">
+                <field name="payroll_period"/>
+                <field name="employee_id"/>
+                <field name="basic_salary" optional="show"/>
+                <field name="snapshot_pf_wage" optional="show"/>
+                <field name="snapshot_employee_epf" optional="show"/>
+                <field name="snapshot_employer_epf" optional="show"/>
+                <field name="snapshot_employer_eps" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hds_hr_snapshot_report" model="ir.actions.act_window">
+        <field name="name">HR Snapshot Report</field>
+        <field name="res_model">hds.hr.snapshot</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="hds_hr_snapshot_view_tree_pf_report"/>
+        <field name="context">{'search_default_group_payroll_period': 1}</field>
+    </record>
+    -->
+
+    <!-- Reconciliation Wizard -->
+    <record id="hds_pf_reconciliation_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.reconciliation.wizard.view.form</field>
+        <field name="model">hds.pf.reconciliation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="PF Reconciliation Report Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Period &amp; Scope">
+                            <field name="month" required="1"/>
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Report File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_reconciliation_wizard" model="ir.actions.act_window">
+        <field name="name">PF Reconciliation Report</field>
+        <field name="res_model">hds.pf.reconciliation.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+    <!-- Salary Revision Impact Wizard -->
+    <record id="hds_pf_salary_revision_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.salary.revision.wizard.view.form</field>
+        <field name="model">hds.pf.salary.revision.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Salary Revision Impact Report Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Year &amp; Scope">
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Report File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_salary_revision_wizard" model="ir.actions.act_window">
+        <field name="name">Salary Revision Impact Report</field>
+        <field name="res_model">hds.pf.salary.revision.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+    <!-- UAN Register Wizard -->
+    <record id="hds_pf_uan_register_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pf.uan.register.wizard.view.form</field>
+        <field name="model">hds.pf.uan.register.wizard</field>
+        <field name="arch" type="xml">
+            <form string="UAN Register Wizard">
+                <header>
+                    <button name="action_export_xlsx" string="Export XLSX File" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Company Scope">
+                            <field name="company_id" groups="base.group_multi_company" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Generated Register File" invisible="state == 'draft'">
+                        <field name="xlsx_filename" invisible="1"/>
+                        <field name="xlsx_file" filename="xlsx_filename" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_pf_uan_register_wizard" model="ir.actions.act_window">
+        <field name="name">UAN Register</field>
+        <field name="res_model">hds.pf.uan.register.wizard</field>
+        <field name="view_mode">form,list</field>
+    </record>
+</odoo>

@@ -1,0 +1,41 @@
+.o_appointment_type_kanban {
+    .o_kanban_record {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    .appointment_premium_row {
+        background-color: $o-view-background-color;
+        border-radius: 8px;
+        border: 1px solid var(--border-color, #e5e7eb);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease-in-out;
+        
+        &:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: var(--border-color, #d1d5db);
+        }
+        
+        /* Increase Avatar Sizes */
+        .o_field_many2many_avatar_user .o_m2m_avatar {
+            width: 36px !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            font-size: 1rem !important;
+            margin-right: 6px !important;
+        }
+        
+        /* Increase Tag Sizes */
+        .o_field_many2many_tags .badge, 
+        .o_field_many2many_tags .o_tag {
+            font-size: 0.95rem !important;
+            padding: 8px 14px !important;
+            border-radius: 20px !important;
+        }
+    }
+}

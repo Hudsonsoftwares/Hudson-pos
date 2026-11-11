@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_inherit_hudson_employee_info" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit.hudson.employee.info</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <!-- 1. PERSONAL INFORMATION -->
+            <xpath expr="//field[@name='sex']" position="after">
+                <field name="payslip_lang_id" options="{'no_create': True}"/>
+            </xpath>
+
+            <!-- 2. CITIZENSHIP -->
+            <xpath expr="//field[@name='country_id']" position="after">
+                <field name="is_non_resident"/>
+            </xpath>
+
+            <!-- 3. VISA & WORK PERMIT -->
+            <xpath expr="//field[@name='permit_no']" position="after">
+                <field name="work_permit_expiry_date" string="Expires On"/>
+            </xpath>
+
+            <!-- 4. FAMILY -->
+            <xpath expr="//field[@name='spouse_complete_name']" position="after">
+                <field name="spouse_legal_name"/>
+                <field name="spouse_birthdate"/>
+            </xpath>
+            <xpath expr="//field[@name='children']" position="after">
+                <field name="child_residing_in_hostel"/>
+            </xpath>
+
+            <!-- 5. DOCUMENTS -->
+            <xpath expr="//group[@name='hr_document_group']" position="inside">
+                <field name="sim_card_copy_filename" invisible="1"/>
+                <field name="sim_card_copy" filename="sim_card_copy_filename" widget="binary" string="SIM Card Copy"/>
+                <field name="internet_subscription_invoice_filename" invisible="1"/>
+                <field name="internet_subscription_invoice" filename="internet_subscription_invoice_filename" widget="binary" string="Internet Subscription Invoice"/>
+            </xpath>
+            
+            <!-- 6. COMPANY FIELD VISIBILITY -->
+            <xpath expr="//field[@name='company_id']" position="attributes">
+                <attribute name="groups"></attribute>
+            </xpath>
+            
+            <!-- 7. NEXT APPRAISAL DATE -->
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="next_appraisal_date"/>
+            </xpath>
+            <!-- 8. APPROVERS -->
+            <xpath expr="//field[@name='hr_responsible_id']" position="after">
+                <field name="expense_manager_id" widget="many2one_avatar_user"/>
+                <field name="timesheet_manager_id" widget="many2one_avatar_user"/>
+            </xpath>
+
+            <!-- 9. APPLICATION SETTINGS - make visible and add fields -->
+            <xpath expr="//group[@name='application_group']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <xpath expr="//group[@name='application_group']" position="inside">
+                <label for="employee_hourly_cost"/>
+                <div name="employee_hourly_cost">
+                    <field name="employee_hourly_cost" class="oe_inline"/>
+                    <field name="currency_id" invisible="1"/>
+                </div>
+                <field name="employee_analytic_account_id" options="{'no_create': True}"/>
+            </xpath>
+            <!-- 10. EXPORT -->
+            <xpath expr="//group[@name='application_group']" position="after">
+                <group string="Export" name="export_group">
+                    <field name="export_external_code" placeholder="Code used in work entry exports"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

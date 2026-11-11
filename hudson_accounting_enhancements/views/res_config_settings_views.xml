@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_hudson_inventory" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hudson.inventory</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='analytic']" position="after">
+                <block title="Inventory Valuation" id="hudson_inventory_valuation_settings">
+                    <setting string="Stock Valuation Account" help="Account used for Inventory Valuation.">
+                        <field name="hudson_stock_valuation_account_id"/>
+                    </setting>
+                    <setting string="Stock Variation Account" help="Expense account used for Stock Variation (COGS).">
+                        <field name="hudson_stock_expense_account_id"/>
+                    </setting>
+                    <setting string="Stock Journal" help="Journal used to generate Stock Closing entries.">
+                        <field name="hudson_stock_journal_id"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

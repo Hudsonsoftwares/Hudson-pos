@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hds_tax_report_viewer_wizard_form" model="ir.ui.view">
+        <field name="name">hds.tax.report.viewer.wizard.form</field>
+        <field name="model">hds.tax.report.viewer.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tax Calculation Report" class="o_tax_report_viewer_form">
+                <sheet class="p-0 m-0 border-0 shadow-none">
+                    <!-- Download PDF / Print are in the footer -->
+                    <div class="o_tax_report_viewer_topbar d-flex align-items-center flex-wrap">
+                        <span class="fw-bold me-2 o_tax_report_viewer_label">Employee:</span>
+                        <field name="employee_id" readonly="1" options="{'no_open': True}" class="oe_inline fw-semibold"/>
+                        <span class="text-muted ms-2" invisible="not payslip_id">
+                            (<field name="payslip_id" readonly="1" options="{'no_open': True}" class="oe_inline"/>)
+                        </span>
+                    </div>
+                    <field name="pdf_filename" invisible="1"/>
+                    <field name="pdf_file" widget="pdf_viewer" filename="pdf_filename" class="w-100 m-0 p-0"/>
+                </sheet>
+                <footer>
+                    <button name="action_download_pdf" string="Download PDF" type="object" class="btn-primary" icon="download"/>
+                    <button name="action_print_report" string="Print" type="object" class="btn-secondary" icon="print"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

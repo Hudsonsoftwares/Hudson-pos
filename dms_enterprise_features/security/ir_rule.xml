@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Delete old restrictive rules that caused files to disappear -->
+        <delete model="ir.rule" id="dms_enterprise_features.dms_file_explicit_access_read"/>
+        <delete model="ir.rule" id="dms_enterprise_features.dms_file_explicit_access_write"/>
+        <delete model="ir.rule" id="dms_enterprise_features.dms_file_explicit_access_unlink"/>
+
+        <!-- Base DMS rules are restricted to group_dms_user, allowing base.group_user members unrestricted access.
+             We MUST override them here to set global=True, clear their groups, and use direct domain_force calculation. -->
+        <record id="dms.rule_directory_computed_read" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+        <record id="dms.rule_directory_computed_write" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'write')</field>
+        </record>
+        <record id="dms.rule_directory_computed_create" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'create')</field>
+        </record>
+        <record id="dms.rule_directory_computed_unlink" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'unlink')</field>
+        </record>
+
+        <record id="dms.rule_file_computed_read" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+        </record>
+        <record id="dms.rule_file_computed_write" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'write')</field>
+        </record>
+        <record id="dms.rule_file_computed_create" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'create')</field>
+        </record>
+        <record id="dms.rule_file_computed_unlink" model="ir.rule">
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="domain_force">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'unlink')</field>
+        </record>
+
+        <delete model="ir.rule" id="dms_enterprise_features.dms_file_confidentiality_rule"/>
+
+        <!-- Portal users: file visibility via centralized permission domain -->
+        <record id="dms_file_portal_visibility_rule" model="ir.rule">
+            <field name="name">DMS File Portal Visibility</field>
+            <field name="model_id" ref="dms.model_dms_file"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">user.env['dms.file'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Portal users: directory visibility (for navigation to accessible files) -->
+        <record id="dms_directory_portal_visibility_rule" model="ir.rule">
+            <field name="name">DMS Directory Portal Visibility</field>
+            <field name="model_id" ref="dms.model_dms_directory"/>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">user.env['dms.directory'].with_user(user)._get_permission_domain('=', True, 'read')</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>

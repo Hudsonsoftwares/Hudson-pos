@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ======================================================== -->
+    <!-- 1. PAYROLL BENEFIT VIEWS & ACTION                         -->
+    <!-- ======================================================== -->
+    <record id="hr_payroll_benefit_view_tree" model="ir.ui.view">
+        <field name="name">hr.payroll.benefit.list</field>
+        <field name="model">hr.payroll.benefit</field>
+        <field name="arch" type="xml">
+            <list string="Benefits">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="benefit_type"/>
+                <field name="structure_type_id"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_payroll_benefit_view_form" model="ir.ui.view">
+        <field name="name">hr.payroll.benefit.form</field>
+        <field name="model">hr.payroll.benefit</field>
+        <field name="arch" type="xml">
+            <form string="Benefits">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Benefits"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Meal Vouchers" required="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="benefit_type"/>
+                            <field name="benefit_source"/>
+                            <field name="employee_field_id" options="{'no_create': True}"/>
+                            <field name="cost_field_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="structure_type_id"/>
+                            <field name="related_views"/>
+                            <field name="salary_rule_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Internal notes or policy guidelines for this benefit..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_payroll_benefit_view_search" model="ir.ui.view">
+        <field name="name">hr.payroll.benefit.search</field>
+        <field name="model">hr.payroll.benefit</field>
+        <field name="arch" type="xml">
+            <search string="Search Benefits">
+                <field name="name"/>
+                <field name="benefit_type"/>
+                <field name="structure_type_id"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Benefit Type" name="group_benefit_type" context="{'group_by': 'benefit_type'}"/>
+                    <filter string="Structure Type" name="group_structure_type" context="{'group_by': 'structure_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_payroll_benefit" model="ir.actions.act_window">
+        <field name="name">Benefits</field>
+        <field name="res_model">hr.payroll.benefit</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hr_payroll_benefit_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new Benefit
+            </p>
+            <p>
+                Configure allowances, benefits in kind, and fringe benefits associated with salary structure types.
+            </p>
+        </field>
+    </record>
+</odoo>

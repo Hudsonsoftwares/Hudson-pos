@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_management_pro_view_task_form2_inherit" model="ir.ui.view">
+        <field name="name">project.task.form.helpdesk.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="helpdesk_ticket_id" readonly="1" invisible="not helpdesk_ticket_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

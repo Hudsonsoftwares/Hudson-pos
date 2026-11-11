@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Search View for Analytic Reporting -->
+        <record id="view_account_analytic_line_search_reporting" model="ir.ui.view">
+            <field name="name">account.analytic.line.search.reporting</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <search string="Analytic Reporting">
+                    <field name="name"/>
+                    <field name="account_id"/>
+                    <field name="partner_id"/>
+                    <filter name="group_by_date" string="Date" context="{'group_by':'date:month'}"/>
+                    <separator/>
+                    <filter name="account_id" string="Project Plan" context="{'group_by':'account_id'}"/>
+                    <separator/>
+                    <filter name="group_by_category" string="Category" context="{'group_by':'category'}"/>
+                    <filter name="group_by_product" string="Product" context="{'group_by':'product_id'}"/>
+                    <filter name="group_by_partner" string="Partner" context="{'group_by':'partner_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- 1. Pivot View for Analytic Reporting (Image 2) -->
+        <record id="view_account_analytic_line_pivot_reporting" model="ir.ui.view">
+            <field name="name">account.analytic.line.pivot.reporting</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Analytic Reporting" sample="1" js_class="analytic_pivot">
+                    <field name="account_id" type="row"/>
+                    <field name="date" type="col" interval="month"/>
+                    <field name="amount" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- 2. List View for Analytic Reporting (Clickable Rows) -->
+        <record id="view_account_analytic_line_tree_reporting" model="ir.ui.view">
+            <field name="name">account.analytic.line.list.reporting</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <list string="Analytic Reporting" class="o_analytic_reporting_list" sample="1" js_class="analytic_list">
+                    <field name="company_id" column_invisible="True"/>
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="account_id"/>
+                    <field name="partner_id" optional="show"/>
+                    <field name="currency_id" column_invisible="True"/>
+                    <field name="unit_amount" sum="Quantity" optional="show"/>
+                    <field name="product_uom_id" optional="hide"/>
+                    <field name="amount" sum="Total"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- 3. Kanban View for Analytic Reporting (Image 3) -->
+        <record id="view_account_analytic_line_kanban_reporting" model="ir.ui.view">
+            <field name="name">account.analytic.line.kanban.reporting</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <kanban class="o_analytic_reporting_kanban" sample="1" js_class="analytic_kanban">
+                    <field name="account_id"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <field class="fw-bold fs-6 text-truncate" name="name"/>
+                                <field class="text-end text-muted fw-semibold text-nowrap ms-2" name="date"/>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <field class="text-muted small text-truncate" name="account_id"/>
+                                <field class="fw-bold justify-content-end" name="amount" widget="monetary"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- 4. Graph View for Analytic Reporting (Image 4) -->
+        <record id="view_account_analytic_line_graph_reporting" model="ir.ui.view">
+            <field name="name">account.analytic.line.graph.reporting</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <graph string="Analytic Reporting" sample="1" type="bar" js_class="analytic_graph">
+                    <field name="account_id"/>
+                    <field name="amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- 5. Grid View for Analytic Reporting (Image 5) -->
+        <record id="view_account_analytic_line_grid_reporting" model="ir.ui.view">
+            <field name="name">account.analytic.line.grid.reporting</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <grid string="Analytic Reporting" js_class="analytic_grid">
+                    <field name="account_id" type="row"/>
+                    <field name="date" type="col">
+                        <range name="year" string="Year" span="year" step="month"/>
+                        <range name="month" string="Month" span="month" step="day"/>
+                    </field>
+                    <field name="amount" type="measure"/>
+                </grid>
+            </field>
+        </record>
+
+        <!-- Analytic Reporting Main Action Supporting Pivot, List, Kanban, Graph, Grid -->
+        <record id="action_analytic_reporting_new" model="ir.actions.act_window">
+            <field name="name">Analytic Reporting</field>
+            <field name="res_model">account.analytic.line</field>
+            <field name="view_mode">pivot,list,kanban,graph,grid,form</field>
+            <field name="search_view_id" ref="view_account_analytic_line_search_reporting"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No analytic records found
+                </p>
+            </field>
+        </record>
+
+        <!-- Action View Sequences: 1. Pivot, 2. List, 3. Kanban, 4. Graph, 5. Grid, 6. Form -->
+        <record id="action_analytic_reporting_view_pivot" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="view_account_analytic_line_pivot_reporting"/>
+            <field name="act_window_id" ref="action_analytic_reporting_new"/>
+        </record>
+
+        <record id="action_analytic_reporting_view_list" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_account_analytic_line_tree_reporting"/>
+            <field name="act_window_id" ref="action_analytic_reporting_new"/>
+        </record>
+
+        <record id="action_analytic_reporting_view_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_account_analytic_line_kanban_reporting"/>
+            <field name="act_window_id" ref="action_analytic_reporting_new"/>
+        </record>
+
+        <record id="action_analytic_reporting_view_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="4"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="view_account_analytic_line_graph_reporting"/>
+            <field name="act_window_id" ref="action_analytic_reporting_new"/>
+        </record>
+
+        <record id="action_analytic_reporting_view_grid" model="ir.actions.act_window.view">
+            <field name="sequence" eval="5"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_account_analytic_line_grid_reporting"/>
+            <field name="act_window_id" ref="action_analytic_reporting_new"/>
+        </record>
+
+        <record id="action_analytic_reporting_view_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="6"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="analytic.view_account_analytic_line_form"/>
+            <field name="act_window_id" ref="action_analytic_reporting_new"/>
+        </record>
+
+        <!-- Point the menu to the multi-view action -->
+        <record id="account.menu_action_analytic_reporting" model="ir.ui.menu">
+            <field name="name">Analytic Reporting</field>
+            <field name="action" ref="action_analytic_reporting_new"/>
+        </record>
+    </data>
+</odoo>

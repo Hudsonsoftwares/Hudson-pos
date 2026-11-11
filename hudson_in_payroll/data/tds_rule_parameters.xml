@@ -1,0 +1,898 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- ============================================================= -->
+        <!-- TDS SCALAR RULE PARAMETERS & EFFECTIVE-DATED VALUES           -->
+        <!-- ============================================================= -->
+
+        <!-- 1. Standard Deduction - New Regime (₹75,000 w.e.f. FY 2025-26 / AY 2026-27) -->
+        <record id="hds_in_tds_std_deduction_new" model="hr.rule.parameter">
+            <field name="name">TDS: Standard Deduction (New Regime)</field>
+            <field name="code">HDS_IN_TDS_STD_DEDUCTION_NEW</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory standard deduction allowance under Section 16(ia) for New Tax Regime (Section 115BAC). Finance Act 2024 / AY 2026-27 limit ₹75,000.</field>
+        </record>
+        <record id="hds_in_tds_std_deduction_new_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_std_deduction_new"/>
+            <field name="date_from">2024-04-01</field>
+            <field name="parameter_value">75000</field>
+            <field name="description">Finance (No.2) Act 2024, FY 2024-25 onwards</field>
+        </record>
+
+        <!-- 2. Standard Deduction - Old Regime (₹50,000) -->
+        <record id="hds_in_tds_std_deduction_old" model="hr.rule.parameter">
+            <field name="name">TDS: Standard Deduction (Old Regime)</field>
+            <field name="code">HDS_IN_TDS_STD_DEDUCTION_OLD</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory standard deduction allowance under Section 16(ia) for Old Tax Regime. Limit ₹50,000.</field>
+        </record>
+        <record id="hds_in_tds_std_deduction_old_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_std_deduction_old"/>
+            <field name="date_from">2019-04-01</field>
+            <field name="parameter_value">50000</field>
+            <field name="description">Interim Budget 2019 w.e.f. 01-Apr-2019.</field>
+        </record>
+
+        <!-- 3. Section 87A Income Limit - New Regime (₹12,00,000) -->
+        <record id="hds_in_tds_87a_limit_new" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 87A Taxable Income Limit (New Regime)</field>
+            <field name="code">HDS_IN_TDS_87A_LIMIT_NEW</field>
+            <field name="category">threshold</field>
+            <field name="description">Maximum net taxable income threshold for Section 87A rebate applicability under New Tax Regime. FY 2025-26 limit ₹12,00,000.</field>
+        </record>
+        <record id="hds_in_tds_87a_limit_new_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_87a_limit_new"/>
+            <field name="date_from">2025-04-01</field>
+            <field name="parameter_value">1200000</field>
+            <field name="description">Finance Act 2024 / Union Budget 2025 w.e.f. 01-Apr-2025.</field>
+        </record>
+
+        <!-- 4. Section 87A Income Limit - Old Regime (₹5,00,000) -->
+        <record id="hds_in_tds_87a_limit_old" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 87A Taxable Income Limit (Old Regime)</field>
+            <field name="code">HDS_IN_TDS_87A_LIMIT_OLD</field>
+            <field name="category">threshold</field>
+            <field name="description">Maximum net taxable income threshold for Section 87A rebate applicability under Old Tax Regime. Limit ₹5,00,000.</field>
+        </record>
+        <record id="hds_in_tds_87a_limit_old_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_87a_limit_old"/>
+            <field name="date_from">2019-04-01</field>
+            <field name="parameter_value">500000</field>
+            <field name="description">Finance Act 2019 w.e.f. 01-Apr-2019.</field>
+        </record>
+
+        <!-- 5. Section 87A Max Rebate - New Regime (₹60,000) -->
+        <record id="hds_in_tds_87a_max_rebate_new" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 87A Max Rebate (New Regime)</field>
+            <field name="code">HDS_IN_TDS_87A_MAX_REBATE_NEW</field>
+            <field name="category">threshold</field>
+            <field name="description">Maximum tax rebate amount under Section 87A for New Tax Regime. FY 2025-26 maximum rebate ₹60,000.</field>
+        </record>
+        <record id="hds_in_tds_87a_max_rebate_new_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_87a_max_rebate_new"/>
+            <field name="date_from">2025-04-01</field>
+            <field name="parameter_value">60000</field>
+            <field name="description">Finance Act 2024 / Union Budget 2025 w.e.f. 01-Apr-2025.</field>
+        </record>
+
+        <!-- 6. Section 87A Max Rebate - Old Regime (₹12,500) -->
+        <record id="hds_in_tds_87a_max_rebate_old" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 87A Max Rebate (Old Regime)</field>
+            <field name="code">HDS_IN_TDS_87A_MAX_REBATE_OLD</field>
+            <field name="category">threshold</field>
+            <field name="description">Maximum tax rebate amount under Section 87A for Old Tax Regime. Maximum rebate ₹12,500.</field>
+        </record>
+        <record id="hds_in_tds_87a_max_rebate_old_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_87a_max_rebate_old"/>
+            <field name="date_from">2019-04-01</field>
+            <field name="parameter_value">12500</field>
+            <field name="description">Finance Act 2019 w.e.f. 01-Apr-2019.</field>
+        </record>
+
+        <!-- 7. Health & Education Cess Rate (4%) -->
+        <record id="hds_in_tds_health_cess" model="hr.rule.parameter">
+            <field name="name">TDS: Health &amp; Education Cess Rate</field>
+            <field name="code">HDS_IN_TDS_HEALTH_CESS</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory Health &amp; Education Cess percentage applied on total income tax and surcharge. Shared across both Old and New regimes (4%).</field>
+        </record>
+        <record id="hds_in_tds_health_cess_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_health_cess"/>
+            <field name="date_from">2018-04-01</field>
+            <field name="parameter_value">4</field>
+            <field name="description">Finance Act 2018 establishing Health &amp; Education Cess at 4% w.e.f. 01-Apr-2018.</field>
+        </record>
+
+        <!-- 8. Employer NPS Limit % - New Regime (14%) -->
+        <record id="hds_in_tds_nps_limit_new" model="hr.rule.parameter">
+            <field name="name">TDS: Employer NPS Limit % (New Regime)</field>
+            <field name="code">HDS_IN_TDS_NPS_LIMIT_NEW</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory employer NPS contribution deduction limit percentage under Section 80CCD(2) for New Tax Regime (14% for all employers).</field>
+        </record>
+        <record id="hds_in_tds_nps_limit_new_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_nps_limit_new"/>
+            <field name="date_from">2025-04-01</field>
+            <field name="parameter_value">14</field>
+            <field name="description">Finance Act 2024 enhanced employer NPS limit to 14% under New Regime w.e.f. 01-Apr-2025.</field>
+        </record>
+
+        <!-- 8b. NPS Employer Contribution Percentage (Direct Configurable Parameter) -->
+        <record id="hds_in_tds_nps_employer_contribution_percentage" model="hr.rule.parameter">
+            <field name="name">TDS: NPS Employer Contribution Percentage (New Regime)</field>
+            <field name="code">NPS_EMPLOYER_CONTRIBUTION_PERCENTAGE</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory employer NPS contribution deduction limit percentage under Section 80CCD(2) for New Tax Regime (default 14%).</field>
+        </record>
+        <record id="hds_in_tds_nps_employer_contribution_percentage_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_nps_employer_contribution_percentage"/>
+            <field name="date_from">2025-04-01</field>
+            <field name="parameter_value">14</field>
+            <field name="description">Statutory employer NPS deduction limit percentage under Section 80CCD(2) w.e.f. 01-Apr-2025 (14%).</field>
+        </record>
+
+        <!-- 9. Employer NPS Limit % - Old Regime Private (10%) -->
+        <record id="hds_in_tds_nps_limit_old_private" model="hr.rule.parameter">
+            <field name="name">TDS: Employer NPS Limit % (Old Regime - Private)</field>
+            <field name="code">HDS_IN_TDS_NPS_LIMIT_OLD_PRIVATE</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory employer NPS contribution deduction limit percentage under Section 80CCD(2) for Old Tax Regime for Private/Other employers (10%).</field>
+        </record>
+        <record id="hds_in_tds_nps_limit_old_private_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_nps_limit_old_private"/>
+            <field name="date_from">2012-04-01</field>
+            <field name="parameter_value">10</field>
+            <field name="description">Section 80CCD(2) establishing 10% limit for private sector employers under Old Regime.</field>
+        </record>
+
+        <!-- 10. Employer NPS Limit % - Old Regime Govt (14%) -->
+        <record id="hds_in_tds_nps_limit_old_govt" model="hr.rule.parameter">
+            <field name="name">TDS: Employer NPS Limit % (Old Regime - Govt)</field>
+            <field name="code">HDS_IN_TDS_NPS_LIMIT_OLD_GOVT</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory employer NPS contribution deduction limit percentage under Section 80CCD(2) for Old Tax Regime for Central/State Govt employers (14%).</field>
+        </record>
+        <record id="hds_in_tds_nps_limit_old_govt_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_nps_limit_old_govt"/>
+            <field name="date_from">2019-04-01</field>
+            <field name="parameter_value">14</field>
+            <field name="description">Finance Act 2019 enhanced Central/State Government employer NPS limit to 14% w.e.f. 01-Apr-2019.</field>
+        </record>
+
+        <!-- 11. Combined Employer Contribution Limit (₹7,50,000 per annum) -->
+        <record id="hds_in_tds_employer_contribution_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Combined Employer PF + NPS + Superannuation Ceiling</field>
+            <field name="code">HDS_IN_TDS_EMPLOYER_CONTRIBUTION_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory annual ceiling under Section 17(2)(vii) for employer contributions to EPF, NPS, and Approved Superannuation Fund combined (₹7,50,000). Excess is treated as a taxable perquisite.</field>
+        </record>
+        <record id="hds_in_tds_employer_contribution_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_employer_contribution_limit"/>
+            <field name="date_from">2020-04-01</field>
+            <field name="parameter_value">750000</field>
+            <field name="description">Finance Act 2020 inserted Section 17(2)(vii) establishing ₹7,50,000 aggregate annual ceiling w.e.f. 01-Apr-2020.</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- CHAPTER VI-A DEDUCTION PARAMETERS                             -->
+        <!-- ============================================================= -->
+
+        <!-- 12. Section 80C Maximum Deduction Ceiling (₹1,50,000) -->
+        <record id="hds_in_tds_80c_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Section 80C Max Limit</field>
+            <field name="code">HDS_IN_TDS_80C_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum allowable aggregate deduction limit under Section 80C (PPF, EPF, ELSS, LIC, Tuition Fee, Principal Home Loan repayment). Old Regime ceiling ₹1,50,000.</field>
+        </record>
+        <record id="hds_in_tds_80c_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80c_max_limit"/>
+            <field name="date_from">2014-04-01</field>
+            <field name="parameter_value">150000</field>
+            <field name="description">Finance Act 2014 w.e.f. 01-Apr-2014.</field>
+        </record>
+
+        <!-- 13. Section 80CCD(1B) Additional NPS Limit (₹50,000) -->
+        <record id="hds_in_tds_80ccd1b_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Section 80CCD(1B) Additional NPS Limit</field>
+            <field name="code">HDS_IN_TDS_80CCD1B_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Additional deduction for individual employee contribution to National Pension System (NPS Tier-I) under Section 80CCD(1B) over and above Section 80C (₹50,000).</field>
+        </record>
+        <record id="hds_in_tds_80ccd1b_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80ccd1b_max_limit"/>
+            <field name="date_from">2015-04-01</field>
+            <field name="parameter_value">50000</field>
+            <field name="description">Finance Act 2015 w.e.f. 01-Apr-2015.</field>
+        </record>
+
+        <!-- 14. Section 80D Health Insurance Self/Family (₹25,000) -->
+        <record id="hds_in_tds_80d_self_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80D Health Insurance Self/Family Limit</field>
+            <field name="code">HDS_IN_TDS_80D_SELF_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum health insurance premium deduction under Section 80D for Self, Spouse, and Dependent Children (below 60 years) (₹25,000).</field>
+        </record>
+        <record id="hds_in_tds_80d_self_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80d_self_max_limit"/>
+            <field name="date_from">2015-04-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">Finance Act 2015 w.e.f. 01-Apr-2015.</field>
+        </record>
+
+        <!-- 15. Section 80D Health Insurance Self/Family Senior Citizen (₹50,000) -->
+        <record id="hds_in_tds_80d_self_senior_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80D Health Insurance Self Senior Citizen Limit</field>
+            <field name="code">HDS_IN_TDS_80D_SELF_SENIOR_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum health insurance premium deduction under Section 80D for Self/Spouse if Senior Citizen (60 years or above) (₹50,000).</field>
+        </record>
+        <record id="hds_in_tds_80d_self_senior_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80d_self_senior_max_limit"/>
+            <field name="date_from">2018-04-01</field>
+            <field name="parameter_value">50000</field>
+            <field name="description">Finance Act 2018 w.e.f. 01-Apr-2018.</field>
+        </record>
+
+        <!-- 16. Section 80D Health Insurance Parents (₹25,000) -->
+        <record id="hds_in_tds_80d_parents_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80D Health Insurance Parents Limit</field>
+            <field name="code">HDS_IN_TDS_80D_PARENTS_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum health insurance premium deduction under Section 80D for Parents (below 60 years) (₹25,000).</field>
+        </record>
+        <record id="hds_in_tds_80d_parents_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80d_parents_max_limit"/>
+            <field name="date_from">2015-04-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">Finance Act 2015 w.e.f. 01-Apr-2015.</field>
+        </record>
+
+        <!-- 17. Section 80D Health Insurance Parents Senior Citizen (₹50,000) -->
+        <record id="hds_in_tds_80d_parents_senior_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80D Health Insurance Parents Senior Citizen Limit</field>
+            <field name="code">HDS_IN_TDS_80D_PARENTS_SENIOR_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum health insurance premium deduction under Section 80D for Parents if Senior Citizen (60 years or above) (₹50,000).</field>
+        </record>
+        <record id="hds_in_tds_80d_parents_senior_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80d_parents_senior_max_limit"/>
+            <field name="date_from">2018-04-01</field>
+            <field name="parameter_value">50000</field>
+            <field name="description">Finance Act 2018 w.e.f. 01-Apr-2018.</field>
+        </record>
+
+        <!-- 18. Section 80D Preventive Health Checkup Sub-limit (₹5,000) -->
+        <record id="hds_in_tds_80d_preventive_checkup_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80D Preventive Health Checkup Sub-limit</field>
+            <field name="code">HDS_IN_TDS_80D_PREVENTIVE_CHECKUP_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Sub-limit for preventive health checkup within overall Section 80D limit (₹5,000).</field>
+        </record>
+        <record id="hds_in_tds_80d_preventive_checkup_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80d_preventive_checkup_limit"/>
+            <field name="date_from">2012-04-01</field>
+            <field name="parameter_value">5000</field>
+            <field name="description">Finance Act 2012 w.e.f. 01-Apr-2012.</field>
+        </record>
+
+        <!-- 19. Section 80TTA Savings Account Interest Limit (₹10,000) -->
+        <record id="hds_in_tds_80tta_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80TTA Savings Account Interest Limit</field>
+            <field name="code">HDS_IN_TDS_80TTA_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Deduction under Section 80TTA for interest on savings bank accounts for non-senior individuals (₹10,000).</field>
+        </record>
+        <record id="hds_in_tds_80tta_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80tta_max_limit"/>
+            <field name="date_from">2012-04-01</field>
+            <field name="parameter_value">10000</field>
+            <field name="description">Finance Act 2012 w.e.f. 01-Apr-2012.</field>
+        </record>
+
+        <!-- 20. Section 80TTB Senior Citizen Interest Limit (₹50,000) -->
+        <record id="hds_in_tds_80ttb_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80TTB Senior Citizen Interest Limit</field>
+            <field name="code">HDS_IN_TDS_80TTB_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Deduction under Section 80TTB for interest on bank/post-office deposits for senior citizens (₹50,000).</field>
+        </record>
+        <record id="hds_in_tds_80ttb_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80ttb_max_limit"/>
+            <field name="date_from">2018-04-01</field>
+            <field name="parameter_value">50000</field>
+            <field name="description">Finance Act 2018 w.e.f. 01-Apr-2018.</field>
+        </record>
+
+        <!-- 21. Section 80DD Dependent Disability Normal Limit (₹75,000) -->
+        <record id="hds_in_tds_80dd_normal_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Dependent Disability Normal Limit</field>
+            <field name="code">HDS_IN_TDS_80DD_NORMAL_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Deduction for maintenance/medical treatment of dependent with disability (40% to 80%) (₹75,000).</field>
+        </record>
+        <record id="hds_in_tds_80dd_normal_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_normal_limit"/>
+            <field name="date_from">2015-04-01</field>
+            <field name="parameter_value">75000</field>
+            <field name="description">Finance Act 2015 w.e.f. 01-Apr-2015.</field>
+        </record>
+
+        <!-- 22. Section 80DD Dependent Disability Severe Limit (₹1,25,000) -->
+        <record id="hds_in_tds_80dd_severe_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Dependent Disability Severe Limit</field>
+            <field name="code">HDS_IN_TDS_80DD_SEVERE_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Deduction for maintenance/medical treatment of dependent with severe disability (more than 80%) (₹1,25,000).</field>
+        </record>
+        <record id="hds_in_tds_80dd_severe_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_severe_limit"/>
+            <field name="date_from">2015-04-01</field>
+            <field name="parameter_value">125000</field>
+            <field name="description">Finance Act 2015 w.e.f. 01-Apr-2015.</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 24(B) HOME LOAN INTEREST & SECTION 10 EXEMPTIONS      -->
+        <!-- ============================================================= -->
+
+        <!-- 23. Section 24(b) Self-Occupied Home Loan Interest Limit (₹2,00,000) -->
+        <record id="hds_in_tds_24b_home_loan_interest_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 24(b) Self-Occupied Home Loan Interest Limit</field>
+            <field name="code">HDS_IN_TDS_24B_HOME_LOAN_INTEREST_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum deduction for interest payable on housing loan for self-occupied house property under Section 24(b) (₹2,00,000).</field>
+        </record>
+        <record id="hds_in_tds_24b_home_loan_interest_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_24b_home_loan_interest_limit"/>
+            <field name="date_from">2014-04-01</field>
+            <field name="parameter_value">200000</field>
+            <field name="description">Finance Act 2014 w.e.f. 01-Apr-2014.</field>
+        </record>
+
+        <!-- 23b. Section 71(3A) House Property Loss Set-Off Limit (₹2,00,000) -->
+        <record id="hds_in_tds_house_property_loss_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 71(3A) House Property Loss Set-Off Limit</field>
+            <field name="code">HDS_IN_TDS_HOUSE_PROPERTY_LOSS_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum set-off of loss from house property against salary / other income under Section 71(3A) for Old Tax Regime (₹2,00,000).</field>
+        </record>
+        <record id="hds_in_tds_house_property_loss_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_house_property_loss_limit"/>
+            <field name="date_from">2017-04-01</field>
+            <field name="parameter_value">200000</field>
+            <field name="description">Finance Act 2017 w.e.f. 01-Apr-2017.</field>
+        </record>
+
+        <!-- 24. Section 80EEA Additional Home Loan Interest Limit (₹1,50,000) -->
+        <record id="hds_in_tds_80eea_max_limit" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80EEA Additional Home Loan Interest Limit</field>
+            <field name="code">HDS_IN_TDS_80EEA_MAX_LIMIT</field>
+            <field name="category">ceiling</field>
+            <field name="description">Additional deduction for interest on housing loan sanctioned for first-time home buyers under Section 80EEA (₹1,50,000).</field>
+        </record>
+        <record id="hds_in_tds_80eea_max_limit_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80eea_max_limit"/>
+            <field name="date_from">2019-04-01</field>
+            <field name="parameter_value">150000</field>
+            <field name="description">Finance Act 2019 w.e.f. 01-Apr-2019.</field>
+        </record>
+
+        <!-- 25. HRA Exemption Metro City % (50%) -->
+        <record id="hds_in_tds_hra_metro_percent" model="hr.rule.parameter">
+            <field name="name">TDS: HRA Exemption Metro City %</field>
+            <field name="code">HDS_IN_TDS_HRA_METRO_PERCENT</field>
+            <field name="category">rate</field>
+            <field name="description">Percentage of Basic Salary + Dearness Allowance considered for HRA exemption in Metro cities (Mumbai, Delhi, Kolkata, Chennai) (50%).</field>
+        </record>
+        <record id="hds_in_tds_hra_metro_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_hra_metro_percent"/>
+            <field name="date_from">1995-04-01</field>
+            <field name="parameter_value">50</field>
+            <field name="description">Income Tax Rules 1962 Rule 2A establishing 50% for Metro cities.</field>
+        </record>
+
+        <!-- 26. HRA Exemption Non-Metro City % (40%) -->
+        <record id="hds_in_tds_hra_non_metro_percent" model="hr.rule.parameter">
+            <field name="name">TDS: HRA Exemption Non-Metro City %</field>
+            <field name="code">HDS_IN_TDS_HRA_NON_METRO_PERCENT</field>
+            <field name="category">rate</field>
+            <field name="description">Percentage of Basic Salary + Dearness Allowance considered for HRA exemption in Non-Metro cities (40%).</field>
+        </record>
+        <record id="hds_in_tds_hra_non_metro_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_hra_non_metro_percent"/>
+            <field name="date_from">1995-04-01</field>
+            <field name="parameter_value">40</field>
+            <field name="description">Income Tax Rules 1962 Rule 2A establishing 40% for Non-Metro cities.</field>
+        </record>
+
+        <!-- 27. HRA Rent Excess over Basic % (10%) -->
+        <record id="hds_in_tds_hra_rent_excess_basic_percent" model="hr.rule.parameter">
+            <field name="name">TDS: HRA Rent Excess Over Basic %</field>
+            <field name="code">HDS_IN_TDS_HRA_RENT_EXCESS_BASIC_PERCENT</field>
+            <field name="category">rate</field>
+            <field name="description">Percentage of Basic Salary + Dearness Allowance deducted from rent paid for HRA exemption calculation under Rule 2A (10%).</field>
+        </record>
+        <record id="hds_in_tds_hra_rent_excess_basic_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_hra_rent_excess_basic_percent"/>
+            <field name="date_from">1995-04-01</field>
+            <field name="parameter_value">10</field>
+            <field name="description">Income Tax Rules 1962 Rule 2A establishing 10% rent excess threshold.</field>
+        </record>
+
+        <!-- 28. Children Education Allowance Monthly Limit per Child (₹100) -->
+        <record id="hds_in_tds_children_edu_allowance_monthly" model="hr.rule.parameter">
+            <field name="name">TDS: Children Education Allowance Exemption Monthly Limit</field>
+            <field name="code">HDS_IN_TDS_CHILDREN_EDU_ALLOWANCE_MONTHLY</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory monthly exemption per child under Section 10(14) for Children Education Allowance (max 2 children) (₹100/month).</field>
+        </record>
+        <record id="hds_in_tds_children_edu_allowance_monthly_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_children_edu_allowance_monthly"/>
+            <field name="date_from">1998-08-01</field>
+            <field name="parameter_value">100</field>
+            <field name="description">Income Tax Rules 1962 Rule 2BB establishing ₹100/month per child limit.</field>
+        </record>
+
+        <!-- 29. Hostel Expenditure Allowance Monthly Limit per Child (₹300) -->
+        <record id="hds_in_tds_hostel_allowance_monthly" model="hr.rule.parameter">
+            <field name="name">TDS: Hostel Expenditure Allowance Exemption Monthly Limit</field>
+            <field name="code">HDS_IN_TDS_HOSTEL_ALLOWANCE_MONTHLY</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory monthly exemption per child under Section 10(14) for Hostel Expenditure Allowance (max 2 children) (₹300/month).</field>
+        </record>
+        <record id="hds_in_tds_hostel_allowance_monthly_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_hostel_allowance_monthly"/>
+            <field name="date_from">1998-08-01</field>
+            <field name="parameter_value">300</field>
+            <field name="description">Income Tax Rules 1962 Rule 2BB establishing ₹300/month per child limit.</field>
+        </record>
+
+        <!-- 30. Leave Encashment Exemption Ceiling Non-Govt (₹25,00,000) -->
+        <record id="hds_in_tds_leave_encashment_exemption_ceiling" model="hr.rule.parameter">
+            <field name="name">TDS: Leave Encashment Exemption Ceiling (Non-Govt)</field>
+            <field name="code">HDS_IN_TDS_LEAVE_ENCASHMENT_EXEMPTION_CEILING</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory maximum leave encashment exemption ceiling under Section 10(10AA)(ii) for non-government employees (₹25,00,000).</field>
+        </record>
+        <record id="hds_in_tds_leave_encashment_exemption_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_leave_encashment_exemption_ceiling"/>
+            <field name="date_from">2023-04-01</field>
+            <field name="parameter_value">2500000</field>
+            <field name="description">CBDT Notification S.O. 2276(E) w.e.f. 01-Apr-2023 increasing ceiling from ₹3 Lakhs to ₹25 Lakhs.</field>
+        </record>
+
+        <!-- 31. Voluntary Retirement Scheme (VRS) Ceiling (₹5,00,000) -->
+        <record id="hds_in_tds_vrs_exemption_ceiling" model="hr.rule.parameter">
+            <field name="name">TDS: VRS Exemption Ceiling</field>
+            <field name="code">HDS_IN_TDS_VRS_EXEMPTION_CEILING</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum tax exemption ceiling under Section 10(10C) for compensation received on Voluntary Retirement (VRS) (₹5,00,000).</field>
+        </record>
+        <record id="hds_in_tds_vrs_exemption_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_vrs_exemption_ceiling"/>
+            <field name="date_from">1992-04-01</field>
+            <field name="parameter_value">500000</field>
+            <field name="description">Section 10(10C) establishing ₹5,00,000 VRS exemption ceiling.</field>
+        </record>
+
+        <!-- 32. Section 80EEA Property Stamp Duty Ceiling (₹45,00,000) -->
+        <record id="hds_in_tds_80eea_max_stamp_duty" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80EEA Property Stamp Duty Ceiling</field>
+            <field name="code">HDS_IN_TDS_80EEA_MAX_STAMP_DUTY</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum stamp duty value of residential property allowed for Section 80EEA eligibility (₹45,00,000).</field>
+        </record>
+        <record id="hds_in_tds_80eea_max_stamp_duty_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80eea_max_stamp_duty"/>
+            <field name="date_from">2019-04-01</field>
+            <field name="parameter_value">4500000</field>
+            <field name="description">Finance Act 2019 establishing ₹45,00,000 property stamp duty ceiling.</field>
+        </record>
+
+        <!-- 33. Section 80G Maximum Cash Donation Ceiling (₹2,000) -->
+        <record id="hds_in_tds_80g_max_cash_donation" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80G Maximum Cash Donation Ceiling</field>
+            <field name="code">HDS_IN_TDS_80G_MAX_CASH_DONATION</field>
+            <field name="category">ceiling</field>
+            <field name="description">Maximum cash donation allowed for deduction under Section 80G(5D) (₹2,000).</field>
+        </record>
+        <record id="hds_in_tds_80g_max_cash_donation_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80g_max_cash_donation"/>
+            <field name="date_from">2017-04-01</field>
+            <field name="parameter_value">2000</field>
+            <field name="description">Finance Act 2017 w.e.f. 01-Apr-2017 restricting cash donations to ₹2,000.</field>
+        </record>
+
+        <!-- 34. Section 80G Qualifying Limit Percentage (10%) -->
+        <record id="hds_in_tds_80g_qualifying_limit_percent" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80G Qualifying Limit Percentage</field>
+            <field name="code">HDS_IN_TDS_80G_QUALIFYING_LIMIT_PERCENT</field>
+            <field name="category">rate</field>
+            <field name="description">Statutory qualifying limit percentage under Section 80G(10) (10% of AGTI).</field>
+        </record>
+        <record id="hds_in_tds_80g_qualifying_limit_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80g_qualifying_limit_percent"/>
+            <field name="date_from">2000-04-01</field>
+            <field name="parameter_value">10</field>
+            <field name="description">Section 80G(10) statutory 10% ceiling of Adjusted Gross Total Income (AGTI).</field>
+        </record>
+
+        <!-- 35. Section 80E Maximum Deduction Period (8 Years) -->
+        <record id="hds_in_tds_80e_max_deduction_years" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80E Maximum Deduction Period (Years)</field>
+            <field name="code">HDS_IN_TDS_80E_MAX_DEDUCTION_YEARS</field>
+            <field name="category">period</field>
+            <field name="description">Maximum deduction period permitted under Section 80E (8 consecutive assessment years).</field>
+        </record>
+        <record id="hds_in_tds_80e_max_deduction_years_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80e_max_deduction_years"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">8</field>
+            <field name="description">Section 80E statutory maximum deduction period of 8 assessment years.</field>
+        </record>
+
+        <!-- 36. Section 80E Permitted Lender Categories -->
+        <record id="hds_in_tds_80e_allowed_lender_types" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80E Permitted Lender Categories</field>
+            <field name="code">HDS_IN_TDS_80E_ALLOWED_LENDER_TYPES</field>
+            <field name="category">eligibility</field>
+            <field name="description">Permitted lender categories under Section 80E (Scheduled Bank, Financial Institution, Approved Charitable Institution).</field>
+        </record>
+        <record id="hds_in_tds_80e_allowed_lender_types_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80e_allowed_lender_types"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">SCHEDULED_BANK,FINANCIAL_INSTITUTION,APPROVED_CHARITABLE_INSTITUTION</field>
+            <field name="description">Section 80E permitted lender categories.</field>
+        </record>
+
+        <!-- 37. Section 80DD Normal Disability Deduction (₹75,000) -->
+        <record id="hds_in_tds_80dd_normal_deduction" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Normal Disability Deduction Amount (₹)</field>
+            <field name="code">HDS_IN_TDS_80DD_NORMAL_DEDUCTION</field>
+            <field name="category">ceiling</field>
+            <field name="description">Fixed statutory deduction for dependent normal disability (40% to 79%).</field>
+        </record>
+        <record id="hds_in_tds_80dd_normal_deduction_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_normal_deduction"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">75000</field>
+            <field name="description">Section 80DD normal disability fixed deduction amount.</field>
+        </record>
+
+        <!-- 38. Section 80DD Severe Disability Deduction (₹1,25,000) -->
+        <record id="hds_in_tds_80dd_severe_deduction" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Severe Disability Deduction Amount (₹)</field>
+            <field name="code">HDS_IN_TDS_80DD_SEVERE_DEDUCTION</field>
+            <field name="category">ceiling</field>
+            <field name="description">Fixed statutory deduction for dependent severe disability (80% or more).</field>
+        </record>
+        <record id="hds_in_tds_80dd_severe_deduction_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_severe_deduction"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">125000</field>
+            <field name="description">Section 80DD severe disability fixed deduction amount.</field>
+        </record>
+
+        <!-- 39. Section 80DD Minimum Disability Percentage (40%) -->
+        <record id="hds_in_tds_80dd_normal_disability_percent" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Minimum Disability Percentage (%)</field>
+            <field name="code">HDS_IN_TDS_80DD_NORMAL_DISABILITY_PERCENT</field>
+            <field name="category">threshold</field>
+            <field name="description">Minimum statutory disability percentage required for Section 80DD deduction (40%).</field>
+        </record>
+        <record id="hds_in_tds_80dd_normal_disability_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_normal_disability_percent"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">40</field>
+            <field name="description">Section 80DD minimum disability percentage.</field>
+        </record>
+
+        <!-- 40. Section 80DD Severe Disability Percentage (80%) -->
+        <record id="hds_in_tds_80dd_severe_disability_percent" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Severe Disability Percentage (%)</field>
+            <field name="code">HDS_IN_TDS_80DD_SEVERE_DISABILITY_PERCENT</field>
+            <field name="category">threshold</field>
+            <field name="description">Statutory disability percentage threshold for severe disability (80%).</field>
+        </record>
+        <record id="hds_in_tds_80dd_severe_disability_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_severe_disability_percent"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">80</field>
+            <field name="description">Section 80DD severe disability threshold percentage.</field>
+        </record>
+
+        <!-- 41. Section 80DD Allow Only Resident Individuals -->
+        <record id="hds_in_tds_80dd_allow_only_resident" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Allow Only Resident Individuals</field>
+            <field name="code">HDS_IN_TDS_80DD_ALLOW_ONLY_RESIDENT</field>
+            <field name="category">eligibility</field>
+            <field name="description">Mandates resident individual status for Section 80DD eligibility.</field>
+        </record>
+        <record id="hds_in_tds_80dd_allow_only_resident_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_allow_only_resident"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Section 80DD resident status requirement.</field>
+        </record>
+
+        <!-- 42. Section 80DD Certificate Mandatory Requirement -->
+        <record id="hds_in_tds_80dd_certificate_required" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Medical Certificate Required</field>
+            <field name="code">HDS_IN_TDS_80DD_CERTIFICATE_REQUIRED</field>
+            <field name="category">eligibility</field>
+            <field name="description">Mandates medical certificate presence for Section 80DD deduction.</field>
+        </record>
+        <record id="hds_in_tds_80dd_certificate_required_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_certificate_required"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Section 80DD medical certificate mandatory check.</field>
+        </record>
+
+        <!-- 43. Section 80DD Certificate Expiry Validation -->
+        <record id="hds_in_tds_80dd_check_certificate_expiry" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80DD Check Certificate Expiry Date</field>
+            <field name="code">HDS_IN_TDS_80DD_CHECK_CERTIFICATE_EXPIRY</field>
+            <field name="category">eligibility</field>
+            <field name="description">Validates certificate expiry date for temporary disability certificates.</field>
+        </record>
+        <record id="hds_in_tds_80dd_check_certificate_expiry_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80dd_check_certificate_expiry"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Section 80DD certificate expiry check flag.</field>
+        </record>
+
+        <!-- 44. Section 80U Normal Disability Deduction (₹75,000) -->
+        <record id="hds_in_tds_80u_normal_deduction" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80U Normal Disability Deduction Amount (₹)</field>
+            <field name="code">HDS_IN_TDS_80U_NORMAL_DEDUCTION</field>
+            <field name="category">ceiling</field>
+            <field name="description">Fixed statutory deduction for employee own normal disability (40% to 79%).</field>
+        </record>
+        <record id="hds_in_tds_80u_normal_deduction_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80u_normal_deduction"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">75000</field>
+            <field name="description">Section 80U normal disability fixed deduction amount.</field>
+        </record>
+
+        <!-- 45. Section 80U Severe Disability Deduction (₹1,25,000) -->
+        <record id="hds_in_tds_80u_severe_deduction" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80U Severe Disability Deduction Amount (₹)</field>
+            <field name="code">HDS_IN_TDS_80U_SEVERE_DEDUCTION</field>
+            <field name="category">ceiling</field>
+            <field name="description">Fixed statutory deduction for employee own severe disability (80% or more).</field>
+        </record>
+        <record id="hds_in_tds_80u_severe_deduction_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80u_severe_deduction"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">125000</field>
+            <field name="description">Section 80U severe disability fixed deduction amount.</field>
+        </record>
+
+        <!-- 46. Section 80U Minimum Disability Percentage (40%) -->
+        <record id="hds_in_tds_80u_normal_disability_percent" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80U Minimum Disability Percentage (%)</field>
+            <field name="code">HDS_IN_TDS_80U_NORMAL_DISABILITY_PERCENT</field>
+            <field name="category">threshold</field>
+            <field name="description">Minimum statutory disability percentage required for Section 80U deduction (40%).</field>
+        </record>
+        <record id="hds_in_tds_80u_normal_disability_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80u_normal_disability_percent"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">40</field>
+            <field name="description">Section 80U minimum disability percentage.</field>
+        </record>
+
+        <!-- 47. Section 80U Severe Disability Percentage (80%) -->
+        <record id="hds_in_tds_80u_severe_disability_percent" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80U Severe Disability Percentage (%)</field>
+            <field name="code">HDS_IN_TDS_80U_SEVERE_DISABILITY_PERCENT</field>
+            <field name="category">threshold</field>
+            <field name="description">Statutory disability percentage threshold for severe disability (80%).</field>
+        </record>
+        <record id="hds_in_tds_80u_severe_disability_percent_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80u_severe_disability_percent"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">80</field>
+            <field name="description">Section 80U severe disability threshold percentage.</field>
+        </record>
+
+        <!-- 48. Section 80U Allow Only Resident Individuals -->
+        <record id="hds_in_tds_80u_allow_only_resident" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80U Allow Only Resident Individuals</field>
+            <field name="code">HDS_IN_TDS_80U_ALLOW_ONLY_RESIDENT</field>
+            <field name="category">eligibility</field>
+            <field name="description">Mandates resident individual status for Section 80U eligibility.</field>
+        </record>
+        <record id="hds_in_tds_80u_allow_only_resident_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80u_allow_only_resident"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Section 80U resident status requirement.</field>
+        </record>
+
+        <!-- 49. Section 80U Certificate Mandatory Requirement -->
+        <record id="hds_in_tds_80u_certificate_required" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80U Medical Certificate Required</field>
+            <field name="code">HDS_IN_TDS_80U_CERTIFICATE_REQUIRED</field>
+            <field name="category">eligibility</field>
+            <field name="description">Mandates medical certificate presence for Section 80U deduction.</field>
+        </record>
+        <record id="hds_in_tds_80u_certificate_required_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80u_certificate_required"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Section 80U medical certificate mandatory check.</field>
+        </record>
+
+        <!-- 50. Section 80U Certificate Expiry Validation -->
+        <record id="hds_in_tds_80u_check_certificate_expiry" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80U Check Certificate Expiry Date</field>
+            <field name="code">HDS_IN_TDS_80U_CHECK_CERTIFICATE_EXPIRY</field>
+            <field name="category">eligibility</field>
+            <field name="description">Validates certificate expiry date for temporary disability certificates.</field>
+        </record>
+        <record id="hds_in_tds_80u_check_certificate_expiry_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80u_check_certificate_expiry"/>
+            <field name="date_from">2006-04-01</field>
+            <field name="parameter_value">True</field>
+            <field name="description">Section 80U certificate expiry check flag.</field>
+        </record>
+
+        <!-- 51. Section 57(iia) Family Pension Deduction Limit - New Regime (₹25,000) -->
+        <record id="hds_in_tds_family_pension_limit_new" model="hr.rule.parameter">
+            <field name="name">TDS: Family Pension Deduction Limit Section 93(1)(d) (New Regime)</field>
+            <field name="code">HDS_IN_TDS_FAMILY_PENSION_LIMIT_NEW</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory maximum ceiling allowance under Section 93(1)(d) / Section 57(iia) for New Tax Regime. Limit ₹25,000 (1/3 of family pension or ₹25,000, whichever is lower).</field>
+        </record>
+        <record id="hds_in_tds_family_pension_limit_new_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_family_pension_limit_new"/>
+            <field name="date_from">2024-04-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">Finance (No.2) Act 2024 / Income-tax Act 2025 Section 93(1)(d), FY 2024-25 onwards</field>
+        </record>
+
+        <!-- 52. Section 57(iia) / Section 93(1)(d) Family Pension Deduction Limit - Old Regime -->
+        <record id="hds_in_tds_family_pension_limit_old" model="hr.rule.parameter">
+            <field name="name">TDS: Family Pension Deduction Limit Section 93(1)(d) (Old Regime)</field>
+            <field name="code">HDS_IN_TDS_FAMILY_PENSION_LIMIT_OLD</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory maximum ceiling allowance under Section 93(1)(d) / Section 57(iia) for Old Tax Regime. Limit ₹15,000 (₹25,000 w.e.f. Section 93(1)(d)).</field>
+        </record>
+        <record id="hds_in_tds_family_pension_limit_old_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_family_pension_limit_old"/>
+            <field name="date_from">2001-04-01</field>
+            <field name="parameter_value">15000</field>
+            <field name="description">Income Tax Act Section 57(iia) Old Regime statutory ceiling ₹15,000.</field>
+        </record>
+        <record id="hds_in_tds_family_pension_limit_old_val_2" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_family_pension_limit_old"/>
+            <field name="date_from">2026-04-01</field>
+            <field name="parameter_value">25000</field>
+            <field name="description">Income-tax Act 2025 Section 93(1)(d) ceiling ₹25,000 (1/3 of family pension or ₹25,000, whichever is lower).</field>
+        </record>
+
+        <!-- 53. Section 80CCH Agniveer Corpus Fund Eligibility Percentage - Old Regime (100%) -->
+        <record id="hds_in_tds_80cch_eligibility_percent_old" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80CCH Agniveer Corpus Fund Eligibility Percentage (Old Regime)</field>
+            <field name="code">HDS_IN_TDS_80CCH_ELIGIBILITY_PERCENT_OLD</field>
+            <field name="category">rate</field>
+            <field name="description">Section 80CCH employee contribution statutory eligibility percentage for Old Tax Regime (100%).</field>
+        </record>
+        <record id="hds_in_tds_80cch_eligibility_percent_old_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80cch_eligibility_percent_old"/>
+            <field name="date_from">2022-11-01</field>
+            <field name="parameter_value">100.0</field>
+            <field name="description">Finance Act 2023 w.e.f. 01-Nov-2022 establishing 100% eligibility under Section 80CCH (Old Regime).</field>
+        </record>
+
+        <!-- 54. Section 80CCH Agniveer Corpus Fund Eligibility Percentage - New Regime (100%) -->
+        <record id="hds_in_tds_80cch_eligibility_percent_new" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 80CCH Agniveer Corpus Fund Eligibility Percentage (New Regime)</field>
+            <field name="code">HDS_IN_TDS_80CCH_ELIGIBILITY_PERCENT_NEW</field>
+            <field name="category">rate</field>
+            <field name="description">Section 80CCH employee contribution statutory eligibility percentage for New Tax Regime (100%).</field>
+        </record>
+        <record id="hds_in_tds_80cch_eligibility_percent_new_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_80cch_eligibility_percent_new"/>
+            <field name="date_from">2022-11-01</field>
+            <field name="parameter_value">100.0</field>
+            <field name="description">Finance Act 2023 w.e.f. 01-Nov-2022 establishing 100% eligibility under Section 80CCH (New Regime).</field>
+        </record>
+
+        <!-- 55. Section 10(5) LTA Calendar-Year Block Period (e.g. 2022-2025) -->
+        <record id="hds_in_tds_lta_block_period" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 10(5) LTA Calendar-Year Block Period</field>
+            <field name="code">HDS_IN_TDS_LTA_BLOCK_PERIOD</field>
+            <field name="category">period</field>
+            <field name="description">Statutory 4-calendar-year block period designation for Section 10(5) LTA exemption.</field>
+        </record>
+        <record id="hds_in_tds_lta_block_period_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_lta_block_period"/>
+            <field name="date_from">2022-01-01</field>
+            <field name="parameter_value">2022-2025</field>
+            <field name="description">Section 10(5) LTA block period 2022-2025.</field>
+        </record>
+
+        <!-- 56. Section 10(5) LTA Maximum Exemption Claims Per Block (2) -->
+        <record id="hds_in_tds_lta_max_claims" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 10(5) LTA Maximum Exemption Claims Per Block</field>
+            <field name="code">HDS_IN_TDS_LTA_MAX_CLAIMS_PER_BLOCK</field>
+            <field name="category">ceiling</field>
+            <field name="description">Statutory maximum journey exemption claims allowed per 4-calendar-year block period (2 journeys).</field>
+        </record>
+        <record id="hds_in_tds_lta_max_claims_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_lta_max_claims"/>
+            <field name="date_from">1998-04-01</field>
+            <field name="parameter_value">2</field>
+            <field name="description">Section 10(5) LTA statutory maximum 2 journey claims per block.</field>
+        </record>
+
+        <!-- 57. Section 10(5) LTA Previous Block Period (2018-2021) -->
+        <record id="hds_in_tds_lta_prev_block_period" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 10(5) LTA Previous 4-Calendar-Year Block Period</field>
+            <field name="code">HDS_IN_TDS_LTA_PREV_BLOCK_PERIOD</field>
+            <field name="category">period</field>
+            <field name="description">Previous 4-calendar-year block period for Section 10(5) LTA carry-forward evaluation.</field>
+        </record>
+        <record id="hds_in_tds_lta_prev_block_period_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_lta_prev_block_period"/>
+            <field name="date_from">2022-01-01</field>
+            <field name="parameter_value">2018-2021</field>
+            <field name="description">Section 10(5) LTA previous block period 2018-2021.</field>
+        </record>
+
+        <!-- 58. Section 10(5) LTA Air Travel Fare Statutory Ceiling (₹50,000) -->
+        <record id="hds_in_tds_lta_air_ceiling" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 10(5) LTA Air Travel Fare Statutory Ceiling</field>
+            <field name="code">HDS_IN_TDS_LTA_AIR_FARE_CEILING</field>
+            <field name="category">ceiling</field>
+            <field name="description">Rule 2B economy air fare national carrier statutory ceiling per journey.</field>
+        </record>
+        <record id="hds_in_tds_lta_air_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_lta_air_ceiling"/>
+            <field name="date_from">2014-04-01</field>
+            <field name="parameter_value">50000</field>
+            <field name="description">Rule 2B economy air fare ceiling cap ₹50,000.</field>
+        </record>
+
+        <!-- 59. Section 10(5) LTA Rail AC1 Travel Fare Statutory Ceiling (₹15,000) -->
+        <record id="hds_in_tds_lta_rail_ac1_ceiling" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 10(5) LTA Rail AC1 Travel Fare Statutory Ceiling</field>
+            <field name="code">HDS_IN_TDS_LTA_RAIL_AC1_FARE_CEILING</field>
+            <field name="category">ceiling</field>
+            <field name="description">Rule 2B AC First Class rail fare statutory ceiling per journey.</field>
+        </record>
+        <record id="hds_in_tds_lta_rail_ac1_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_lta_rail_ac1_ceiling"/>
+            <field name="date_from">2014-04-01</field>
+            <field name="parameter_value">15000</field>
+            <field name="description">Rule 2B AC 1st class rail fare ceiling cap ₹15,000.</field>
+        </record>
+
+        <!-- 60. Section 10(5) LTA Public Transport Travel Fare Statutory Ceiling (₹10,000) -->
+        <record id="hds_in_tds_lta_public_trans_ceiling" model="hr.rule.parameter">
+            <field name="name">TDS: Sec 10(5) LTA Public Transport Travel Fare Statutory Ceiling</field>
+            <field name="code">HDS_IN_TDS_LTA_PUBLIC_TRANS_FARE_CEILING</field>
+            <field name="category">ceiling</field>
+            <field name="description">Rule 2B recognised public transport travel fare statutory ceiling per journey.</field>
+        </record>
+        <record id="hds_in_tds_lta_public_trans_ceiling_val_1" model="hr.rule.parameter.value">
+            <field name="parameter_id" ref="hds_in_tds_lta_public_trans_ceiling"/>
+            <field name="date_from">2014-04-01</field>
+            <field name="parameter_value">10000</field>
+            <field name="description">Rule 2B recognised public transport fare ceiling cap ₹10,000.</field>
+        </record>
+
+        <!-- Config Parameter: TDS Debug Logging (Default False) -->
+        <record id="hds_in_tds_debug_logging_param" model="ir.config_parameter">
+            <field name="key">hudson_in_payroll.tds_debug_logging</field>
+            <field name="value">False</field>
+        </record>
+
+    </data>
+</odoo>
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_helpdesk_ticket_share_forum_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.share.forum.form</field>
+        <field name="model">helpdesk.ticket.share.forum</field>
+        <field name="arch" type="xml">
+            <form string="Share on Forum">
+                <sheet>
+                    <field name="ticket_id" invisible="1"/>
+                    <group>
+                        <field name="forum_id" options="{'no_create': True}"/>
+                        <field name="name"/>
+                        <field name="tag_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    </group>
+                    <field name="content" placeholder="Describe the question and its answer..."/>
+                    <div class="text-muted mt-2">
+                        The post is public: remove any confidential information about the customer before sharing.
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_share" string="Share on Forum" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

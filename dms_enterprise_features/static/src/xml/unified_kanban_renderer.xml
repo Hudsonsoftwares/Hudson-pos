@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Inline SVG icons (the backend has no Font Awesome in Odoo 20) -->
+    <t t-name="dms_enterprise_features.DmsIcon">
+        <!-- one static <svg> per icon: shapes inside a t-if within an <svg>
+             are created outside the SVG namespace and render invisible -->
+        <svg t-if="icon === 'restore'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg>
+        <svg t-elif="icon === 'delete'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+        <svg t-elif="icon === 'download'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+        <svg t-elif="icon === 'new_folder'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 11v5"/><path d="M9.5 13.5h5"/></svg>
+        <svg t-elif="icon === 'move'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M3 12h18"/><path d="M9 6l3-3 3 3"/><path d="M9 18l3 3 3-3"/><path d="M6 9l-3 3 3 3"/><path d="M18 9l3 3-3 3"/></svg>
+        <svg t-elif="icon === 'edit'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>
+        <svg t-elif="icon === 'clock'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <svg t-elif="icon === 'folder'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <svg t-elif="icon === 'file'" class="o_dms_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+    </t>
+
+    <!-- 1. Inject folder cards into the Kanban renderer -->
+    <t t-inherit="dms.KanbanRenderer" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_kanban_renderer')]//t[@t-foreach='this.getGroupsOrRecords()']" position="before">
+            <style>
+                .mk_file_kanban_view .o_kanban_renderer:has(.o_dms_directories_container) .o_view_nocontent {
+                    display: none !important;
+                }
+            </style>
+
+            <!-- Folder cards grid — only rendered when sub-directories exist -->
+            <div t-if="!this.props.list.isGrouped and this.dmsDirectoriesState.data.length" class="o_dms_directories_container w-100 mb-3">
+                <div class="o_dms_section_title">
+                    <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'folder'"/></t>
+                    <span>Folders</span>
+                </div>
+
+                <div class="o_dms_folders_grid">
+                    <t t-foreach="this.dmsDirectoriesState.data" t-as="dir" t-key="dir.id">
+                        <div t-attf-class="o_kanban_record o_dms_folder_card oe_kanban_color_#{dir.color} d-block p-0 cursor-pointer #{this.folderDropdown.openId === dir.id ? 'dms_folder_menu_open' : ''}"
+                             t-on-click="() => this.openDirectory(dir.id)"
+                             role="button">
+
+                            <t t-if="dir.permission_download || dir.permission_move || dir.permission_write || dir.permission_unlink">
+                                <div class="o_dms_folder_dropdown_wrap position-absolute top-0 end-0"
+                                     t-on-click.stop="">
+                                    <div role="button"
+                                         class="o_dms_dots_btn"
+                                         t-on-click="(ev) => this.toggleFolderDropdown(ev, dir.id)"
+                                         title="Folder actions"
+                                         t-att-aria-expanded="this.folderDropdown.openId === dir.id ? 'true' : 'false'">
+                                        <span class="o_dms_dot"></span>
+                                        <span class="o_dms_dot"></span>
+                                        <span class="o_dms_dot"></span>
+                                    </div>
+                                    <div t-if="this.folderDropdown.openId === dir.id"
+                                         class="o_dms_folder_dropdown_menu">
+                                        <t t-if="dir.is_trashed">
+                                            <a class="o_dms_folder_dropdown_item text-success" href="#"
+                                               t-on-click.prevent="() => { this.restoreDirectory(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'restore'"/></t>Restore
+                                            </a>
+                                            <div class="o_dms_folder_dropdown_divider"/>
+                                            <a class="o_dms_folder_dropdown_item o_dms_folder_dropdown_item_danger" href="#"
+                                               t-on-click.prevent="() => { this.deleteDirectoryPermanently(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'delete'"/></t>Delete permanently
+                                            </a>
+                                        </t>
+                                        <t t-else="">
+                                            <a t-if="dir.permission_download" class="o_dms_folder_dropdown_item" href="#"
+                                               t-on-click.prevent="() => { this.downloadDirectory(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'download'"/></t>Download
+                                            </a>
+                                            <a t-if="dir.permission_write" class="o_dms_folder_dropdown_item" href="#"
+                                               t-on-click.prevent="() => { this.createSubdirectory(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'new_folder'"/></t>New Subfolder
+                                            </a>
+                                            <a t-if="dir.permission_move" class="o_dms_folder_dropdown_item" href="#"
+                                               t-on-click.prevent="() => { this.moveDirectory(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'move'"/></t>Move
+                                            </a>
+                                            <a t-if="dir.permission_edit" class="o_dms_folder_dropdown_item" href="#"
+                                               t-on-click.prevent="() => { this.editDirectory(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'edit'"/></t>Edit
+                                            </a>
+                                            <a class="o_dms_folder_dropdown_item" href="#"
+                                               t-on-click.prevent="() => { this.scheduleActivityDirectory(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'clock'"/></t>Schedule Activity
+                                            </a>
+                                            <div t-if="dir.permission_unlink" class="o_dms_folder_dropdown_divider"/>
+                                            <a t-if="dir.permission_unlink"
+                                               class="o_dms_folder_dropdown_item o_dms_folder_dropdown_item_danger" href="#"
+                                               t-on-click.prevent="() => { this.trashDirectory(dir.id); }">
+                                                <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'delete'"/></t>Send to Trash
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <div class="o_dms_folder_inner">
+                                <div class="row g-0 h-100 w-100 p-2">
+                                    <div class="col-4 d-flex justify-content-center align-items-center">
+                                        <img t-if="dir.icon_url" t-att-src="dir.icon_url" class="o_dms_folder_icon" width="48" height="48" style="width: 48px; height: 48px; object-fit: contain;" alt="Folder"/>
+                                        <img t-else="" src="/dms/static/description/open-folder.png" class="o_dms_folder_icon" width="48" height="48" style="width: 48px; height: 48px; object-fit: contain;" alt="Folder"/>
+                                    </div>
+                                    <div class="col-8 py-1 px-2 d-flex flex-column justify-content-center">
+                                        <strong class="o_dms_folder_name text-truncate d-block mb-1 pe-3" t-out="dir.display_name || dir.name" />
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <span t-if="dir.count_directories" class="o_dms_folder_badge"><t t-out="dir.count_directories"/> Folders</span>
+                                            <span class="o_dms_folder_badge"><t t-out="dir.count_files"/> Files</span>
+                                            <span t-if="dir.activity_state" t-attf-class="o_dms_folder_badge o_dms_activity_badge #{dir.activity_state}" t-att-title="dir.activity_summary || ('Activity: ' + dir.activity_state)" t-on-click.stop="() => this.scheduleActivityDirectory(dir.id)"><t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'clock'"/></t><t t-out="dir.activity_state"/></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <div class="o_dms_section_divider" t-if="this.props.list.records.length"/>
+                <div class="o_dms_section_title" t-if="this.props.list.records.length">
+                    <t t-call="dms_enterprise_features.DmsIcon"><t t-set="icon" t-value="'file'"/></t>
+                    <span>Files</span>
+                </div>
+            </div>
+
+        </xpath>
+    </t>
+
+    <!-- 2. Sidebar folder icons and action dots (DMS search panels only) -->
+    <t t-inherit="web.SearchPanel.Category" t-inherit-mode="extension">
+        <xpath expr="//header" position="attributes">
+            <attribute name="t-att-class">{
+                'active text-black fw-bold': this.isCategoryActive ? this.isCategoryActive(section, valueId) : (this.state.active[section.id] === valueId),
+                'o_dms_has_actions': this.isDmsFolderSection(section) and (value.permission_download or value.permission_move or value.permission_write or value.permission_unlink),
+            }</attribute>
+        </xpath>
+        <xpath expr="//span[hasclass('o_search_panel_label_title')]" position="before">
+            <img t-if="this.isDmsView() and (section.fieldName === 'directory_id' or section.fieldName === 'parent_id')"
+                 src="/dms/static/description/open-folder.png"
+                 class="o_dms_sidebar_folder_icon flex-shrink-0"
+                 alt=""/>
+        </xpath>
+        <xpath expr="//header" position="inside">
+            <t t-if="this.isDmsFolderSection(section) and (value.permission_download or value.permission_move or value.permission_write or value.permission_unlink)">
+                <div class="o_dms_sidebar_actions"
+                     t-on-click.stop=""
+                     t-on-keydown.stop="">
+                    <Dropdown position="'bottom-end'" menuClass="'o_dms_sidebar_menu'" noClasses="true">
+                        <button type="button" class="o_dms_sidebar_dots_btn" title="Folder actions" aria-label="Folder actions">
+                            <span class="o_dms_dot"/>
+                            <span class="o_dms_dot"/>
+                            <span class="o_dms_dot"/>
+                        </button>
+                        <t t-set-slot="content">
+                            <DropdownItem t-if="value.permission_download" onSelected="() => this.downloadSidebarDirectory(valueId)">
+                                <i class="oi" data-icon="download"/>Download
+                            </DropdownItem>
+                            <DropdownItem t-if="value.permission_write" onSelected="() => this.createSidebarSubdirectory(valueId)">
+                                <i class="oi" data-icon="create_new_folder"/>New Subfolder
+                            </DropdownItem>
+                            <DropdownItem t-if="value.permission_move" onSelected="() => this.moveSidebarDirectory(valueId)">
+                                <i class="oi" data-icon="open_with"/>Move
+                            </DropdownItem>
+                            <DropdownItem t-if="value.permission_write" onSelected="() => this.editSidebarDirectory(valueId)">
+                                <i class="oi" data-icon="edit"/>Edit
+                            </DropdownItem>
+                            <t t-if="value.permission_unlink">
+                                <div class="dropdown-divider"/>
+                                <DropdownItem class="'o_dms_sidebar_menu_danger'" onSelected="() => this.trashSidebarDirectory(valueId)">
+                                    <i class="oi" data-icon="delete"/>Send to Trash
+                                </DropdownItem>
+                            </t>
+                        </t>
+                    </Dropdown>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+    <!-- 3. Tag the panel root so DMS styling never leaks into other apps -->
+    <t t-inherit="web.SearchPanel.Regular" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_search_panel')]" position="attributes">
+            <attribute name="t-att-class">(this.env.searchModel.searchPanelInfo.className or '') + (this.isDmsView() ? ' o_dms_search_panel' : '')</attribute>
+        </xpath>
+    </t>
+    <t t-inherit="web.SearchPanel.Sidebar" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_search_panel_sidebar')]" position="attributes">
+            <attribute name="t-att-class">this.isDmsView() ? 'o_dms_search_panel' : ''</attribute>
+        </xpath>
+    </t>
+
+</templates>

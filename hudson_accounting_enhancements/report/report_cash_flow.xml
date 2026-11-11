@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cf_section">
+        <t t-if="round(section_data.get('total', 0.0), 2) != 0 or section_data.get('account_lines')">
+            <tr>
+                <td style="padding-left:30px;"><t t-out="section_name"/></td>
+                <td class="text-end">
+                    <span t-out="section_data.get('total', 0.0)" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                </td>
+            </tr>
+            <t t-foreach="section_data.get('account_lines', [])" t-as="acc">
+                <tr>
+                    <td style="padding-left:45px; color:#555; font-size:12px;"><t t-out="acc['name']"/></td>
+                    <td class="text-end" style="color:#555; font-size:12px;">
+                        <span t-out="acc['balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                    </td>
+                </tr>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_cf">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-12 text-center mb-4">
+                            <h2 style="font-weight:bold;">Cash Flow Statement</h2>
+                            <h4 t-out="company.name"/>
+                            <p class="text-muted">
+                                <t t-if="data.get('date_from')">
+                                    For the period from
+                                    <strong><t t-out="data['date_from']"/></strong>
+                                    to
+                                    <strong><t t-out="data['date_to']"/></strong>
+                                </t>
+                            </p>
+                            <p class="text-muted small">
+                                Entries: <t t-if="data.get('target_move') == 'posted'">Posted Only</t>
+                                         <t t-else="">All Entries</t>
+                            </p>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm table-reports" style="font-size:13px;">
+                        <thead>
+                            <tr style="background:#2c3e50; color:white;">
+                                <th style="width:75%;">Description</th>
+                                <th class="text-end" style="width:25%;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <!-- Opening Balance -->
+                            <tr style="background:#ecf0f1; font-weight:bold;">
+                                <td style="font-size:14px; padding:8px;">Cash and cash equivalents, beginning of period</td>
+                                <td class="text-end" style="font-size:14px; padding:8px;">
+                                    <span t-out="data.get('opening_cash', 0)" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                </td>
+                            </tr>
+
+                            <!-- Net Increase -->
+                            <tr style="font-weight:bold;">
+                                <td style="padding:8px;">Net increase in cash and cash equivalents</td>
+                                <td class="text-end" style="padding:8px;">
+                                    <span t-out="data.get('net_increase', 0)" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                </td>
+                            </tr>
+
+                            <!-- Operating -->
+                            <tr style="background:#f9f9f9; font-weight:bold;">
+                                <td colspan="2" style="padding:8px;">Cash flows from operating activities</td>
+                            </tr>
+                            <t t-set="section_name" t-value="'Advance Payments received from customers'"/>
+                            <t t-set="section_data" t-value="data['op_adv_in']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <t t-set="section_name" t-value="'Cash received from operating activities'"/>
+                            <t t-set="section_data" t-value="data['op_cash_in']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <t t-set="section_name" t-value="'Advance payments made to suppliers'"/>
+                            <t t-set="section_data" t-value="data['op_adv_out']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <t t-set="section_name" t-value="'Cash paid for operating activities'"/>
+                            <t t-set="section_data" t-value="data['op_cash_out']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <!-- Investing -->
+                            <tr style="background:#f9f9f9; font-weight:bold;">
+                                <td colspan="2" style="padding:8px; border-top: 1px solid #ddd;">Cash flows from Investing &amp; extraordinary activities</td>
+                            </tr>
+                            <t t-set="section_name" t-value="'Cash in'"/>
+                            <t t-set="section_data" t-value="data['inv_in']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <t t-set="section_name" t-value="'Cash out'"/>
+                            <t t-set="section_data" t-value="data['inv_out']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <!-- Financing -->
+                            <tr style="background:#f9f9f9; font-weight:bold;">
+                                <td colspan="2" style="padding:8px; border-top: 1px solid #ddd;">Cash flows from financing activities</td>
+                            </tr>
+                            <t t-set="section_name" t-value="'Cash in'"/>
+                            <t t-set="section_data" t-value="data['fin_in']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <t t-set="section_name" t-value="'Cash out'"/>
+                            <t t-set="section_data" t-value="data['fin_out']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <!-- Unclassified -->
+                            <tr style="background:#f9f9f9; font-weight:bold;">
+                                <td colspan="2" style="padding:8px; border-top: 1px solid #ddd;">Cash flows from unclassified activities</td>
+                            </tr>
+                            <t t-set="section_name" t-value="'Cash in'"/>
+                            <t t-set="section_data" t-value="data['unclass_in']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <t t-set="section_name" t-value="'Cash out'"/>
+                            <t t-set="section_data" t-value="data['unclass_out']"/>
+                            <t t-call="hudson_accounting_enhancements.cf_section"/>
+
+                            <!-- Closing Balance -->
+                            <tr style="background:#2c3e50; color:white; font-weight:bold;">
+                                <td style="font-size:14px; padding:8px;">Cash and cash equivalents, closing balance</td>
+                                <td class="text-end" style="font-size:14px; padding:8px;">
+                                    <span t-out="data.get('closing_cash', 0)" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <p class="text-muted small">
+                                <strong>Note:</strong> Prepared using the Direct Method. Positive values represent
+                                cash inflows; negative values represent cash outflows. Opening and closing balances
+                                reflect bank and cash account balances as per the chart of accounts.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

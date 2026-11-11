@@ -1,0 +1,1129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ========================================================================= -->
+    <!-- 1. REVIEW TAB (account.account_audit_menu)                                -->
+    <!-- Exact order matching Image 1:                                             -->
+    <!--   Control                                                                 -->
+    <!--     Journal Items                                                         -->
+    <!--     Audit Trail                                                           -->
+    <!--     Journal Audit                                                         -->
+    <!--   Audit                                                                   -->
+    <!--     Working Files                                                         -->
+    <!--     Annual Report                                                         -->
+    <!--   Inventory                                                               -->
+    <!--     Inventory Valuation                                                   -->
+    <!--   Regularization Entries                                                  -->
+    <!--     Unrealized Currencies                                                 -->
+    <!--     Deferred Revenues                                                     -->
+    <!--     Deferred Expenses                                                     -->
+    <!--   Purchases                                                               -->
+    <!--     Bills To Receive                                                      -->
+    <!--     Billed Not Received                                                   -->
+    <!--   Sales                                                                   -->
+    <!--     Invoices To Be Issued                                                 -->
+    <!--     Invoiced Not Delivered                                                -->
+    <!-- ========================================================================= -->
+
+    <!-- Section: Control (account.account_audit_control_menu) -->
+    <record id="account.account_audit_control_menu" model="ir.ui.menu">
+        <field name="name">Control</field>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Journal Items -->
+    <record id="account.menu_action_account_moves_all" model="ir.ui.menu">
+        <field name="name">Journal Items</field>
+        <field name="parent_id" ref="account.account_audit_control_menu"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. Audit Trail -->
+    <record id="account.account_audit_trail_menu" model="ir.ui.menu">
+        <field name="name">Audit Trail</field>
+        <field name="parent_id" ref="account.account_audit_control_menu"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Journal Audit -->
+    <record id="action_server_report_journal_audit" model="ir.actions.server">
+        <field name="name">Journal Audit</field>
+        <field name="model_id" ref="accounting_pdf_reports.model_account_print_journal"/>
+        <field name="state">code</field>
+        <field name="code">
+today = datetime.date.today()
+fy_dates = env.company.compute_fiscalyear_dates(today)
+wiz = env['account.print.journal'].create({
+    'target_move': 'posted',
+    'date_from': fy_dates['date_from'],
+    'date_to': fy_dates['date_to'],
+})
+data = wiz.read()[0]
+action = {
+    'name': 'Journal Audit',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'account.print.journal',
+        'wizard_id': wiz.id,
+        'data': data,
+    }
+}
+        </field>
+    </record>
+
+    <record id="om_account_accountant.menu_review_journal_audit" model="ir.ui.menu">
+        <field name="name">Journal Audit</field>
+        <field name="action" ref="action_server_report_journal_audit"/>
+        <field name="parent_id" ref="account.account_audit_control_menu"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Hide unneeded items under Control & Reconciliation -->
+    <record id="om_account_accountant.menu_review_moves_to_review" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_accountant.menu_review_moves_unposted" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_accountant.menu_review_reconciliation" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+
+    <!-- Section: Audit -->
+    <menuitem id="menu_account_review_audit"
+              name="Audit"
+              parent="account.account_audit_menu"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Working Files -->
+    <menuitem id="menu_account_review_working_files"
+              name="Working Files"
+              parent="menu_account_review_audit"
+              action="action_account_working_file"
+              sequence="10"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Annual Report -->
+    <menuitem id="menu_account_annual_report"
+              name="Annual Report"
+              parent="menu_account_review_audit"
+              action="action_account_annual_report"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- Section: Inventory -->
+    <menuitem id="menu_review_inventory"
+              name="Inventory"
+              parent="account.account_audit_menu"
+              sequence="30"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Inventory Valuation -->
+    <menuitem id="menu_hudson_inventory_valuation"
+              name="Inventory Valuation"
+              parent="menu_review_inventory"
+              action="action_hudson_inventory_valuation"
+              sequence="10"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- Section: Regularization Entries -->
+    <!-- Deactivate duplicate from om_account_accountant -->
+    <record id="om_account_accountant.menu_review_regularization" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <menuitem id="menu_account_review_regularization"
+              name="Regularization Entries"
+              parent="account.account_audit_menu"
+              sequence="40"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Unrealized Currencies Server Action -->
+    <record id="action_server_report_unrealized" model="ir.actions.server">
+        <field name="name">Unrealized Currencies</field>
+        <field name="model_id" ref="hudson_accounting_enhancements.model_account_unrealized_currency_wizard"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.unrealized.currency.wizard'].create({})
+data = wiz.read()[0]
+action = {'name': 'Unrealized Currencies', 'type': 'ir.actions.client', 'tag': 'hudson_dynamic_reports.dynamic_report', 'params': {'model_name': 'account.unrealized.currency.wizard', 'wizard_id': wiz.id, 'data': data}}
+        </field>
+    </record>
+
+    <!-- 1. Unrealized Currencies -->
+    <menuitem id="menu_account_unrealized_currency"
+              name="Unrealized Currencies"
+              parent="menu_account_review_regularization"
+              action="action_server_report_unrealized"
+              sequence="10"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Deferred Revenues Action -->
+    <record id="action_client_hudson_deferred_revenues" model="ir.actions.client">
+        <field name="name">Deferred Revenues</field>
+        <field name="tag">hudson_dynamic_reports.dynamic_report</field>
+        <field name="params" eval="{'model_name': 'account.deferred.revenue.report'}"/>
+    </record>
+
+    <!-- Deferred Expenses Action -->
+    <record id="action_client_hudson_deferred_expenses" model="ir.actions.client">
+        <field name="name">Deferred Expenses</field>
+        <field name="tag">hudson_dynamic_reports.dynamic_report</field>
+        <field name="params" eval="{'model_name': 'account.deferred.expense.report'}"/>
+    </record>
+
+    <!-- 2. Deferred Revenues -->
+    <menuitem id="menu_hudson_deferred_revenues"
+              name="Deferred Revenues"
+              parent="menu_account_review_regularization"
+              action="action_client_hudson_deferred_revenues"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 3. Deferred Expenses -->
+    <menuitem id="menu_hudson_deferred_expenses"
+              name="Deferred Expenses"
+              parent="menu_account_review_regularization"
+              action="action_client_hudson_deferred_expenses"
+              sequence="30"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- Section: Purchases -->
+    <menuitem id="menu_account_review_purchases"
+              name="Purchases"
+              parent="account.account_audit_menu"
+              sequence="50"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Bills To Receive -->
+    <menuitem id="menu_account_review_bill_to_receive"
+              name="Bills To Receive"
+              action="action_hudson_purchase_bill_to_receive"
+              parent="menu_account_review_purchases"
+              sequence="10"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Billed Not Received -->
+    <menuitem id="menu_account_review_billed_not_received"
+              name="Billed Not Received"
+              action="action_hudson_purchase_billed_not_received"
+              parent="menu_account_review_purchases"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- Section: Sales -->
+    <menuitem id="menu_account_review_sales"
+              name="Sales"
+              parent="account.account_audit_menu"
+              sequence="60"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Invoices To Be Issued -->
+    <menuitem id="menu_account_review_invoices_to_be_issued"
+              name="Invoices To Be Issued"
+              action="action_hudson_sale_invoices_to_be_issued"
+              parent="menu_account_review_sales"
+              sequence="10"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Invoiced Not Delivered -->
+    <menuitem id="menu_account_review_invoiced_not_delivered"
+              name="Invoiced Not Delivered"
+              action="action_hudson_sale_invoiced_not_delivered"
+              parent="menu_account_review_sales"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- ========================================================================= -->
+    <!-- 2. REPORTING TAB (account.menu_finance_reports)                            -->
+    <!-- Exact order matching Image 2:                                             -->
+    <!--   Statement Reports                                                       -->
+    <!--     Balance Sheet                                                         -->
+    <!--     Profit and Loss                                                       -->
+    <!--     Cash Flow Statement                                                   -->
+    <!--     Depreciation Schedule                                                 -->
+    <!--   Ledgers                                                                 -->
+    <!--     Trial Balance                                                         -->
+    <!--     General Ledger                                                        -->
+    <!--   Partner Reports                                                         -->
+    <!--     Partner Ledger                                                        -->
+    <!--     Customer Statement                                                    -->
+    <!--     Aged Receivable                                                       -->
+    <!--     Aged Payable                                                          -->
+    <!--   Taxes & Fiscal                                                          -->
+    <!--     Tax Report                                                            -->
+    <!--     Fiscal Report                                                         -->
+    <!--   Management                                                              -->
+    <!--     Invoice Analysis                                                      -->
+    <!--     Cashflow Analysis                                                     -->
+    <!--     Analytic Report                                                       -->
+    <!--     Executive Summary                                                     -->
+    <!--     Budget Report                                                         -->
+    <!--     Product Margins...                                                    -->
+    <!--     Loans Analysis                                                        -->
+    <!-- ========================================================================= -->
+
+    <!-- Section 1: Statement Reports -->
+    <record id="account.account_reports_legal_statements_menu" model="ir.ui.menu">
+        <field name="name">Statement Reports</field>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Balance Sheet -->
+    <record id="action_server_report_balance_sheet" model="ir.actions.server">
+        <field name="name">Balance Sheet</field>
+        <field name="model_id" ref="accounting_pdf_reports.model_accounting_report"/>
+        <field name="state">code</field>
+        <field name="code">
+bs_report = env.ref('accounting_pdf_reports.account_financial_report_balancesheet0', raise_if_not_found=False)
+wiz = env['accounting.report'].create({'account_report_id': bs_report.id if bs_report else False})
+data = wiz.read()[0]
+data['account_report_id'] = [bs_report.id, bs_report.name] if bs_report else False
+action = {
+    'name': 'Balance Sheet',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'accounting.report',
+        'wizard_id': wiz.id,
+        'data': data,
+    }
+}
+        </field>
+    </record>
+    <record id="accounting_pdf_reports.menu_account_report_bs" model="ir.ui.menu">
+        <field name="name">Balance Sheet</field>
+        <field name="action" ref="action_server_report_balance_sheet"/>
+        <field name="parent_id" ref="account.account_reports_legal_statements_menu"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. Profit and Loss -->
+    <record id="action_server_report_profit_and_loss" model="ir.actions.server">
+        <field name="name">Profit and Loss</field>
+        <field name="model_id" ref="accounting_pdf_reports.model_accounting_report"/>
+        <field name="state">code</field>
+        <field name="code">
+pl_report = env.ref('accounting_pdf_reports.account_financial_report_profitandloss0', raise_if_not_found=False)
+wiz = env['accounting.report'].create({'account_report_id': pl_report.id if pl_report else False})
+data = wiz.read()[0]
+data['account_report_id'] = [pl_report.id, pl_report.name] if pl_report else False
+action = {
+    'name': 'Profit and Loss',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'accounting.report',
+        'wizard_id': wiz.id,
+        'data': data,
+    }
+}
+        </field>
+    </record>
+    <record id="accounting_pdf_reports.menu_account_report_pl" model="ir.ui.menu">
+        <field name="name">Profit and Loss</field>
+        <field name="action" ref="action_server_report_profit_and_loss"/>
+        <field name="parent_id" ref="account.account_reports_legal_statements_menu"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Cash Flow Statement -->
+    <record id="action_server_report_cash_flow" model="ir.actions.server">
+        <field name="name">Cash Flow Statement</field>
+        <field name="model_id" ref="hudson_accounting_enhancements.model_account_cash_flow_wizard"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.cash.flow.wizard'].create({})
+data = wiz.read()[0]
+action = {'name': 'Cash Flow Statement', 'type': 'ir.actions.client', 'tag': 'hudson_dynamic_reports.dynamic_report', 'params': {'model_name': 'account.cash.flow.wizard', 'wizard_id': wiz.id, 'data': data}}
+        </field>
+    </record>
+    <menuitem id="menu_account_cash_flow"
+              name="Cash Flow Statement"
+              parent="account.account_reports_legal_statements_menu"
+              action="action_server_report_cash_flow"
+              sequence="30"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 4. Depreciation Schedule -->
+    <record id="action_server_report_depreciation_schedule" model="ir.actions.server">
+        <field name="name">Depreciation Schedule</field>
+        <field name="model_id" ref="om_account_asset.model_asset_depreciation_schedule"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['asset.depreciation.schedule'].create({})
+data = wiz.read()[0]
+action = {
+    'name': 'Depreciation Schedule',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'asset.depreciation.schedule',
+        'wizard_id': wiz.id,
+        'data': data,
+    }
+}
+        </field>
+    </record>
+    <record id="om_account_asset.menu_asset_depreciation_schedule" model="ir.ui.menu">
+        <field name="name">Depreciation Schedule</field>
+        <field name="action" ref="action_server_report_depreciation_schedule"/>
+        <field name="parent_id" ref="account.account_reports_legal_statements_menu"/>
+        <field name="sequence">40</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Hide duplicates under Statement Reports -->
+    <record id="accounting_pdf_reports.menu_account_report_cash_flow" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="accounting_pdf_reports.menu_account_report_annual" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+
+    <!-- Section 2: Ledgers -->
+    <menuitem id="menu_account_reports_ledgers"
+              name="Ledgers"
+              parent="account.menu_finance_reports"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 1. Trial Balance -->
+    <record id="action_server_report_trial_balance" model="ir.actions.server">
+        <field name="name">Trial Balance</field>
+        <field name="model_id" ref="accounting_pdf_reports.model_account_balance_report"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.balance.report'].create({})
+data = wiz.read()[0]
+action = {
+    'name': 'Trial Balance',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'account.balance.report',
+        'wizard_id': wiz.id,
+        'data': data,
+    }
+}
+        </field>
+    </record>
+    <record id="accounting_pdf_reports.menu_general_balance_report" model="ir.ui.menu">
+        <field name="name">Trial Balance</field>
+        <field name="action" ref="action_server_report_trial_balance"/>
+        <field name="parent_id" ref="menu_account_reports_ledgers"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. General Ledger -->
+    <record id="action_server_report_general_ledger" model="ir.actions.server">
+        <field name="name">General Ledger</field>
+        <field name="model_id" ref="accounting_pdf_reports.model_account_report_general_ledger"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.report.general.ledger'].create({})
+data = wiz.read()[0]
+action = {
+    'name': 'General Ledger',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'account.report.general.ledger',
+        'wizard_id': wiz.id,
+        'data': data,
+    }
+}
+        </field>
+    </record>
+    <record id="accounting_pdf_reports.menu_general_ledger" model="ir.ui.menu">
+        <field name="name">General Ledger</field>
+        <field name="action" ref="action_server_report_general_ledger"/>
+        <field name="parent_id" ref="menu_account_reports_ledgers"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Hide unneeded items from Ledgers -->
+    <record id="accounting_pdf_reports.menu_aged_trial_balance" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="accounting_pdf_reports.menu_print_journal" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="accounting_pdf_reports.menu_finance_audit_reports" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+
+    <!-- Section 3: Partner Reports -->
+    <record id="account.account_reports_partners_reports_menu" model="ir.ui.menu">
+        <field name="name">Partner Reports</field>
+        <field name="parent_id" ref="account.menu_finance_reports"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Partner Ledger -->
+    <record id="action_server_report_partner_ledger" model="ir.actions.server">
+        <field name="name">Partner Ledger</field>
+        <field name="model_id" ref="accounting_pdf_reports.model_account_report_partner_ledger"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.report.partner.ledger'].create({})
+data = wiz.read()[0]
+action = {
+    'name': 'Partner Ledger',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'account.report.partner.ledger',
+        'wizard_id': wiz.id,
+        'data': data,
+    }
+}
+        </field>
+    </record>
+    <record id="accounting_pdf_reports.menu_partner_ledger" model="ir.ui.menu">
+        <field name="name">Partner Ledger</field>
+        <field name="action" ref="action_server_report_partner_ledger"/>
+        <field name="parent_id" ref="account.account_reports_partners_reports_menu"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Aged Receivable -->
+    <record id="accounting_pdf_reports.menu_aged_receivable" model="ir.ui.menu">
+        <field name="name">Aged Receivable</field>
+        <field name="action" ref="hudson_accounting_enhancements.action_server_aged_receivable"/>
+        <field name="parent_id" ref="account.account_reports_partners_reports_menu"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 4. Aged Payable -->
+    <record id="accounting_pdf_reports.menu_aged_payable" model="ir.ui.menu">
+        <field name="name">Aged Payable</field>
+        <field name="action" ref="hudson_accounting_enhancements.action_server_aged_payable"/>
+        <field name="parent_id" ref="account.account_reports_partners_reports_menu"/>
+        <field name="sequence">40</field>
+        <field name="active" eval="True"/>
+    </record>
+
+
+    <!-- Section 4: Taxes & Fiscal -->
+    <record id="account.account_reports_taxes_and_fiscal_menu" model="ir.ui.menu">
+        <field name="name">Taxes &amp; Fiscal</field>
+        <field name="parent_id" ref="account.menu_finance_reports"/>
+        <field name="sequence">40</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Tax Report -->
+    <record id="action_server_report_tax" model="ir.actions.server">
+        <field name="name">Tax Report</field>
+        <field name="model_id" ref="hudson_accounting_enhancements.model_account_tax_extended_wizard"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.tax.extended.wizard'].create({})
+data = wiz.read()[0]
+action = {'name': 'Tax Report', 'type': 'ir.actions.client', 'tag': 'hudson_dynamic_reports.dynamic_report', 'params': {'model_name': 'account.tax.extended.wizard', 'wizard_id': wiz.id, 'data': data}}
+        </field>
+    </record>
+    <menuitem id="menu_account_tax_extended"
+              name="Tax Report"
+              parent="account.account_reports_taxes_and_fiscal_menu"
+              action="action_server_report_tax"
+              sequence="10"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 2. Fiscal Report -->
+    <menuitem id="menu_account_fiscal_report"
+              name="Fiscal Report"
+              parent="account.account_reports_taxes_and_fiscal_menu"
+              action="accounting_pdf_reports.action_account_tax_report"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Hide duplicate Tax Report from accounting_pdf_reports -->
+    <record id="accounting_pdf_reports.menu_account_report" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+
+    <!-- Section 5: Management -->
+    <record id="account.account_reports_management_menu" model="ir.ui.menu">
+        <field name="name">Management</field>
+        <field name="parent_id" ref="account.menu_finance_reports"/>
+        <field name="sequence">50</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Invoice Analysis -->
+    <record id="account.menu_action_account_invoice_report_all" model="ir.ui.menu">
+        <field name="name">Invoice Analysis</field>
+        <field name="parent_id" ref="account.account_reports_management_menu"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. Cashflow Analysis -->
+    <record id="account.menu_action_account_cashflow_analysis" model="ir.ui.menu">
+        <field name="name">Cashflow Analysis</field>
+        <field name="parent_id" ref="account.account_reports_management_menu"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Analytic Reporting -->
+    <record id="account.menu_action_analytic_reporting" model="ir.ui.menu">
+        <field name="name">Analytic Reporting</field>
+        <field name="parent_id" ref="account.account_reports_management_menu"/>
+        <field name="action" ref="action_analytic_reporting_new"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 4. Executive Summary -->
+    <record id="action_server_report_executive" model="ir.actions.server">
+        <field name="name">Executive Summary</field>
+        <field name="model_id" ref="hudson_accounting_enhancements.model_account_executive_summary_wizard"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.executive.summary.wizard'].create({})
+data = wiz.read()[0]
+action = {'name': 'Executive Summary', 'type': 'ir.actions.client', 'tag': 'hudson_dynamic_reports.dynamic_report', 'params': {'model_name': 'account.executive.summary.wizard', 'wizard_id': wiz.id, 'data': data}}
+        </field>
+    </record>
+    <menuitem id="menu_account_executive_summary"
+              name="Executive Summary"
+              parent="account.account_reports_management_menu"
+              action="action_server_report_executive"
+              sequence="40"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 5. Budget Report -->
+    <record id="om_account_budget.menu_account_budget_line_analysis" model="ir.ui.menu">
+        <field name="name">Budget Report</field>
+        <field name="parent_id" ref="account.account_reports_management_menu"/>
+        <field name="sequence">50</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 6. Product Margins... -->
+    <record id="product_margin.menu_action_product_margin" model="ir.ui.menu">
+        <field name="name">Product Margins...</field>
+        <field name="parent_id" ref="account.account_reports_management_menu"/>
+        <field name="sequence">60</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 7. Loans Analysis -->
+    <menuitem id="menu_hudson_loans_analysis"
+              name="Loans Analysis"
+              parent="account.account_reports_management_menu"
+              action="action_hudson_loan_analysis"
+              sequence="70"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- Hide unneeded items in Reporting -->
+    <record id="om_account_asset.menu_action_asset_asset_report" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_cash_forecast.menu_cash_forecast_report" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_daily_reports.menu_finance_daily_reports" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+
+    <!-- ========================================================================= -->
+    <!-- 3. CONFIGURATION TAB (account.menu_finance_configuration)                 -->
+    <!-- Exact order matching Image 3:                                             -->
+    <!--   Settings                                                                -->
+    <!--   Online Payments                                                         -->
+    <!--   Accounting:                                                             -->
+    <!--     Chart of Accounts, Taxes, Journals, Currencies, Fiscal Positions,     -->
+    <!--     Multi-Ledger, Tax Groups, Tax Units, Rounding Methods, Account Tags,  -->
+    <!--     Fiscal Years, Accounting Reports, Horizontal Groups, Checks,          -->
+    <!--     Fiscal Categories, Depreciation Models, Return Types,                 -->
+    <!--     Invoice Reminders, Financial Budgets, Online Synchronization          -->
+    <!--   Invoicing:                                                              -->
+    <!--     Payment Terms, EDI Proxy Users, Incoterms, Product Categories         -->
+    <!--   Analytic Accounting:                                                    -->
+    <!--     Analytic Distribution Models, Analytic Accounts, Analytic Plans       -->
+    <!-- ========================================================================= -->
+
+    <!-- Top-level 1: Settings -->
+    <record id="account.menu_account_config" model="ir.ui.menu">
+        <field name="name">Settings</field>
+        <field name="parent_id" ref="account.menu_finance_configuration"/>
+        <field name="sequence">1</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Top-level 2: Online Payments -->
+    <record id="account_payment.payment_provider_menu" model="ir.ui.menu">
+        <field name="name">Online Payments</field>
+        <field name="parent_id" ref="account.menu_finance_configuration"/>
+        <field name="sequence">2</field>
+        <field name="active" eval="True"/>
+    </record>
+
+
+    <!-- Submenu 1: Accounting -->
+    <record id="account.account_account_menu" model="ir.ui.menu">
+        <field name="name">Accounting</field>
+        <field name="parent_id" ref="account.menu_finance_configuration"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Chart of Accounts -->
+    <record id="account.menu_action_account_form" model="ir.ui.menu">
+        <field name="name">Chart of Accounts</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. Taxes -->
+    <record id="account.menu_action_tax_form" model="ir.ui.menu">
+        <field name="name">Taxes</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Journals -->
+    <record id="account.menu_action_account_journal_form" model="ir.ui.menu">
+        <field name="name">Journals</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 4. Currencies -->
+    <record id="account.menu_action_currency_form" model="ir.ui.menu">
+        <field name="name">Currencies</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">40</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 5. Fiscal Positions -->
+    <record id="account.menu_action_account_fiscal_position_form" model="ir.ui.menu">
+        <field name="name">Fiscal Positions</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">50</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 6. Multi-Ledger -->
+    <record id="account.menu_action_account_journal_group_list" model="ir.ui.menu">
+        <field name="name">Multi-Ledger</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">60</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 7. Tax Groups -->
+    <record id="account.menu_action_tax_group" model="ir.ui.menu">
+        <field name="name">Tax Groups</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">70</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 8. Tax Units -->
+    <menuitem id="menu_account_tax_unit"
+              name="Tax Units"
+              parent="account.account_account_menu"
+              action="action_account_tax_unit"
+              sequence="80"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 9. Rounding Methods -->
+    <record id="account.menu_action_rounding_form_view" model="ir.ui.menu">
+        <field name="name">Rounding Methods</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">90</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 10. Account Tags -->
+    <record id="om_account_accountant.menu_account_tag" model="ir.ui.menu">
+        <field name="name">Account Tags</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">100</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 11. Fiscal Years -->
+    <record id="om_fiscal_year.menu_fiscal_year" model="ir.ui.menu">
+        <field name="name">Fiscal Years</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">110</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 12. Accounting Reports -->
+    <record id="accounting_pdf_reports.menu_account_reports" model="ir.ui.menu">
+        <field name="name">Accounting Reports</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">120</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 13. Horizontal Groups -->
+    <menuitem id="menu_account_horizontal_group"
+              name="Horizontal Groups"
+              parent="account.account_account_menu"
+              action="action_account_horizontal_group"
+              sequence="130"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 14. Checks -->
+    <record id="om_account_check_printing.menu_check_format" model="ir.ui.menu">
+        <field name="name">Checks</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">140</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 15. Fiscal Categories -->
+    <menuitem id="menu_account_fiscal_category"
+              name="Fiscal Categories"
+              parent="account.account_account_menu"
+              action="action_account_fiscal_category"
+              sequence="150"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 16. Depreciation Models -->
+    <record id="om_account_asset.menu_action_account_asset_asset_list_normal_purchase" model="ir.ui.menu">
+        <field name="name">Depreciation Models</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">160</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 17. Return Types -->
+    <menuitem id="menu_account_return_type"
+              name="Return Types"
+              parent="account.account_account_menu"
+              action="action_account_return_type"
+              sequence="170"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 19. Financial Budgets -->
+    <record id="om_account_budget.menu_account_budget" model="ir.ui.menu">
+        <field name="name">Financial Budgets</field>
+        <field name="parent_id" ref="account.account_account_menu"/>
+        <field name="sequence">190</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 20. Online Synchronization -->
+    <menuitem id="menu_account_online_sync"
+              name="Online Synchronization"
+              parent="account.account_account_menu"
+              action="action_account_online_sync"
+              sequence="200"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- Submenu 2: Invoicing -->
+    <record id="account.account_invoicing_menu" model="ir.ui.menu">
+        <field name="name">Invoicing</field>
+        <field name="parent_id" ref="account.menu_finance_configuration"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Payment Terms -->
+    <record id="account.menu_action_payment_term_form" model="ir.ui.menu">
+        <field name="name">Payment Terms</field>
+        <field name="parent_id" ref="account.account_invoicing_menu"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. EDI Proxy Users -->
+    <record id="account_edi_proxy_client.menu_account_proxy_client_user" model="ir.ui.menu">
+        <field name="name">EDI Proxy Users</field>
+        <field name="parent_id" ref="account.account_invoicing_menu"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Incoterms -->
+    <record id="account.menu_action_incoterm_open" model="ir.ui.menu">
+        <field name="name">Incoterms</field>
+        <field name="parent_id" ref="account.account_invoicing_menu"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 4. Product Categories -->
+    <record id="account.menu_product_product_categories" model="ir.ui.menu">
+        <field name="name">Product Categories</field>
+        <field name="parent_id" ref="account.account_invoicing_menu"/>
+        <field name="sequence">40</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Hide unneeded items under Invoicing -->
+    <record id="om_account_accountant.menu_account_payment_method" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+
+    <!-- Submenu 3: Analytic Accounting -->
+    <record id="account.menu_analytic_accounting" model="ir.ui.menu">
+        <field name="name">Analytic Accounting</field>
+        <field name="parent_id" ref="account.menu_finance_configuration"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1. Analytic Distribution Models -->
+    <record id="account.menu_analytic__distribution_model" model="ir.ui.menu">
+        <field name="name">Analytic Distribution Models</field>
+        <field name="parent_id" ref="account.menu_analytic_accounting"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2. Analytic Accounts -->
+    <record id="account.account_analytic_def_account" model="ir.ui.menu">
+        <field name="name">Analytic Accounts</field>
+        <field name="parent_id" ref="account.menu_analytic_accounting"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3. Analytic Plans -->
+    <record id="account.account_analytic_plan_menu" model="ir.ui.menu">
+        <field name="name">Analytic Plans</field>
+        <field name="parent_id" ref="account.menu_analytic_accounting"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+
+    <!-- Deactivate duplicate/unneeded menus under Configuration -->
+    <record id="hudson_accounting_enhancements.menu_account_multi_ledger" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_accountant.menu_account_management_config" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_bank_statement_import.menu_account_statement_import_map" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="account.account_report_folder" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+
+    <!-- ========================================================================= -->
+    <!-- 4. ACCOUNTING TAB (account.menu_finance_entries)                         -->
+    <!-- Matching Online Enterprise structure:                                     -->
+    <!--                                                                           -->
+    <!--   Transactions                                                            -->
+    <!--     Journal Entries                                                       -->
+    <!--     PAN Entity                                                            -->
+    <!--     Transfers                                                             -->
+    <!--     Analytic Items                                                        -->
+    <!--     Analytic Budget                                                       -->
+    <!--                                                                           -->
+    <!--   Assets & Liabilities                                                    -->
+    <!--     Assets                                                                -->
+    <!--     Loans                                                                 -->
+    <!--     Fleet                                                                 -->
+    <!--                                                                           -->
+    <!--   Closing                                                                 -->
+    <!--     Reconcile                                                             -->
+    <!--     Tax Returns                                                           -->
+    <!--     Lock Dates...                                                         -->
+    <!--     Secure Entries                                                        -->
+    <!-- ========================================================================= -->
+
+    <!-- 1. Section: Transactions -->
+    <record id="account.account_transactions_menu" model="ir.ui.menu">
+        <field name="name">Transactions</field>
+        <field name="parent_id" ref="account.menu_finance_entries"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1.1 Journal Entries -->
+    <record id="account.menu_action_move_journal_line_form" model="ir.ui.menu">
+        <field name="name">Journal Entries</field>
+        <field name="parent_id" ref="account.account_transactions_menu"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1.2 Transfers -->
+    <menuitem id="menu_account_transfers"
+              name="Transfers"
+              parent="account.account_transactions_menu"
+              action="account.action_account_payments_transfer"
+              sequence="30"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 1.3 Analytic Items -->
+    <record id="account.menu_action_analytic_lines_tree" model="ir.ui.menu">
+        <field name="name">Analytic Items</field>
+        <field name="parent_id" ref="account.account_transactions_menu"/>
+        <field name="sequence">40</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 1.4 Analytic Budget -->
+    <menuitem id="menu_account_analytic_budget"
+              name="Analytic Budget"
+              parent="account.account_transactions_menu"
+              action="om_account_budget.action_account_budget"
+              sequence="50"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- 2. Section: Assets & Liabilities -->
+    <menuitem id="menu_assets_and_liabilities"
+              name="Assets &amp; Liabilities"
+              parent="account.menu_finance_entries"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 2.1 Assets -->
+    <record id="om_account_asset.menu_action_account_asset_asset_form" model="ir.ui.menu">
+        <field name="name">Assets</field>
+        <field name="parent_id" ref="hudson_accounting_enhancements.menu_assets_and_liabilities"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 2.2 Loans -->
+    <menuitem id="menu_hudson_loan_root"
+              name="Loans"
+              parent="hudson_accounting_enhancements.menu_assets_and_liabilities"
+              sequence="20"
+              action="action_hudson_loan"/>
+
+    <!-- 2.3 Fleet -->
+    <menuitem id="menu_accounting_fleet_vehicles"
+              name="Fleet"
+              parent="hudson_accounting_enhancements.menu_assets_and_liabilities"
+              action="fleet.fleet_vehicle_action"
+              sequence="30"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+
+    <!-- 3. Section: Closing -->
+    <record id="account.account_closing_menu" model="ir.ui.menu">
+        <field name="name">Closing</field>
+        <field name="parent_id" ref="account.menu_finance_entries"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3.1 Reconcile -->
+    <menuitem id="menu_hudson_journal_items"
+              name="Reconcile"
+              parent="account.account_closing_menu"
+              action="hudson_accounting_enhancements.action_hudson_auto_reconcile"
+              sequence="10"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 3.2 Tax Returns -->
+    <menuitem id="menu_account_closing_tax_returns"
+              name="Tax Returns"
+              parent="account.account_closing_menu"
+              action="action_server_report_tax"
+              sequence="20"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+    <!-- 3.3 Lock Dates... -->
+    <record id="om_fiscal_year.menu_action_change_lock_date" model="ir.ui.menu">
+        <field name="name">Lock Dates...</field>
+        <field name="parent_id" ref="account.account_closing_menu"/>
+        <field name="sequence">30</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- 3.4 Secure Entries -->
+    <record id="account.menu_action_secure_entries" model="ir.ui.menu">
+        <field name="name">Secure Entries</field>
+        <field name="parent_id" ref="account.account_closing_menu"/>
+        <field name="sequence">40</field>
+        <field name="group_ids" eval="[(6, 0, [ref('account.group_account_user'), ref('account.group_account_manager')])]"/>
+        <field name="active" eval="True"/>
+    </record>
+
+
+    <!-- ========================================================================= -->
+    <!-- Deactivate All Other Unwanted Menus under Accounting Dropdown             -->
+    <!-- ========================================================================= -->
+
+    <!-- Unwanted items directly under Accounting (account.menu_finance_entries) -->
+    <record id="om_account_accountant.menu_finance_entries_accounting_journals" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_accountant.menu_accounting_bank_and_cash" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="accounting_pdf_reports.menu_finance_entries_accounting_ledgers" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_recurring_payments.menu_recurring_payment" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_recurring_payments.menu_move_auto_post" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_cash_forecast.menu_cash_forecast_item" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_reconcile.menu_reconciliation" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Unwanted items under Closing (account.account_closing_menu) -->
+    <record id="om_fiscal_year.menu_account_period_closing" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_fiscal_year.menu_fiscal_year_closing" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_currency_revaluation.menu_currency_revaluation" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Follow-ups (om_account_followup) - Deactivated / Hidden -->
+    <record id="om_account_followup.menu_finance_followup" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="om_account_followup.om_account_followup_menu" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

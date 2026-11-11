@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Resignation Order Reference -->
+        <record id="seq_hr_resignation" model="ir.sequence">
+            <field name="name">Employee Resignation</field>
+            <field name="code">hr.resignation</field>
+            <field name="prefix">RES/%(range_year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

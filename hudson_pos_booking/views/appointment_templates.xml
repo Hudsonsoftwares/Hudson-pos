@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- 1. Warm Walk-in Welcome Notice on Slot Selection Page (/appointment/<id>) -->
+    <template id="appointment_preview_inherit_walkin_notice" inherit_id="appointment.appointment_preview">
+        <!-- Error Banner when fully booked / no resource available -->
+        <xpath expr="//div[hasclass('o_appointment_preview')]//t[@t-if=&quot;request.params.get('error') == 'cancel_too_late'&quot;]" position="after">
+            <t t-if="request.params.get('error') in ('no_resource_available', 'no_user_available')">
+                <div class="alert alert-info border-0 shadow-sm rounded-4 p-4 mb-4 text-start" role="alert" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-left: 6px solid #e17055 !important;">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="fs-2 me-2">🍽️</span>
+                        <h4 class="mb-0 fw-bold text-dark">Online Table Bookings Full for this Slot</h4>
+                    </div>
+                    <p class="mb-2 text-secondary" style="font-size: 15px; line-height: 1.6;">
+                        All reservable tables for your requested guest count are currently occupied at this time.
+                    </p>
+                    <div class="p-3 bg-white rounded-3 border-start border-4 border-warning my-2">
+                        <h6 class="fw-bold text-dark mb-1">
+                            <i class="oi oi-filled text-warning me-1" data-icon="restaurant"/> Walk-In Dine-In Guests are Always Our Priority!
+                        </h6>
+                        <p class="mb-0 text-muted small" style="line-height: 1.5;">
+                            We always prioritize our walk-in guests. Even when online bookings are fully reserved for a given time slot, you are always welcome to visit us directly for a dine-in experience. Our host team will be delighted to seat you!
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+
+        <!-- No Slots Available on Selected Date: Warm Hospitality Message -->
+        <xpath expr="//div[hasclass('o_appointment_preview')]//div[hasclass('alert-warning')][i[@data-icon='warning']]" position="replace">
+            <div class="alert alert-info border-0 shadow-sm rounded-4 p-4 mt-4 text-start bg-white" style="border-left: 6px solid #0984e3 !important;">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="fs-2 me-2">🍽️</span>
+                    <h5 class="mb-0 fw-bold text-dark">Online Booking Currently Unavailable for this Slot</h5>
+                </div>
+                <p class="text-secondary mb-2" style="font-size: 14px; line-height: 1.6;">
+                    Online table reservations are currently full for the selected date and guest count.
+                </p>
+                <div class="p-3 rounded-3 bg-light border border-primary-subtle">
+                    <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                        <span>✨</span>
+                        <span>Direct Walk-in Guests Always Warmly Welcomed!</span>
+                    </div>
+                    <p class="text-muted small mb-0" style="line-height: 1.5;">
+                        We give top priority to direct walk-in guests. Feel free to visit us directly during opening hours to enjoy your dine-in experience!
+                    </p>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 2. Optional Pre-Order Food Section on Details Form (/appointment/<id>/info) -->
+    <template id="appointment_info_inherit_preorder_food" inherit_id="appointment.appointment_info">
+        <!-- 0. Expand Outer Container to Modern Full Width (Eliminates Cramped Blank Right Margin) -->
+        <xpath expr="//div[hasclass('o_appointment_info')]//div[hasclass('container')][hasclass('premium-card')]" position="attributes">
+            <attribute name="class">container-fluid px-3 px-xl-5 mt-3 mb-5 premium-card</attribute>
+            <attribute name="style">max-width: 1560px; margin: 0 auto; width: 100%;</attribute>
+        </xpath>
+
+        <!-- 1. Expand Form Column to Full Width (12 columns) -->
+        <xpath expr="//div[hasclass('o_appointment_info')]//div[hasclass('col-lg-8')]" position="attributes">
+            <attribute name="class">col-12</attribute>
+        </xpath>
+
+        <!-- 2. Move Appointment Info Column to a Sleek Full-Width Top Banner -->
+        <xpath expr="//div[hasclass('o_appointment_info')]//div[hasclass('col-lg-4')]" position="attributes">
+            <attribute name="class">col-12 order-first mb-4 p-3 bg-light rounded-4 border d-flex flex-wrap align-items-center justify-content-between gap-3 shadow-xs</attribute>
+            <attribute name="style">background: linear-gradient(135deg, #f8fafc, #f1f5f9) !important; border: 1px solid #e2e8f0 !important;</attribute>
+        </xpath>
+
+        <!-- 3. Pre-Order Food & Special Notes inserted before submit button -->
+        <xpath expr="//form//t[@t-if='appointment_type.has_payment_step']" position="before">
+            <!-- FULL WIDTH PRE-ORDER FOOD CARD -->
+            <div t-if="food_products" id="preorder_container" class="card border-0 shadow-sm rounded-4 mt-4 mb-4 overflow-hidden w-100" 
+                 t-att-data-currency-symbol="currency_symbol or '$'"
+                 t-att-data-combos="combos_data_json or '{}'"
+                 style="border: 1px solid #e2e8f0 !important; background: #ffffff;">
+                
+                <!-- Decorative Warm Hospitality Top Accent Bar -->
+                <div style="height: 5px; background: linear-gradient(90deg, #ea580c, #f59e0b, #10b981);"/>
+
+                <div class="p-4">
+                    <!-- Top Invitation Row (Always Visible) -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-xs"
+                                 style="width: 52px; height: 52px; background: linear-gradient(135deg, #fef3c7, #fde68a); font-size: 26px;">
+                                🍽️
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="fw-bold mb-0 text-dark" style="letter-spacing: -0.3px; font-size: 19px;">
+                                        Pre-Order Food for Dine-In?
+                                    </h5>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1" style="font-size: 11px; font-weight: 600;">
+                                        Optional
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-0 mt-1" style="font-size: 13.5px;">
+                                    Pre-select your dishes to have them freshly cooked and served to your table upon arrival.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Right Button / Toggle & Selected Summary -->
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <div id="preorder_collapsed_badge" class="d-none badge bg-success text-white px-3 py-2 rounded-pill fs-6 fw-bold shadow-xs">
+                                ✓ <span id="collapsed_items_count">0 items</span> (<span id="collapsed_total_price">$0.00</span>)
+                            </div>
+                            <button type="button" id="btn_toggle_food_menu"
+                                    class="btn fw-bold px-4 py-2 rounded-pill shadow-xs d-flex align-items-center gap-2"
+                                    style="background: #f59e0b; color: #ffffff; border: none; font-size: 14px; transition: all 0.2s ease;">
+                                <span id="toggle_food_btn_text">🍽️ Pre-Order Food</span>
+                                <span id="toggle_food_icon" style="font-size: 13px;">▼</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Food Selection Section (Hidden by default!) -->
+                    <div id="preorder_food_body" class="d-none mt-4 pt-3 border-top">
+                        <!-- Top Bar inside menu: Live Total Badge -->
+                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-4 border flex-wrap gap-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fs-5">📋</span>
+                                <span class="fw-bold text-dark">Dine-In Menu (<t t-out="len(food_products)"/> dishes available)</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="text-end">
+                                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.5px;">Pre-Order Total: </span>
+                                    <span id="preorder_total_display" class="fw-bolder fs-5 text-success">
+                                        <t t-out="currency_symbol or '$'"/> 0.00
+                                    </span>
+                                    <span id="preorder_items_count_badge" class="text-muted small ms-1" style="font-size: 11px;">(0 items)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category Filter Pills & Search Input -->
+                        <div class="mb-3 pt-2">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                <!-- Category Buttons -->
+                                <div class="d-flex flex-wrap gap-2 align-items-center" id="category_pills_container">
+                                    <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold category-pill active-cat-btn"
+                                            data-cat-id="all"
+                                            style="font-size: 12.5px; background-color: #1e293b; color: #ffffff; border: 1px solid #1e293b; box-shadow: 0 2px 4px rgba(30,41,59,0.2);">
+                                        All Dishes (<t t-out="len(food_products)"/>)
+                                    </button>
+                                    <t t-foreach="food_categories" t-as="cat">
+                                        <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold category-pill"
+                                                t-att-data-cat-id="cat['id']"
+                                                style="font-size: 12.5px; background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0;">
+                                            <t t-out="cat['name']"/> (<t t-out="cat['count']"/>)
+                                        </button>
+                                    </t>
+                                </div>
+
+                                <!-- Live Search Box -->
+                                <div style="min-width: 220px; max-width: 300px;" class="ms-auto flex-grow-1 flex-sm-grow-0">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3 text-muted">
+                                            <i class="oi" data-icon="search"/>
+                                        </span>
+                                        <input type="text" id="preorder_search_input" 
+                                               class="form-control border-start-0 rounded-end-pill bg-white"
+                                               placeholder="Search menu dishes..." style="font-size: 12.5px;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- FULL WIDTH Dishes Grid (3 Columns on Desktop, 2 on Tablet, 1 on Mobile) -->
+                    <div class="row g-3" id="preorder_dishes_grid" style="max-height: 520px; overflow-y: auto; padding-right: 4px;">
+                        <t t-foreach="food_products" t-as="prod">
+                            <t t-set="prod_cat_ids" t-value="','.join([str(c.id) for c in prod.pos_categ_ids])"/>
+                            <t t-set="is_combo" t-value="bool(prod.type == 'combo' and prod.combo_ids)"/>
+                            <div class="col-xl-4 col-md-6 col-12 food-dish-item"
+                                 t-att-data-prod-id="prod.id"
+                                 t-att-data-categories="prod_cat_ids"
+                                 t-att-data-name="prod.name.lower()"
+                                 t-att-data-is-combo="'true' if is_combo else 'false'">
+                                <div class="food-dish-card card h-100 p-2 d-flex flex-row align-items-center justify-content-between gap-2 shadow-xs rounded-3"
+                                     t-att-id="'dish_card_' + str(prod.id)"
+                                     style="border: 1px solid #e9ecef; background: #ffffff; transition: all 0.2s ease;">
+                                    
+                                    <!-- Dish Image & Details -->
+                                    <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 0;">
+                                        <t t-if="prod.image_128">
+                                            <img t-attf-src="/web/image/product.product/#{prod.id}/image_128" 
+                                                 class="rounded-3 shadow-xs" 
+                                                 style="width: 52px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid #edf2f7;" 
+                                                 alt="Dish"/>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="rounded-3 d-flex align-items-center justify-content-center bg-light text-muted"
+                                                 style="width: 52px; height: 52px; flex-shrink: 0; font-size: 22px; border: 1px solid #edf2f7;">
+                                                🍲
+                                            </div>
+                                        </t>
+                                        <div class="flex-grow-1" style="min-width: 0;">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <span class="fw-bold text-dark text-truncate" style="font-size: 13.5px; line-height: 1.3;" t-out="prod.name"/>
+                                                <t t-if="is_combo">
+                                                    <span class="badge border rounded-pill px-2 py-0 text-dark flex-shrink-0" style="font-size: 9.5px; background: #fef3c7; border-color: #fde68a !important; color: #92400e !important;">
+                                                        🍱 Combo
+                                                    </span>
+                                                </t>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2 mt-1">
+                                                <t t-set="prod_price_incl" t-value="product_prices.get(prod.id, prod.lst_price) if product_prices else prod.lst_price"/>
+                                                <span class="fw-bold text-success" style="font-size: 13.5px;">
+                                                    <t t-out="currency_symbol or '$'"/> <t t-out="'%.2f' % prod_price_incl"/>
+                                                </span>
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle dish-selected-badge d-none rounded-pill" style="font-size: 10px;">
+                                                    ✓ Added
+                                                </span>
+                                            </div>
+                                            <!-- Combo Selections Preview & Customize Button -->
+                                            <t t-if="is_combo">
+                                                <div class="combo-subtext-preview text-truncate d-none mt-1" t-att-id="'combo_subtext_' + str(prod.id)" style="font-size: 11px; color: #15803d; font-weight: 600;"></div>
+                                                <a href="javascript:void(0)" class="combo-customize-btn d-none small" t-att-data-prod-id="prod.id" style="font-size: 11px; color: #0284c7; font-weight: 600; text-decoration: underline;">
+                                                    ✏️ Customize Choices
+                                                </a>
+                                                <input type="hidden" t-attf-name="food_combo_data_#{prod.id}" t-att-id="'food_combo_data_' + str(prod.id)" value=""/>
+                                            </t>
+                                        </div>
+                                    </div>
+
+                                    <!-- UI-Friendly Stepper Control (Fresh Emerald Green & Soft Gray, NO HARSH BLUE) -->
+                                    <div class="d-flex align-items-center bg-white rounded-pill px-1 py-1 border flex-shrink-0 dish-stepper-wrap" 
+                                         style="border-color: #cbd5e1 !important; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                                        <button type="button" 
+                                                class="btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center preorder-btn-minus"
+                                                t-att-data-prod-id="prod.id" 
+                                                style="width: 28px; height: 28px; background: #f8fafc; border: 1px solid #e2e8f0; font-weight: 700; color: #475569; font-size: 15px; line-height: 1;">
+                                            −
+                                        </button>
+                                        <input type="number" min="0" max="99" value="0"
+                                               t-attf-name="food_qty_#{prod.id}"
+                                               t-att-id="'food_qty_' + str(prod.id)"
+                                               t-att-data-price="prod_price_incl"
+                                               class="form-control form-control-sm text-center fw-bold border-0 bg-transparent p-0 preorder-qty-input"
+                                               style="width: 32px; font-size: 13px; box-shadow: none; color: #0f172a;"/>
+                                        <button type="button" 
+                                                class="btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center preorder-btn-plus text-white"
+                                                t-att-data-prod-id="prod.id" 
+                                                style="width: 28px; height: 28px; background: #16a34a; border: 1px solid #16a34a; font-weight: 700; font-size: 15px; line-height: 1; box-shadow: 0 2px 4px rgba(22, 163, 74, 0.28);">
+                                            +
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Live Selection Summary Drawer -->
+                    <div id="preorder_summary_bar" class="d-none mt-3 p-3 rounded-3 d-flex align-items-center justify-content-between flex-wrap gap-2"
+                         style="background-color: #f0fdf4; border: 1px solid #bbf7d0;">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-5">✨</span>
+                            <span class="text-dark small">
+                                <strong id="summary_dishes_text">0 items selected</strong> • Total: <strong class="text-success" id="summary_total_text">$ 0.00</strong>
+                            </span>
+                        </div>
+                        <button type="button" id="btn_clear_preorder" class="btn btn-sm btn-link text-danger text-decoration-none p-0 fw-semibold" style="font-size: 12px;">
+                            Clear All Selections
+                        </button>
+                    </div>
+                </div> <!-- /#preorder_food_body -->
+            </div> <!-- /.p-4 -->
+
+                <!-- COMBO CUSTOMIZATION MODAL (POS STYLE) -->
+                <div class="modal fade" id="comboModal" tabindex="-1" aria-hidden="true" style="display: none; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+                            <div class="modal-header border-bottom px-4 py-3" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fs-3">🍱</span>
+                                    <div>
+                                        <h5 class="modal-title fw-bold text-dark mb-0" id="comboModalTitle">Customize Your Combo</h5>
+                                        <p class="text-muted small mb-0" style="font-size: 12px;">Choose 1 item from each section below</p>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" id="comboModalCloseBtn" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4" id="comboModalBody" style="max-height: 62vh; overflow-y: auto;">
+                                <!-- Combo Groups dynamically rendered here -->
+                            </div>
+                            <div class="modal-footer border-top px-4 py-3 d-flex justify-content-between align-items-center" style="background: #f8fafc;">
+                                <div>
+                                    <span class="text-muted small">Combo Price: </span>
+                                    <strong class="text-success fs-5 fw-bolder" id="comboModalPriceDisplay">$ 0.00</strong>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" id="comboModalCancelBtn">Cancel</button>
+                                    <button type="button" class="btn btn-success rounded-pill px-4 fw-bold text-white shadow-xs" id="comboModalConfirmBtn" style="background: #16a34a; border-color: #16a34a;">
+                                        Confirm &amp; Add Combo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Client-Side Script for Pre-Order & UI-Friendly Interactivity -->
+                <script type="text/javascript">
+                    //<![CDATA[
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var container = document.getElementById('preorder_container');
+                        var currSymbol = container ? (container.getAttribute('data-currency-symbol') || '$') : '$';
+                        var combosData = {};
+                        try {
+                            combosData = JSON.parse(container ? (container.getAttribute('data-combos') || '{}') : '{}');
+                        } catch(e) {
+                            combosData = {};
+                        }
+
+                        var currentComboProdId = null;
+                        var comboModal = document.getElementById('comboModal');
+
+                        function showComboModal(prodId) {
+                            var meta = combosData[prodId];
+                            if (!meta || !meta.groups || !meta.groups.length) return;
+                            currentComboProdId = prodId;
+
+                            document.getElementById('comboModalTitle').textContent = 'Customize ' + meta.name;
+                            document.getElementById('comboModalPriceDisplay').textContent = currSymbol + ' ' + parseFloat(meta.price).toFixed(2);
+
+                            var previousChoices = [];
+                            var hiddenInp = document.getElementById('food_combo_data_' + prodId);
+                            if (hiddenInp && hiddenInp.value) {
+                                try {
+                                    previousChoices = JSON.parse(hiddenInp.value);
+                                } catch(e) {}
+                            }
+                            var prevChoiceItemIds = previousChoices.map(function(c) { return c.combo_item_id; });
+
+                            var body = document.getElementById('comboModalBody');
+                            body.innerHTML = '';
+
+                            meta.groups.forEach(function(group, gIdx) {
+                                var groupCard = document.createElement('div');
+                                groupCard.className = 'mb-4 p-3 bg-light rounded-3 border';
+                                groupCard.style.borderColor = '#e2e8f0';
+
+                                var groupHeader = document.createElement('div');
+                                groupHeader.className = 'd-flex justify-content-between align-items-center mb-3 pb-2 border-bottom';
+                                groupHeader.innerHTML = '<h6 class="fw-bold mb-0 text-dark" style="font-size: 14.5px;">' + (gIdx + 1) + '. ' + group.name + '</h6><span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">Choose 1</span>';
+                                groupCard.appendChild(groupHeader);
+
+                                var optionsGrid = document.createElement('div');
+                                optionsGrid.className = 'row g-2';
+
+                                group.items.forEach(function(item, iIdx) {
+                                    var isSelected = prevChoiceItemIds.length > 0 ? prevChoiceItemIds.includes(item.id) : (iIdx === 0);
+                                    var optCol = document.createElement('div');
+                                    optCol.className = 'col-md-6 col-12';
+
+                                    var radioId = 'combo_item_' + group.id + '_' + item.id;
+                                    var extraPriceHtml = item.extra_price > 0 ? (' <span class="badge bg-success-subtle text-success small">+' + currSymbol + ' ' + parseFloat(item.extra_price).toFixed(2) + '</span>') : '';
+
+                                    var optCard = document.createElement('label');
+                                    optCard.className = 'card h-100 p-2 d-flex flex-row align-items-center gap-2 rounded-3 border cursor-pointer combo-opt-label w-100';
+                                    optCard.htmlFor = radioId;
+                                    optCard.style.cursor = 'pointer';
+                                    optCard.style.transition = 'all 0.2s ease';
+                                    optCard.style.borderColor = isSelected ? '#16a34a' : '#e2e8f0';
+                                    optCard.style.backgroundColor = isSelected ? '#f0fdf4' : '#ffffff';
+
+                                    var imgHtml = item.image_url ? ('<img src="' + item.image_url + '" class="rounded-2" style="width: 42px; height: 42px; object-fit: cover;" alt=""/>') : '<div class="rounded-2 bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">🍲</div>';
+
+                                    optCard.innerHTML = '<input type="radio" name="combo_group_' + group.id + '" id="' + radioId + '" value="' + item.id + '" class="form-check-input mt-0 me-1" ' + (isSelected ? 'checked="checked"' : '') + ' data-prod-id="' + item.product_id + '" data-name="' + item.name.replace(/"/g, '&quot;') + '" data-group-name="' + group.name.replace(/"/g, '&quot;') + '" data-extra-price="' + (parseFloat(item.extra_price) || 0) + '" style="cursor: pointer;"/>' +
+                                        imgHtml +
+                                        '<div class="flex-grow-1" style="min-width: 0;"><div class="fw-semibold text-dark text-truncate" style="font-size: 13px;">' + item.name + '</div>' + extraPriceHtml + '</div>';
+
+                                    optCol.appendChild(optCard);
+                                    optionsGrid.appendChild(optCol);
+                                });
+
+                                groupCard.appendChild(optionsGrid);
+                                body.appendChild(groupCard);
+                            });
+
+                            // Add styling on click to option cards
+                            body.querySelectorAll('.form-check-input').forEach(function(radio) {
+                                radio.addEventListener('change', function() {
+                                    var groupName = this.name;
+                                    body.querySelectorAll('input[name="' + groupName + '"]').forEach(function(r) {
+                                        var lbl = r.closest('label');
+                                        if (lbl) {
+                                            if (r.checked) {
+                                                lbl.style.borderColor = '#16a34a';
+                                                lbl.style.backgroundColor = '#f0fdf4';
+                                            } else {
+                                                lbl.style.borderColor = '#e2e8f0';
+                                                lbl.style.backgroundColor = '#ffffff';
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+
+                            // Open modal
+                            if (window.bootstrap && window.bootstrap.Modal) {
+                                var bsModal = bootstrap.Modal.getInstance(comboModal) || new bootstrap.Modal(comboModal);
+                                bsModal.show();
+                            } else {
+                                comboModal.style.display = 'block';
+                                comboModal.classList.add('show');
+                            }
+                        }
+
+                        function hideComboModal() {
+                            if (window.bootstrap && window.bootstrap.Modal) {
+                                var bsModal = bootstrap.Modal.getInstance(comboModal);
+                                if (bsModal) bsModal.hide();
+                            }
+                            comboModal.style.display = 'none';
+                            comboModal.classList.remove('show');
+                        }
+
+                        var closeBtn = document.getElementById('comboModalCloseBtn');
+                        if (closeBtn) closeBtn.addEventListener('click', hideComboModal);
+                        var cancelBtn = document.getElementById('comboModalCancelBtn');
+                        if (cancelBtn) cancelBtn.addEventListener('click', hideComboModal);
+
+                        var confirmComboBtn = document.getElementById('comboModalConfirmBtn');
+                        if (confirmComboBtn) {
+                            confirmComboBtn.addEventListener('click', function() {
+                                if (!currentComboProdId) return;
+                                var meta = combosData[currentComboProdId];
+                                if (!meta) return;
+
+                                var selectedChoices = [];
+                                var allChosen = true;
+
+                                meta.groups.forEach(function(group) {
+                                    var checked = document.querySelector('input[name="combo_group_' + group.id + '"]:checked');
+                                    if (checked) {
+                                        selectedChoices.push({
+                                            group_id: group.id,
+                                            group_name: checked.getAttribute('data-group-name'),
+                                            combo_item_id: parseInt(checked.value),
+                                            product_id: parseInt(checked.getAttribute('data-prod-id')),
+                                            name: checked.getAttribute('data-name'),
+                                            extra_price: parseFloat(checked.getAttribute('data-extra-price')) || 0
+                                        });
+                                    } else {
+                                        allChosen = false;
+                                    }
+                                });
+
+                                if (!allChosen) {
+                                    alert('Please select one item from each combo section.');
+                                    return;
+                                }
+
+                                var hiddenInp = document.getElementById('food_combo_data_' + currentComboProdId);
+                                if (hiddenInp) hiddenInp.value = JSON.stringify(selectedChoices);
+
+                                var qtyInp = document.getElementById('food_qty_' + currentComboProdId);
+                                if (qtyInp && (parseInt(qtyInp.value) || 0) === 0) {
+                                    qtyInp.value = 1;
+                                }
+
+                                var summaryText = selectedChoices.map(function(c) { return c.name; }).join(' + ');
+                                var previewEl = document.getElementById('combo_subtext_' + currentComboProdId);
+                                if (previewEl) {
+                                    previewEl.textContent = '✓ ' + summaryText;
+                                    previewEl.classList.remove('d-none');
+                                }
+
+                                var editLink = document.querySelector('.combo-customize-btn[data-prod-id="' + currentComboProdId + '"]');
+                                if (editLink) editLink.classList.remove('d-none');
+
+                                hideComboModal();
+                                updatePreorderTotal();
+                            });
+                        }
+
+                        function updatePreorderTotal() {
+                            var total = 0;
+                            var itemsCount = 0;
+                            var dishesCount = 0;
+
+                            document.querySelectorAll('.preorder-qty-input').forEach(function(inp) {
+                                var qty = parseFloat(inp.value) || 0;
+                                var price = parseFloat(inp.getAttribute('data-price')) || 0;
+                                var prodId = inp.id.replace('food_qty_', '');
+                                var card = document.getElementById('dish_card_' + prodId);
+                                var badge = card ? card.querySelector('.dish-selected-badge') : null;
+                                var comboSub = document.getElementById('combo_subtext_' + prodId);
+                                var comboEdit = document.querySelector('.combo-customize-btn[data-prod-id="' + prodId + '"]');
+                                var comboHidden = document.getElementById('food_combo_data_' + prodId);
+
+                                if (qty > 0) {
+                                    var comboExtra = 0;
+                                    if (comboHidden && comboHidden.value) {
+                                        try {
+                                            var cChoices = JSON.parse(comboHidden.value);
+                                            if (Array.isArray(cChoices)) {
+                                                cChoices.forEach(function(cc) {
+                                                    comboExtra += (parseFloat(cc.extra_price) || 0);
+                                                });
+                                            }
+                                        } catch(e) {}
+                                    }
+                                    total += qty * (price + comboExtra);
+                                    itemsCount += qty;
+                                    dishesCount += 1;
+                                    if (card) {
+                                        card.style.borderColor = '#16a34a';
+                                        card.style.backgroundColor = '#f0fdf4';
+                                        card.style.boxShadow = '0 3px 8px rgba(22, 163, 74, 0.12)';
+                                    }
+                                    if (badge) {
+                                        badge.classList.remove('d-none');
+                                    }
+                                    if (comboSub && comboHidden && comboHidden.value) {
+                                        comboSub.classList.remove('d-none');
+                                    }
+                                    if (comboEdit && comboHidden && comboHidden.value) {
+                                        comboEdit.classList.remove('d-none');
+                                    }
+                                } else {
+                                    if (card) {
+                                        card.style.borderColor = '#e9ecef';
+                                        card.style.backgroundColor = '#ffffff';
+                                        card.style.boxShadow = 'none';
+                                    }
+                                    if (badge) {
+                                        badge.classList.remove('d-none');
+                                        badge.classList.add('d-none');
+                                    }
+                                    if (comboSub) comboSub.classList.add('d-none');
+                                    if (comboEdit) comboEdit.classList.add('d-none');
+                                    if (comboHidden) comboHidden.value = '';
+                                }
+                            });
+
+                            var totalFormatted = currSymbol + ' ' + total.toFixed(2);
+                            var disp = document.getElementById('preorder_total_display');
+                            if (disp) disp.textContent = totalFormatted;
+
+                            var countBadge = document.getElementById('preorder_items_count_badge');
+                            if (countBadge) {
+                                countBadge.textContent = itemsCount + ' item' + (itemsCount === 1 ? '' : 's') + ' selected';
+                            }
+
+                            var summaryBar = document.getElementById('preorder_summary_bar');
+                            var summaryDishes = document.getElementById('summary_dishes_text');
+                            var summaryTotal = document.getElementById('summary_total_text');
+
+                            if (summaryBar) {
+                                if (itemsCount > 0) {
+                                    summaryBar.classList.remove('d-none');
+                                    if (summaryDishes) summaryDishes.textContent = itemsCount + ' item' + (itemsCount === 1 ? '' : 's') + ' (' + dishesCount + ' dishes)';
+                                    if (summaryTotal) summaryTotal.textContent = totalFormatted;
+                                } else {
+                                    summaryBar.classList.add('d-none');
+                                }
+                            }
+
+                            var submitBtn = document.querySelector('form button[type="submit"]');
+                            if (submitBtn) {
+                                if (itemsCount > 0) {
+                                    submitBtn.innerHTML = 'Proceed to Online Payment (' + totalFormatted + ') →';
+                                } else {
+                                    submitBtn.innerHTML = 'Confirm Appointment';
+                                }
+                            }
+
+                            // Update collapsed header badge if items are pre-ordered
+                            var collapsedBadge = document.getElementById('preorder_collapsed_badge');
+                            var collapsedCount = document.getElementById('collapsed_items_count');
+                            var collapsedPrice = document.getElementById('collapsed_total_price');
+                            if (collapsedBadge) {
+                                if (itemsCount > 0) {
+                                    collapsedBadge.classList.remove('d-none');
+                                    if (collapsedCount) collapsedCount.textContent = itemsCount + ' item' + (itemsCount === 1 ? '' : 's');
+                                    if (collapsedPrice) collapsedPrice.textContent = totalFormatted;
+                                } else {
+                                    collapsedBadge.classList.add('d-none');
+                                }
+                            }
+                        }
+
+                        // Toggle Food Menu Open / Closed
+                        var toggleBtn = document.getElementById('btn_toggle_food_menu');
+                        var foodBody = document.getElementById('preorder_food_body');
+                        var toggleText = document.getElementById('toggle_food_btn_text');
+                        var toggleIcon = document.getElementById('toggle_food_icon');
+
+                        if (toggleBtn && foodBody) {
+                            toggleBtn.addEventListener('click', function() {
+                                var isHidden = foodBody.classList.contains('d-none');
+                                if (isHidden) {
+                                    foodBody.classList.remove('d-none');
+                                    if (toggleText) toggleText.textContent = '✕ Close Food Menu';
+                                    if (toggleIcon) toggleIcon.textContent = '▲';
+                                    toggleBtn.style.background = '#e2e8f0';
+                                    toggleBtn.style.color = '#1e293b';
+                                    toggleBtn.style.border = '1px solid #cbd5e1';
+                                    foodBody.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                } else {
+                                    foodBody.classList.add('d-none');
+                                    if (toggleText) toggleText.textContent = '🍽️ Pre-Order Food';
+                                    if (toggleIcon) toggleIcon.textContent = '▼';
+                                    toggleBtn.style.background = '#f59e0b';
+                                    toggleBtn.style.color = '#ffffff';
+                                    toggleBtn.style.border = 'none';
+                                }
+                            });
+                        }
+
+                        // Stepper + buttons
+                        document.querySelectorAll('.preorder-btn-plus').forEach(function(btn) {
+                            btn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                var id = this.getAttribute('data-prod-id');
+                                var itemRow = this.closest('.food-dish-item');
+                                var isCombo = itemRow && (itemRow.getAttribute('data-is-combo') === 'true');
+                                var inp = document.getElementById('food_qty_' + id);
+                                if (!inp) return;
+
+                                if (isCombo) {
+                                    var currentVal = parseInt(inp.value) || 0;
+                                    var comboHidden = document.getElementById('food_combo_data_' + id);
+                                    if (currentVal === 0 || !comboHidden || !comboHidden.value) {
+                                        showComboModal(id);
+                                    } else {
+                                        inp.value = currentVal + 1;
+                                        updatePreorderTotal();
+                                    }
+                                } else {
+                                    inp.value = (parseInt(inp.value) || 0) + 1;
+                                    updatePreorderTotal();
+                                }
+                            });
+                        });
+
+                        // Combo customize edit links
+                        document.querySelectorAll('.combo-customize-btn').forEach(function(link) {
+                            link.addEventListener('click', function() {
+                                var id = this.getAttribute('data-prod-id');
+                                showComboModal(id);
+                            });
+                        });
+
+                        // Stepper - buttons
+                        document.querySelectorAll('.preorder-btn-minus').forEach(function(btn) {
+                            btn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                var id = this.getAttribute('data-prod-id');
+                                var inp = document.getElementById('food_qty_' + id);
+                                if (inp) {
+                                    inp.value = Math.max(0, (parseInt(inp.value) || 0) - 1);
+                                    updatePreorderTotal();
+                                }
+                            });
+                        });
+
+                        // Input typing
+                        document.querySelectorAll('.preorder-qty-input').forEach(function(inp) {
+                            inp.addEventListener('input', updatePreorderTotal);
+                        });
+
+                        // Clear all
+                        var clearBtn = document.getElementById('btn_clear_preorder');
+                        if (clearBtn) {
+                            clearBtn.addEventListener('click', function() {
+                                document.querySelectorAll('.preorder-qty-input').forEach(function(inp) {
+                                    inp.value = 0;
+                                });
+                                document.querySelectorAll('input[id^="food_combo_data_"]').forEach(function(cInp) {
+                                    cInp.value = '';
+                                });
+                                updatePreorderTotal();
+                            });
+                        }
+
+                        // Category filter & Search
+                        var activeCat = 'all';
+                        var searchVal = '';
+
+                        function filterDishes() {
+                            var items = document.querySelectorAll('.food-dish-item');
+                            items.forEach(function(item) {
+                                var catIds = (item.getAttribute('data-categories') || '').split(',');
+                                var name = item.getAttribute('data-name') || '';
+
+                                var matchCat = (activeCat === 'all') || catIds.includes(activeCat);
+                                var matchSearch = !searchVal || name.includes(searchVal);
+
+                                if (matchCat && matchSearch) {
+                                    item.style.display = '';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            });
+                        }
+
+                        document.querySelectorAll('.category-pill').forEach(function(pill) {
+                            pill.addEventListener('click', function() {
+                                document.querySelectorAll('.category-pill').forEach(function(p) {
+                                    p.style.backgroundColor = '#f8fafc';
+                                    p.style.color = '#475569';
+                                    p.style.borderColor = '#e2e8f0';
+                                    p.style.boxShadow = 'none';
+                                    p.classList.remove('active-cat-btn');
+                                });
+                                this.classList.add('active-cat-btn');
+                                this.style.backgroundColor = '#1e293b';
+                                this.style.color = '#ffffff';
+                                this.style.borderColor = '#1e293b';
+                                this.style.boxShadow = '0 2px 4px rgba(30,41,59,0.2)';
+
+                                activeCat = this.getAttribute('data-cat-id');
+                                filterDishes();
+                            });
+                        });
+
+                        var searchInput = document.getElementById('preorder_search_input');
+                        if (searchInput) {
+                            searchInput.addEventListener('input', function() {
+                                searchVal = this.value.trim().toLowerCase();
+                                filterDishes();
+                            });
+                        }
+
+                        // Initial calculation on load
+                        updatePreorderTotal();
+                    });
+                    //]]>
+                </script>
+            </div>
+
+            <!-- CUSTOMER SPECIAL REQUESTS & NOTES CARD (FULL WIDTH) -->
+            <div class="card border-0 shadow-sm rounded-4 mt-3 mb-4 p-4 bg-white w-100" 
+                 style="border: 1px solid #e2e8f0 !important;">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                         style="width: 44px; height: 44px; background: linear-gradient(135deg, #fef3c7, #fde68a); font-size: 22px;">
+                        📝
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h6 class="fw-bold mb-0 text-dark" style="font-size: 15px;">
+                                Special Requests &amp; Notes for Restaurant
+                            </h6>
+                            <span class="badge bg-secondary-subtle text-secondary small fw-normal">Optional</span>
+                        </div>
+                        <p class="text-muted small mb-2 mt-1" style="font-size: 13px;">
+                            Celebrating a birthday or anniversary? Have dietary restrictions, allergies, or prefer a quiet/window table? Let us know below!
+                        </p>
+                        <textarea name="customer_notes" id="customer_notes" 
+                                  class="form-control rounded-3" rows="3"
+                                  placeholder="e.g. Celebrating an anniversary; please prepare a nice window table if available. 1 guest is allergic to shellfish."
+                                  style="resize: vertical; font-size: 13.5px; line-height: 1.5; border-color: #cbd5e1;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- 4. Style the Confirm Button with a Warm, Inviting Restaurant Button (NO HARSH BLUE) -->
+        <xpath expr="//form//button[@type='submit']" position="attributes">
+            <attribute name="style">background: linear-gradient(135deg, #16a34a, #15803d); border: none; font-size: 16px; font-weight: 700; border-radius: 12px; padding: 14px 28px; box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28); color: #fff;</attribute>
+        </xpath>
+    </template>
+
+    <!-- 3. Pre-Order Food reminder, Table Assignment & Invoice Download on Confirmation Page -->
+    <template id="appointment_confirmation_inherit_dine_in_food" inherit_id="appointment.appointment_confirmation">
+        <xpath expr="//div[hasclass('o_appointment_confirmation')]//div[hasclass('premium-card')]//div[hasclass('row')]//div[hasclass('col-lg-7')]" position="inside">
+            <div t-if="booking" class="card border-0 shadow-sm rounded-4 mt-4 overflow-hidden" style="border: 1px solid #e2e8f0 !important; background: #ffffff;">
+                <!-- Decorative Top Accent -->
+                <div style="height: 5px; background: linear-gradient(90deg, #10b981, #f59e0b, #6366f1);"/>
+
+                <div class="p-4">
+                    <!-- Warm Header -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 shadow-xs"
+                             style="width: 58px; height: 58px; background: linear-gradient(135deg, #ecfdf5, #d1fae5); font-size: 28px;">
+                            🍽️
+                        </div>
+                        <h4 class="fw-bold text-dark mb-1" style="letter-spacing: -0.3px;">
+                            Table Reserved &amp; Welcome to Our Restaurant!
+                        </h4>
+                        <p class="text-muted small mb-0">
+                            We are delighted to host you. Your table is confirmed and prepared for your arrival.
+                        </p>
+                    </div>
+
+                    <!-- Assigned Table Details Badge Grid -->
+                    <div t-if="booking.sudo().table_ids" class="p-3 bg-light rounded-4 border mb-3">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
+                            <span class="text-uppercase fw-bold text-muted" style="font-size: 11px; letter-spacing: 0.5px;">
+                                📍 Assigned Table Details
+                            </span>
+                            <span class="badge bg-success text-white rounded-pill px-3 py-1 fw-bold" style="font-size: 11px;">
+                                Reserved &amp; Ready
+                            </span>
+                        </div>
+                        <div class="row g-2 text-start">
+                            <div class="col-sm-6">
+                                <div class="p-2 bg-white rounded-3 border">
+                                    <div class="text-muted small" style="font-size: 11px;">Assigned Table:</div>
+                                    <div class="fw-bold text-dark fs-6">
+                                        <t t-set="first_tbl" t-value="booking.sudo().table_ids[0]"/>
+                                        <i class="fa fa-cutlery text-warning me-1"/>
+                                        <t t-if="first_tbl.table_number">
+                                            Table <t t-out="first_tbl.table_number"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-out="first_tbl.display_name"/>
+                                        </t>
+                                        <t t-if="first_tbl.floor_id">
+                                            <span class="text-secondary small fw-normal ms-1">(<t t-out="first_tbl.floor_id.name"/>)</span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-2 bg-white rounded-3 border">
+                                    <div class="text-muted small" style="font-size: 11px;">Party Size:</div>
+                                    <div class="fw-bold text-dark fs-6">
+                                        🪑 <t t-out="booking.party_size"/> Guests
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warm Hospitality Meeting Message -->
+                    <div class="alert alert-info border-0 rounded-3 p-3 mb-3 text-start d-flex align-items-start gap-2"
+                         style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-left: 4px solid #16a34a !important; color: #166534;">
+                        <span class="fs-5 flex-shrink-0">✨</span>
+                        <div>
+                            <strong class="d-block mb-1" style="font-size: 14px;">Our Team is Excited to Welcome You!</strong>
+                            <p class="mb-0 small" style="line-height: 1.5; color: #15803d;">
+                                Your table has been reserved specifically for your party. Our host and culinary team are looking forward to greeting you and making your dine-in experience truly exceptional.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Pre-Ordered Food Summary (If Any) -->
+                    <t t-if="booking.sudo().has_food_order">
+                        <div class="p-3 bg-light rounded-4 border mb-3 text-start">
+                            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 13.5px;">
+                                    <i class="fa fa-cutlery text-warning"/> Pre-Ordered Dishes
+                                </span>
+                                <span class="badge bg-success fs-6 fw-bold">
+                                    Pre-Paid: <t t-out="booking.sudo().food_order_total and ('$' + '%.2f' % booking.sudo().food_order_total) or ''"/>
+                                </span>
+                            </div>
+                            <div class="text-secondary small">
+                                <t t-out="booking.sudo().food_order_summary"/>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Special Requests / Notes (If Any) -->
+                    <t t-if="booking.sudo().guest_details">
+                        <div class="p-3 bg-white rounded-3 border text-start mb-3">
+                            <span class="text-muted small d-block mb-1">📝 <strong>Special Requests / Allergies:</strong></span>
+                            <span class="text-dark small"><t t-out="booking.sudo().guest_details"/></span>
+                        </div>
+                    </t>
+
+                    <!-- Download Invoice / Receipt Button -->
+                    <div t-if="booking.sudo().sale_order_id" class="d-flex justify-content-center mt-3 pt-2">
+                        <a t-attf-href="/appointment/#{booking.id}/invoice?token=#{booking.access_token}"
+                           class="btn btn-outline-success rounded-pill px-4 py-2 fw-bold shadow-xs d-inline-flex align-items-center gap-2"
+                           style="border-width: 2px;">
+                            <i class="fa fa-file-pdf-o fs-5 text-danger"/>
+                            <span>Download Invoice &amp; Payment Receipt (PDF)</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Hide the Demo Payment Status Dropdown on appointment payment page so guests only see payment details and it succeeds automatically -->
+    <template id="payment_demo_details_hide_status" inherit_id="payment_demo.payment_details">
+        <xpath expr="//div[hasclass('col-12', 'col-md', 'mb-0')][label[@for='simulated_payment_state']]" position="attributes">
+            <attribute name="class">d-none</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('col-12', 'col-md', 'mt-0', 'mb-0')]" position="attributes">
+            <attribute name="class">col-12 mt-0 mb-0</attribute>
+        </xpath>
+    </template>
+</odoo>

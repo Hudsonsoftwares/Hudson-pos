@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- My Documents Action -->
+    <record id="action_dms_my_documents" model="ir.actions.act_window">
+        <field name="name">My Documents</field>
+        <field name="res_model">dms.file</field>
+        <field name="view_mode">kanban,list,activity,form</field>
+        <field name="search_view_id" ref="dms.search_dms_file"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No documents found.
+            </p>
+            <p>
+                Documents you own, and documents shared with you directly or through a folder, will appear here.
+            </p>
+        </field>
+    </record>
+
+    <!-- My Approvals Action -->
+    <record id="action_dms_my_approvals" model="ir.actions.act_window">
+        <field name="name">Approval Requests</field>
+        <field name="res_model">dms.file</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('approval_state', 'in', ('in_approval', 'approved', 'rejected'))]</field>
+        <field name="search_view_id" ref="dms_enterprise_features.view_dms_file_approval_search"/>
+        <field name="context">{'create': False}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('dms_enterprise_features.view_dms_file_approval_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('dms.view_dms_file_form')})
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No approval requests found.
+            </p>
+            <p>
+                Documents sent for approval will appear here with their approval status.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_dms_my_documents_root" 
+              name="Documents" 
+              parent="dms.main_menu_dms" 
+              sequence="5"/>
+
+    <menuitem id="menu_dms_my_documents" 
+              name="My Documents" 
+              action="action_dms_my_documents" 
+              parent="menu_dms_my_documents_root" 
+              sequence="10"/>
+
+    <menuitem id="menu_dms_my_approvals" 
+              name="Approvals" 
+              action="action_dms_my_approvals" 
+              parent="menu_dms_my_documents_root" 
+              sequence="15"/>
+</odoo>

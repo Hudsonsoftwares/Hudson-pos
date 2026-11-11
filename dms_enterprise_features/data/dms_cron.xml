@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_send_signature_reminders" model="ir.cron">
+            <field name="name">Signature Request Reminders</field>
+            <field name="model_id" ref="model_dms_file_signature_request"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_signature_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="ir_cron_empty_trash" model="ir.cron">
+            <field name="name">DMS: Empty Trash</field>
+            <field name="model_id" ref="dms.model_dms_file"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_empty_trash()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="ir_cron_document_expiry" model="ir.cron">
+            <field name="name">DMS: Process Document Expiries</field>
+            <field name="model_id" ref="dms.model_dms_file"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_process_expiries()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

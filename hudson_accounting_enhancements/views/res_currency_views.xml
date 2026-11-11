@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add "Fetch ECB Rates" button to the currency list view -->
+    <record id="view_currency_list_ecb_inherit" model="ir.ui.view">
+        <field name="name">res.currency.list.ecb.button</field>
+        <field name="model">res.currency</field>
+        <field name="inherit_id" ref="base.view_currency_tree"/>
+        <field name="arch" type="xml">
+            <list position="inside">
+                <header>
+                    <button name="action_fetch_ecb_rates" 
+                            string="Fetch ECB Rates" 
+                            type="object" 
+                            class="btn-primary" 
+                            display="always"/>
+                </header>
+            </list>
+        </field>
+    </record>
+
+    <!-- Add button to currency form view for manual fetch -->
+    <record id="view_currency_form_ecb_inherit" model="ir.ui.view">
+        <field name="name">res.currency.form.ecb.button</field>
+        <field name="model">res.currency</field>
+        <field name="inherit_id" ref="base.view_currency_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_fetch_ecb_rates"
+                            string="🌐 Fetch ECB Rates"
+                            type="object"
+                            class="btn-secondary"
+                            title="Fetch latest currency rates from the European Central Bank (ECB) for all active currencies"
+                            groups="base.group_system"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

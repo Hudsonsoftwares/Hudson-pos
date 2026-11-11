@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hds_hr_snapshot_hr_payslip_view_form" model="ir.ui.view">
+        <field name="name">hr.payslip.view.form.inherit.hds.hr.snapshot</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll_community.hr_payslip_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_hds_snapshot"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="photo_camera"
+                        invisible="not hds_snapshot_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">HR Snapshot</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="hds_snapshot_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

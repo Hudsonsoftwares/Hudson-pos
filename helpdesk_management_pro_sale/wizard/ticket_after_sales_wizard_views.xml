@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Refund Wizard Form -->
+    <record id="helpdesk_ticket_refund_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.refund.form</field>
+        <field name="model">helpdesk.ticket.refund</field>
+        <field name="arch" type="xml">
+            <form string="Refund">
+                <group>
+                    <field name="sale_order_id"/>
+                    <field name="product_id"/>
+                    <field name="lot_id"/>
+                    <field name="journal_id"/>
+                    <field name="reversal_date"/>
+                </group>
+                <footer>
+                    <button string="Reverse" name="action_reverse" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Gift Card Wizard Form -->
+    <record id="helpdesk_ticket_giftcard_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.giftcard.form</field>
+        <field name="model">helpdesk.ticket.giftcard</field>
+        <field name="arch" type="xml">
+            <form string="Generate &amp; Send Gift Card">
+                <group>
+                    <group>
+                        <field name="program_id"/>
+                        <field name="gift_card_value" widget="monetary"/>
+                        <field name="valid_until"/>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Generate &amp; Send Gift Card" name="action_generate" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Coupon Wizard Form -->
+    <record id="helpdesk_ticket_coupon_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.coupon.form</field>
+        <field name="model">helpdesk.ticket.coupon</field>
+        <field name="arch" type="xml">
+            <form string="Generate a Coupon">
+                <group>
+                    <field name="program_id"/>
+                    <field name="valid_until"/>
+                </group>
+                <footer>
+                    <button string="Send by Email" name="action_send_email" type="object" class="btn-primary"/>
+                    <button string="Get Share Link" name="action_get_share_link" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- Return Wizard Form -->
+    <record id="helpdesk_ticket_return_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.return.form</field>
+        <field name="model">helpdesk.ticket.return</field>
+        <field name="arch" type="xml">
+            <form string="Return">
+                <group>
+                    <field name="sale_order_id"/>
+                    <field name="picking_id"/>
+                </group>
+                <footer>
+                    <button string="Return" name="action_return" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

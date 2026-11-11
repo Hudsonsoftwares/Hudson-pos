@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_contract_template_form_view_inherit_rates" model="ir.ui.view">
+        <field name="name">hr.version.view.form.inherit.rates</field>
+        <field name="model">hr.version</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_version_view_form_inherit_hudson_payroll_base"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='salary_breakdown']" position="after">
+                <group string="Hourly Rate Configuration" name="hourly_rate_config">
+                    <field name="salary_calculation_type" readonly="1"/>
+                    <field name="pay_by_attendance" widget="boolean_toggle"/>
+                    <field name="enable_attendance_threshold" invisible="pay_by_attendance"/>
+                    <field name="min_attendance_threshold_days" invisible="pay_by_attendance or not enable_attendance_threshold"/>
+                    <field name="threshold_days_manually_set" invisible="1"/>
+                    <field name="threshold_enabled_manually_set" invisible="1"/>
+                    <field name="hourly_rate" readonly="1"/>
+                    <field name="shortage_deduction_rate_per_hour"/>
+                    <field name="shortage_rate_manually_set" invisible="1"/>
+                    <button name="action_reset_to_computed_rates"
+                            string="Reset Shortage Rate"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="not shortage_rate_manually_set"/>
+                    <!-- Overtime rates are now configured in Standard Odoo 19 Overtime Rulesets -->
+                    <!-- Attendances → Configuration → Overtime Rulesets -->
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hide redundant standard Odoo attendance_based checkbox in Contract Template since Hudson uses pay_by_attendance -->
+    <record id="view_contract_template_form_hide_attendance_based" model="ir.ui.view">
+        <field name="name">hr.version.form.hide.attendance.based</field>
+        <field name="model">hr.version</field>
+        <field name="inherit_id" ref="hr_attendance.hr_contract_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='attendance_based']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

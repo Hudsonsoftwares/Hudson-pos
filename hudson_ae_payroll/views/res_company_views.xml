@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit res.company form view to add UAE Payroll Configuration -->
+    <record id="view_company_form_inherit_hudson_ae_payroll" model="ir.ui.view">
+        <field name="name">res.company.form.inherit.hudson.ae.payroll</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="UAE Payroll Configuration" name="uae_payroll_config_page">
+                    <group>
+                        <group string="Emirate &amp; Jurisdiction Classification">
+                            <field name="uae_employment_sector" placeholder="Select Sector (e.g. Private Sector)"/>
+                            <field name="uae_emirate_id" placeholder="Select Emirate" options="{'no_create': True}"/>
+                            <field name="uae_jurisdiction_type"/>
+                        </group>
+                        <group string="Operating Jurisdiction &amp; Authority">
+                            <field name="uae_jurisdiction_id"
+                                   placeholder="Select Jurisdiction Profile"
+                                   domain="[('emirate_id', '=', uae_emirate_id), ('jurisdiction_type', '=', uae_jurisdiction_type)]"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="uae_labour_authority_id" readonly="1" options="{'no_open': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Statutory Pension Authority (GPSSA)">
+                            <field name="hds_ae_enable_gpssa"/>
+                            <field name="hds_ae_gpssa_employer_number" placeholder="e.g. GPSSA-123456" invisible="not hds_ae_enable_gpssa" required="hds_ae_enable_gpssa"/>
+                        </group>
+                        <group string="Statutory Pension Authority (ADPF)">
+                            <field name="hds_ae_enable_adpf"/>
+                            <field name="hds_ae_adpf_employer_number" placeholder="e.g. ADPF-123456" invisible="not hds_ae_enable_adpf" required="hds_ae_enable_adpf"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Pension Schemes Availability">
+                            <field name="uae_pension_scheme_ids" widget="many2many_tags" placeholder="All Active Schemes Permitted"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

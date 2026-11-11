@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- NOTE (Odoo 20 Compatibility):
+         The views below that referenced om_account_daily_reports and accounting_pdf_reports
+         have been commented out. These community modules do not exist in Odoo 20.
+         The hudson_accounting_enhancements module now relies solely on native Odoo 20 modules.
+    -->
+
+    <!-- om_account_daily_reports views commented out for Odoo 20 compatibility -->
+    <!--
+    <record id="account_report_daybook_view_inherit_html" model="ir.ui.view">
+        <field name="name">Daybook Report HTML Button</field>
+        <field name="model">account.daybook.report</field>
+        <field name="inherit_id" ref="om_account_daily_reports.account_report_daybook_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button name="check_report_html" string="View Online" type="object" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_report_cashbook_view_inherit_html" model="ir.ui.view">
+        <field name="name">Cashbook Report HTML Button</field>
+        <field name="model">account.cashbook.report</field>
+        <field name="inherit_id" ref="om_account_daily_reports.account_report_cashbook_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button name="check_report_html" string="View Online" type="object" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_report_bankbook_view_inherit_html" model="ir.ui.view">
+        <field name="name">Bankbook Report HTML Button</field>
+        <field name="model">account.bankbook.report</field>
+        <field name="inherit_id" ref="om_account_daily_reports.account_report_bankbook_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button name="check_report_html" string="View Online" type="object" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+    -->
+
+</odoo>

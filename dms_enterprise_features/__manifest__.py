@@ -1,0 +1,82 @@
+# Copyright 2024 Hudson Community
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+{
+    "name": "DMS Enterprise Features — Files Centralization & Auto-Assignment",
+    "summary": """
+        Adds enterprise-grade Files Centralization with automatic document
+        routing to folders for HR, Recruitment, Accounting, Products,
+        Projects, Approvals and Sign modules.
+    """,
+    "version": "20.0.1.0.2",
+    "category": "Document Management",
+    "license": "LGPL-3",
+    "author": "Hudson Community",
+    "website": "https://github.com/nandusaji2001/hudson-community",
+    "depends": [
+        "dms",
+        "mail",
+        "base_setup",
+        "hr",
+        "portal",
+        "fleet",
+    ],
+    "data": [
+        # Security
+        "security/security.xml",
+        "security/ir.access.csv",
+        # Override base DMS ir.access rules to enforce per-user visibility
+        "security/dms_access_overrides.xml",
+        # Data (must be before views so default folders exist)
+        "data/res_groups_privilege.xml",
+        "data/dms_sequence.xml",
+        "data/dms_file_extension_data.xml",
+        "data/default_dms_storage.xml",
+        "data/default_dms_directories.xml",
+        "data/default_folder_rules.xml",
+        "data/mail_template_data.xml",
+        "data/dms_cron.xml",
+        "data/dms_employee_server_action.xml",
+        "views/dms_folder_rule_views.xml",
+        "views/dms_access_groups_views.xml",
+        "views/res_config_settings.xml",
+        "views/dms_file_views.xml",
+        "views/dms_directory_views.xml",
+        "views/dms_approval_views.xml",
+        "wizard/dms_move_wizard_views.xml",
+        "wizard/dms_file_share_wizard_views.xml",
+        "wizard/dms_file_reject_wizard_views.xml",
+        "views/dms_signature_views.xml",
+        "views/dms_my_documents_views.xml",
+        "views/dms_file_log_views.xml",
+        "views/dms_portal_templates.xml",
+        "views/dms_share_portal_templates.xml",
+        "views/dms_menu.xml",
+    ],
+    "assets": {
+        "web.assets_backend": [
+            "dms_enterprise_features/static/src/scss/unified_kanban.scss",
+            "dms_enterprise_features/static/src/scss/icon_fixes.scss",
+            "dms_enterprise_features/static/src/js/icon_compatibility_patch.js",
+            "dms_enterprise_features/static/src/js/search_panel_trash.js",
+            "dms_enterprise_features/static/src/xml/search_panel_trash.xml",
+            "dms_enterprise_features/static/src/js/dms_history.js",
+            "dms_enterprise_features/static/src/js/dms_upload_permission.js",
+            "dms_enterprise_features/static/src/js/unified_kanban_renderer.js",
+            "dms_enterprise_features/static/src/xml/unified_kanban_renderer.xml",
+            "dms_enterprise_features/static/src/js/unified_list_renderer.js",
+            "dms_enterprise_features/static/src/xml/unified_list_renderer.xml",
+            "dms_enterprise_features/static/src/js/dms_file_name_field.js",
+            "dms_enterprise_features/static/src/xml/dms_file_name_field.xml",
+            "dms_enterprise_features/static/src/js/dms_revision_status_field.js",
+        ],
+        "web.assets_backend_lazy": [
+            "dms_enterprise_features/static/src/js/dms_activity.js",
+            "dms_enterprise_features/static/src/xml/dms_activity.xml",
+        ],
+    },
+    "application": True,
+    "installable": True,
+    "auto_install": False,
+    "post_init_hook": "post_init_hook",
+    "icon": "/dms/static/description/icon.png",
+}

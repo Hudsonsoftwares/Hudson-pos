@@ -1,0 +1,1512 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================= -->
+    <!-- 1. EMPLOYEE TAX REGIME SELECTION VIEWS                        -->
+    <!-- ============================================================= -->
+
+    <!-- Tax Regime Selection List View -->
+    <record id="tds_employee_tax_regime_view_tree" model="ir.ui.view">
+        <field name="name">tds.employee.tax.regime.tree</field>
+        <field name="model">tds.employee.tax.regime</field>
+        <field name="arch" type="xml">
+            <list string="Tax Year Selections" decoration-muted="is_locked">
+                <field name="employee_id"/>
+                <field name="financial_year_id" optional="show"/>
+                <field name="regime_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Tax Regime Selection Form View -->
+    <record id="tds_employee_tax_regime_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.tax.regime.form</field>
+        <field name="model">tds.employee.tax.regime</field>
+        <field name="arch" type="xml">
+            <form string="Tax Year Selection">
+                <header invisible="not is_locked">
+                    <button name="action_administrative_unlock" string="Admin Unlock Regime" type="object" class="btn-warning" groups="hudson_payroll_base.group_payroll_manager"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="LOCKED" bg_color="text-bg-danger" invisible="not is_locked"/>
+                    <group>
+                        <group string="Employee &amp; Tax Year">
+                            <field name="employee_id" options="{'no_create': True}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="financial_year_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Tax Regime Choice">
+                            <field name="regime_id" widget="selection"/>
+                            <field name="is_locked" readonly="1" groups="hudson_payroll_base.group_payroll_manager"/>
+                            <field name="lock_reason" invisible="not is_locked" groups="hudson_payroll_base.group_payroll_manager"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Tax Regime Selection Search View -->
+    <record id="tds_employee_tax_regime_view_search" model="ir.ui.view">
+        <field name="name">tds.employee.tax.regime.search</field>
+        <field name="model">tds.employee.tax.regime</field>
+        <field name="arch" type="xml">
+            <search string="Search Tax Regime Selections">
+                <field name="employee_id"/>
+                <field name="financial_year_id"/>
+                <field name="regime_id"/>
+                <filter string="New Tax Regime" name="filter_new_regime" domain="[('regime_code', '=', 'new')]"/>
+                <filter string="Old Tax Regime" name="filter_old_regime" domain="[('regime_code', '=', 'old')]"/>
+                <filter string="Locked Selections" name="filter_locked" domain="[('is_locked', '=', True)]"/>
+                <group>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Tax Year" name="group_by_fy" context="{'group_by': 'financial_year_id'}"/>
+                    <filter string="Tax Regime" name="group_by_regime" context="{'group_by': 'regime_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Tax Regime Action -->
+    <record id="action_tds_employee_tax_regime" model="ir.actions.act_window">
+        <field name="name">Employee Tax Profile &amp; Regimes</field>
+        <field name="res_model">tds.employee.tax.regime</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.hds_in_tds_applicable', '=', True)]</field>
+        <field name="search_view_id" ref="tds_employee_tax_regime_view_search"/>
+    </record>
+
+
+    <!-- ============================================================= -->
+    <!-- 2. EMPLOYEE TAX DECLARATION VIEWS                             -->
+    <!-- ============================================================= -->
+
+    <!-- Tax Declaration List View -->
+    <record id="tds_employee_declaration_view_tree" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.tree</field>
+        <field name="model">tds.employee.declaration</field>
+        <field name="arch" type="xml">
+            <list string="Employee Tax Declarations" create="0" delete="0" edit="0" decoration-success="state in ['proof_verified', 'approved']" decoration-info="state in ['declared', 'submitted']" decoration-warning="state in ['proof_submitted', 'proof_under_review']" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="financial_year_id" optional="show"/>
+                <field name="tax_regime_id" optional="show"/>
+                <field name="total_declared_amount" optional="show"/>
+                <field name="total_approved_amount" optional="show"/>
+                <field name="total_rejected_amount" optional="hide"/>
+                <field name="submission_date" optional="show"/>
+                <field name="proof_submission_date" optional="show"/>
+                <field name="approval_date" optional="show"/>
+                <field name="state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Proof Documentation & Rule Guide Modal Dialog View -->
+    <record id="tds_declaration_rule_guide_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.rule.guide.form</field>
+        <field name="model">tds.employee.declaration</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Proof Documentation &amp; Rule Guide">
+                <field name="financial_year_id" invisible="1"/>
+                <field name="regime_code" invisible="1"/>
+                <field name="proof_rule_guide_html" widget="html" readonly="1" nolabel="1"/>
+                <footer>
+                    <button string="Close" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- TDS Recalculation Result Modal Dialog -->
+    <record id="tds_recalculation_result_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.recalculation.result.form</field>
+        <field name="model">tds.employee.declaration</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <form string="Full TDS Recalculation Completed">
+                <field name="recalculation_summary_html" widget="html" readonly="1" nolabel="1"/>
+                <footer>
+                    <button string="OK" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tax Declaration Form View -->
+    <record id="tds_employee_declaration_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.form</field>
+        <field name="model">tds.employee.declaration</field>
+        <field name="arch" type="xml">
+            <form string="Employee Tax Declaration" create="0" delete="0">
+                <header>
+                    <button name="action_submit_declaration" string="Submit Declaration (Plan)" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_submit_proofs" string="Submit Proof Documents" type="object" class="btn-primary" invisible="state not in ['declared', 'submitted'] or not is_proof_window_open"/>
+                    <button name="action_start_review" string="Start Verification" type="object" class="btn-info" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="(state not in ['declared', 'submitted', 'proof_submitted']) or (state in ['declared', 'submitted'] and not is_proof_window_open)"/>
+                    <button name="action_verify_proofs" string="Verify &amp; Approve Proofs" type="object" class="btn-success" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="(state not in ['declared', 'submitted', 'proof_submitted', 'proof_under_review']) or (state in ['declared', 'submitted'] and not is_proof_window_open)"/>
+                    <button name="action_recalculate_tds" string="Recalculate Full TDS (Tax Firm Approved)" type="object" class="btn-primary" icon="calculate" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['proof_verified', 'approved']"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" class="btn-secondary" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state == 'draft'"/>
+                    <field name="hds_in_tds_applicable" invisible="1"/>
+                    <field name="is_proof_window_open" invisible="1"/>
+                    <button name="action_print_statutory_report" string="Download Statutory Calculation Report" type="object" class="btn-secondary" icon="description" invisible="state in ['draft', 'rejected'] or not hds_in_tds_applicable"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,declared,proof_submitted,proof_under_review,proof_verified"/>
+                </header>
+                <sheet>
+                    <field name="hds_in_is_agnipath" invisible="1"/>
+                    <field name="is_proof_window_open" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_proof_rule_guide"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="book"
+                                help="View statutory rule parameters and proof documentation requirements.">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Proof &amp;</span>
+                                <span class="o_stat_text">Rule Guide</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Proof Verified" bg_color="text-bg-success" invisible="state not in ['proof_verified', 'approved']"/>
+                    <widget name="web_ribbon" title="Plan Declared" bg_color="text-bg-info" invisible="state not in ['declared', 'submitted']"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Tax Period">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="financial_year_id" readonly="state != 'draft'"/>
+                            <field name="tax_regime_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="regime_code" readonly="1"/>
+                        </group>
+                        <group string="Audit &amp; Totals">
+                            <field name="total_declared_amount" readonly="1"/>
+                            <field name="decl_80ccd2_employer_nps" string="Employer NPS Contribution (Section 124)" readonly="1"/>
+                            <field name="total_eligible_amount" readonly="1"/>
+                            <field name="total_excess_amount" readonly="1"/>
+                            <field name="total_approved_amount" readonly="1"/>
+                            <field name="total_rejected_amount" readonly="1"/>
+                            <field name="submission_date"/>
+                            <field name="proof_submission_date"/>
+                            <field name="approval_date"/>
+                            <field name="approved_by_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <!-- TAB 1: SECTION 80C INVESTMENTS (OLD REGIME ONLY) -->
+                        <page string="Section 80C Investments" name="sec_80c" invisible="regime_code == 'new'">
+                            <group string="Section 80C Statutory Summary">
+                                <group>
+                                    <field name="decl_80c_total_declared" readonly="1"/>
+                                    <field name="decl_80c_total_eligible" readonly="1"/>
+                                    <field name="decl_80c_total_excess" readonly="1"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="alert" invisible="decl_80c_total_excess == 0">
+                                <i class="fa fa-info-circle me-1"/>
+                                <strong>₹<field name="decl_80c_total_excess" readonly="1" nolabel="1"/></strong> exceeds the statutory deduction limit and will not be considered for income tax calculation.
+                            </div>
+                            <field name="is_80c_exceeded" invisible="1"/>
+                            <div class="alert alert-warning" role="alert" invisible="not is_80c_exceeded">
+                                <i class="fa fa-exclamation-triangle me-1"/>
+                                <field name="section_80c_warning_msg" readonly="1"/>
+                            </div>
+                            <div class="alert alert-info" role="alert" invisible="is_80c_exceeded">
+                                <strong>Section 80C Limit:</strong> Maximum statutory deduction permitted under Section 80C is <strong>₹1,50,000</strong>.
+                            </div>
+                            <group string="Specified 80C Investments &amp; Savings">
+                                <field name="is_80c_ppf_active" invisible="1"/>
+                                <field name="is_80c_elss_active" invisible="1"/>
+                                <field name="is_80c_epf_active" invisible="1"/>
+                                <field name="is_80c_lic_active" invisible="1"/>
+                                <field name="is_80c_nsc_active" invisible="1"/>
+                                <field name="is_80c_ssy_active" invisible="1"/>
+                                <field name="is_80c_fd_active" invisible="1"/>
+                                <field name="is_80c_tuition_active" invisible="1"/>
+                                <field name="is_80c_housing_principal_active" invisible="1"/>
+                                <field name="is_80c_other_active" invisible="1"/>
+                                <group string="Provident Funds, Insurance &amp; Equity">
+                                    <field name="decl_80c_ppf" readonly="state in ['approved', 'rejected']" invisible="not is_80c_ppf_active"/>
+                                    <field name="decl_80c_epf" readonly="state in ['approved', 'rejected']" invisible="not is_80c_epf_active"/>
+                                    <field name="decl_80c_lic" readonly="state in ['approved', 'rejected']" invisible="not is_80c_lic_active"/>
+                                    <field name="decl_80c_elss" readonly="state in ['approved', 'rejected']" invisible="not is_80c_elss_active"/>
+                                    <field name="decl_80c_nsc" readonly="state in ['approved', 'rejected']" invisible="not is_80c_nsc_active"/>
+                                </group>
+                                <group string="Deposits, Education &amp; Housing">
+                                    <field name="decl_80c_ssy" readonly="state in ['approved', 'rejected']" invisible="not is_80c_ssy_active"/>
+                                    <field name="decl_80c_fd" readonly="state in ['approved', 'rejected']" invisible="not is_80c_fd_active"/>
+                                    <field name="decl_80c_tuition" readonly="state in ['approved', 'rejected']" invisible="not is_80c_tuition_active"/>
+                                    <field name="decl_80c_housing_principal" readonly="state in ['approved', 'rejected']" invisible="not is_80c_housing_principal_active"/>
+                                    <field name="decl_80c_other" readonly="state in ['approved', 'rejected']" invisible="not is_80c_other_active"/>
+                                </group>
+                            </group>
+                            <group string="Section 80C Proof Receipts (PPF, ELSS, LIC, EPF, Housing Principal)" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80c_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80C Proof Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                            <group class="oe_subtotal_footer">
+                                <field name="decl_80c_total" class="oe_subtotal_footer_separator" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 2: HEALTH INSURANCE & SPECIAL DEDUCTIONS (OLD REGIME ONLY) -->
+                        <page string="Health &amp; Other Deductions (80D, 80CCD, 80E)" name="health_other" invisible="regime_code == 'new'">
+                            <group>
+                                <group string="Section 80CCD(1B) Pension Scheme">
+                                    <field name="decl_80ccd1b_nps" readonly="state in ['approved', 'rejected']"/>
+                                </group>
+                                <group string="Section 80D Medical Insurance Premiums">
+                                    <field name="decl_80d_self" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80d_parents" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80d_parents_is_senior" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80d_preventive" readonly="state in ['approved', 'rejected']"/>
+                                </group>
+                            </group>
+                            <group string="Health &amp; Pension Proof Receipts (80D &amp; 80CCD(1B))" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80d_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80D Mediclaim Policy &amp; Premium Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80ccd1b_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80CCD(1B) NPS Tier 1 Contribution Receipt" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                            <group string="Interest &amp; Other Chapter VI-A Deductions">
+                                 <group string="Interest &amp; Rent Deductions">
+                                     <field name="decl_80tta_interest" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80ttb_interest" readonly="state in ['approved', 'rejected']"/>
+                                 </group>
+                                 <group string="Section 80DD – Dependent Disability Details">
+                                     <field name="decl_80dd_amount" readonly="1"/>
+                                     <field name="decl_80dd_dependent_name" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_relationship" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_dependent_pan" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_dependent_dob" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_disability_exists" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_disability_percentage" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_disability_category" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_is_severe_disability" readonly="1"/>
+                                     <field name="decl_80dd_has_certificate" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_cert_type" readonly="state in ['approved', 'rejected']" invisible="not decl_80dd_has_certificate"/>
+                                     <field name="decl_80dd_cert_number" readonly="state in ['approved', 'rejected']" invisible="not decl_80dd_has_certificate"/>
+                                     <field name="decl_80dd_cert_issue_date" readonly="state in ['approved', 'rejected']" invisible="not decl_80dd_has_certificate"/>
+                                     <field name="decl_80dd_cert_expiry_date" readonly="state in ['approved', 'rejected']" invisible="not decl_80dd_has_certificate or decl_80dd_cert_type == 'permanent'"/>
+                                     <field name="decl_80dd_issuing_authority" readonly="state in ['approved', 'rejected']" invisible="not decl_80dd_has_certificate"/>
+                                     <field name="decl_80dd_is_cert_valid" readonly="1" invisible="not decl_80dd_has_certificate"/>
+                                     <field name="decl_80dd_has_maintenance_expenditure" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_has_insurance_contribution" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_expenditure_amount" readonly="state in ['approved', 'rejected']"/>
+                                 </group>
+                                 <group string="Section 80U – Employee Disability Details">
+                                     <field name="decl_80u_amount" readonly="1"/>
+                                     <field name="decl_80u_disability_percentage" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80u_disability_category" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80u_is_severe_disability" readonly="1"/>
+                                     <field name="decl_80u_has_certificate" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80u_cert_type" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate"/>
+                                     <field name="decl_80u_cert_number" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate"/>
+                                     <field name="decl_80u_cert_issue_date" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate"/>
+                                     <field name="decl_80u_cert_expiry_date" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                     <field name="decl_80u_reassessment_pending" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                     <field name="decl_80u_renewal_issue_date" string="Renewal / Reassessment Date" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                     <field name="decl_80u_renewal_expiry_date" string="New / Renewed Certificate Expiry Date" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                     <field name="decl_80u_issuing_authority" readonly="state in ['approved', 'rejected']" invisible="not decl_80u_has_certificate"/>
+                                     <field name="decl_80u_is_cert_valid" readonly="1" invisible="not decl_80u_has_certificate"/>
+                                 </group>
+                                <group string="Section 80E – Education Loan Details">
+                                     <field name="decl_80e_interest" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_loan_account_number" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_loan_sanction_date" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_interest_start_date" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_lender_name" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_lender_type" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_is_higher_education" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_loan_taken_for" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_first_claim_fy_id" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80e_current_claim_year" readonly="1"/>
+                                     <field name="decl_80e_is_within_8_years" readonly="1"/>
+                                 </group>
+                                <group string="Section 80G – Charitable Donation Details">
+                                    <field name="decl_80g_donation" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_institution_name" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_category" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_is_approved" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_mode" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_donation_date" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_receipt_number" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_donee_pan" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_approval_number" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80g_remarks" readonly="state in ['approved', 'rejected']"/>
+                                </group>
+                                 <group string="Section 80GG — Rent Paid without HRA (Form 10BA)">
+                                     <field name="decl_80gg_rent" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80gg_owns_house_work_place" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80gg_owns_house_elsewhere" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80gg_hra_received" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80gg_form_10ba_filed" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80gg_eligible" readonly="1"/>
+                                     <field name="decl_80gg_ineligibility_reason" readonly="1" invisible="decl_80gg_eligible"/>
+                                     <field name="decl_80gg_ati" readonly="1" invisible="not decl_80gg_eligible"/>
+                                     <field name="decl_80gg_component_a" readonly="1" invisible="not decl_80gg_eligible"/>
+                                     <field name="decl_80gg_component_b" readonly="1" invisible="not decl_80gg_eligible"/>
+                                     <field name="decl_80gg_component_c" readonly="1" invisible="not decl_80gg_eligible"/>
+                                     <field name="decl_80gg_allowed_amount" readonly="1" invisible="not decl_80gg_eligible"/>
+                                     <field name="decl_80gg_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                 </group>
+                                 <group string="Disability Deductions">
+                                     <field name="decl_80dd_expenditure_amount" readonly="state in ['approved', 'rejected']"/>
+                                     <field name="decl_80dd_amount" readonly="1"/>
+                                     <field name="decl_80u_amount" readonly="state in ['approved', 'rejected']"/>
+                                 </group>
+                            </group>
+                            <group string="Special Deductions &amp; Donation Proof Receipts (80DD, 80U, 80E, 80G, 80GG)" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80dd_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80DD Disability Medical Certificate" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80u_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80U Disability Certificate" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80e_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80E Education Loan Bank Certificate" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80g_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80G Charitable Donation Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80gg_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80GG Form 10BA &amp; Rent Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 3: HOUSE RENT ALLOWANCE, LTA & HOME LOAN INTEREST (OLD REGIME ONLY) -->
+                        <page string="HRA, LTA &amp; Home Loan (Sec 10(13A) / 10(5) / 24(b) / 80EEA)" name="hra_home" invisible="regime_code == 'new'">
+                            <group>
+                                <group string="Section 10(13A) House Rent Allowance (HRA)">
+                                    <field name="decl_hra_annual_rent" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_hra_is_metro" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_hra_own_residential_property_at_workplace" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_hra_rent_period_from" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_hra_rent_period_to" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_hra_landlord_name" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_hra_landlord_pan" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_hra_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                 <group string="Section 10(5) Leave Travel Allowance (LTA) — Old Regime Only">
+                                     <group string="Travel &amp; Journey Inputs">
+                                        <field name="decl_lta_declared_fare" readonly="state in ['approved', 'rejected']"/>
+                                        <field name="decl_lta_journey_date"/>
+                                        <field name="decl_lta_travel_mode"/>
+                                        <field name="decl_lta_origin"/>
+                                        <field name="decl_lta_destination"/>
+                                        <field name="decl_lta_origin_country"/>
+                                        <field name="decl_lta_destination_country"/>
+                                    </group>
+                                    <group string="Accompanying Family Details">
+                                        <field name="decl_lta_family_members_count"/>
+                                        <field name="decl_lta_spouse_travelling"/>
+                                        <field name="decl_lta_dependent_parents_count"/>
+                                        <field name="decl_lta_dependent_siblings_count"/>
+                                        <field name="decl_lta_has_children"/>
+                                        <field name="decl_lta_children_count" invisible="not decl_lta_has_children"/>
+                                    </group>
+                                    <field name="decl_lta_summary_html" widget="html" nolabel="1" colspan="2" readonly="1"/>
+                                    <separator string="Previous Employer LTA History (Section 10(5))"/>
+                                    <field name="previous_lta_history_ids" readonly="state in ['approved', 'rejected']" colspan="2">
+                                        <list decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                                            <field name="previous_employer_name"/>
+                                            <field name="employment_from" optional="show"/>
+                                            <field name="employment_to" optional="show"/>
+                                            <field name="previous_block_period" optional="show"/>
+                                            <field name="previous_lta_claims_used" optional="show"/>
+                                            <field name="carry_forward_requested" optional="show"/>
+                                            <field name="carry_forward_eligible" widget="badge" decoration-success="carry_forward_eligible == 'eligible'" decoration-danger="carry_forward_eligible == 'ineligible'" decoration-warning="carry_forward_eligible == 'pending'" optional="show"/>
+                                            <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Home Loan Interest Exemptions (Section 24(b))">
+                                    <field name="decl_24b_self_interest" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_24b_loan_purpose" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_24b_borrowing_date" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_24b_completion_date" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_24b_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                <group string="Section 80EEA First-Time Home Buyer Details">
+                                    <field name="decl_80eea_interest_amount" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_claimed_under_24b" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_lender_type" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_loan_sanction_date" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_property_stamp_value" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_first_time_home_buyer" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_claimed_under_80ee" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_lending_institution" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_loan_account_number" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_80eea_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="HRA, LTA &amp; Home Loan Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_hra_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="HRA Rent Receipts &amp; Rental Agreement" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_lta_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="LTA Travel Tickets &amp; Boarding Passes" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_24b_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Home Loan Interest Certificate (24b / 80EEA)" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 4: NON-PAYROLL & PREVIOUS EMPLOYER INCOME (COMMON) -->
+                        <page string="Other Income &amp; Previous Employer (Common)" name="other_prev_income">
+                            <group>
+                                <group string="Income from Other Sources &amp; Let-Out Property">
+                                    <field name="savings_bank_interest" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="fixed_deposit_interest" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="dividend_income" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="other_sources_income" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="decl_57iia_family_pension" string="Family Pension Received (annual) — Section 93(1)(d) (₹)" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="annual_let_out_rent" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="municipal_taxes_paid" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="let_out_interest_paid" readonly="state in ['approved', 'rejected']"/>
+                                </group>
+                                <group string="Previous Employer Income &amp; Tax Deducted">
+                                    <field name="prev_employer_taxable_gross" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="prev_employer_tds" readonly="state in ['approved', 'rejected']"/>
+                                    <field name="prev_employer_pt" readonly="state in ['approved', 'rejected']" invisible="regime_code == 'new'"/>
+                                </group>
+                            </group>
+                            <separator string="House Property Loss Carry-Forward (Section 71B — Old Regime Only)" invisible="regime_code == 'new'"/>
+                            <field name="house_property_loss_ids" context="{'default_employee_id': employee_id, 'default_regime_code': regime_code, 'default_financial_year_id': financial_year_id}" readonly="state in ['approved', 'rejected']" invisible="regime_code == 'new'">
+                                <list decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                                    <field name="financial_year_id"/>
+                                    <field name="origin_assessment_year" optional="show"/>
+                                    <field name="expiry_assessment_year" optional="show"/>
+                                    <field name="unabsorbed_loss_amount"/>
+                                    <field name="utilized_amount" optional="show"/>
+                                    <field name="remaining_balance" optional="show"/>
+                                    <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-success="status == 'active'" decoration-muted="status == 'fully_utilized'" decoration-danger="status == 'expired'"/>
+                                    <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                    <field name="verification_remarks" optional="hide"/>
+                                    <field name="verified_by" optional="hide"/>
+                                    <field name="verified_on" optional="hide"/>
+                                </list>
+                            </field>
+                            <group string="Family Pension &amp; Previous Employer Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_57iia_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Family Pension Documentation (57iia)" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="prev_employer_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Previous Employer Form 12B / Form 16" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 5: OTHER TAX-ELIGIBLE ADJUSTMENTS -->
+                        <page string="Other Tax-Eligible Adjustments" name="both_regimes" invisible="not hds_in_is_agnipath">
+                            <group string="Statutory Deductions (New &amp; Old Regimes)">
+                                <group string="Agniveer Corpus Fund (Section 80CCH)" invisible="not hds_in_is_agnipath">
+                                    <field name="decl_80cch_agniveer" string="Agniveer Corpus Fund Contribution (80CCH)" readonly="state in ['approved', 'rejected']"/>
+                                </group>
+                            </group>
+                            <group string="Agniveer Corpus Fund Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80cch_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80CCH Agniveer Contribution Statement" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                        </page>
+
+                        <page string="Investment Line Items (Audit Grid)" name="lines">
+                            <field name="declaration_line_ids" context="{'default_regime_code': regime_code, 'default_hds_in_is_agnipath': hds_in_is_agnipath}" readonly="state == 'rejected'">
+                                <list editable="bottom" decoration-danger="not is_regime_permitted" decoration-warning="validation_status == 'exceeds_limit'">
+                                    <field name="category_new" string="Category" column_invisible="parent.regime_code != 'new' or parent.hds_in_is_agnipath" required="parent.regime_code == 'new' and not parent.hds_in_is_agnipath"/>
+                                    <field name="category_new_agnipath" string="Category" column_invisible="parent.regime_code != 'new' or not parent.hds_in_is_agnipath" required="parent.regime_code == 'new' and parent.hds_in_is_agnipath"/>
+                                    <field name="category_old" string="Category" column_invisible="parent.regime_code == 'new' or parent.hds_in_is_agnipath" required="parent.regime_code != 'new' and not parent.hds_in_is_agnipath"/>
+                                    <field name="category_old_agnipath" string="Category" column_invisible="parent.regime_code == 'new' or not parent.hds_in_is_agnipath" required="parent.regime_code != 'new' and parent.hds_in_is_agnipath"/>
+                                    <field name="category" column_invisible="True"/>
+                                    <field name="section_code" string="Section" readonly="1"/>
+                                    <field name="description" string="Particulars / Description"/>
+                                    <field name="declared_amount" string="Declared (₹)" widget="monetary"/>
+                                    <field name="approved_amount" string="Approved (₹)" widget="monetary"/>
+                                    <field name="validation_status" string="Status" widget="badge"
+                                           decoration-success="validation_status == 'valid'"
+                                           decoration-warning="validation_status == 'exceeds_limit'"
+                                           decoration-danger="validation_status == 'disallowed'"/>
+                                    <field name="is_regime_permitted" column_invisible="True"/>
+                                    <field name="declaration_state" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Rejection Details" name="rejection" invisible="state != 'rejected'">
+                            <group>
+                                <field name="rejection_reason"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Employee Self-Service Tax Declaration Dashboard Form View -->
+    <record id="tds_employee_declaration_view_dashboard_form" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.dashboard.form</field>
+        <field name="model">tds.employee.declaration</field>
+        <field name="arch" type="xml">
+            <form string="Employee Tax Declaration Dashboard" create="0" delete="0">
+                <header>
+                    <button name="action_submit_declaration" string="Submit Declaration (Plan)" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_submit_proofs" string="Submit Proof Documents" type="object" class="btn-primary" invisible="state not in ['declared', 'submitted'] or not is_proof_window_open"/>
+                    <button name="action_start_review" string="Start Verification" type="object" class="btn-info" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="(state not in ['declared', 'submitted', 'proof_submitted']) or (state in ['declared', 'submitted'] and not is_proof_window_open)"/>
+                    <button name="action_verify_proofs" string="Verify &amp; Approve Proofs" type="object" class="btn-success" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="(state not in ['declared', 'submitted', 'proof_submitted', 'proof_under_review']) or (state in ['declared', 'submitted'] and not is_proof_window_open)"/>
+                    <button name="action_recalculate_tds" string="Recalculate Full TDS (Tax Firm Approved)" type="object" class="btn-primary" icon="calculate" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state not in ['proof_verified', 'approved']"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" class="btn-secondary" groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager" invisible="state == 'draft'"/>
+                    <field name="hds_in_tds_applicable" invisible="1"/>
+                    <field name="is_proof_window_open" invisible="1"/>
+                    <button name="action_print_statutory_report" string="Download Statutory Calculation Report" type="object" class="btn-secondary" icon="description" invisible="state in ['draft', 'rejected'] or not hds_in_tds_applicable"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,declared,proof_submitted,proof_under_review,proof_verified"/>
+                </header>
+                <sheet>
+                    <field name="hds_in_is_agnipath" invisible="1"/>
+                    <field name="is_proof_window_open" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_proof_rule_guide"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="book"
+                                help="View statutory rule parameters and proof documentation requirements.">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Proof &amp;</span>
+                                <span class="o_stat_text">Rule Guide</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Employee &amp; Tax Year Summary">
+                            <field name="employee_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="financial_year_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="total_declared_amount" readonly="1"/>
+                            <field name="decl_80ccd2_employer_nps" string="Employer NPS Contribution (Section 124)" readonly="1"/>
+                        </group>
+                        <group string="Tax Regime Selection (UI Driver)">
+                            <field name="regime_choice_id" widget="radio" options="{'horizontal': true}" readonly="1"/>
+                            <field name="regime_code" invisible="1"/>
+                            <field name="submission_date"/>
+                            <field name="proof_submission_date"/>
+                            <field name="approval_date"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert" style="margin-bottom:15px;" invisible="regime_code != 'new'">
+                        <i class="fa fa-info-circle me-1"/> 
+                        <strong>Tax Regime Choice:</strong> Reflected from the Employee Profile (Income Tax (TDS) → Tax Period &amp; Regime). 
+                        <strong>New Tax Regime Income-tax Act, 2025 — Section 202(1)</strong> features lower tax slab rates without investment requirements.
+                    </div>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:15px;" invisible="regime_code != 'old'">
+                        <i class="fa fa-info-circle me-1"/> 
+                        <strong>Tax Regime Choice:</strong> Reflected from the Employee Profile (Income Tax (TDS) → Tax Period &amp; Regime). 
+                        <strong>Old Tax Regime</strong> permits full Chapter VI-A deductions and Section 10 exemptions.
+                    </div>
+
+                    <notebook>
+                        <!-- TAB 1: SECTION 80C INVESTMENTS (OLD REGIME ONLY) -->
+                        <page string="Section 80C Investments" name="sec_80c" invisible="regime_code == 'new'">
+                            <field name="is_80c_exceeded" invisible="1"/>
+                            <div class="alert alert-warning" role="alert" invisible="not is_80c_exceeded">
+                                <i class="fa fa-exclamation-triangle me-1"/>
+                                <field name="section_80c_warning_msg" readonly="1"/>
+                            </div>
+                            <div class="alert alert-info" role="alert" invisible="is_80c_exceeded">
+                                <strong>Section 80C Limit:</strong> Maximum statutory deduction permitted under Section 80C is <strong>₹1,50,000</strong>.
+                            </div>
+                            <group string="Specified 80C Investments &amp; Savings">
+                                <group string="Provident Funds, Insurance &amp; Equity">
+                                    <field name="decl_80c_ppf" readonly="state != 'draft'" invisible="not is_80c_ppf_active"/>
+                                    <field name="decl_80c_epf" readonly="state != 'draft'" invisible="not is_80c_epf_active"/>
+                                    <field name="decl_80c_lic" readonly="state != 'draft'" invisible="not is_80c_lic_active"/>
+                                    <field name="decl_80c_elss" readonly="state != 'draft'" invisible="not is_80c_elss_active"/>
+                                    <field name="decl_80c_nsc" readonly="state != 'draft'" invisible="not is_80c_nsc_active"/>
+                                </group>
+                                <group string="Deposits, Education &amp; Housing">
+                                    <field name="decl_80c_ssy" readonly="state != 'draft'" invisible="not is_80c_ssy_active"/>
+                                    <field name="decl_80c_fd" readonly="state != 'draft'" invisible="not is_80c_fd_active"/>
+                                    <field name="decl_80c_tuition" readonly="state != 'draft'" invisible="not is_80c_tuition_active"/>
+                                    <field name="decl_80c_housing_principal" readonly="state != 'draft'" invisible="not is_80c_housing_principal_active"/>
+                                    <field name="decl_80c_other" readonly="state != 'draft'" invisible="not is_80c_other_active"/>
+                                </group>
+                            </group>
+                            <group string="Section 80C Proof Receipts (PPF, ELSS, LIC, EPF, Housing Principal)" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80c_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80C Proof Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                            <group class="oe_subtotal_footer">
+                                <field name="decl_80c_total" class="oe_subtotal_footer_separator" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 2: HEALTH INSURANCE & SPECIAL DEDUCTIONS (OLD REGIME ONLY) -->
+                        <page string="Health &amp; Other Deductions (80D, 80CCD, 80E)" name="health_other" invisible="regime_code == 'new'">
+                            <group>
+                                <group string="Section 80CCD(1B) Pension Scheme">
+                                    <field name="decl_80ccd1b_nps" readonly="state != 'draft'"/>
+                                </group>
+                                <group string="Section 80D Medical Insurance Premiums">
+                                    <field name="decl_80d_self" readonly="state != 'draft'"/>
+                                    <field name="decl_80d_parents" readonly="state != 'draft'"/>
+                                     <field name="decl_80d_parents_is_senior" readonly="state != 'draft'"/>
+                                    <field name="decl_80d_preventive" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <group string="Health &amp; Pension Proof Receipts (80D &amp; 80CCD(1B))" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80d_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80D Mediclaim Policy &amp; Premium Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80ccd1b_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80CCD(1B) NPS Tier 1 Contribution Receipt" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                            <separator string="Savings Interest, Education Loan &amp; Donations"/>
+                            <group>
+                                  <group string="Interest &amp; Disability Deductions">
+                                      <field name="decl_80tta_interest" readonly="state != 'draft'"/>
+                                      <field name="decl_80ttb_interest" readonly="state != 'draft'"/>
+                                  </group>
+                                  <group string="Section 80DD – Dependent Disability Details">
+                                      <field name="decl_80dd_amount" readonly="1"/>
+                                      <field name="decl_80dd_dependent_name" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_relationship" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_dependent_pan" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_dependent_dob" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_disability_exists" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_disability_percentage" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_disability_category" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_is_severe_disability" readonly="1"/>
+                                      <field name="decl_80dd_has_certificate" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_cert_type" readonly="state != 'draft'" invisible="not decl_80dd_has_certificate"/>
+                                      <field name="decl_80dd_cert_number" readonly="state != 'draft'" invisible="not decl_80dd_has_certificate"/>
+                                      <field name="decl_80dd_cert_issue_date" readonly="state != 'draft'" invisible="not decl_80dd_has_certificate"/>
+                                      <field name="decl_80dd_cert_expiry_date" readonly="state != 'draft'" invisible="not decl_80dd_has_certificate or decl_80dd_cert_type == 'permanent'"/>
+                                      <field name="decl_80dd_issuing_authority" readonly="state != 'draft'" invisible="not decl_80dd_has_certificate"/>
+                                      <field name="decl_80dd_is_cert_valid" readonly="1" invisible="not decl_80dd_has_certificate"/>
+                                      <field name="decl_80dd_has_maintenance_expenditure" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_has_insurance_contribution" readonly="state != 'draft'"/>
+                                      <field name="decl_80dd_expenditure_amount" readonly="state != 'draft'"/>
+                                  </group>
+                                  <group string="Section 80U – Employee Disability Details">
+                                      <field name="decl_80u_amount" readonly="1"/>
+                                      <field name="decl_80u_disability_percentage" readonly="state != 'draft'"/>
+                                      <field name="decl_80u_disability_category" readonly="state != 'draft'"/>
+                                      <field name="decl_80u_is_severe_disability" readonly="1"/>
+                                      <field name="decl_80u_has_certificate" readonly="state != 'draft'"/>
+                                      <field name="decl_80u_cert_type" readonly="state != 'draft'" invisible="not decl_80u_has_certificate"/>
+                                      <field name="decl_80u_cert_number" readonly="state != 'draft'" invisible="not decl_80u_has_certificate"/>
+                                      <field name="decl_80u_cert_issue_date" readonly="state != 'draft'" invisible="not decl_80u_has_certificate"/>
+                                      <field name="decl_80u_cert_expiry_date" readonly="state != 'draft'" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                      <field name="decl_80u_reassessment_pending" readonly="state != 'draft'" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                      <field name="decl_80u_renewal_issue_date" string="Renewal / Reassessment Date" readonly="state != 'draft'" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                      <field name="decl_80u_renewal_expiry_date" string="New / Renewed Certificate Expiry Date" readonly="state != 'draft'" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                      <field name="decl_80u_renewal_cert_number" readonly="state != 'draft'" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                      <field name="decl_80u_renewal_disability_percentage" readonly="state != 'draft'" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                      <field name="decl_80u_issuing_authority" readonly="state != 'draft'" invisible="not decl_80u_has_certificate"/>
+                                      <field name="decl_80u_is_cert_valid" readonly="1" invisible="not decl_80u_has_certificate"/>
+                                  </group>
+                                 <group string="Section 80E – Education Loan Details">
+                                     <field name="decl_80e_interest" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_loan_account_number" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_loan_sanction_date" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_interest_start_date" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_lender_name" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_lender_type" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_is_higher_education" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_loan_taken_for" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_first_claim_fy_id" readonly="state != 'draft'"/>
+                                     <field name="decl_80e_current_claim_year" readonly="1"/>
+                                     <field name="decl_80e_is_within_8_years" readonly="1"/>
+                                 </group>
+                                <group string="Section 80G – Charitable Donation Details">
+                                    <field name="decl_80g_donation" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_institution_name" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_category" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_is_approved" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_mode" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_donation_date" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_receipt_number" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_donee_pan" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_approval_number" readonly="state != 'draft'"/>
+                                    <field name="decl_80g_remarks" readonly="state != 'draft'"/>
+                                </group>
+                                <group string="Section 80GG — Rent Paid without HRA (Form 10BA)">
+                                    <field name="decl_80gg_rent" readonly="state != 'draft'"/>
+                                    <field name="decl_80gg_owns_house_work_place" readonly="state != 'draft'"/>
+                                    <field name="decl_80gg_owns_house_elsewhere" readonly="state != 'draft'"/>
+                                    <field name="decl_80gg_hra_received" readonly="state != 'draft'"/>
+                                    <field name="decl_80gg_form_10ba_filed" readonly="state != 'draft'"/>
+                                    <field name="decl_80gg_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Special Deductions &amp; Donation Proof Receipts (80DD, 80U, 80E, 80G, 80GG)" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80dd_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80DD Disability Medical Certificate" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80u_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80U Disability Certificate" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80e_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80E Education Loan Bank Certificate" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80g_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80G Charitable Donation Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_80gg_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80GG Form 10BA &amp; Rent Receipts" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 3: HRA, LTA & HOME LOAN INTEREST (OLD REGIME ONLY) -->
+                        <page string="HRA, LTA &amp; Housing Loan Interest" name="hra_housing" invisible="regime_code == 'new'">
+                            <group>
+                                <group string="Section 10(13A) House Rent Allowance (HRA)">
+                                    <field name="decl_hra_annual_rent" readonly="state != 'draft'"/>
+                                    <field name="decl_hra_is_metro" readonly="state != 'draft'"/>
+                                    <field name="decl_hra_own_residential_property_at_workplace" readonly="state != 'draft'"/>
+                                    <field name="decl_hra_rent_period_from" readonly="state != 'draft'"/>
+                                    <field name="decl_hra_rent_period_to" readonly="state != 'draft'"/>
+                                    <field name="decl_hra_landlord_name" readonly="state != 'draft'"/>
+                                    <field name="decl_hra_landlord_pan" readonly="state != 'draft'"/>
+                                    <field name="decl_hra_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                <group string="Section 10(5) Leave Travel Allowance (LTA) — Old Regime Only">
+                                    <group string="Travel &amp; Journey Inputs">
+                                        <field name="decl_lta_declared_fare" readonly="state in ['approved', 'rejected']"/>
+                                        <field name="decl_lta_journey_date"/>
+                                        <field name="decl_lta_travel_mode"/>
+                                        <field name="decl_lta_origin"/>
+                                        <field name="decl_lta_destination"/>
+                                        <field name="decl_lta_origin_country"/>
+                                        <field name="decl_lta_destination_country"/>
+                                    </group>
+                                    <group string="Accompanying Family Details">
+                                        <field name="decl_lta_family_members_count"/>
+                                        <field name="decl_lta_spouse_travelling"/>
+                                        <field name="decl_lta_dependent_parents_count"/>
+                                        <field name="decl_lta_dependent_siblings_count"/>
+                                        <field name="decl_lta_has_children"/>
+                                        <field name="decl_lta_children_count" invisible="not decl_lta_has_children"/>
+                                    </group>
+                                    <field name="decl_lta_summary_html" widget="html" nolabel="1" colspan="2" readonly="1"/>
+                                    <separator string="Previous Employer LTA History (Section 10(5))"/>
+                                    <field name="previous_lta_history_ids" readonly="state != 'draft'" colspan="2">
+                                        <list decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                                            <field name="previous_employer_name"/>
+                                            <field name="employment_from" optional="show"/>
+                                            <field name="employment_to" optional="show"/>
+                                            <field name="previous_block_period" optional="show"/>
+                                            <field name="previous_lta_claims_used" optional="show"/>
+                                            <field name="carry_forward_requested" optional="show"/>
+                                            <field name="carry_forward_eligible" widget="badge" decoration-success="carry_forward_eligible == 'eligible'" decoration-danger="carry_forward_eligible == 'ineligible'" decoration-warning="carry_forward_eligible == 'pending'" optional="show"/>
+                                            <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Section 24(b) Home Loan Interest (Self-Occupied)">
+                                    <field name="decl_24b_self_interest" readonly="state != 'draft'"/>
+                                    <field name="decl_24b_loan_purpose" readonly="state != 'draft'"/>
+                                    <field name="decl_24b_borrowing_date" readonly="state != 'draft'"/>
+                                    <field name="decl_24b_completion_date" readonly="state != 'draft'"/>
+                                    <field name="decl_24b_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                <group string="Section 80EEA First-Time Home Buyer Details">
+                                    <field name="decl_80eea_interest_amount" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_claimed_under_24b" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_lender_type" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_loan_sanction_date" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_property_stamp_value" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_first_time_home_buyer" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_claimed_under_80ee" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_lending_institution" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_loan_account_number" readonly="state != 'draft'"/>
+                                    <field name="decl_80eea_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="HRA, LTA &amp; Home Loan Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_hra_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="HRA Rent Receipts &amp; Rental Agreement" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_lta_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="LTA Travel Tickets &amp; Boarding Passes" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="decl_24b_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Home Loan Interest Certificate (24b / 80EEA)" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 4: NON-PAYROLL INCOME & PREVIOUS EMPLOYER (COMMON TO BOTH REGIMES) -->
+                        <page string="Other Income &amp; Previous Employer (Common)" name="common_income">
+                            <group>
+                                <group string="Income from Other Sources">
+                                    <field name="savings_bank_interest" readonly="state != 'draft'"/>
+                                    <field name="fixed_deposit_interest" readonly="state != 'draft'"/>
+                                    <field name="dividend_income" readonly="state != 'draft'"/>
+                                    <field name="other_sources_income" readonly="state != 'draft'"/>
+                                    <field name="decl_57iia_family_pension" string="Family Pension Received (annual) — Section 93(1)(d) (₹)" readonly="state != 'draft'"/>
+                                    <field name="total_other_sources_income" readonly="1"/>
+                                </group>
+                                <group string="House Property (Let-Out Property)">
+                                    <field name="annual_let_out_rent" readonly="state != 'draft'"/>
+                                    <field name="municipal_taxes_paid" readonly="state != 'draft'"/>
+                                    <field name="let_out_interest_paid" readonly="state != 'draft'"/>
+                                    <field name="net_house_property_income_loss" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="Previous Employer Income &amp; Tax Details (Mid-Year Joiners)"/>
+                            <group>
+                                <group string="Previous Employer Income &amp; TDS">
+                                    <field name="prev_employer_taxable_gross" readonly="state != 'draft'"/>
+                                    <field name="prev_employer_tds" readonly="state != 'draft'"/>
+                                </group>
+                                <group string="Previous Employer Statutory Deductions" invisible="regime_code == 'new'">
+                                    <field name="prev_employer_pt" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <separator string="House Property Loss Carry-Forward (Section 71B — Old Regime Only)" invisible="regime_code == 'new'"/>
+                            <field name="house_property_loss_ids" context="{'default_employee_id': employee_id, 'default_regime_code': regime_code, 'default_financial_year_id': financial_year_id}" readonly="state != 'draft'" invisible="regime_code == 'new'">
+                                <list decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                                    <field name="financial_year_id"/>
+                                    <field name="origin_assessment_year" optional="show"/>
+                                    <field name="expiry_assessment_year" optional="show"/>
+                                    <field name="unabsorbed_loss_amount"/>
+                                    <field name="utilized_amount" optional="show"/>
+                                    <field name="remaining_balance" optional="show"/>
+                                    <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-success="status == 'active'" decoration-muted="status == 'fully_utilized'" decoration-danger="status == 'expired'"/>
+                                    <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                    <field name="verification_remarks" optional="hide"/>
+                                    <field name="verified_by" optional="hide"/>
+                                    <field name="verified_on" optional="hide"/>
+                                </list>
+                            </field>
+                            <group string="Family Pension &amp; Previous Employer Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_57iia_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Family Pension Documentation (57iia)" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                                <field name="prev_employer_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Previous Employer Form 12B / Form 16" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 5: OTHER TAX-ELIGIBLE ADJUSTMENTS -->
+                        <page string="Other Tax-Eligible Adjustments" name="both_regimes" invisible="not hds_in_is_agnipath">
+                            <group string="Agniveer Corpus Fund (Section 80CCH)" invisible="not hds_in_is_agnipath">
+                                <group>
+                                    <field name="decl_80cch_agniveer" string="Agniveer Corpus Fund Contribution (80CCH)" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <group string="Agniveer Corpus Fund Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80cch_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80CCH Agniveer Contribution Statement" readonly="state in ['proof_verified', 'approved', 'rejected']"/>
+                            </group>
+                            <div class="alert alert-info" role="alert" invisible="not hds_in_is_agnipath">
+                                <i class="fa fa-info-circle me-1"/>
+                                <strong>Section 80CCH - Agniveer Corpus Fund:</strong> Under Section 80CCH of the Income Tax Act, 1961, 100% of contributions made by an individual or the Central Government to the Agniveer Corpus Fund under the Agnipath Scheme are fully deductible from taxable income under both Old and New Tax Regimes (Income-tax Act, 2025 — Section 202(1)).
+                            </div>
+                        </page>
+
+
+                        <!-- TAB 7: INVESTMENT LINE ITEMS & TAX FIRM APPROVAL -->
+                        <page string="Investment Line Items &amp; Tax Firm Approval" name="line_items_audit">
+                            <field name="declaration_line_ids" context="{'default_regime_code': regime_code, 'default_hds_in_is_agnipath': hds_in_is_agnipath}" readonly="state == 'rejected'">
+                                <list editable="bottom" decoration-danger="not is_regime_permitted" decoration-warning="validation_status == 'exceeds_limit'">
+                                    <field name="category_new" string="Category" column_invisible="parent.regime_code != 'new' or parent.hds_in_is_agnipath" required="parent.regime_code == 'new' and not parent.hds_in_is_agnipath"/>
+                                    <field name="category_new_agnipath" string="Category" column_invisible="parent.regime_code != 'new' or not parent.hds_in_is_agnipath" required="parent.regime_code == 'new' and parent.hds_in_is_agnipath"/>
+                                    <field name="category_old" string="Category" column_invisible="parent.regime_code == 'new' or parent.hds_in_is_agnipath" required="parent.regime_code != 'new' and not parent.hds_in_is_agnipath"/>
+                                    <field name="category_old_agnipath" string="Category" column_invisible="parent.regime_code == 'new' or not parent.hds_in_is_agnipath" required="parent.regime_code != 'new' and parent.hds_in_is_agnipath"/>
+                                    <field name="category" column_invisible="True"/>
+                                    <field name="section_code" string="Section" readonly="1"/>
+                                    <field name="description" string="Particulars / Description"/>
+                                    <field name="declared_amount" string="Declared (₹)" widget="monetary"/>
+                                    <field name="approved_amount" string="Approved (₹)" widget="monetary"/>
+                                    <field name="validation_status" string="Status" widget="badge"
+                                           decoration-success="validation_status == 'valid'"
+                                           decoration-warning="validation_status == 'exceeds_limit'"
+                                           decoration-danger="validation_status == 'disallowed'"/>
+                                    <field name="is_regime_permitted" column_invisible="True"/>
+                                    <field name="declaration_state" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- TAB 9: REJECTION DETAILS -->
+                        <page string="Rejection Details" name="rejection" invisible="state != 'rejected'">
+                            <group>
+                                <field name="rejection_reason" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tax Declaration Line Item Form View (Clean Detail Popup) -->
+    <record id="tds_employee_declaration_line_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.line.form</field>
+        <field name="model">tds.employee.declaration.line</field>
+        <field name="arch" type="xml">
+            <form string="Tax Declaration Line Item">
+                <sheet>
+                    <group>
+                        <group string="Investment &amp; Claim Particulars">
+                            <field name="regime_code" invisible="1"/>
+                            <field name="hds_in_is_agnipath" invisible="1"/>
+                            <field name="category_new" invisible="regime_code != 'new' or hds_in_is_agnipath" required="regime_code == 'new' and not hds_in_is_agnipath"/>
+                            <field name="category_new_agnipath" invisible="regime_code != 'new' or not hds_in_is_agnipath" required="regime_code == 'new' and hds_in_is_agnipath"/>
+                            <field name="category_old" invisible="regime_code == 'new' or hds_in_is_agnipath" required="regime_code != 'new' and not hds_in_is_agnipath"/>
+                            <field name="category_old_agnipath" invisible="regime_code == 'new' or not hds_in_is_agnipath" required="regime_code != 'new' and hds_in_is_agnipath"/>
+                            <field name="category" invisible="1"/>
+                            <field name="section_code" readonly="1"/>
+                            <field name="description" placeholder="e.g. PPF Account Deposit, LIC Policy #98765"/>
+                            <field name="declared_amount" widget="monetary"/>
+                        </group>
+                        <group string="Verification &amp; Statutory Approval">
+                            <field name="validation_status" widget="badge"
+                                   decoration-success="validation_status == 'valid'"
+                                   decoration-warning="validation_status == 'exceeds_limit'"
+                                   decoration-danger="validation_status == 'disallowed'"/>
+                            <field name="verified_amount" widget="monetary"/>
+                            <field name="approved_amount" widget="monetary"/>
+                            <field name="tax_firm_approved_amount" widget="monetary" invisible="declaration_state == 'draft'"/>
+                            <field name="is_regime_permitted" readonly="1"/>
+                            <field name="declaration_state" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Special Statutory Eligibility &amp; Remarks">
+                        <group string="Eligibility Conditions">
+                            <field name="is_senior_citizen"/>
+                            <field name="is_severe_disability"/>
+                            <field name="decl_80g_category" invisible="category != '80g'"/>
+                        </group>
+                        <group string="Compliance &amp; Audit Remarks">
+                            <field name="validation_remarks" readonly="1"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Central Overview Read-Only Tax Declaration Form View -->
+    <record id="tds_employee_declaration_view_readonly_form" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.readonly.form</field>
+        <field name="model">tds.employee.declaration</field>
+        <field name="arch" type="xml">
+            <form string="Employee Tax Declaration (Overview)" create="0" delete="0" edit="0">
+                <header>
+                    <field name="hds_in_tds_applicable" invisible="1"/>
+                    <field name="is_proof_window_open" invisible="1"/>
+                    <button name="action_print_statutory_report" string="Download Statutory Calculation Report" type="object" class="btn-secondary" icon="description" invisible="state in ['draft', 'rejected'] or not hds_in_tds_applicable"/>
+                    <button name="action_open_employee_income_tax" string="Open in Employee Income Tax" type="object" class="btn-outline-primary" icon="person"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,declared,proof_submitted,proof_under_review,proof_verified"/>
+                </header>
+                <sheet>
+                    <field name="hds_in_is_agnipath" invisible="1"/>
+                    <field name="is_proof_window_open" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_proof_rule_guide"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="book"
+                                help="View statutory rule parameters and proof documentation requirements.">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Proof &amp;</span>
+                                <span class="o_stat_text">Rule Guide</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+
+                    <!-- Read-Only Notice Banner -->
+                    <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                        <i class="fa fa-info-circle fa-lg me-2"/>
+                        <div>
+                            <strong>Read-Only Overview:</strong> This statutory tax declaration record is displayed in read-only format. Modifications, planned declarations, proof uploads, and statutory approvals can only be performed through <strong>Employee Profile → Income Tax</strong>.
+                        </div>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Employee &amp; Tax Year Summary">
+                            <field name="employee_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="financial_year_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="total_declared_amount" readonly="1"/>
+                            <field name="decl_80ccd2_employer_nps" string="Employer NPS Contribution (Section 124)" readonly="1"/>
+                        </group>
+                        <group string="Tax Regime &amp; Verification Dates">
+                            <field name="regime_choice_id" widget="radio" options="{'horizontal': true}" readonly="1"/>
+                            <field name="regime_code" invisible="1"/>
+                            <field name="submission_date" readonly="1"/>
+                            <field name="proof_submission_date" readonly="1"/>
+                            <field name="approval_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert" style="margin-bottom:15px;" invisible="regime_code != 'new'">
+                        <i class="fa fa-info-circle me-1"/> 
+                        <strong>Tax Regime Choice:</strong> Reflected from the Employee Profile (Income Tax (TDS) → Tax Period &amp; Regime). 
+                        <strong>New Tax Regime Income-tax Act, 2025 — Section 202(1)</strong> features lower tax slab rates without investment requirements.
+                    </div>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:15px;" invisible="regime_code != 'old'">
+                        <i class="fa fa-info-circle me-1"/> 
+                        <strong>Tax Regime Choice:</strong> Reflected from the Employee Profile (Income Tax (TDS) → Tax Period &amp; Regime). 
+                        <strong>Old Tax Regime</strong> permits full Chapter VI-A deductions and Section 10 exemptions.
+                    </div>
+
+                    <notebook>
+                        <!-- TAB 1: SECTION 80C INVESTMENTS (OLD REGIME ONLY) -->
+                        <page string="Section 80C Investments" name="sec_80c" invisible="regime_code == 'new'">
+                            <field name="is_80c_exceeded" invisible="1"/>
+                            <div class="alert alert-warning" role="alert" invisible="not is_80c_exceeded">
+                                <i class="fa fa-exclamation-triangle me-1"/>
+                                <field name="section_80c_warning_msg" readonly="1"/>
+                            </div>
+                            <div class="alert alert-info" role="alert" invisible="is_80c_exceeded">
+                                <strong>Section 80C Limit:</strong> Maximum statutory deduction permitted under Section 80C is <strong>₹1,50,000</strong>.
+                            </div>
+                            <group string="Specified 80C Investments &amp; Savings">
+                                <group string="Provident Funds, Insurance &amp; Equity">
+                                    <field name="decl_80c_ppf" readonly="1" invisible="not is_80c_ppf_active"/>
+                                    <field name="decl_80c_epf" readonly="1" invisible="not is_80c_epf_active"/>
+                                    <field name="decl_80c_lic" readonly="1" invisible="not is_80c_lic_active"/>
+                                    <field name="decl_80c_elss" readonly="1" invisible="not is_80c_elss_active"/>
+                                    <field name="decl_80c_nsc" readonly="1" invisible="not is_80c_nsc_active"/>
+                                </group>
+                                <group string="Deposits, Education &amp; Housing">
+                                    <field name="decl_80c_ssy" readonly="1" invisible="not is_80c_ssy_active"/>
+                                    <field name="decl_80c_fd" readonly="1" invisible="not is_80c_fd_active"/>
+                                    <field name="decl_80c_tuition" readonly="1" invisible="not is_80c_tuition_active"/>
+                                    <field name="decl_80c_housing_principal" readonly="1" invisible="not is_80c_housing_principal_active"/>
+                                    <field name="decl_80c_other" readonly="1" invisible="not is_80c_other_active"/>
+                                </group>
+                            </group>
+                            <group string="Section 80C Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80c_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80C Proof Receipts" readonly="1"/>
+                            </group>
+                            <group class="oe_subtotal_footer">
+                                <field name="decl_80c_total" class="oe_subtotal_footer_separator" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 2: HEALTH INSURANCE & SPECIAL DEDUCTIONS (OLD REGIME ONLY) -->
+                        <page string="Health &amp; Other Deductions (80D, 80CCD, 80E)" name="health_other" invisible="regime_code == 'new'">
+                            <group>
+                                <group string="Section 80CCD(1B) Pension Scheme">
+                                    <field name="decl_80ccd1b_nps" readonly="1"/>
+                                </group>
+                                <group string="Section 80D Medical Insurance Premiums">
+                                    <field name="decl_80d_self" readonly="1"/>
+                                    <field name="decl_80d_parents" readonly="1"/>
+                                    <field name="decl_80d_parents_is_senior" readonly="1"/>
+                                    <field name="decl_80d_preventive" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Health &amp; Pension Proof Receipts (80D &amp; 80CCD(1B))" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80d_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80D Mediclaim Policy &amp; Premium Receipts" readonly="1"/>
+                                <field name="decl_80ccd1b_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80CCD(1B) NPS Tier 1 Contribution Receipt" readonly="1"/>
+                            </group>
+                            <separator string="Savings Interest, Education Loan &amp; Donations"/>
+                            <group>
+                                <group string="Interest &amp; Disability Deductions">
+                                    <field name="decl_80tta_interest" readonly="1"/>
+                                    <field name="decl_80ttb_interest" readonly="1"/>
+                                </group>
+                                <group string="Section 80DD – Dependent Disability Details">
+                                    <field name="decl_80dd_amount" readonly="1"/>
+                                    <field name="decl_80dd_dependent_name" readonly="1"/>
+                                    <field name="decl_80dd_relationship" readonly="1"/>
+                                    <field name="decl_80dd_dependent_pan" readonly="1"/>
+                                    <field name="decl_80dd_dependent_dob" readonly="1"/>
+                                    <field name="decl_80dd_disability_exists" readonly="1"/>
+                                    <field name="decl_80dd_disability_percentage" readonly="1"/>
+                                    <field name="decl_80dd_disability_category" readonly="1"/>
+                                    <field name="decl_80dd_is_severe_disability" readonly="1"/>
+                                    <field name="decl_80dd_has_certificate" readonly="1"/>
+                                    <field name="decl_80dd_cert_type" readonly="1" invisible="not decl_80dd_has_certificate"/>
+                                    <field name="decl_80dd_cert_number" readonly="1" invisible="not decl_80dd_has_certificate"/>
+                                    <field name="decl_80dd_cert_issue_date" readonly="1" invisible="not decl_80dd_has_certificate"/>
+                                    <field name="decl_80dd_cert_expiry_date" readonly="1" invisible="not decl_80dd_has_certificate or decl_80dd_cert_type == 'permanent'"/>
+                                    <field name="decl_80dd_issuing_authority" readonly="1" invisible="not decl_80dd_has_certificate"/>
+                                    <field name="decl_80dd_is_cert_valid" readonly="1" invisible="not decl_80dd_has_certificate"/>
+                                    <field name="decl_80dd_has_maintenance_expenditure" readonly="1"/>
+                                    <field name="decl_80dd_has_insurance_contribution" readonly="1"/>
+                                    <field name="decl_80dd_expenditure_amount" readonly="1"/>
+                                </group>
+                                <group string="Section 80U – Employee Disability Details">
+                                    <field name="decl_80u_amount" readonly="1"/>
+                                    <field name="decl_80u_disability_percentage" readonly="1"/>
+                                    <field name="decl_80u_disability_category" readonly="1"/>
+                                    <field name="decl_80u_is_severe_disability" readonly="1"/>
+                                    <field name="decl_80u_has_certificate" readonly="1"/>
+                                    <field name="decl_80u_cert_type" readonly="1" invisible="not decl_80u_has_certificate"/>
+                                    <field name="decl_80u_cert_number" readonly="1" invisible="not decl_80u_has_certificate"/>
+                                    <field name="decl_80u_cert_issue_date" readonly="1" invisible="not decl_80u_has_certificate"/>
+                                    <field name="decl_80u_cert_expiry_date" readonly="1" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                    <field name="decl_80u_reassessment_pending" readonly="1" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                    <field name="decl_80u_renewal_issue_date" string="Renewal / Reassessment Date" readonly="1" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                    <field name="decl_80u_renewal_expiry_date" string="New / Renewed Certificate Expiry Date" readonly="1" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                    <field name="decl_80u_renewal_cert_number" readonly="1" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                    <field name="decl_80u_renewal_disability_percentage" readonly="1" invisible="not decl_80u_has_certificate or decl_80u_cert_type == 'permanent'"/>
+                                    <field name="decl_80u_issuing_authority" readonly="1" invisible="not decl_80u_has_certificate"/>
+                                    <field name="decl_80u_is_cert_valid" readonly="1" invisible="not decl_80u_has_certificate"/>
+                                </group>
+                                <group string="Section 80E – Education Loan Details">
+                                    <field name="decl_80e_interest" readonly="1"/>
+                                    <field name="decl_80e_loan_account_number" readonly="1"/>
+                                    <field name="decl_80e_loan_sanction_date" readonly="1"/>
+                                    <field name="decl_80e_interest_start_date" readonly="1"/>
+                                    <field name="decl_80e_lender_name" readonly="1"/>
+                                    <field name="decl_80e_lender_type" readonly="1"/>
+                                    <field name="decl_80e_is_higher_education" readonly="1"/>
+                                    <field name="decl_80e_loan_taken_for" readonly="1"/>
+                                    <field name="decl_80e_first_claim_fy_id" readonly="1"/>
+                                    <field name="decl_80e_current_claim_year" readonly="1"/>
+                                    <field name="decl_80e_is_within_8_years" readonly="1"/>
+                                </group>
+                                <group string="Section 80G – Charitable Donation Details">
+                                    <field name="decl_80g_donation" readonly="1"/>
+                                    <field name="decl_80g_institution_name" readonly="1"/>
+                                    <field name="decl_80g_category" readonly="1"/>
+                                    <field name="decl_80g_is_approved" readonly="1"/>
+                                    <field name="decl_80g_mode" readonly="1"/>
+                                    <field name="decl_80g_donation_date" readonly="1"/>
+                                    <field name="decl_80g_receipt_number" readonly="1"/>
+                                    <field name="decl_80g_donee_pan" readonly="1"/>
+                                    <field name="decl_80g_approval_number" readonly="1"/>
+                                    <field name="decl_80g_remarks" readonly="1"/>
+                                </group>
+                                <group string="Section 80GG — Rent Paid without HRA (Form 10BA)">
+                                    <field name="decl_80gg_rent" readonly="1"/>
+                                    <field name="decl_80gg_owns_house_work_place" readonly="1"/>
+                                    <field name="decl_80gg_owns_house_elsewhere" readonly="1"/>
+                                    <field name="decl_80gg_hra_received" readonly="1"/>
+                                    <field name="decl_80gg_form_10ba_filed" readonly="1"/>
+                                    <field name="decl_80gg_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Special Deductions &amp; Donation Proof Receipts (80DD, 80U, 80E, 80G, 80GG)" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80dd_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80DD Disability Medical Certificate" readonly="1"/>
+                                <field name="decl_80u_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80U Disability Certificate" readonly="1"/>
+                                <field name="decl_80e_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80E Education Loan Bank Certificate" readonly="1"/>
+                                <field name="decl_80g_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80G Charitable Donation Receipts" readonly="1"/>
+                                <field name="decl_80gg_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80GG Form 10BA &amp; Rent Receipts" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 3: HRA, LTA & HOME LOAN INTEREST (OLD REGIME ONLY) -->
+                        <page string="HRA, LTA &amp; Housing Loan Interest" name="hra_housing" invisible="regime_code == 'new'">
+                            <group>
+                                <group string="Section 10(13A) House Rent Allowance (HRA)">
+                                    <field name="decl_hra_annual_rent" readonly="1"/>
+                                    <field name="decl_hra_is_metro" readonly="1"/>
+                                    <field name="decl_hra_own_residential_property_at_workplace" readonly="1"/>
+                                    <field name="decl_hra_rent_period_from" readonly="1"/>
+                                    <field name="decl_hra_rent_period_to" readonly="1"/>
+                                    <field name="decl_hra_landlord_name" readonly="1"/>
+                                    <field name="decl_hra_landlord_pan" readonly="1"/>
+                                    <field name="decl_hra_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                <group string="Section 10(5) Leave Travel Allowance (LTA) — Old Regime Only">
+                                    <group string="Travel &amp; Journey Inputs">
+                                        <field name="decl_lta_declared_fare" readonly="1"/>
+                                        <field name="decl_lta_journey_date" readonly="1"/>
+                                        <field name="decl_lta_travel_mode" readonly="1"/>
+                                        <field name="decl_lta_origin" readonly="1"/>
+                                        <field name="decl_lta_destination" readonly="1"/>
+                                        <field name="decl_lta_origin_country" readonly="1"/>
+                                        <field name="decl_lta_destination_country" readonly="1"/>
+                                    </group>
+                                    <group string="Accompanying Family Details">
+                                        <field name="decl_lta_family_members_count" readonly="1"/>
+                                        <field name="decl_lta_spouse_travelling" readonly="1"/>
+                                        <field name="decl_lta_dependent_parents_count" readonly="1"/>
+                                        <field name="decl_lta_dependent_siblings_count" readonly="1"/>
+                                        <field name="decl_lta_has_children" readonly="1"/>
+                                        <field name="decl_lta_children_count" readonly="1" invisible="not decl_lta_has_children"/>
+                                    </group>
+                                    <field name="decl_lta_summary_html" widget="html" nolabel="1" colspan="2" readonly="1"/>
+                                    <separator string="Previous Employer LTA History (Section 10(5))"/>
+                                    <field name="previous_lta_history_ids" readonly="1" colspan="2">
+                                        <list create="0" delete="0" edit="0" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                                            <field name="previous_employer_name"/>
+                                            <field name="employment_from" optional="show"/>
+                                            <field name="employment_to" optional="show"/>
+                                            <field name="previous_block_period" optional="show"/>
+                                            <field name="previous_lta_claims_used" optional="show"/>
+                                            <field name="carry_forward_requested" optional="show"/>
+                                            <field name="carry_forward_eligible" widget="badge" decoration-success="carry_forward_eligible == 'eligible'" decoration-danger="carry_forward_eligible == 'ineligible'" decoration-warning="carry_forward_eligible == 'pending'" optional="show"/>
+                                            <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Section 24(b) Home Loan Interest (Self-Occupied)">
+                                    <field name="decl_24b_self_interest" readonly="1"/>
+                                    <field name="decl_24b_loan_purpose" readonly="1"/>
+                                    <field name="decl_24b_borrowing_date" readonly="1"/>
+                                    <field name="decl_24b_completion_date" readonly="1"/>
+                                    <field name="decl_24b_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                <group string="Section 80EEA First-Time Home Buyer Details">
+                                    <field name="decl_80eea_interest_amount" readonly="1"/>
+                                    <field name="decl_80eea_claimed_under_24b" readonly="1"/>
+                                    <field name="decl_80eea_lender_type" readonly="1"/>
+                                    <field name="decl_80eea_loan_sanction_date" readonly="1"/>
+                                    <field name="decl_80eea_property_stamp_value" readonly="1"/>
+                                    <field name="decl_80eea_first_time_home_buyer" readonly="1"/>
+                                    <field name="decl_80eea_claimed_under_80ee" readonly="1"/>
+                                    <field name="decl_80eea_lending_institution" readonly="1"/>
+                                    <field name="decl_80eea_loan_account_number" readonly="1"/>
+                                    <field name="decl_80eea_summary_html" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="HRA, LTA &amp; Home Loan Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_hra_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="HRA Rent Receipts &amp; Rental Agreement" readonly="1"/>
+                                <field name="decl_lta_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="LTA Travel Tickets &amp; Boarding Passes" readonly="1"/>
+                                <field name="decl_24b_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Home Loan Interest Certificate (24b / 80EEA)" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 4: NON-PAYROLL INCOME & PREVIOUS EMPLOYER (COMMON TO BOTH REGIMES) -->
+                        <page string="Other Income &amp; Previous Employer (Common)" name="common_income">
+                            <group>
+                                <group string="Income from Other Sources">
+                                    <field name="savings_bank_interest" readonly="1"/>
+                                    <field name="fixed_deposit_interest" readonly="1"/>
+                                    <field name="dividend_income" readonly="1"/>
+                                    <field name="other_sources_income" readonly="1"/>
+                                    <field name="decl_57iia_family_pension" string="Family Pension Received (annual) — Section 93(1)(d) (₹)" readonly="1"/>
+                                    <field name="total_other_sources_income" readonly="1"/>
+                                </group>
+                                <group string="House Property (Let-Out Property)">
+                                    <field name="annual_let_out_rent" readonly="1"/>
+                                    <field name="municipal_taxes_paid" readonly="1"/>
+                                    <field name="let_out_interest_paid" readonly="1"/>
+                                    <field name="net_house_property_income_loss" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="Previous Employer Income &amp; Tax Details (Mid-Year Joiners)"/>
+                            <group>
+                                <group string="Previous Employer Income &amp; TDS">
+                                    <field name="prev_employer_taxable_gross" readonly="1"/>
+                                    <field name="prev_employer_tds" readonly="1"/>
+                                </group>
+                                <group string="Previous Employer Statutory Deductions" invisible="regime_code == 'new'">
+                                    <field name="prev_employer_pt" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="House Property Loss Carry-Forward (Section 71B — Old Regime Only)" invisible="regime_code == 'new'"/>
+                            <field name="house_property_loss_ids" readonly="1" invisible="regime_code == 'new'">
+                                <list create="0" delete="0" edit="0" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                                    <field name="financial_year_id"/>
+                                    <field name="origin_assessment_year" optional="show"/>
+                                    <field name="expiry_assessment_year" optional="show"/>
+                                    <field name="unabsorbed_loss_amount"/>
+                                    <field name="utilized_amount" optional="show"/>
+                                    <field name="remaining_balance" optional="show"/>
+                                    <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-success="status == 'active'" decoration-muted="status == 'fully_utilized'" decoration-danger="status == 'expired'"/>
+                                    <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                    <field name="verification_remarks" optional="hide"/>
+                                    <field name="verified_by" optional="hide"/>
+                                    <field name="verified_on" optional="hide"/>
+                                </list>
+                            </field>
+                            <group string="Family Pension &amp; Previous Employer Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_57iia_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Family Pension Documentation (57iia)" readonly="1"/>
+                                <field name="prev_employer_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="Previous Employer Form 12B / Form 16" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- TAB 5: OTHER TAX-ELIGIBLE ADJUSTMENTS -->
+                        <page string="Other Tax-Eligible Adjustments" name="both_regimes" invisible="not hds_in_is_agnipath">
+                            <group string="Agniveer Corpus Fund (Section 80CCH)" invisible="not hds_in_is_agnipath">
+                                <group>
+                                    <field name="decl_80cch_agniveer" string="Agniveer Corpus Fund Contribution (80CCH)" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Agniveer Corpus Fund Proof Receipts" invisible="not is_proof_window_open and state in ['draft', 'declared', 'submitted']">
+                                <field name="decl_80cch_attachment_ids" widget="many2many_binary" options="{'number_of_files': 1}" string="80CCH Agniveer Contribution Statement" readonly="1"/>
+                            </group>
+                            <div class="alert alert-info" role="alert" invisible="not hds_in_is_agnipath">
+                                <i class="fa fa-info-circle me-1"/>
+                                <strong>Section 80CCH - Agniveer Corpus Fund:</strong> Under Section 80CCH of the Income Tax Act, 1961, 100% of contributions made by an individual or the Central Government to the Agniveer Corpus Fund under the Agnipath Scheme are fully deductible from taxable income under both Old and New Tax Regimes (Income-tax Act, 2025 — Section 202(1)).
+                            </div>
+                        </page>
+
+                        <!-- TAB 7: INVESTMENT LINE ITEMS & TAX FIRM APPROVAL -->
+                        <page string="Investment Line Items &amp; Tax Firm Approval" name="line_items_audit">
+                            <field name="declaration_line_ids" readonly="1">
+                                <list create="0" delete="0" edit="0" decoration-danger="not is_regime_permitted" decoration-warning="validation_status == 'exceeds_limit'">
+                                    <field name="category_new" string="Category" column_invisible="parent.regime_code != 'new' or parent.hds_in_is_agnipath"/>
+                                    <field name="category_new_agnipath" string="Category" column_invisible="parent.regime_code != 'new' or not parent.hds_in_is_agnipath"/>
+                                    <field name="category_old" string="Category" column_invisible="parent.regime_code == 'new' or parent.hds_in_is_agnipath"/>
+                                    <field name="category_old_agnipath" string="Category" column_invisible="parent.regime_code == 'new' or not parent.hds_in_is_agnipath"/>
+                                    <field name="category" column_invisible="True"/>
+                                    <field name="section_code" string="Section" readonly="1"/>
+                                    <field name="description" string="Particulars / Description" readonly="1"/>
+                                    <field name="declared_amount" string="Declared (₹)" widget="monetary" readonly="1"/>
+                                    <field name="approved_amount" string="Approved (₹)" widget="monetary" readonly="1"/>
+                                    <field name="validation_status" string="Status" widget="badge"
+                                           decoration-success="validation_status == 'valid'"
+                                           decoration-warning="validation_status == 'exceeds_limit'"
+                                           decoration-danger="validation_status == 'disallowed'"/>
+                                    <field name="is_regime_permitted" column_invisible="True"/>
+                                    <field name="declaration_state" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- TAB 9: REJECTION DETAILS -->
+                        <page string="Rejection Details" name="rejection" invisible="state != 'rejected'">
+                            <group>
+                                <field name="rejection_reason" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tax Declaration Search View -->
+    <record id="tds_employee_declaration_view_search" model="ir.ui.view">
+        <field name="name">tds.employee.declaration.search</field>
+        <field name="model">tds.employee.declaration</field>
+        <field name="arch" type="xml">
+            <search string="Search Tax Declarations">
+                <field name="employee_id"/>
+                <field name="financial_year_id"/>
+                <field name="tax_regime_id"/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="filter_submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Approved" name="filter_approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Rejected" name="filter_rejected" domain="[('state', '=', 'rejected')]"/>
+                <group>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Tax Year" name="group_by_fy" context="{'group_by': 'financial_year_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_tds_employee_declaration_all" model="ir.actions.act_window">
+        <field name="name">Employee Tax Declarations</field>
+        <field name="res_model">tds.employee.declaration</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.hds_in_tds_applicable', '=', True)]</field>
+        <field name="context">{'create': False, 'delete': False, 'edit': False}</field>
+        <field name="search_view_id" ref="tds_employee_declaration_view_search"/>
+    </record>
+
+    <record id="action_tds_employee_declaration_all_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="tds_employee_declaration_view_tree"/>
+        <field name="act_window_id" ref="action_tds_employee_declaration_all"/>
+    </record>
+
+    <record id="action_tds_employee_declaration_all_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="tds_employee_declaration_view_readonly_form"/>
+        <field name="act_window_id" ref="action_tds_employee_declaration_all"/>
+    </record>
+
+    <record id="action_tds_employee_declaration_approval" model="ir.actions.act_window">
+        <field name="name">Tax Declaration Approvals</field>
+        <field name="res_model">tds.employee.declaration</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ['proof_submitted', 'proof_under_review']), ('employee_id.hds_in_tds_applicable', '=', True)]</field>
+        <field name="context">{'create': False, 'delete': False}</field>
+        <field name="search_view_id" ref="tds_employee_declaration_view_search"/>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- 3. MODULE 2: REGIME-NEUTRAL INCOME DECLARATION VIEWS          -->
+    <!-- ============================================================= -->
+
+    <!-- Income Declaration Tree View -->
+    <record id="tds_employee_income_declaration_view_tree" model="ir.ui.view">
+        <field name="name">tds.employee.income.declaration.tree</field>
+        <field name="model">tds.employee.income.declaration</field>
+        <field name="arch" type="xml">
+            <list string="Regime-Neutral Income Declarations" decoration-success="state == 'approved'" decoration-warning="state == 'submitted'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="financial_year_id" optional="show"/>
+                <field name="total_other_sources_income" optional="show"/>
+                <field name="net_house_property_income_loss" optional="show"/>
+                <field name="prev_employer_taxable_gross" optional="show"/>
+                <field name="total_net_additional_income" optional="show"/>
+                <field name="state" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Income Declaration Form View -->
+    <record id="tds_employee_income_declaration_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.income.declaration.form</field>
+        <field name="model">tds.employee.income.declaration</field>
+        <field name="arch" type="xml">
+            <form string="Non-Payroll &amp; Previous Employer Income Declaration">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-success" groups="hudson_payroll_base.group_payroll_manager" invisible="state != 'submitted'"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" groups="hudson_payroll_base.group_payroll_manager" invisible="state != 'submitted'"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" class="btn-secondary" groups="hudson_payroll_base.group_payroll_manager" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Tax Year">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="financial_year_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Net Summary">
+                            <field name="total_other_sources_income" readonly="1"/>
+                            <field name="net_house_property_income_loss" readonly="1"/>
+                            <field name="total_net_additional_income" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Income from Other Sources" name="other_sources">
+                            <group>
+                                <field name="savings_bank_interest"/>
+                                <field name="fixed_deposit_interest"/>
+                                <field name="dividend_income"/>
+                                <field name="other_sources_income"/>
+                            </group>
+                        </page>
+                        <page string="House Property Income / Loss (Let-Out)" name="property">
+                            <group>
+                                <group string="Gross Rent &amp; Taxes">
+                                    <field name="annual_let_out_rent"/>
+                                    <field name="municipal_taxes_paid"/>
+                                </group>
+                                <group string="Statutory NAV &amp; Deduction">
+                                    <field name="net_annual_value" readonly="1"/>
+                                    <field name="property_standard_deduction" readonly="1"/>
+                                    <field name="let_out_interest_paid"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Previous Employer Income &amp; Tax" name="prev_employer">
+                            <field name="regime_code" invisible="1"/>
+                            <group>
+                                <field name="prev_employer_taxable_gross"/>
+                                <field name="prev_employer_tds"/>
+                                <field name="prev_employer_pt" invisible="regime_code == 'new'"/>
+                            </group>
+                        </page>
+                        <page string="Proof Documents" name="proofs">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Income Declaration Action -->
+    <record id="action_tds_employee_income_declaration" model="ir.actions.act_window">
+        <field name="name">Income Declarations (Other / Property / Prev Employer)</field>
+        <field name="res_model">tds.employee.income.declaration</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- 4. PHASE 3 PAYROLL OPERATIONAL MENUS                          -->
+    <!-- ============================================================= -->
+
+    <!-- Payroll -> Tax Declarations Single Action Menu -->
+    <menuitem id="menu_tds_tax_declarations_root"
+              name="Tax Declarations"
+              parent="hudson_payroll_base.menu_hr_payroll_root"
+              action="action_tds_employee_declaration_all"
+              sequence="25"/>
+
+</odoo>
+

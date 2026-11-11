@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_quality_root" name="Quality"
+              sequence="130" web_icon="Quality,static/description/icon.png"
+              groups="group_quality_user"/>
+
+    <!-- Overview -->
+    <menuitem id="menu_quality_overview" name="Overview"
+              parent="menu_quality_root" action="action_quality_team_overview" sequence="5"/>
+
+    <!-- Quality Control -->
+    <menuitem id="menu_quality_control" name="Quality Control"
+              parent="menu_quality_root" sequence="10"/>
+
+    <menuitem id="menu_quality_points" name="Control Points"
+              parent="menu_quality_control" action="Quality.action_quality_point" sequence="10"/>
+
+    <menuitem id="menu_quality_checks" name="Quality Checks"
+              parent="menu_quality_control" action="Quality.action_quality_check" sequence="20"/>
+
+    <menuitem id="menu_quality_alerts" name="Quality Alerts"
+              parent="menu_quality_control" action="Quality.action_quality_alert" sequence="30"/>
+
+    <!-- Products -->
+    <menuitem id="menu_quality_products" name="Products"
+              parent="menu_quality_root" sequence="20"/>
+
+    <menuitem id="menu_quality_product_template" name="Products"
+              parent="menu_quality_products" action="product.product_template_action" sequence="10"/>
+
+    <menuitem id="menu_quality_lots" name="Lots/Serial Numbers"
+              parent="menu_quality_products" action="stock.action_production_lot_form" sequence="20"/>
+
+    <!-- Reporting -->
+    <menuitem id="menu_quality_reporting" name="Reporting"
+              parent="menu_quality_root" sequence="30"/>
+
+    <menuitem id="menu_quality_check_report" name="Quality Check Analysis"
+              parent="menu_quality_reporting" action="action_quality_check_report" sequence="10"/>
+
+    <menuitem id="menu_quality_alert_report" name="Quality Alerts Analysis"
+              parent="menu_quality_reporting" action="action_quality_alert_report" sequence="20"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_quality_configuration" name="Configuration"
+              parent="menu_quality_root" sequence="90"
+              groups="Quality.group_quality_manager"/>
+
+    <menuitem id="menu_quality_teams" name="Quality Teams"
+              parent="menu_quality_configuration" action="Quality.action_quality_team" sequence="10"/>
+
+    <menuitem id="menu_quality_alert_stages" name="Quality Alert Stages"
+              parent="menu_quality_configuration" action="Quality.action_quality_alert_stage" sequence="20"/>
+
+    <menuitem id="menu_quality_tags" name="Quality Tags"
+              parent="menu_quality_configuration" action="Quality.action_quality_tag" sequence="30"/>
+
+    <menuitem id="menu_quality_spreadsheet_templates" name="Quality Spreadsheet Templates"
+              parent="menu_quality_configuration" action="action_quality_spreadsheet_template" sequence="40"/>
+</odoo>

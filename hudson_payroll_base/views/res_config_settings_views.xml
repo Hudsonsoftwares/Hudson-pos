@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Window action to choose a Payroll Localization package -->
+        <record id="action_open_payroll_modules" model="ir.actions.act_window">
+            <field name="name">Payroll Localization Packages</field>
+            <field name="res_model">ir.module.module</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context" eval="{'search_default_category_id': ref('base.module_category_accounting_localizations'), 'search_default_name': 'Payroll'}"/>
+            <field name="search_view_id" ref="base.view_module_filter"/>
+        </record>
+
+        <!-- Form view of Settings -->
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.hudson.payroll.base</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="45"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Payroll" string="Payroll" name="hudson_payroll_base" data-key="hudson_payroll_base" groups="hudson_payroll_base.group_payroll_manager">
+
+                        <!-- ========================================== -->
+                        <!-- 1. PAYROLL SECTION (TWO-COLUMN GRID)       -->
+                        <!-- ========================================== -->
+                        <block title="Payroll" name="payroll_setting_container">
+                            <!-- Row 1 Left: Payroll Rules -->
+                            <setting id="payroll_rules_setting" string="Payroll Rules" help="Payroll rules that apply to your country">
+                                <div class="content-group mt8">
+                                    <button name="%(action_open_payroll_modules)d" icon="arrow_forward" type="action" string="Choose a Payroll Localization Package" class="btn-link"/>
+                                </div>
+                            </setting>
+
+                            <!-- Row 1 Right: Contract Expiration Notice Period -->
+                            <setting id="contract_expiration_notice_period_setting" string="Contract Expiration Notice Period" help="Number of days prior to the contract end date that an expiration alert is triggered. Automatically sends an email to the employee, plus in-app notifications and email to HR.">
+                                <field name="enable_contract_expiry_notification"/>
+                                <div class="content-group">
+                                    <div class="d-flex align-items-center mt4">
+                                        <span class="me-2">Warn me</span>
+                                        <field name="contract_expiration_notice_period" class="oe_inline text-center" style="width: 65px !important;"/>
+                                        <span class="ms-2">days before end of contract.</span>
+                                    </div>
+                                    <div class="text-muted small mt-1" invisible="not enable_contract_expiry_notification">
+                                        <i class="fa fa-envelope-o me-1 text-primary"/> Automated email to employee + In-App &amp; Email to HR.
+                                    </div>
+                                </div>
+                            </setting>
+
+                            <!-- Row 2 Left: Work Permit Expiration Notice Period -->
+                            <setting id="work_permit_expiration_notice_period_setting" string="Work Permit Expiration Notice Period" help="Number of days prior to the work permit expiration date that an expiration alert is triggered. Automatically sends an email to the employee, plus in-app notifications and email to HR.">
+                                <field name="enable_work_permit_expiry_notification"/>
+                                <div class="content-group">
+                                    <div class="d-flex align-items-center mt4">
+                                        <span class="me-2">Warn me</span>
+                                        <field name="work_permit_expiration_notice_period" class="oe_inline text-center" style="width: 65px !important;"/>
+                                        <span class="ms-2">days before expiration of the Work Permit.</span>
+                                    </div>
+                                    <div class="text-muted small mt-1" invisible="not enable_work_permit_expiry_notification">
+                                        <i class="fa fa-envelope-o me-1 text-primary"/> Automated email to employee + In-App &amp; Email to HR.
+                                    </div>
+                                </div>
+                            </setting>
+
+                            <!-- Row 2 Right: Expiry Notification HR Recipients -->
+                            <setting id="expiry_notification_recipients_setting" string="Expiry Alert HR Recipients" help="Select HR Officers / Managers who should receive in-app notifications and emails upon contract/work permit expiry. If blank, defaults to the employee's HR responsible and Payroll Managers.">
+                                <div class="content-group mt4">
+                                    <field name="expiry_notification_user_ids" widget="many2many_tags" placeholder="Select HR Officers / Managers..."/>
+                                    <div class="text-muted small mt-1">
+                                        <i class="fa fa-clock-o me-1 text-primary"/> Automatically checked and dispatched daily via background automation.
+                                    </div>
+                                </div>
+                            </setting>
+
+                            <!-- Row 3 Left: YTD Reset Date -->
+                            <setting id="ytd_reset_date_setting" string="YTD Reset Date" help="Date when Year-To-Date accumulator totals reset to zero.">
+                                <div class="content-group mt4">
+                                    <field name="ytd_reset_date" class="w-75"/>
+                                </div>
+                            </setting>
+
+                            <!-- Row 3 Right: Send payslips to employees -->
+                            <setting id="send_payslips_setting" string="Send payslips to employees" help="Define when payslips are printed and sent to employees">
+                                <div class="content-group mt4">
+                                    <field name="send_payslips" class="w-75"/>
+                                </div>
+                            </setting>
+
+                            <!-- Row 4 Left: Attendance Threshold for Fixed Salary -->
+                            <setting id="attendance_threshold_setting" string="Attendance Threshold for Fixed Salary" help="Minimum working days required in a month to qualify for 100% fixed salary when Pay by Attendance is disabled.">
+                                <field name="enable_attendance_threshold"/>
+                                <div class="content-group mt8" invisible="not enable_attendance_threshold">
+                                    <div class="row mt8">
+                                        <label for="min_attendance_threshold_days" class="col-lg-5 o_light_label" string="Default Minimum"/>
+                                        <div class="col-lg-7 d-flex align-items-center">
+                                            <field name="min_attendance_threshold_days" class="oe_inline text-center" style="width: 70px !important;"/>
+                                            <span class="ms-2">days</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted small mt-2">
+                                        If worked days fall below this, salary is prorated to actual days worked. If worked days = 0, salary is ₹0.
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <!-- ========================================== -->
+                        <!-- 2. ACCOUNTING SECTION                      -->
+                        <!-- ========================================== -->
+                        <block title="Accounting" name="accounting_setting_container">
+                            <setting id="payroll_accounting_setting" string="Payroll Entries" help="Post payroll slips in accounting">
+                                <field name="module_account"/>
+                                <div class="text-muted">
+                                    Post payroll slips in accounting
+                                </div>
+                            </setting>
+                            <setting id="batch_accounting_setting" string="Batch Accounting Entries" help="Create consolidated journal entries upon pay run confirmation">
+                                <field name="payrun_accounting"/>
+                                <div class="text-muted">
+                                    Create consolidated journal entries upon pay run confirmation
+                                </div>
+                            </setting>
+                        </block>
+
+                        <!-- ========================================== -->
+                        <!-- 3. TIME OFF SECTION                        -->
+                        <!-- ========================================== -->
+                        <block title="Time Off" name="timeoff_setting_container">
+                            <setting id="deferred_time_off_setting" string="Deferred Time Off" help="Postpone time off after payslip validation">
+                                <field name="deferred_time_off"/>
+                                <div class="content-group mt8" invisible="not deferred_time_off">
+                                    <div class="row mt4">
+                                        <label for="deferred_time_off_responsible_id" class="col-lg-4 o_light_label" string="Responsible"/>
+                                        <field name="deferred_time_off_responsible_id" class="col-lg-8"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <!-- Compatibility hook for downstream extensions -->
+                        <div class="d-none" data-key="hr_payroll_community"/>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Window action for Settings -->
+        <record id="res_config_settings_action" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="context">{'module': 'hudson_payroll_base', 'bin_size': False}</field>
+        </record>
+    </data>
+</odoo>

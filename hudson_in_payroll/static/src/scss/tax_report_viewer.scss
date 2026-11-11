@@ -1,0 +1,55 @@
+// -*- coding: utf-8 -*-
+// Styles for Statutory Tax Calculation Report Online Viewer Modal
+
+.o_tax_report_viewer_form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .o_form_sheet_bg {
+        padding: 0 !important;
+        background: transparent !important;
+    }
+
+    .o_form_sheet {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    // Theme colours: light grey bar in the light theme, dark surface in the dark theme
+    .o_tax_report_viewer_topbar {
+        padding: 0.5rem 0.85rem;
+        background-color: $o-gray-100;
+        border-bottom: 1px solid $o-gray-300;
+        border-radius: 4px 4px 0 0;
+        color: $o-gray-900;
+
+        .o_tax_report_viewer_label,
+        > .o_field_widget,
+        > .o_field_widget span {
+            color: $o-gray-900;
+        }
+    }
+
+    .o_field_pdf_viewer {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+
+        .o_pdfview_iframe {
+            width: 100% !important;
+            height: calc(82vh - 75px) !important;
+            min-height: 560px !important;
+            border: 1px solid $o-gray-300 !important;
+            border-top: none !important;
+            border-radius: 0 0 4px 4px !important;
+            margin-top: 0 !important;
+            display: block !important;
+        }
+    }
+}

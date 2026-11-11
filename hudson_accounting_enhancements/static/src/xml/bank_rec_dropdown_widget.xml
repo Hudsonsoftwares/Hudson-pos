@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hudson_accounting_enhancements.BankRecActionDropdown">
+        <div class="d-flex align-items-center flex-wrap gap-1">
+            <!-- RECONCILED STATE -->
+            <t t-if="this.isReconciled">
+                <span class="text-success me-1 d-inline-flex align-items-center" title="Matched">
+                    <i class="fa fa-check-circle" style="font-size: 1.05rem; color: #28a745;"/>
+                </span>
+                <span class="text-secondary fw-semibold small me-2" style="font-size: 0.85rem;" t-out="this.matchedAccountName"/>
+                <button class="btn btn-link btn-sm text-muted p-0 opacity-50 hover-opacity-100" title="Reset Match" t-on-click="() => this.onResetMatch()">
+                    <i class="fa fa-undo"/>
+                </button>
+            </t>
+
+            <!-- UNRECONCILED STATE -->
+            <t t-else="">
+                <!-- Case 1: No Partner -->
+                <t t-if="!this.hasPartner">
+                    <button class="btn btn-hudson-purple btn-sm me-1" t-on-click="() => this.onSetPartner()">
+                        Set Partner
+                    </button>
+                    <button class="btn btn-hudson-purple btn-sm me-1" t-on-click="() => this.onSetAccount()">
+                        Set Account
+                    </button>
+                </t>
+
+                <!-- Case 2: Partner Set -->
+                <t t-else="">
+                    <!-- Matching moves count button if any matches -->
+                    <button t-if="this.matchCount > 0" class="btn btn-hudson-purple btn-sm d-inline-flex align-items-center me-1" t-on-click="() => this.onReconcile()" title="View and reconcile matching journal items">
+                        <span>Reconcile</span>
+                        <span class="badge rounded-pill bg-white text-dark ms-1 px-1" t-out="this.matchCount" style="font-size: 0.72rem; font-weight: bold;"/>
+                    </button>
+
+                    <!-- Suggested Account Button -->
+                    <button t-if="this.suggestedAccountName" class="btn btn-hudson-purple btn-sm me-1" t-on-click="() => this.onApplySuggestedAccount()" t-att-title="'Match with ' + this.suggestedAccountName">
+                        <span t-out="this.suggestedAccountName"/>
+                    </button>
+                </t>
+
+                <!-- 3-Dots Dropdown with Blue Notification Badge -->
+                <Dropdown>
+                    <button class="o_hudson_dots_btn btn btn-sm shadow-none ms-1" title="Options">
+                        <svg class="o_hudson_dots_icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                            <circle cx="8" cy="2.5" r="1.6"/>
+                            <circle cx="8" cy="8" r="1.6"/>
+                            <circle cx="8" cy="13.5" r="1.6"/>
+                        </svg>
+                        <span t-if="this.hasMatches" class="o_hudson_dot_badge" title="Matching Suggestion Available"/>
+                    </button>
+                    <t t-set-slot="content">
+                        <DropdownItem onSelected="() => this.onReconcile()">
+                            <span class="badge rounded-pill text-bg-info me-2" t-if="this.hasMatches">Suggestions</span>
+                            Reconcile
+                        </DropdownItem>
+                        <DropdownItem onSelected="() => this.onSetPartner()">
+                            Set Partner
+                        </DropdownItem>
+                        <DropdownItem onSelected="() => this.onSetAccount()">
+                            Set Account
+                        </DropdownItem>
+                        <DropdownItem onSelected="() => this.onUploadBills()">
+                            Upload Bills
+                        </DropdownItem>
+                        <div class="dropdown-divider"/>
+                        <DropdownItem onSelected="() => this.onInternalTransfers()">
+                            Internal Transfers
+                        </DropdownItem>
+                        <div class="dropdown-divider"/>
+                        <DropdownItem onSelected="() => this.onManageModels()">
+                            Manage Models
+                        </DropdownItem>
+                        <DropdownItem onSelected="() => this.onDelete()">
+                            Delete Transaction
+                        </DropdownItem>
+                    </t>
+                </Dropdown>
+            </t>
+        </div>
+    </t>
+</templates>

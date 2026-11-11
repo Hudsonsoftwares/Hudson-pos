@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Authoritative Professional Tax Period Schedule Seed Data -->
+
+        <!-- 1. Maharashtra (Monthly, Every Payroll) -->
+        <record id="pt_sched_mh_monthly" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_mh"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">monthly</field>
+            <field name="deduction_strategy">every_payroll</field>
+            <field name="distribution_method">full_amount</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 2. Karnataka (Monthly, Every Payroll) -->
+        <record id="pt_sched_ka_monthly" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_ka"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">monthly</field>
+            <field name="deduction_strategy">every_payroll</field>
+            <field name="distribution_method">full_amount</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 3. Gujarat (Monthly, Every Payroll) -->
+        <record id="pt_sched_gj_monthly" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_gj"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">monthly</field>
+            <field name="deduction_strategy">every_payroll</field>
+            <field name="distribution_method">full_amount</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 4. Andhra Pradesh (Monthly, Every Payroll) -->
+        <record id="pt_sched_ap_monthly" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_ap"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">monthly</field>
+            <field name="deduction_strategy">every_payroll</field>
+            <field name="distribution_method">full_amount</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 5. Telangana (Monthly, Every Payroll) -->
+        <record id="pt_sched_ts_monthly" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_ts"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">monthly</field>
+            <field name="deduction_strategy">every_payroll</field>
+            <field name="distribution_method">full_amount</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 6. Kerala H1 (Half-Yearly: April to September, End of Period) -->
+        <record id="pt_sched_kl_h1" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="window_start_month">4</field>
+            <field name="window_end_month">9</field>
+            <field name="deduction_strategy">end_of_period</field>
+            <field name="deduction_month">9</field>
+            <field name="min_service_days">60</field>
+            <field name="remarks">Statutory Kerala Professional Tax H1 Schedule (April - September)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 7. Kerala H2 (Half-Yearly: October to March, End of Period) -->
+        <record id="pt_sched_kl_h2" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="window_start_month">10</field>
+            <field name="window_end_month">3</field>
+            <field name="deduction_strategy">end_of_period</field>
+            <field name="deduction_month">3</field>
+            <field name="min_service_days">60</field>
+            <field name="remarks">Statutory Kerala Professional Tax H2 Schedule (October - March)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 8. Tamil Nadu H1 (Half-Yearly: April to September, End of Period) -->
+        <record id="pt_sched_tn_h1" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="window_start_month">4</field>
+            <field name="window_end_month">9</field>
+            <field name="deduction_strategy">end_of_period</field>
+            <field name="deduction_month">9</field>
+            <field name="min_service_days">60</field>
+            <field name="remarks">Statutory Tamil Nadu Professional Tax H1 Schedule (April - September). 60-day minimum engagement rule per Town Panchayat PT guidance.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 9. Tamil Nadu H2 (Half-Yearly: October to March, End of Period) -->
+        <record id="pt_sched_tn_h2" model="pt.period.schedule">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="company_id" eval="False"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="window_start_month">10</field>
+            <field name="window_end_month">3</field>
+            <field name="deduction_strategy">end_of_period</field>
+            <field name="deduction_month">3</field>
+            <field name="min_service_days">60</field>
+            <field name="remarks">Statutory Tamil Nadu Professional Tax H2 Schedule (October - March). 60-day minimum engagement rule per Town Panchayat PT guidance.</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

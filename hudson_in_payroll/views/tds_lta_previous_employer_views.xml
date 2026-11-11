@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Previous Employer LTA History Form View -->
+    <record id="view_tds_lta_previous_employer_form" model="ir.ui.view">
+        <field name="name">tds.lta.previous.employer.form</field>
+        <field name="model">tds.lta.previous.employer</field>
+        <field name="arch" type="xml">
+            <form string="Previous Employer LTA History">
+                <header>
+                    <button name="action_verify" string="Verify LTA History" type="object" class="oe_highlight" groups="hudson_payroll_base.group_payroll_user" invisible="verification_status == 'verified'"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" groups="hudson_payroll_base.group_payroll_user" invisible="verification_status == 'rejected'"/>
+                    <button name="action_reset_pending" string="Reset to Pending" type="object" groups="hudson_payroll_base.group_payroll_user" invisible="verification_status == 'pending'"/>
+                    <field name="verification_status" widget="statusbar" statusbar_visible="pending,verified,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Employment Details">
+                            <field name="previous_employer_name" placeholder="e.g. Previous Company Ltd" required="1"/>
+                            <field name="employee_id"/>
+                            <field name="employment_from"/>
+                            <field name="employment_to"/>
+                            <field name="previous_block_period"/>
+                        </group>
+                        <group string="LTA History &amp; Carry-Forward Request">
+                            <field name="previous_lta_claims_used"/>
+                            <field name="carry_forward_requested"/>
+                            <field name="carry_forward_eligible" widget="badge" decoration-success="carry_forward_eligible == 'eligible'" decoration-danger="carry_forward_eligible == 'ineligible'" decoration-warning="carry_forward_eligible == 'pending'"/>
+                        </group>
+                    </group>
+                    <group string="HR Verification Details">
+                        <group>
+                            <field name="verification_remarks" placeholder="Add HR verification comments or reasons for rejection..."/>
+                        </group>
+                        <group>
+                            <field name="verified_by"/>
+                            <field name="verified_on"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Journey Claims Breakdown" name="claims">
+                            <field name="claim_ids">
+                                <list editable="bottom">
+                                    <field name="journey_date"/>
+                                    <field name="amount"/>
+                                    <field name="travel_mode" optional="show"/>
+                                    <field name="status" optional="show"/>
+                                    <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                                    <field name="remarks" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Supporting Documents" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Previous Employer LTA History List View -->
+    <record id="view_tds_lta_previous_employer_tree" model="ir.ui.view">
+        <field name="name">tds.lta.previous.employer.list</field>
+        <field name="model">tds.lta.previous.employer</field>
+        <field name="arch" type="xml">
+            <list string="Previous Employer LTA History" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'">
+                <field name="employee_id"/>
+                <field name="previous_employer_name"/>
+                <field name="employment_from" optional="show"/>
+                <field name="employment_to" optional="show"/>
+                <field name="previous_block_period" optional="show"/>
+                <field name="previous_lta_claims_used" optional="show"/>
+                <field name="carry_forward_requested" optional="show"/>
+                <field name="carry_forward_eligible" widget="badge" decoration-success="carry_forward_eligible == 'eligible'" decoration-danger="carry_forward_eligible == 'ineligible'" decoration-warning="carry_forward_eligible == 'pending'" optional="show"/>
+                <field name="verification_status" widget="badge" decoration-success="verification_status == 'verified'" decoration-danger="verification_status == 'rejected'" decoration-warning="verification_status == 'pending'"/>
+                <field name="verified_by" optional="hide"/>
+                <field name="verified_on" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action for Previous Employer LTA History -->
+    <record id="action_tds_lta_previous_employer" model="ir.actions.act_window">
+        <field name="name">Previous Employer LTA History</field>
+        <field name="res_model">tds.lta.previous.employer</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Record an employee's previous-employer LTA history to evaluate carry-forward eligibility.
+            </p>
+        </field>
+    </record>
+</odoo>

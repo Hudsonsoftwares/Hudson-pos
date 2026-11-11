@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- LIST VIEW                                                     -->
+    <!-- ============================================================ -->
+    <record id="hds_payment_mode_view_list" model="ir.ui.view">
+        <field name="name">hds.payment.mode.list</field>
+        <field name="model">hds.payment.mode</field>
+        <field name="arch" type="xml">
+            <list string="Payment Modes" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="is_cash"/>
+                <field name="active" optional="hide"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- FORM VIEW                                                     -->
+    <!-- ============================================================ -->
+    <record id="hds_payment_mode_view_form" model="ir.ui.view">
+        <field name="name">hds.payment.mode.form</field>
+        <field name="model">hds.payment.mode</field>
+        <field name="arch" type="xml">
+            <form string="Payment Mode">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Payment Mode Name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. NEFT / RTGS"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" placeholder="e.g. neft_rtgs"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="is_cash"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Optional internal notes about this payment mode..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- SEARCH VIEW                                                   -->
+    <!-- ============================================================ -->
+    <record id="hds_payment_mode_view_search" model="ir.ui.view">
+        <field name="name">hds.payment.mode.search</field>
+        <field name="model">hds.payment.mode</field>
+        <field name="arch" type="xml">
+            <search string="Search Payment Modes">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <filter string="Cash Modes" name="is_cash" domain="[('is_cash', '=', True)]"/>
+                <group>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- WINDOW ACTION                                                 -->
+    <!-- ============================================================ -->
+    <record id="action_hds_payment_mode" model="ir.actions.act_window">
+        <field name="name">Payment Modes</field>
+        <field name="res_model">hds.payment.mode</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hds_payment_mode_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Payment Mode
+            </p>
+            <p>
+                Configure the salary disbursement methods available in your organization
+                (e.g. Bank Transfer, NEFT/RTGS, Cash, UPI). These modes appear on employee
+                profiles and payslips.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item under Payroll Configuration -->
+    <menuitem id="menu_hds_payment_mode"
+              name="Payment Modes"
+              action="action_hds_payment_mode"
+              parent="menu_hr_payroll_configuration"
+              sequence="85"/>
+
+    <!-- Payroll Settings: link to the payment modes -->
+    <record id="res_config_settings_view_form_payment_mode" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.payment.mode</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='payroll_setting_container']" position="inside">
+                <setting id="hds_payment_mode_setting" string="Payment Modes"
+                         help="Salary disbursement methods available in your organization (e.g. Bank Transfer, Cash). These modes appear on employee profiles and payslips.">
+                    <div class="mt8">
+                        <button name="%(action_hds_payment_mode)d" icon="arrow_forward" type="action"
+                                string="Configure Payment Modes" class="btn-link"/>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Employee form: preferred payment mode, above the bank accounts -->
+    <record id="hr_employee_view_form_payment_mode" model="ir.ui.view">
+        <field name="name">hr.employee.form.payment.mode</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='personal_information']//field[@name='private_phone']" position="after">
+                <field name="hds_in_payment_mode" string="Payment Mode"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

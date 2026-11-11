@@ -1,0 +1,627 @@
+/* Odoo Enterprise Style Booking Screen: Gantt, List, Kanban & Calendar Views */
+
+.pos-booking-screen {
+    background-color: #f8f9fa;
+    color: #212529;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Control Panel */
+.pos-booking-control-panel {
+    background-color: #ffffff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px 16px;
+    flex-shrink: 0;
+}
+
+.pos-booking-control-panel .btn-purple-primary {
+    background-color: #714B67;
+    border-color: #714B67;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.pos-booking-control-panel .btn-purple-primary:hover {
+    background-color: #5c3c54;
+    border-color: #5c3c54;
+    color: #ffffff;
+}
+
+.pos-booking-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 3px 8px;
+    min-width: 280px;
+    max-width: 480px;
+}
+
+.pos-booking-search-box:focus-within {
+    border-color: #714B67;
+    box-shadow: 0 0 0 0.2rem rgba(113, 75, 103, 0.25);
+}
+
+.pos-booking-search-box .search-badge {
+    background-color: #e2f4ed;
+    color: #0d6832;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.pos-booking-search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 0.875rem;
+    background: transparent;
+}
+
+/* View Switchers */
+.view-switcher-btn {
+    padding: 6px 14px;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+}
+
+.view-switcher-btn:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+.view-switcher-btn.active {
+    background-color: #714B67 !important;
+    color: #ffffff !important;
+    border-color: #714B67 !important;
+    box-shadow: 0 2px 4px rgba(113, 75, 103, 0.25);
+}
+
+/* ========================================================= */
+/* 1. GANTT / TIMELINE VIEW (Matching Official Screenshot)   */
+/* ========================================================= */
+.pos-gantt-wrapper {
+    flex: 1 1 auto;
+    overflow: auto;
+    position: relative;
+    background-color: #ffffff;
+}
+
+.pos-gantt-scrollable {
+    min-width: 100%;
+}
+
+.pos-gantt-header-row {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.pos-gantt-resource-header {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    position: sticky;
+    left: 0;
+    z-index: 30;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #495057;
+    display: flex;
+    align-items: flex-end;
+}
+
+.pos-gantt-timeline-header {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.pos-gantt-date-label {
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.pos-gantt-hours-row {
+    display: flex;
+}
+
+.pos-gantt-hour-cell {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 0.78rem;
+    color: #6c757d;
+    border-right: 1px solid #e9ecef;
+    user-select: none;
+}
+
+/* Gantt Body Rows */
+.pos-gantt-row {
+    display: flex;
+    border-bottom: 1px solid #e9ecef;
+    min-height: 52px;
+    height: 52px;
+}
+
+.pos-gantt-row:hover {
+    background-color: #fafbfc;
+}
+
+.pos-gantt-resource-cell {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: #ffffff;
+    border-right: 1px solid #dee2e6;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #212529;
+    gap: 8px;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.02);
+}
+
+.pos-gantt-row:hover .pos-gantt-resource-cell {
+    background-color: #fafbfc;
+}
+
+.pos-gantt-timeline-track {
+    display: flex;
+    position: relative;
+    flex-grow: 1;
+}
+
+.pos-gantt-slot {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    height: 100%;
+    border-right: 1px solid #f1f3f5;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.pos-gantt-slot:hover {
+    background-color: rgba(113, 75, 103, 0.06);
+}
+
+/* Booking Pill / Card on Gantt (Peach / Tan matching screenshot) */
+.pos-gantt-pill {
+    position: absolute;
+    top: 6px;
+    height: 38px;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    z-index: 5;
+    background-color: #f3be98 !important;
+    border: 1px solid #e2a87d !important;
+    color: #502808 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.pos-gantt-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    z-index: 8;
+    filter: brightness(1.05);
+}
+
+.pos-gantt-resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    cursor: ew-resize;
+    background: rgba(80, 40, 8, 0.15);
+    opacity: 0;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    z-index: 10;
+}
+
+.pos-gantt-pill:hover .pos-gantt-resize-handle {
+    opacity: 0.7;
+}
+
+.pos-gantt-resize-handle:hover {
+    opacity: 1;
+    background: rgba(80, 40, 8, 0.35);
+}
+
+/* Vertical Current Time Marker */
+.pos-gantt-now-indicator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #dc3545;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.pos-gantt-now-indicator::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -4px;
+    width: 10px;
+    height: 10px;
+    background-color: #dc3545;
+    border-radius: 50%;
+}
+
+/* ========================================================= */
+/* 2. LIST VIEW & STATUS PILLS (Odoo Enterprise Clean Style)  */
+/* ========================================================= */
+.pos-booking-list-wrapper {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+}
+
+.pos-booking-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #ffffff !important;
+}
+
+.pos-booking-thead {
+    background-color: #f8fafc !important;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.pos-booking-thead th {
+    padding: 11px 14px !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    color: #334155 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    background-color: #f8fafc !important;
+    user-select: none;
+}
+
+.pos-booking-table tbody tr {
+    background-color: #ffffff !important;
+    transition: background-color 0.12s ease;
+}
+
+.pos-booking-table tbody tr:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.pos-booking-table tbody td {
+    padding: 12px 14px !important;
+    font-size: 0.88rem !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle !important;
+}
+
+/* Guest info */
+.pos-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1.5px solid #bfdbfe !important;
+}
+
+.pos-guest-name {
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    font-size: 0.92rem !important;
+}
+
+.pos-guest-email {
+    font-size: 0.78rem !important;
+    color: #64748b !important;
+}
+
+/* Time */
+.pos-booking-time {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    white-space: nowrap;
+}
+
+.pos-date-subtext {
+    font-size: 0.75rem !important;
+    color: #64748b !important;
+    display: block;
+}
+
+/* Badges */
+.pos-table-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+    border-radius: 6px;
+    padding: 3px 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap;
+}
+
+.pos-no-table-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f8fafc !important;
+    color: #94a3b8 !important;
+    border: 1px dashed #cbd5e1 !important;
+    border-radius: 6px;
+    padding: 3px 8px !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap;
+}
+
+.pos-guests-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f8fafc !important;
+    color: #334155 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px;
+    padding: 3px 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap;
+}
+
+.pos-phone-text {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+    font-size: 0.86rem !important;
+    white-space: nowrap;
+    i {
+        color: #64748b !important;
+    }
+}
+
+.pos-phone-empty {
+    color: #94a3b8 !important;
+}
+
+.pos-food-badge {
+    display: inline-block;
+    background-color: #fffbeb !important;
+    color: #b45309 !important;
+    border: 1px solid #fde68a !important;
+    border-radius: 6px;
+    padding: 3px 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+}
+
+.pos-notes-text {
+    font-size: 0.78rem !important;
+    color: #475569 !important;
+}
+
+/* Status Pills (Crisp, High Contrast, Odoo Badges) */
+.pos-status-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 12px !important;
+    border-radius: 20px !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    letter-spacing: 0.3px !important;
+}
+
+.pos-status-pill.status-booked {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1.5px solid #bfdbfe !important;
+}
+
+.pos-status-pill.status-checked-in {
+    background-color: #ecfdf5 !important;
+    color: #047857 !important;
+    border: 1.5px solid #a7f3d0 !important;
+}
+
+.pos-status-pill.status-released {
+    background-color: #f5f3ff !important;
+    color: #6d28d9 !important;
+    border: 1.5px solid #ddd6fe !important;
+}
+
+.pos-status-pill.status-no-show {
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1.5px solid #fecaca !important;
+}
+
+.pos-status-pill.status-pending {
+    background-color: #fff7ed !important;
+    color: #c2410c !important;
+    border: 1.5px solid #fed7aa !important;
+}
+
+.pos-released-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f5f3ff !important;
+    color: #6d28d9 !important;
+    border: 1px solid #ddd6fe !important;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.btn-info-subtle {
+    background-color: #d0e2ff !important;
+    color: #0043ce !important;
+    border: 1px solid #a6c8ff !important;
+}
+
+.hover-danger:hover {
+    color: #dc3545 !important;
+}
+
+/* ========================================================= */
+/* 3. CALENDAR MONTH VIEW                                    */
+/* ========================================================= */
+.pos-calendar-wrapper {
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.pos-calendar-header-row {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    color: #4b5563;
+}
+
+.pos-calendar-week-corner {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    border-right: 1px solid #dee2e6;
+    font-size: 0.75rem;
+}
+
+.pos-calendar-day-header {
+    border-right: 1px solid #dee2e6;
+    &:last-child {
+        border-right: none;
+    }
+}
+
+.pos-calendar-body {
+    overflow-y: auto;
+}
+
+.pos-calendar-week-row {
+    min-height: 100px;
+    &:last-child {
+        border-bottom: none !important;
+    }
+}
+
+.pos-calendar-week-label {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    user-select: none;
+}
+
+.pos-calendar-cell {
+    min-width: 0;
+    transition: background-color 0.1s;
+    background-color: #ffffff;
+    cursor: pointer;
+    &:last-child {
+        border-right: none !important;
+    }
+    &:hover {
+        background-color: #f8fafc;
+    }
+    &.bg-other-month {
+        background-color: #fcfdfe;
+        color: #9ca3af;
+    }
+    &.bg-selected-day {
+        background-color: #eff6ff;
+    }
+}
+
+.pos-calendar-cell-header {
+    user-select: none;
+}
+
+.pos-calendar-day-num {
+    font-size: 0.82rem;
+    padding-left: 4px;
+}
+
+.pos-calendar-today-badge {
+    background-color: #dc3545;
+    color: #ffffff !important;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.82rem;
+    line-height: 1;
+}
+
+.pos-calendar-events-container {
+    max-height: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pos-calendar-event-pill {
+    font-size: 0.72rem;
+    padding: 2px 6px;
+    line-height: 1.25;
+    border-radius: 4px;
+    transition: transform 0.1s, box-shadow 0.1s;
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+}

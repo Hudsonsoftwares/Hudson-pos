@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View for New Pay Run Wizard - Matching Screenshot 2 -->
+    <record id="hudson_payrun_wizard_view_form" model="ir.ui.view">
+        <field name="name">hudson.payroll.payrun.wizard.view.form</field>
+        <field name="model">hudson.payroll.payrun.wizard</field>
+        <field name="arch" type="xml">
+            <form string="New Pay Run">
+                <sheet>
+                    <div class="px-2 py-2">
+                        <!-- Multi-company selector (hidden for single-company setups) -->
+                        <field name="company_partner_id" invisible="1"/>
+                        <div class="mb-3" groups="base.group_multi_company">
+                            <label for="company_id" string="Company" class="fw-semibold text-muted mb-1 d-block"/>
+                            <field name="company_id" domain="[('id', 'in', allowed_company_ids)]"
+                                   options="{'no_create': True}" class="w-100"/>
+                        </div>
+                        <!-- Employee Types -->
+                        <div class="mb-3">
+                            <label for="employee_type_ids" string="Employee Types" class="fw-semibold mb-1 d-block"/>
+                            <field name="employee_type_ids" widget="many2many_tags"
+                                   placeholder="All employee types" class="w-100"/>
+                        </div>
+                        <!-- Pay Structure -->
+                        <div class="mb-3">
+                            <label for="struct_id" string="Pay Structure" class="fw-semibold mb-1 d-block"/>
+                            <field name="struct_id" placeholder="Select a structure" class="w-100"/>
+                        </div>
+                        <!-- Period -->
+                        <div class="mb-2">
+                            <label for="date_start" string="Period" class="fw-semibold mb-1 d-block"/>
+                            <div class="d-flex align-items-center gap-2">
+                                <field name="date_start" class="oe_inline"/>
+                                <i class="fa fa-arrow-right text-muted mx-1" title="To"/>
+                                <field name="date_end" class="oe_inline"/>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_and_generate" type="object"
+                            string="Continue" class="btn-primary"
+                            style="background-color: #632b6e; border-color: #632b6e; font-weight: 500; min-width: 90px;"/>
+                    <button string="Discard" class="btn-secondary ms-2" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Opening New Pay Run Wizard -->
+    <record id="action_hudson_payrun_wizard" model="ir.actions.act_window">
+        <field name="name">New Pay Run</field>
+        <field name="res_model">hudson.payroll.payrun.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

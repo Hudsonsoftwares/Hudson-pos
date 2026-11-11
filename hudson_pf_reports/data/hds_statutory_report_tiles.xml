@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- 1. Statutory Filing Section (Featured) -->
+        <record id="tile_pf_ecr_export" model="hds.statutory.report.tile">
+            <field name="name">ECR Export</field>
+            <field name="description">Generate the monthly EPFO ECR text file for bulk portal submission</field>
+            <field name="icon">fa-file-export</field>
+            <field name="section">filing</field>
+            <field name="featured">1</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_ecr_wizard"/>
+            <field name="sequence">10</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_employee_statement" model="hds.statutory.report.tile">
+            <field name="name">Employee PF Statement</field>
+            <field name="description">Detailed individual employee PF contribution statement</field>
+            <field name="icon">fa-id-card</field>
+            <field name="section">filing</field>
+            <field name="featured">1</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_register_wizard"/>
+            <field name="sequence">20</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <!-- 2. Contribution Reports Section -->
+        <record id="tile_pf_register" model="hds.statutory.report.tile">
+            <field name="name">PF Register</field>
+            <field name="description">Monthly EPF, EPS, EDLI master register for all active employees</field>
+            <field name="icon">fa-table</field>
+            <field name="section">contribution</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_register_wizard"/>
+            <field name="sequence">10</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_monthly_summary" model="hds.statutory.report.tile">
+            <field name="name">Monthly PF Summary</field>
+            <field name="description">Challan calculation and Account 1, 2, 10, 21, 22 monthly summary</field>
+            <field name="icon">fa-calculator</field>
+            <field name="section">contribution</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_monthly_summary_wizard"/>
+            <field name="sequence">20</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_employee_contribution" model="hds.statutory.report.tile">
+            <field name="name">Employee Contribution Report</field>
+            <field name="description">Itemized employee PF deductions and VPF contributions</field>
+            <field name="icon">fa-user-check</field>
+            <field name="section">contribution</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_employee_contribution"/>
+            <field name="sequence">30</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_employer_contribution" model="hds.statutory.report.tile">
+            <field name="name">Employer Contribution Report</field>
+            <field name="description">Employer EPF, EPS, and EDLI statutory contribution breakdown</field>
+            <field name="icon">fa-building</field>
+            <field name="section">contribution</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_employer_contribution"/>
+            <field name="sequence">40</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_employee_ledger" model="hds.statutory.report.tile">
+            <field name="name">Employee PF Ledger</field>
+            <field name="description">Cumulative annual month-by-month PF opening/closing ledger</field>
+            <field name="icon">fa-book</field>
+            <field name="section">contribution</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_ledger_wizard"/>
+            <field name="sequence">50</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <!-- 3. Analysis Reports Section -->
+        <record id="tile_pf_contribution_basis" model="hds.statutory.report.tile">
+            <field name="name">Contribution Basis Report</field>
+            <field name="description">PF Gross vs restricted ₹15,000 statutory basis analysis</field>
+            <field name="icon">fa-percent</field>
+            <field name="section">analysis</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_basis_wizard"/>
+            <field name="sequence">10</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_ceiling_exception" model="hds.statutory.report.tile">
+            <field name="name">Wage Ceiling Exception Report</field>
+            <field name="description">Identify employees contributing above or below ₹15k ceiling</field>
+            <field name="icon">fa-exclamation-triangle</field>
+            <field name="section">analysis</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_ceiling_exception_wizard"/>
+            <field name="sequence">20</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_variance" model="hds.statutory.report.tile">
+            <field name="name">PF Variance Report</field>
+            <field name="description">Month-on-month PF wage and contribution discrepancy analysis</field>
+            <field name="icon">fa-chart-line</field>
+            <field name="section">analysis</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_variance_wizard"/>
+            <field name="sequence">30</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pf_salary_revision" model="hds.statutory.report.tile">
+            <field name="name">Salary Revision Impact Report</field>
+            <field name="description">Retroactive salary revision arrears impact on PF liabilities</field>
+            <field name="icon">fa-history</field>
+            <field name="section">analysis</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_salary_revision_wizard"/>
+            <field name="sequence">40</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <!-- 4. Compliance & Audit Reports Section -->
+        <record id="tile_pf_reconciliation" model="hds.statutory.report.tile">
+            <field name="name">PF Reconciliation Report</field>
+            <field name="description">Reconcile statutory payroll PF with accounting journal entries</field>
+            <field name="icon">fa-balance-scale</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_reconciliation_wizard"/>
+            <field name="sequence">10</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <!--
+        <record id="tile_pf_hr_snapshot" model="hds.statutory.report.tile">
+            <field name="name">HR Snapshot Report</field>
+            <field name="description">View frozen statutory snapshot records for compliance audit</field>
+            <field name="icon">fa-shield</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_hr_snapshot_report"/>
+            <field name="sequence">20</field>
+            <field name="country_code">IN</field>
+        </record>
+        -->
+
+        <record id="tile_pf_uan_register" model="hds.statutory.report.tile">
+            <field name="name">UAN Register</field>
+            <field name="description">EPFO UAN, Aadhaar, PAN &amp; Bank KYC compliance status</field>
+            <field name="icon">fa-vcard</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="action_id" ref="hudson_pf_reports.action_hds_pf_uan_register_wizard"/>
+            <field name="sequence">30</field>
+            <field name="country_code">IN</field>
+        </record>
+
+    </data>
+</odoo>

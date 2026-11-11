@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ============================================================= -->
+        <!-- NEW TAX REGIME SURCHARGE SLABS (FY 2026-27 / AY 2027-28)      -->
+        <!-- ============================================================= -->
+
+        <!-- Surcharge 1: 0 - 50,00,000 (0%) -->
+        <record id="hds_in_tds_surcharge_new_1" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="sequence">1</field>
+            <field name="income_from">0.0</field>
+            <field name="income_to">5000000.0</field>
+            <field name="surcharge_rate">0.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Surcharge 2: 50,00,000 - 1,00,00,000 (10%) -->
+        <record id="hds_in_tds_surcharge_new_2" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="sequence">2</field>
+            <field name="income_from">5000000.0</field>
+            <field name="income_to">10000000.0</field>
+            <field name="surcharge_rate">10.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Surcharge 3: 1,00,00,000 - 2,00,00,000 (15%) -->
+        <record id="hds_in_tds_surcharge_new_3" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="sequence">3</field>
+            <field name="income_from">10000000.0</field>
+            <field name="income_to">20000000.0</field>
+            <field name="surcharge_rate">15.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Surcharge 4: Above 2,00,00,000 (25% capped) -->
+        <record id="hds_in_tds_surcharge_new_4" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="sequence">4</field>
+            <field name="income_from">20000000.0</field>
+            <field name="income_to">0.0</field>
+            <field name="surcharge_rate">25.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- OLD TAX REGIME SURCHARGE SLABS (FY 2026-27 / AY 2027-28)      -->
+        <!-- ============================================================= -->
+
+        <!-- Surcharge 1: 0 - 50,00,000 (0%) -->
+        <record id="hds_in_tds_surcharge_old_1" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="sequence">1</field>
+            <field name="income_from">0.0</field>
+            <field name="income_to">5000000.0</field>
+            <field name="surcharge_rate">0.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Surcharge 2: 50,00,000 - 1,00,00,000 (10%) -->
+        <record id="hds_in_tds_surcharge_old_2" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="sequence">2</field>
+            <field name="income_from">5000000.0</field>
+            <field name="income_to">10000000.0</field>
+            <field name="surcharge_rate">10.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Surcharge 3: 1,00,00,000 - 2,00,00,000 (15%) -->
+        <record id="hds_in_tds_surcharge_old_3" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="sequence">3</field>
+            <field name="income_from">10000000.0</field>
+            <field name="income_to">20000000.0</field>
+            <field name="surcharge_rate">15.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Surcharge 4: 2,00,00,000 - 5,00,00,000 (25%) -->
+        <record id="hds_in_tds_surcharge_old_4" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="sequence">4</field>
+            <field name="income_from">20000000.0</field>
+            <field name="income_to">50000000.0</field>
+            <field name="surcharge_rate">25.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Surcharge 5: Above 5,00,00,000 (37%) -->
+        <record id="hds_in_tds_surcharge_old_5" model="tds.surcharge">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="sequence">5</field>
+            <field name="income_from">50000000.0</field>
+            <field name="income_to">0.0</field>
+            <field name="surcharge_rate">37.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+    </data>
+</odoo>

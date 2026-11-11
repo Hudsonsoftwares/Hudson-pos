@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Payroll Settings > Payroll Accounts: accounts used by the payslips' journal entries -->
+    <record id="res_config_settings_view_form_payroll_accounts" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.payroll.accounts</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hudson_payroll_base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='accounting_setting_container']" position="after">
+                <block title="Payroll Accounts" name="payroll_accounts_setting_container">
+                    <setting id="payroll_accounts_setting" string="Payroll Accounts"
+                             help="Accounts of the journal entry created when a payslip is validated. Missing accounts are created automatically with their default code.">
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_salary_expense_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_salary_expense_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_employer_expense_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_employer_expense_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_net_payable_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_net_payable_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_tds_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_tds_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_pf_employee_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_pf_employee_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_pf_employer_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_pf_employer_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_pf_admin_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_pf_admin_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_esic_employee_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_esic_employee_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_esic_employer_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_esic_employer_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_pt_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_pt_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_lwf_employee_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_lwf_employee_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_lwf_employer_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_lwf_employer_id" options="{'no_create': True}"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="hds_payroll_account_other_deductions_id" class="col-lg-5 o_light_label"/>
+                                <field name="hds_payroll_account_other_deductions_id" options="{'no_create': True}"/>
+                            </div>
+                            <button name="action_hds_create_payroll_accounts" type="object" class="btn-link mt8"
+                                    string="Create missing payroll accounts" icon="add"/>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

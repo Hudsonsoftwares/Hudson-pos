@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pay Run Payment Wizard Form View (Screenshot 4 Match) -->
+    <record id="view_hr_payslip_run_pay_wizard_form" model="ir.ui.view">
+        <field name="name">hr.payslip.run.pay.wizard.form</field>
+        <field name="model">hr.payslip.run.pay.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Pay">
+                <sheet>
+                    <field name="payslip_run_id" invisible="1"/>
+                    <field name="payslip_id" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="missing_bank_employee_count" invisible="1"/>
+                    <div class="alert alert-danger d-flex align-items-center mb-3" role="alert" invisible="missing_bank_employee_count == 0">
+                        <i class="fa fa-exclamation-triangle fs-3 me-3 text-danger"/>
+                        <div>
+                            <div class="fw-bold fs-6">Bank Account Missing!</div>
+                            <div>
+                                The following employee(s) do not have a bank account configured:
+                                <field name="missing_bank_employee_names" readonly="1" class="fw-bold text-danger"/>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                Payment Advice cannot be processed until bank account details are configured in the employee profile.
+                            </div>
+                        </div>
+                    </div>
+                    <group>
+                        <field name="company_id" invisible="1"/>
+                        <field name="company_partner_id" invisible="1"/>
+                        <field name="mode"/>
+                        <field name="payment_date"/>
+                        <field name="include_unpaid"/>
+                        <field name="payment_method" invisible="mode != 'enet'"/>
+                        <field name="report_name" invisible="mode != 'advice'"/>
+                        <field name="company_bank_id" invisible="mode != 'advice'"
+                               required="mode == 'advice'"
+                               context="{'default_partner_id': company_partner_id, 'default_company_id': company_id}"
+                               placeholder="Select or add Company Bank Account"/>
+                        <field name="by_cheque" invisible="mode != 'advice'"/>
+                        <field name="cheque_number" invisible="mode != 'advice' or not by_cheque" required="mode == 'advice' and by_cheque"/>
+                        <field name="cheque_date" invisible="mode != 'advice' or not by_cheque" required="mode == 'advice' and by_cheque"/>
+                        <field name="by_neft" invisible="mode != 'advice'"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_mark_paid"
+                            string="Mark as Paid"
+                            type="object"
+                            class="btn btn-primary"
+                            style="background-color: #7c3aed !important; border-color: #7c3aed !important;"/>
+                    <!-- Mode: Payment Advice (PDF / Excel) -->
+                    <button name="action_create_pdf"
+                            string="Create PDF File"
+                            type="object"
+                            class="btn btn-secondary"
+                            invisible="mode != 'advice'"/>
+                    <button name="action_create_xlsx"
+                            string="Create XLSX File"
+                            type="object"
+                            class="btn btn-secondary"
+                            invisible="mode != 'advice'"/>
+                    <!-- Mode: Generic CSV -->
+                    <button name="action_create_csv"
+                            string="Download"
+                            type="object"
+                            class="btn btn-secondary"
+                            invisible="mode != 'csv'"/>
+                    <!-- Mode: ENet (HDFC Corporate CMS) -->
+                    <button name="action_create_enet"
+                            string="Create CSV File"
+                            type="object"
+                            class="btn btn-secondary"
+                            invisible="mode != 'enet'"/>
+                    <button string="Discard"
+                            class="btn btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Pay Run Payment Wizard -->
+    <record id="action_hr_payslip_run_pay_wizard" model="ir.actions.act_window">
+        <field name="name">Pay</field>
+        <field name="res_model">hr.payslip.run.pay.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

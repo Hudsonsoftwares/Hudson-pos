@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_check_attendance_anomalies" model="ir.cron">
+            <field name="name">Attendance: Daily Anomaly and Missing Punch Audit</field>
+            <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_attendance_anomalies()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+    </data>
+</odoo>

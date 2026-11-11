@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Legacy Pension Scheme -->
+        <record id="pension_scheme_legacy" model="uae.pension.scheme">
+            <field name="name">Legacy Scheme</field>
+            <field name="code">legacy</field>
+            <field name="description">Federal Law No. 7 of 1999 (GPSSA) / Law No. 2 of 2000 (ADPF) applicable to employees registered prior to the statutory cutover.</field>
+            <field name="sequence">10</field>
+            <field name="pension_authority_ids" eval="[(6, 0, [ref('pension_authority_gpssa'), ref('pension_authority_adpf')])]"/>
+            <field name="active">True</field>
+        </record>
+
+        <!-- New Law Pension Scheme -->
+        <record id="pension_scheme_new_law" model="uae.pension.scheme">
+            <field name="name">New Law Scheme</field>
+            <field name="code">new_law</field>
+            <field name="description">Federal Decree-Law No. 57 of 2023 (GPSSA) / Law No. 22 of 2023 (ADPF) applicable to new entrants and eligible cohorts post cutover.</field>
+            <field name="sequence">20</field>
+            <field name="pension_authority_ids" eval="[(6, 0, [ref('pension_authority_gpssa'), ref('pension_authority_adpf')])]"/>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

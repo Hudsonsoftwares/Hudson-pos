@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_view_form_inherit_crm" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.crm</field>
+        <field name="model">helpdesk.management.ticket</field>
+        <field name="inherit_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_ticket_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object" name="action_view_lead" icon="fa-star" invisible="not lead_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Lead</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action Menu: Convert to Opportunity/Lead -->
+    <record id="action_helpdesk_ticket_convert_lead" model="ir.actions.act_window">
+        <field name="name">Convert to Opportunity/Lead</field>
+        <field name="res_model">helpdesk.ticket.convert.lead</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="helpdesk_management_pro.model_helpdesk_management_ticket"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>

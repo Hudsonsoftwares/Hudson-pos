@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Column Toggle Popover Component Template -->
+    <t t-name="hudson_in_payroll.SalaryComputationColumnToggle">
+        <div class="o_column_toggle_wrapper position-relative d-inline-block ms-auto">
+            <button t-ref="buttonRef"
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary o_column_toggle_btn d-flex align-items-center gap-1 shadow-sm"
+                    t-on-click="togglePopover"
+                    title="Column Visibility Settings">
+                <i class="fa fa-sliders"/>
+                <span class="d-none d-md-inline">Columns</span>
+            </button>
+
+            <div t-ref="dropdownRef"
+                 t-if="state.isOpen"
+                 class="o_column_toggle_popover position-absolute end-0 mt-1 p-2 rounded shadow-lg border"
+                 style="z-index: 1050; min-width: 220px;">
+                <div class="d-flex align-items-center justify-content-between pb-2 mb-2 border-bottom">
+                    <span class="fw-bold small text-uppercase text-muted">Column Visibility</span>
+                    <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none small" t-on-click="onResetDefaults">
+                        Reset
+                    </button>
+                </div>
+                <div class="o_column_toggle_list pe-1" style="max-height: 260px; overflow-y: auto;">
+                    <t t-foreach="columns" t-as="col" t-key="col.name">
+                        <div class="form-check o_column_toggle_item d-flex align-items-center py-1 rounded px-2">
+                            <input class="form-check-input my-0"
+                                   type="checkbox"
+                                   t-att-id="'col_toggle_' + col.name"
+                                   t-att-checked="isColumnVisible(col.name)"
+                                   t-att-disabled="col.mandatory"
+                                   t-on-change="(ev) => this.onToggleColumn(col.name, ev)"/>
+                            <label class="form-check-label flex-grow-1 ms-2 small"
+                                   t-att-for="'col_toggle_' + col.name"
+                                   style="cursor: pointer;">
+                                <t t-out="col.label"/>
+                                <span t-if="col.mandatory" class="badge text-bg-secondary ms-1" style="font-size: 0.6rem;">Required</span>
+                            </label>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Custom List Renderer Template Inheriting web.ListRenderer in PRIMARY mode -->
+    <t t-name="hudson_in_payroll.SalaryComputationListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+        <xpath expr="//table" position="before">
+            <div class="d-flex align-items-center justify-content-end p-2 bg-light border-bottom o_salary_comp_toggle_bar">
+                <SalaryComputationColumnToggle columnState="columnState" onVisibilityChange="onVisibilityChange"/>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

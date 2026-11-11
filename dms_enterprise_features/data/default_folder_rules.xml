@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright 2024 Hudson Community
+    License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+
+    Default dms.folder.rule records are created via post_init_hook in
+    __manifest__.py to handle optional model availability (hr, accounting, etc.)
+    This file only contains the ir.config_parameter defaults that
+    set which areas are DISABLED by default (user must enable them).
+-->
+<odoo noupdate="0">
+
+    <!-- Areas are disabled by default — user enables them in settings -->
+    <record id="param_hr_enabled" model="ir.config_parameter">
+        <field name="key">dms_enterprise.hr_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="param_recruitment_enabled" model="ir.config_parameter">
+        <field name="key">dms_enterprise.recruitment_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="param_accounting_enabled" model="ir.config_parameter">
+        <field name="key">dms_enterprise.accounting_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="param_product_enabled" model="ir.config_parameter">
+        <field name="key">dms_enterprise.product_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="param_project_enabled" model="ir.config_parameter">
+        <field name="key">dms_enterprise.project_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="param_approvals_enabled" model="ir.config_parameter">
+        <field name="key">dms_enterprise.approvals_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="param_sign_enabled" model="ir.config_parameter">
+        <field name="key">dms_enterprise.sign_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="param_trash_delay" model="ir.config_parameter">
+        <field name="key">dms_enterprise.trash_delay</field>
+        <field name="value">30</field>
+    </record>
+
+    <record id="param_hr_create_subfolders" model="ir.config_parameter">
+        <field name="key">dms_enterprise.hr_create_subfolders</field>
+        <field name="value">False</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.SearchPanel.Regular" t-inherit-mode="extension">
+        <xpath expr="//section[@t-foreach='this.sections']" position="after">
+            <t t-if="this.isDmsView()">
+                <div class="o_search_panel_section mt-3">
+                    <div class="o_dms_trash_sidebar d-flex align-items-center justify-content-between"
+                        role="button" title="Trash"
+                        t-att-class="{'active o_dms_trash_active': this.isTrashActive()}"
+                        t-on-click="() => this.openTrash()">
+                        <div class="d-flex align-items-center">
+                            <!-- Inline SVG: no dependency on the icon font subset -->
+                            <svg class="o_dms_trash_icon me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 6h18"/>
+                                <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                <path d="M10 11v6"/>
+                                <path d="M14 11v6"/>
+                            </svg>
+                            <span class="fw-semibold text-secondary" style="font-size: 0.8125rem;">Trash</span>
+                        </div>
+                        <span t-if="this.dmsTrashState.trashCount"
+                              class="o_dms_trash_counter"
+                              t-out="this.dmsTrashState.trashCount"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+</templates>

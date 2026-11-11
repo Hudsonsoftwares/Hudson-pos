@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_payroll_base.EmployeeSelectionTableField">
+        <div t-att-class="this.className">
+            <!-- Top Control Bar: selection actions (when ticked) or search, centred like Odoo Online -->
+            <div class="o_x2m_control_panel o_emp_sel_toolbar d-flex align-items-center gap-2 mb-2">
+                <div t-if="this.hasSelectedRecords" class="o_emp_sel_actions d-flex align-items-center justify-content-center gap-2 flex-grow-1">
+                    <button type="button"
+                            class="btn o_selection_badge d-flex align-items-center gap-2"
+                            t-on-click="onUnselectAll"
+                            title="Unselect All">
+                        <span><strong t-out="this.selectedCount"/> selected</span>
+                        <i class="oi" data-icon="close"/>
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary o_emp_sel_action"
+                            t-on-click="() => this.onHeaderAction('action_launch_plan')">
+                        Launch Plan
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary o_emp_sel_action"
+                            t-on-click="() => this.onHeaderAction('action_payslip_adjustment')">
+                        Payslip Adjustment
+                    </button>
+                </div>
+
+                <div t-else="" class="d-flex justify-content-center flex-grow-1">
+                    <div class="o_emp_sel_search position-relative">
+                        <i class="oi o_emp_sel_search_icon" data-icon="search"/>
+                        <input type="text"
+                               class="form-control rounded-pill"
+                               placeholder="Search..."
+                               t-att-value="this.state.searchTerm"
+                               t-on-input="onSearchInput"/>
+                    </div>
+                </div>
+
+                <!-- Pager on the right -->
+                <div t-if="this.pagerProps" class="o_cp_pager d-flex align-items-center">
+                    <Pager t-props="this.pagerProps"/>
+                </div>
+            </div>
+
+            <!-- Embedded list with selection checkboxes -->
+            <ListRenderer t-if="this.props.viewMode === 'list'" t-props="this.rendererProps" />
+            <KanbanRenderer t-elif="this.props.viewMode" t-props="this.rendererProps" />
+        </div>
+    </t>
+
+</templates>

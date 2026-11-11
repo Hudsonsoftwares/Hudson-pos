@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_multi_ledger_form" model="ir.ui.view">
+            <field name="name">account.multi.ledger.form</field>
+            <field name="model">account.multi.ledger</field>
+            <field name="arch" type="xml">
+                <form string="Multi Ledger">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Ledger Name (e.g., IFRS)"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Included Journals">
+                                <field name="journal_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <p class="text-muted mt-2">
+                                    When this ledger is selected in reports, only entries belonging to the journals selected above will be considered.
+                                </p>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_account_multi_ledger_tree" model="ir.ui.view">
+            <field name="name">account.multi.ledger.tree</field>
+            <field name="model">account.multi.ledger</field>
+            <field name="arch" type="xml">
+                <list string="Multi Ledgers">
+                    <field name="name"/>
+                    <field name="journal_ids" widget="many2many_tags"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_account_multi_ledger" model="ir.actions.act_window">
+            <field name="name">Multi Ledgers</field>
+            <field name="res_model">account.multi.ledger</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Multi Ledger
+                </p>
+                <p>
+                    Multi Ledgers allow you to group specific journals. You can then filter accounting reports by these ledgers (e.g., separating Local GAAP from IFRS).
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu item under Accounting -> Configuration -> Accounting -->
+        <menuitem id="menu_account_multi_ledger"
+                  name="Multi Ledgers"
+                  parent="account.menu_finance_configuration"
+                  action="action_account_multi_ledger"
+                  sequence="3"/>
+    </data>
+</odoo>

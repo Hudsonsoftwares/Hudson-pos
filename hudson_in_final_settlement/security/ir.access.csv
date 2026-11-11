@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+access_final_settlement_user,final.settlement.user,final.settlement,base.group_user,cru,
+access_final_settlement_manager,final.settlement.manager,final.settlement,hudson_payroll_base.group_payroll_manager,crud,
+access_final_settlement_company,final.settlement.company,final.settlement,,crud,"[('company_id', 'in', company_ids + [False])]"
+access_final_settlement_line_user,final.settlement.line.user,final.settlement.line,base.group_user,cru,
+access_final_settlement_line_manager,final.settlement.line.manager,final.settlement.line,hudson_payroll_base.group_payroll_manager,crud,
+access_final_settlement_line_company,final.settlement.line.company,final.settlement.line,,crud,"[('company_id', 'in', company_ids + [False])]"

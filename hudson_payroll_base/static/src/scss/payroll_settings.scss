@@ -1,0 +1,1239 @@
+/* =========================================================
+   Payroll Settings UI Styling (Odoo 19 Dark/Light Harmonized)
+   ========================================================= */
+
+// Pay run screens follow the light / dark theme: Odoo compiles this file once per theme,
+// so surfaces and text use the theme greys and status colours pick a tone per theme.
+$payrun-is-dark: $o-webclient-color-scheme == dark;
+
+@function payrun-tone($light, $dark) {
+    @return if($payrun-is-dark, $dark, $light);
+}
+
+.app_settings_block[data-key="hudson_payroll_base"],
+.app_settings_block[data-key="hr_payroll_community"] {
+
+    /* Full-width horizontal section headers with subtle background contrast */
+    .o_horizontal_separator,
+    h2 {
+        background-color: var(--bs-tertiary-bg, rgba(128, 128, 128, 0.08)) !important;
+        padding: 10px 16px !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        font-size: 1.12rem !important;
+        letter-spacing: 0.25px !important;
+        margin-top: 24px !important;
+        margin-bottom: 16px !important;
+        border-left: 4px solid var(--o-brand-odoo, #71639e) !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        color: var(--bs-body-color, inherit) !important;
+    }
+
+    /* Indented & subtle bordered setting boxes */
+    .o_setting_box {
+        margin-bottom: 14px !important;
+        padding: 10px 14px !important;
+        border-radius: 6px !important;
+        border: 1px solid transparent;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+
+        &:hover {
+            background-color: var(--bs-secondary-bg, rgba(128, 128, 128, 0.04));
+            border-color: var(--bs-border-color, rgba(128, 128, 128, 0.12));
+        }
+
+        .o_form_label {
+            font-weight: 600 !important;
+            font-size: 0.94rem !important;
+            color: var(--bs-body-color, inherit) !important;
+        }
+
+        .text-muted {
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+            color: var(--bs-secondary-color, #6c757d) !important;
+        }
+
+        .content-group {
+            margin-top: 6px !important;
+        }
+    }
+}
+
+/* =========================================================
+   Pay Run Full-Width Horizontal Row Kanban (Screenshot 2 Match)
+   ========================================================= */
+
+.o_payroll_payruns_kanban,
+.o_kanban_view.o_payroll_payruns_kanban {
+    --Kanban-gap: 0px !important;
+    --KanbanRecord-width: 100% !important;
+    --KanbanRecord-margin-v: 0px !important;
+    --KanbanRecord-margin-h: 0px !important;
+    background-color: $o-gray-100 !important;
+    padding: 16px 24px !important;
+
+    &.o_kanban_renderer.o_kanban_ungrouped,
+    .o_kanban_renderer.o_kanban_ungrouped {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        grid-template-columns: none !important;
+        gap: 0 !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background-color: $o-view-background-color !important;
+        border: 1px solid $o-gray-300 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+
+        .o_kanban_record {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            flex: 1 1 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            border-bottom: 1px solid $o-gray-300 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background-color: $o-view-background-color !important;
+            transition: background-color 0.15s ease !important;
+
+            &:first-child {
+                border-top-left-radius: 8px !important;
+                border-top-right-radius: 8px !important;
+            }
+
+            &:last-child {
+                border-bottom: none !important;
+                border-bottom-left-radius: 8px !important;
+                border-bottom-right-radius: 8px !important;
+            }
+
+            &:hover {
+                background-color: $o-gray-100 !important;
+            }
+        }
+
+        .o_kanban_ghost {
+            display: none !important;
+        }
+    }
+}
+
+/* Pay run row: fixed column grid so amounts, status and actions line up on every row */
+.o_payroll_payrun_row {
+    --payrun-accent: #{$o-gray-400};
+    width: 100% !important;
+    min-height: 76px;
+    display: grid !important;
+    grid-template-columns: minmax(220px, 1fr) 160px 160px 92px 250px 32px;
+    align-items: center;
+    column-gap: 20px;
+    padding: 14px 20px 14px 22px !important;
+    cursor: pointer;
+    position: relative;
+    border-left: 3px solid var(--payrun-accent);
+
+    &.o_payrun_state_draft { --payrun-accent: #38bdf8; }
+    &.o_payrun_state_confirmed,
+    &.o_payrun_state_close { --payrun-accent: #22c55e; }
+    &.o_payrun_state_paid { --payrun-accent: #a855f7; }
+
+    .o_payrun_main {
+        min-width: 0;
+    }
+    .o_payrun_title {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .o_payrun_name {
+        font-size: 15px;
+        font-weight: 600;
+        color: $o-gray-900;
+        letter-spacing: -0.01em;
+    }
+    .o_payrun_dup_chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        color: payrun-tone(#92400e, #fbbf24);
+        background-color: rgba(#f59e0b, 0.15);
+        border: 1px solid rgba(#f59e0b, 0.35);
+    }
+    .o_payrun_period {
+        margin-top: 4px;
+        font-size: 12.5px;
+        color: $o-gray-600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .oi {
+            color: $o-gray-500;
+            vertical-align: -2px;
+        }
+    }
+
+    .o_payrun_amount {
+        text-align: right;
+    }
+    .o_payrun_label {
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: $o-gray-500;
+        margin-bottom: 3px;
+    }
+    .o_payrun_value {
+        font-size: 16px;
+        font-weight: 600;
+        color: $o-gray-800;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+    .o_payrun_value_net {
+        color: $o-gray-900;
+        font-weight: 700;
+    }
+
+    .o_payrun_status {
+        display: flex;
+        justify-content: center;
+    }
+    .o_payrun_pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        white-space: nowrap;
+
+        &::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor;
+        }
+    }
+    .o_payrun_pill_draft { color: payrun-tone(#0369a1, #7dd3fc); background-color: rgba(#0ea5e9, 0.14); border-color: rgba(#0ea5e9, 0.32); }
+    .o_payrun_pill_done { color: payrun-tone(#15803d, #86efac); background-color: rgba(#22c55e, 0.14); border-color: rgba(#22c55e, 0.32); }
+    .o_payrun_pill_paid { color: payrun-tone(#7e22ce, #d8b4fe); background-color: rgba(#a855f7, 0.14); border-color: rgba(#a855f7, 0.32); }
+
+    .o_payrun_actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+    .o_payrun_btn {
+        height: 30px;
+        padding: 0 14px;
+        display: inline-flex;
+        align-items: center;
+        font-size: 12.5px;
+        font-weight: 600;
+        border-radius: 6px;
+        white-space: nowrap;
+        box-shadow: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .o_payrun_btn_primary {
+        color: #ffffff;
+        background-color: #632b6e;
+        border: 1px solid #632b6e;
+
+        &:hover, &:focus {
+            color: #ffffff;
+            background-color: #4f2158;
+            border-color: #4f2158;
+        }
+    }
+    .o_payrun_btn_secondary {
+        color: $o-gray-800;
+        background-color: $o-view-background-color;
+        border: 1px solid $o-gray-400;
+
+        &:hover, &:focus {
+            color: payrun-tone(#632b6e, #e0c2e6);
+            background-color: rgba(#632b6e, payrun-tone(0.06, 0.3));
+            border-color: payrun-tone(#632b6e, #b17cbb);
+        }
+    }
+
+    .o_payrun_menu {
+        display: flex;
+        justify-content: center;
+    }
+    .o_payrun_menu_toggle {
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        color: $o-gray-600;
+        text-decoration: none;
+
+        &:hover {
+            background-color: $o-gray-200;
+            color: $o-gray-900;
+        }
+    }
+    .dropdown-toggle::after {
+        display: none !important;
+    }
+
+    /* Narrow screens: title on its own line, the rest wraps underneath */
+    @media (max-width: 1199.98px) {
+        grid-template-columns: 1fr 1fr auto;
+        row-gap: 12px;
+
+        .o_payrun_main { grid-column: 1 / -1; }
+        .o_payrun_amount { text-align: left; }
+        .o_payrun_actions { grid-column: 1 / 3; justify-content: flex-start; flex-wrap: wrap; }
+    }
+}
+
+.o_payrun_kanban_card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    }
+}
+
+/* =========================================================
+   Pay Run Payslip List - Off-Cycle Button & Styling
+   ========================================================= */
+
+.btn-off-cycle {
+    color: #38bdf8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 0.86rem !important;
+    white-space: nowrap !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    transition: all 0.15s ease-in-out !important;
+
+    &:hover {
+        color: #0284c7 !important;
+        background-color: rgba(56, 189, 248, 0.12) !important;
+        text-decoration: none !important;
+    }
+}
+
+/* =========================================================
+   Pay Run Top Summary Banner - High-Visibility Typography
+   ========================================================= */
+
+.o_payrun_summary_banner {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    color: #ffffff !important;
+
+    /* Enforce white / light text on all native Odoo field widgets */
+    h2,
+    h2 span,
+    .o_field_char,
+    .o_field_char span,
+    .o_field_char input,
+    .o_field_widget,
+    .o_field_widget span {
+        color: #ffffff !important;
+    }
+
+    .o_field_monetary,
+    .o_field_monetary span,
+    .o_monetary_cell {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.25rem !important;
+    }
+
+    .small,
+    .small span {
+        color: #cbd5e1 !important;
+    }
+}
+
+/* Pay Run Details Box (Collapsible Filter Box) */
+.o_payrun_details_box {
+    background-color: var(--bs-tertiary-bg, rgba(128, 128, 128, 0.08)) !important;
+    border: 1px solid var(--bs-border-color, rgba(128, 128, 128, 0.2)) !important;
+    border-radius: 8px !important;
+
+    summary {
+        color: var(--bs-body-color, inherit) !important;
+        user-select: none;
+        outline: none;
+    }
+}
+
+/* =========================================================
+   Payslips Table High Visibility (Dark & Light Mode)
+   ========================================================= */
+
+.o_field_widget[name="slip_ids"] .o_list_table,
+.o_list_view .o_list_table {
+
+    /* High contrast on numerical cells */
+    td.o_data_cell[name="basic_wage"] {
+        color: #38bdf8 !important;
+        font-weight: 600 !important;
+
+        span {
+            color: #38bdf8 !important;
+        }
+    }
+
+    td.o_data_cell[name="net_wage"] {
+        color: #4ade80 !important;
+        font-weight: 700 !important;
+
+        span {
+            color: #4ade80 !important;
+        }
+    }
+
+    td.o_data_cell[name="total_worked_days"] {
+        font-weight: 600 !important;
+        color: var(--bs-body-color, inherit) !important;
+
+        span {
+            color: var(--bs-body-color, inherit) !important;
+        }
+    }
+
+    /* Paid status badge in orchid/rose purple (#c084fc) matching Screenshot */
+    td.o_data_cell[name="state"] {
+
+        .badge.text-bg-secondary,
+        .badge.bg-secondary,
+        .text-bg-secondary,
+        .bg-secondary {
+            background-color: #c084fc !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            font-weight: 600 !important;
+            border-radius: 12px !important;
+            padding: 3px 10px !important;
+        }
+    }
+
+    /* Warning cell in Payslips matching Screenshot: cyan/teal text */
+    td.o_data_cell[name="payslip_warning"] {
+
+        .badge.text-bg-warning,
+        .badge.bg-warning,
+        span.badge {
+            background-color: transparent !important;
+            color: #2dd4bf !important;
+            -webkit-text-fill-color: #2dd4bf !important;
+            font-weight: 500 !important;
+            font-size: 0.88rem !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+    }
+
+    tfoot td {
+        font-weight: 700 !important;
+        color: var(--bs-body-color, inherit) !important;
+
+        span {
+            color: var(--bs-body-color, inherit) !important;
+        }
+    }
+}
+
+/* =========================================================
+   Pay Run Banner Controls & Buttons High Contrast (Universal)
+   ========================================================= */
+
+.o_payrun_summary_banner {
+    color: #ffffff !important;
+    --btn-color: #ffffff !important;
+    --o-color-text-main: #ffffff !important;
+    --bs-body-color: #ffffff !important;
+    --bs-btn-color: #ffffff !important;
+
+    .o_field_widget[name="stepper_html"] {
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        line-height: 1 !important;
+
+        .o_readonly {
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
+        }
+    }
+
+    /* Force all buttons, spans, and icons inside the banner to stay white */
+    .btn,
+    button,
+    .btn-group button,
+    .btn-group .btn,
+    .dropdown button {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+
+        &,
+        span,
+        i,
+        i.fa,
+        * {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            fill: #ffffff !important;
+        }
+    }
+
+    /* Add Employees & 3-Dot Button */
+    .o_payrun_btn_add,
+    .o_payrun_btn_dots {
+        background-color: #334155 !important;
+        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        font-weight: 600 !important;
+
+        &,
+        span,
+        i,
+        i.fa,
+        * {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: #475569 !important;
+            border-color: rgba(255, 255, 255, 0.8) !important;
+
+            &,
+            span,
+            i,
+            i.fa,
+            * {
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+            }
+        }
+    }
+
+    /* Stage Switcher Pills */
+    .o_payrun_stage_btn {
+
+        &.active,
+        &[data-active="true"] {
+            background-color: #7c3aed !important;
+            border: 1px solid #a855f7 !important;
+
+            &,
+            span,
+            * {
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+                font-weight: 700 !important;
+            }
+        }
+
+        &:not(.active) {
+            background-color: rgba(255, 255, 255, 0.12) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+
+            &,
+            span,
+            * {
+                color: #f1f5f9 !important;
+                -webkit-text-fill-color: #f1f5f9 !important;
+            }
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.25) !important;
+
+                &,
+                span,
+                * {
+                    color: #ffffff !important;
+                    -webkit-text-fill-color: #ffffff !important;
+                }
+            }
+        }
+    }
+
+    /* 3-Dot Dropdown Menu */
+    .dropdown-menu {
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        background-color: #1e293b !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+
+        .dropdown-item {
+            color: #f1f5f9 !important;
+            -webkit-text-fill-color: #f1f5f9 !important;
+            transition: background-color 0.15s ease;
+
+            &,
+            span,
+            * {
+                color: #f1f5f9 !important;
+                -webkit-text-fill-color: #f1f5f9 !important;
+            }
+
+            &:hover,
+            &:focus {
+                background-color: #334155 !important;
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+
+                &,
+                span,
+                * {
+                    color: #ffffff !important;
+                    -webkit-text-fill-color: #ffffff !important;
+                }
+            }
+
+            &.text-danger {
+                color: #ef4444 !important;
+                -webkit-text-fill-color: #ef4444 !important;
+
+                &,
+                span,
+                * {
+                    color: #ef4444 !important;
+                    -webkit-text-fill-color: #ef4444 !important;
+                }
+
+                &:hover,
+                &:focus {
+                    background-color: rgba(239, 68, 68, 0.2) !important;
+                    color: #f87171 !important;
+                    -webkit-text-fill-color: #f87171 !important;
+                }
+            }
+        }
+    }
+}
+
+/* =========================================================
+   Payroll Dashboard - Hide Save and Discard (x) Buttons on Dashboard
+   ========================================================= */
+.o_action_manager:has(.o_hds_payroll_dashboard_form) {
+
+    .o_control_panel_main_buttons,
+    .o_form_status_indicator,
+    .o_form_button_save,
+    .o_form_button_cancel,
+    .o_cp_buttons:has(.o_form_button_save) {
+        display: none !important;
+    }
+}
+
+.o_form_view.o_hds_payroll_dashboard_form {
+
+    .o_form_status_indicator,
+    .o_form_button_save,
+    .o_form_button_cancel {
+        display: none !important;
+    }
+}
+
+/* =========================================================
+   Payroll Dashboard - Interactive & Clickable Cards
+   ========================================================= */
+.o_hds_dashboard_card_clickable {
+    cursor: pointer !important;
+    transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.18s ease !important;
+
+    &:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    &:active {
+        transform: translateY(0) !important;
+    }
+}
+
+/* =========================================================
+   Payroll Dashboard - Payrun Theme & Dark/Light Harmony
+   ========================================================= */
+.o_hds_dash_banner {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: #ffffff !important;
+
+    select,
+    input,
+    .o_input,
+    .o_field_widget select,
+    .o_field_widget input {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.35) !important;
+        border-radius: 6px !important;
+        padding: 4px 10px !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+    }
+
+    .o_field_widget .o_external_button,
+    .o_field_widget .o_dropdown_button {
+        color: #cbd5e1 !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .o_field_widget span {
+        color: #ffffff !important;
+    }
+}
+
+/* =========================================================
+   Select Employees Dialog Styling (Odoo Online look)
+   ========================================================= */
+.o_dialog:has([name="employee_ids"]) {
+    --emp-sel-accent: #017e84;
+    --emp-sel-row-selected: rgba(1, 126, 132, 0.08);
+    --emp-sel-row-hover: rgba(1, 126, 132, 0.05);
+
+    /* Select is always active: with nobody ticked it generates payslips for all listed employees */
+    footer button[name="action_select"] {
+        opacity: 1 !important;
+        background-color: #632b6e !important;
+        border-color: #632b6e !important;
+        font-weight: 500 !important;
+    }
+
+    /* Hide row delete icon and "Add a line" row; keep the cell so the row highlight spans the full width */
+    .o_list_record_remove > *,
+    .o_list_button.o_list_button_add,
+    .o_group_field_row_add,
+    .o_field_x2many_list_row_add,
+    .o_list_table tfoot,
+    tr:has(.o_field_x2many_list_row_add),
+    tr:has(.o_list_button_add) {
+        display: none !important;
+    }
+
+    /* Toolbar: selection badge + actions centred, pager on the right */
+    .o_emp_sel_toolbar {
+        min-height: 44px;
+        padding: 6px 12px;
+    }
+
+    .o_selection_badge {
+        border: 1px solid var(--emp-sel-accent) !important;
+        color: var(--emp-sel-accent) !important;
+        background-color: rgba(1, 126, 132, 0.06) !important;
+        border-radius: 6px !important;
+        padding: 5px 12px !important;
+        font-weight: 500;
+        cursor: pointer;
+
+        strong {
+            font-weight: 700;
+        }
+
+        .oi {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        &:hover {
+            background-color: rgba(1, 126, 132, 0.12) !important;
+        }
+    }
+
+    .o_emp_sel_action {
+        border-radius: 6px !important;
+        padding: 5px 14px !important;
+        font-weight: 500 !important;
+    }
+
+    /* Search pill (shown when nobody is ticked) */
+    .o_emp_sel_search {
+        width: 100%;
+        max-width: 380px;
+
+        .o_emp_sel_search_icon {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%);
+            font-size: 16px;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .form-control {
+            padding: 6px 14px 6px 38px;
+            font-size: 13px;
+            border: 1px solid var(--emp-sel-accent);
+            box-shadow: none;
+
+            &:focus {
+                box-shadow: 0 0 0 2px rgba(1, 126, 132, 0.2);
+            }
+        }
+    }
+
+    /* Table: roomier rows, muted header, subtle row separators */
+    .o_list_table {
+        thead th {
+            font-weight: 500;
+            opacity: 0.85;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-bottom-width: 1px;
+        }
+
+        .o_data_row {
+            > td {
+                padding-top: 10px;
+                padding-bottom: 10px;
+                vertical-align: middle;
+            }
+
+            &:hover > td {
+                --table-bg: var(--emp-sel-row-hover);
+                --bs-table-bg: var(--emp-sel-row-hover);
+                background-color: var(--emp-sel-row-hover);
+            }
+        }
+
+        /* Selected rows: soft teal tint instead of a heavy fill */
+        .o_data_row.o_data_row_selected,
+        .o_data_row.table-info {
+            --table-bg: var(--emp-sel-row-selected) !important;
+            --bs-table-bg: var(--emp-sel-row-selected) !important;
+            --bs-table-accent-bg: transparent !important;
+
+            > td {
+                background-color: var(--emp-sel-row-selected) !important;
+                box-shadow: none !important;
+            }
+        }
+    }
+
+    /* Teal checkboxes */
+    .form-check-input:checked {
+        background-color: var(--emp-sel-accent) !important;
+        border-color: var(--emp-sel-accent) !important;
+    }
+
+    /* Review status: soft pill instead of a solid green badge */
+    td[name="review_status"] .badge {
+        background-color: rgba(40, 167, 69, 0.14) !important;
+        color: #1e8e3e !important;
+        font-weight: 500;
+        border-radius: 999px;
+        padding: 4px 10px;
+    }
+}
+
+/* =========================================================
+   Pay Run Form View Styling (Executive & Modern Polish)
+   ========================================================= */
+
+.o_payroll_payrun_form {
+    header {
+        background-color: $o-view-background-color !important;
+        border-bottom: 1px solid $o-gray-300 !important;
+        padding: 10px 16px !important;
+
+        button.btn-primary {
+            background-color: #632b6e !important;
+            border-color: #632b6e !important;
+            color: #ffffff !important;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            border-radius: 6px !important;
+            padding: 5px 18px !important;
+            box-shadow: 0 1px 2px rgba(99, 43, 110, 0.2) !important;
+            transition: background-color 0.15s ease, transform 0.1s ease !important;
+
+            &:hover {
+                background-color: #51225a !important;
+                border-color: #51225a !important;
+                transform: translateY(-1px);
+            }
+        }
+
+        button.btn-secondary {
+            background-color: $o-view-background-color !important;
+            border: 1px solid $o-gray-400 !important;
+            color: $o-gray-800 !important;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            border-radius: 6px !important;
+            padding: 5px 16px !important;
+            transition: background-color 0.15s ease, border-color 0.15s ease !important;
+
+            &:hover {
+                background-color: $o-gray-100 !important;
+                border-color: $o-gray-500 !important;
+            }
+        }
+    }
+
+    .o_form_sheet {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+        border: 1px solid $o-gray-300 !important;
+        border-radius: 10px !important;
+        padding: 24px 28px !important;
+    }
+
+    /* Pay Run Metadata Chips */
+    .o_payrun_chip {
+        display: inline-flex !important;
+        align-items: center !important;
+        border-radius: 9999px !important;
+        padding: 4px 14px !important;
+        font-size: 12.5px !important;
+        font-weight: 500 !important;
+        border: 1px solid $o-gray-300 !important;
+        background-color: $o-gray-100 !important;
+        color: $o-gray-800 !important;
+        gap: 8px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+
+        /* Icon drawn as a mask in the chip's text colour (readable in light and dark) */
+        .o_chip_icon {
+            display: inline-block !important;
+            width: 14px !important;
+            height: 14px !important;
+            flex-shrink: 0 !important;
+            background-color: currentColor !important;
+            -webkit-mask-size: contain !important;
+            mask-size: contain !important;
+            -webkit-mask-repeat: no-repeat !important;
+            mask-repeat: no-repeat !important;
+            -webkit-mask-position: center !important;
+            mask-position: center !important;
+        }
+
+        &.chip-calendar {
+            background-color: payrun-tone(#f0fdf4, rgba(#22c55e, 0.14)) !important;
+            border-color: payrun-tone(#bbf7d0, rgba(#22c55e, 0.35)) !important;
+            color: payrun-tone(#166534, #86efac) !important;
+            .o_chip_icon {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        &.chip-struct {
+            background-color: payrun-tone(#eff6ff, rgba(#3b82f6, 0.14)) !important;
+            border-color: payrun-tone(#bfdbfe, rgba(#3b82f6, 0.35)) !important;
+            color: payrun-tone(#1e40af, #93c5fd) !important;
+            .o_chip_icon {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3Cpolyline points='10 9 9 9 8 9'/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3Cpolyline points='10 9 9 9 8 9'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        &.chip-company {
+            background-color: $o-gray-100 !important;
+            border-color: $o-gray-300 !important;
+            color: $o-gray-700 !important;
+            .o_chip_icon {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='2' width='16' height='20' rx='2' ry='2'/%3E%3Cline x1='9' y1='22' x2='9' y2='22.01'/%3E%3Cline x1='15' y1='22' x2='15' y2='22.01'/%3E%3Cline x1='9' y1='6' x2='9' y2='6.01'/%3E%3Cline x1='15' y1='6' x2='15' y2='6.01'/%3E%3Cline x1='9' y1='10' x2='9' y2='10.01'/%3E%3Cline x1='15' y1='10' x2='15' y2='10.01'/%3E%3Cline x1='9' y1='14' x2='9' y2='14.01'/%3E%3Cline x1='15' y1='14' x2='15' y2='14.01'/%3E%3Cline x1='9' y1='18' x2='9' y2='18.01'/%3E%3Cline x1='15' y1='18' x2='15' y2='18.01'/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='2' width='16' height='20' rx='2' ry='2'/%3E%3Cline x1='9' y1='22' x2='9' y2='22.01'/%3E%3Cline x1='15' y1='22' x2='15' y2='22.01'/%3E%3Cline x1='9' y1='6' x2='9' y2='6.01'/%3E%3Cline x1='15' y1='6' x2='15' y2='6.01'/%3E%3Cline x1='9' y1='10' x2='9' y2='10.01'/%3E%3Cline x1='15' y1='10' x2='15' y2='10.01'/%3E%3Cline x1='9' y1='14' x2='9' y2='14.01'/%3E%3Cline x1='15' y1='14' x2='15' y2='14.01'/%3E%3Cline x1='9' y1='18' x2='9' y2='18.01'/%3E%3Cline x1='15' y1='18' x2='15' y2='18.01'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        /* Field values inside the chips use the chip colour */
+        .o_field_widget,
+        .o_field_widget span,
+        .o_field_widget a {
+            color: inherit !important;
+        }
+    }
+
+    /* Executive KPI Cards */
+    .o_payrun_kpi_card {
+        background: $o-view-background-color !important;
+        border-radius: 10px !important;
+        border: 1px solid $o-gray-300 !important;
+        padding: 16px 18px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px -2px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        &.card-cost {
+            border-top: 4px solid #6366f1 !important;
+            .o_kpi_circle {
+                background-color: payrun-tone(#eef2ff, rgba(#6366f1, 0.2)) !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2' ry='2'/%3E%3Cpath d='M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        &.card-net {
+            border-top: 4px solid #10b981 !important;
+            .o_kpi_circle {
+                background-color: payrun-tone(#ecfdf5, rgba(#10b981, 0.2)) !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23059669' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12V7H5a2 2 0 0 1 0-4h14v4'/%3E%3Cpath d='M3 5v14a2 2 0 0 0 2 2h16v-5'/%3E%3Cpath d='M18 12a2 2 0 0 0 0 4h4v-4z'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        &.card-gross {
+            border-top: 4px solid #3b82f6 !important;
+            .o_kpi_circle {
+                background-color: payrun-tone(#eff6ff, rgba(#3b82f6, 0.2)) !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='6' width='20' height='12' rx='2'/%3E%3Ccircle cx='12' cy='12' r='2'/%3E%3Cpath d='M6 12h.01M18 12h.01'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        &.card-emp {
+            border-top: 4px solid #8b5cf6 !important;
+            .o_kpi_circle {
+                background-color: payrun-tone(#faf5ff, rgba(#8b5cf6, 0.2)) !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237e22ce' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M23 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E") !important;
+            }
+        }
+
+        .o_kpi_circle {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 50% !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-size: 18px 18px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .o_kpi_label {
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            font-weight: 600 !important;
+            color: $o-gray-600 !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        .o_kpi_subtext {
+            font-size: 11px !important;
+            color: $o-gray-500 !important;
+            margin-top: 4px !important;
+        }
+
+        .o_kpi_value,
+        .o_kpi_value .o_field_widget,
+        .o_kpi_value span {
+            color: $o-gray-900 !important;
+        }
+        .o_kpi_value_net,
+        .o_kpi_value_net .o_field_widget,
+        .o_kpi_value_net span {
+            color: payrun-tone(#059669, #34d399) !important;
+        }
+        .o_kpi_value_gross,
+        .o_kpi_value_gross .o_field_widget,
+        .o_kpi_value_gross span {
+            color: payrun-tone(#2563eb, #60a5fa) !important;
+        }
+    }
+
+    /* Title, status badge and payslips panel (no fixed light colours) */
+    .o_payrun_form_title,
+    .o_payrun_form_title .o_field_widget,
+    .o_payrun_form_title input {
+        color: $o-gray-900 !important;
+    }
+
+    .o_payrun_state_badge {
+        font-size: 12px !important;
+        border: 1px solid transparent !important;
+    }
+    .o_payrun_state_badge_draft {
+        color: payrun-tone(#0284c7, #7dd3fc) !important;
+        background-color: rgba(#0ea5e9, 0.14) !important;
+        border-color: rgba(#0ea5e9, 0.32) !important;
+    }
+    .o_payrun_state_badge_done {
+        color: payrun-tone(#15803d, #86efac) !important;
+        background-color: rgba(#22c55e, 0.14) !important;
+        border-color: rgba(#22c55e, 0.32) !important;
+    }
+    .o_payrun_state_badge_paid {
+        color: payrun-tone(#7e22ce, #d8b4fe) !important;
+        background-color: rgba(#a855f7, 0.14) !important;
+        border-color: rgba(#a855f7, 0.32) !important;
+    }
+
+    .o_payrun_slips_panel {
+        background-color: $o-view-background-color !important;
+        border: 1px solid $o-gray-300 !important;
+    }
+    .o_payrun_slips_head {
+        background-color: $o-gray-100 !important;
+        border-bottom: 1px solid $o-gray-300 !important;
+    }
+
+    /* Table Header Icon & Count Badge */
+    .o_table_header_icon {
+        display: inline-block !important;
+        width: 16px !important;
+        height: 16px !important;
+        background-color: payrun-tone(#632b6e, #d6b4dd) !important;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='8' y1='6' x2='21' y2='6'/%3E%3Cline x1='8' y1='12' x2='21' y2='12'/%3E%3Cline x1='8' y1='18' x2='21' y2='18'/%3E%3Cline x1='3' y1='6' x2='3.01' y2='6'/%3E%3Cline x1='3' y1='12' x2='3.01' y2='12'/%3E%3Cline x1='3' y1='18' x2='3.01' y2='18'/%3E%3C/svg%3E") center / contain no-repeat !important;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='8' y1='6' x2='21' y2='6'/%3E%3Cline x1='8' y1='12' x2='21' y2='12'/%3E%3Cline x1='8' y1='18' x2='21' y2='18'/%3E%3Cline x1='3' y1='6' x2='3.01' y2='6'/%3E%3Cline x1='3' y1='12' x2='3.01' y2='12'/%3E%3Cline x1='3' y1='18' x2='3.01' y2='18'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    }
+
+    .o_payrun_count_badge {
+        background-color: #632b6e !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 11.5px !important;
+        padding: 2px 8px !important;
+        border-radius: 12px !important;
+        letter-spacing: 0.2px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 22px !important;
+        box-shadow: 0 1px 2px rgba(99, 43, 110, 0.25) !important;
+    }
+
+    /* Table row polish */
+    .o_field_widget[name="slip_ids"] {
+        .o_list_table {
+            margin-bottom: 0 !important;
+
+            thead th {
+                background-color: $o-gray-100 !important;
+                color: $o-gray-700 !important;
+                font-weight: 600 !important;
+                font-size: 12px !important;
+                border-bottom: 1px solid $o-gray-300 !important;
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+            }
+
+            tbody tr {
+                transition: background-color 0.12s ease !important;
+
+                &:hover {
+                    background-color: $o-gray-100 !important;
+                }
+
+                td {
+                    padding-top: 10px !important;
+                    padding-bottom: 10px !important;
+                    vertical-align: middle !important;
+                    border-bottom: 1px solid $o-gray-200 !important;
+                }
+            }
+
+            tfoot {
+                background-color: $o-gray-100 !important;
+                border-top: 2px solid $o-gray-300 !important;
+
+                td {
+                    font-weight: 700 !important;
+                    padding-top: 10px !important;
+                    padding-bottom: 10px !important;
+                }
+            }
+        }
+    }
+}
+/* Pay run "More" menu and its delete confirmation (built in payroll_dashboard_navigation.js):
+   light theme keeps its original colours, dark theme uses the theme surfaces */
+.o_payrun_more_dropdown {
+    .o_payrun_more_btn {
+        border: 1px solid payrun-tone(#008784, #2dd4bf) !important;
+        color: payrun-tone(#008784, #5eead4) !important;
+        background-color: payrun-tone(#f0fdfa, rgba(#14b8a6, 0.12)) !important;
+
+        &:hover,
+        &:focus {
+            background-color: payrun-tone(#ccfbf1, rgba(#14b8a6, 0.22)) !important;
+        }
+    }
+
+    .o_payrun_more_menu {
+        background-color: payrun-tone(#ffffff, $o-view-background-color) !important;
+        border: 1px solid payrun-tone(rgba(0, 0, 0, 0.12), $o-gray-300) !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, payrun-tone(0.1, 0.5)), 0 4px 6px -4px rgba(0, 0, 0, payrun-tone(0.1, 0.4)) !important;
+
+        .o_payrun_menu_item {
+            color: payrun-tone(#1e293b, $o-gray-900);
+
+            &:hover,
+            &:focus {
+                background-color: $o-gray-200;
+                color: payrun-tone(#1e293b, $o-gray-900);
+            }
+        }
+
+        .o_payrun_menu_item_danger,
+        .o_payrun_menu_item_danger:hover,
+        .o_payrun_menu_item_danger:focus {
+            color: payrun-tone(#dc2626, #f87171) !important;
+        }
+
+        .o_payrun_menu_icon {
+            color: payrun-tone(#6b21a8, #d8b4fe);
+        }
+
+        .dropdown-divider {
+            border-color: $o-gray-300;
+        }
+    }
+}
+
+.o_payrun_confirm_content {
+    background-color: payrun-tone(#ffffff, $o-view-background-color) !important;
+
+    .o_payrun_confirm_title {
+        color: $o-gray-900;
+    }
+
+    .o_payrun_confirm_body {
+        color: payrun-tone(#334155, $o-gray-700);
+    }
+
+    .o_cancel_delete_btn {
+        color: payrun-tone(#475569, $o-gray-800) !important;
+        border-color: payrun-tone(#cbd5e1, $o-gray-400) !important;
+        background-color: payrun-tone(#ffffff, $o-view-background-color) !important;
+
+        &:hover {
+            background-color: $o-gray-100 !important;
+        }
+    }
+}

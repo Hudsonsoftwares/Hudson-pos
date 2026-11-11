@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- TDS Tax Regime Master Seed Data -->
+        <record id="hds_in_tds_regime_new" model="tds.tax.regime">
+            <field name="name">New Tax Regime Income-tax Act, 2025 — Section 202(1)</field>
+            <field name="code">new</field>
+            <field name="sequence">1</field>
+            <field name="is_default">True</field>
+            <field name="description">Concessional Tax Regime under Income-tax Act, 2025 — Section 202(1) with wider slab thresholds and standard deduction ₹75,000.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="hds_in_tds_regime_old" model="tds.tax.regime">
+            <field name="name">Old Tax Regime</field>
+            <field name="code">old</field>
+            <field name="sequence">2</field>
+            <field name="is_default">False</field>
+            <field name="description">Traditional Tax Regime allowing Chapter VI-A deductions, HRA, LTA, and Section 80C exemptions with standard deduction ₹50,000.</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View for Indian HR & Payroll Dashboard -->
+    <record id="hds_payroll_dashboard_view_form" model="ir.ui.view">
+        <field name="name">hds.payroll.dashboard.form</field>
+        <field name="model">hds.payroll.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Dashboard" class="o_hds_payroll_dashboard_form" js_class="hds_payroll_dashboard_form" create="false" delete="false">
+                <header>
+                    <button name="action_view_missing_pan_employees" string="Missing PAN" type="object" class="btn-secondary" icon="badge"/>
+                    <button name="action_view_missing_bank_employees" string="Missing Bank Details" type="object" class="btn-secondary" icon="account_balance"/>
+                    <button name="action_view_new_joiners" string="View All Joiners" type="object" class="btn-secondary" icon="person_add"/>
+                </header>
+                <!-- Sheet layout (full width, no sheet box) lives in payroll_dashboard_odoo.scss:
+                     Odoo does not copy class/style attributes from <sheet> to the rendered sheet -->
+                <sheet>
+
+                    <!-- Hidden Model Fields (Bound to Live Controller in Dashboard Canvas) -->
+                    <field name="payroll_month_num" invisible="1"/>
+                    <field name="financial_year_id" invisible="1"/>
+                    <field name="active_employee_count" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="dashboard_html" widget="html" readonly="1" nolabel="1" options="{'sandboxedPreview': False}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Singleton Record for Payroll Dashboard -->
+    <record id="hds_payroll_dashboard_singleton" model="hds.payroll.dashboard">
+        <field name="name">Payroll Dashboard</field>
+    </record>
+
+    <!-- Window Action for Payroll Dashboard -->
+    <record id="action_hds_payroll_dashboard" model="ir.actions.act_window">
+        <field name="name">Payroll Dashboard</field>
+        <field name="res_model">hds.payroll.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="res_id" ref="hds_payroll_dashboard_singleton"/>
+        <field name="target">current</field>
+    </record>
+
+    <!-- Window Actions for Clickable Dashboard Notifications & Cards -->
+    <record id="action_dashboard_missing_pan_employees" model="ir.actions.act_window">
+        <field name="name">Employees Missing PAN</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['&amp;', ('active', '=', True), '|', ('hds_in_pan', '=', False), ('hds_in_pan', '=', '')]</field>
+    </record>
+
+    <record id="action_dashboard_missing_bank_employees" model="ir.actions.act_window">
+        <field name="name">Employees Missing Bank Details</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['&amp;', ('active', '=', True), ('bank_account_id', '=', False)]</field>
+    </record>
+
+    <record id="action_dashboard_pending_declarations" model="ir.actions.act_window">
+        <field name="name">Pending Tax Declarations</field>
+        <field name="res_model">tds.employee.declaration</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ('submitted', 'proof_submitted', 'proof_under_review'))]</field>
+    </record>
+
+    <record id="action_dashboard_attendance_exceptions" model="ir.actions.act_window">
+        <field name="name">Payslips to Validate</field>
+        <field name="res_model">hr.payslip</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ('draft', 'verify'))]</field>
+    </record>
+
+
+    <record id="action_dashboard_new_joiners" model="ir.actions.act_window">
+        <field name="name">New Joiners</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('active', '=', True)]</field>
+    </record>
+
+    <record id="action_dashboard_old_regime_employees" model="ir.actions.act_window">
+        <field name="name">Employees in Old Tax Regime</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['&amp;', ('active', '=', True), ('hds_in_tax_regime', '=', 'old')]</field>
+    </record>
+
+    <record id="action_dashboard_new_regime_employees" model="ir.actions.act_window">
+        <field name="name">Employees in New Tax Regime Income-tax Act, 2025 — Section 202(1)</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['&amp;', ('active', '=', True), ('hds_in_tax_regime', '=', 'new')]</field>
+    </record>
+
+    <record id="action_dashboard_epf_employees" model="ir.actions.act_window">
+        <field name="name">EPF Applicable Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['&amp;', ('active', '=', True), ('hds_in_epf_applicable', '=', True)]</field>
+    </record>
+
+    <record id="action_dashboard_esic_employees" model="ir.actions.act_window">
+        <field name="name">ESIC Applicable Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['&amp;', ('active', '=', True), ('hds_in_esic_applicable', '=', True)]</field>
+    </record>
+
+    <!-- Primary Menu Item: Sequence 1 under Payroll Root -->
+    <menuitem id="menu_hds_payroll_dashboard_root"
+              name="Dashboard"
+              parent="hudson_payroll_base.menu_hr_payroll_root"
+              action="action_hds_payroll_dashboard"
+              groups="hudson_payroll_base.group_payroll_user,hudson_payroll_base.group_payroll_manager,base.group_user,base.group_system"
+              sequence="1"/>
+</odoo>

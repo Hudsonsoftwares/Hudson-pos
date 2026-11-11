@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Structure Type Form View -->
+        <record id="hr_payroll_structure_type_view_form" model="ir.ui.view">
+            <field name="name">hr.payroll.structure.type.form</field>
+            <field name="model">hr.payroll.structure.type</field>
+            <field name="arch" type="xml">
+                <form string="Structure Type">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_structures" type="object" class="oe_stat_button" icon="calendar_today">
+                                <field name="struct_count" widget="statinfo" string="Structures"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="Structure Type"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. Employee"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="country_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="wage_type"/>
+                            </group>
+                            <group>
+                                <field name="schedule_pay"/>
+                                <field name="default_resource_calendar_id" string="Working Hours"/>
+                                <field name="default_struct_id" string="Pay Structure" domain="[('type_id', '=', id)]"/>
+                                <field name="default_work_entry_type_id" string="Time Type"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Structure Type List View -->
+        <record id="hr_payroll_structure_type_view_list" model="ir.ui.view">
+            <field name="name">hr.payroll.structure.type.list</field>
+            <field name="model">hr.payroll.structure.type</field>
+            <field name="arch" type="xml">
+                <list string="Structure Types">
+                    <field name="name" string="Structure Type"/>
+                    <field name="schedule_pay"/>
+                    <field name="country_id"/>
+                    <field name="default_resource_calendar_id" string="Working Hours"/>
+                    <field name="wage_type"/>
+                    <field name="default_struct_id" string="Pay Structure"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_hr_payroll_structure_type" model="ir.actions.act_window">
+            <field name="name">Structure Types</field>
+            <field name="res_model">hr.payroll.structure.type</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Structure Form View -->
+        <record id="hr_payroll_structure_view_form" model="ir.ui.view">
+            <field name="name">hr.payroll.structure.form</field>
+            <field name="model">hr.payroll.structure</field>
+            <field name="arch" type="xml">
+                <form string="Salary Structure">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" string="Structure Name"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. Regular Pay, Worker Pay"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="type_id" required="1" string="Type"/>
+                                <field name="use_worked_day_lines"/>
+                                <field name="country_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="ytd_computation"/>
+                            </group>
+                            <group>
+                                <field name="report_id" string="Template"/>
+                                <field name="payslip_name"/>
+                                <field name="hide_basic_on_pdf"/>
+                                <field name="schedule_pay"/>
+                                <field name="code" invisible="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="parent_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="rules" string="Salary Rules">
+                                <field name="rule_ids">
+                                    <list string="Salary Rules" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="category_id"/>
+                                        <field name="partner_id"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page name="unpaid_work_entry_types" string="Unpaid Work Entry Types">
+                                <field name="unpaid_work_entry_type_ids">
+                                    <list string="Unpaid Work Entry Types">
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page name="other_input" string="Other Input">
+                                <field name="input_line_type_ids">
+                                    <list string="Other Input" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="country_id"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Structure Search View -->
+        <record id="hr_payroll_structure_view_search" model="ir.ui.view">
+            <field name="name">hr.payroll.structure.search</field>
+            <field name="model">hr.payroll.structure</field>
+            <field name="arch" type="xml">
+                <search string="Search Salary Structures">
+                    <field name="name" string="Structure" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
+                    <field name="code"/>
+                    <field name="type_id"/>
+                    <field name="country_id"/>
+                    <group>
+                        <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                        <filter name="group_type" string="Structure Type" context="{'group_by': 'type_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Structure List View -->
+        <record id="hr_payroll_structure_view_list" model="ir.ui.view">
+            <field name="name">hr.payroll.structure.list</field>
+            <field name="model">hr.payroll.structure</field>
+            <field name="arch" type="xml">
+                <list string="Salary Structures">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="type_id"/>
+                    <field name="country_id"/>
+                    <field name="schedule_pay"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_hr_payroll_structure" model="ir.actions.act_window">
+            <field name="name">Salary Structures</field>
+            <field name="res_model">hr.payroll.structure</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="hr_payroll_structure_view_search"/>
+        </record>
+    </data>
+</odoo>

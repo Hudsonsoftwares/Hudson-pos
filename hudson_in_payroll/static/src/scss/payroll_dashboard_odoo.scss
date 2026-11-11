@@ -1,0 +1,646 @@
+// Indian Payroll Dashboard — Odoo-native layout
+// Loaded last. Styles the Odoo-like top section (header sheet, KPI cards, issue cards,
+// data health list), the control-panel period search, and the remaining sections as
+// Odoo sheets: list views with group rows and aggregate footers, smart buttons, pastel
+// badges, teal links and plum primary buttons. Uses Odoo's theme variables (light & dark).
+
+$od-radius: 6px;
+$od-border: $o-gray-300;
+
+// ---------------------------------------------------------------- Control-panel period search
+.o_hds_period_search {
+    min-width: MIN(520px, 100%);
+    .o_hds_ps_menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        // Above the sticky header-button bar ($zindex-sticky), like Odoo's own autocomplete popover
+        z-index: $zindex-popover;
+        max-height: 360px;
+        overflow-y: auto;
+    }
+    // Search panel (Filters / Month / Tax Year), centred under the bar like Odoo's
+    .o_hds_ps_panel {
+        left: 50%;
+        right: auto;
+        width: max-content;
+        max-width: calc(100vw - 32px);
+        max-height: 70vh;
+        transform: translateX(-50%);
+    }
+    .o_hds_ps_item {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        cursor: pointer;
+        &.selected {
+            font-weight: 500;
+            .o_hds_ps_check {
+                visibility: visible;
+            }
+        }
+        &.disabled {
+            opacity: 0.5;
+        }
+    }
+    .o_hds_ps_check {
+        flex: none;
+        width: 1.5em;
+        visibility: hidden;
+        color: $primary;
+    }
+    .o_searchview_autocomplete .dropdown-item.focus {
+        background: $o-gray-200;
+    }
+}
+
+// ---------------------------------------------------------------- Header buttons (form statusbar)
+.o_hds_payroll_dashboard_form {
+    // Full-width page without Odoo's sheet box: the dashboard draws its own sheets.
+    // The statusbar and the dashboard share the sheet background's side padding, so their
+    // edges line up, and the header sheet joins the statusbar (no top padding).
+    .o_form_sheet_bg {
+        max-width: none;
+    }
+    .o_form_sheet {
+        margin: 0 !important;
+        padding: 0 0 24px !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+    .o_form_statusbar {
+        margin-top: 12px;
+        margin-inline: 0 !important;
+        padding: 10px 16px !important;
+        background: $o-view-background-color !important;
+        border: 1px solid $od-border;
+        border-bottom-color: $o-gray-200;
+        border-radius: $od-radius $od-radius 0 0;
+        box-shadow: none !important;
+    }
+    .o_statusbar_buttons {
+        gap: 8px !important;
+        .btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            color: $o-gray-900;
+            background: $o-gray-200;
+            border: 1px solid transparent;
+            &:hover {
+                background: $o-gray-300;
+                border-color: transparent;
+            }
+            &:first-child {
+                color: #fff;
+                background: $primary;
+                &:hover {
+                    background: darken($primary, 6%);
+                }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------- Dashboard
+.o_hds_dashboard_root.hds-dash.hds-odoo {
+    --hds-plum: #{$link-color};
+    --hds-radius: #{$od-radius};
+    --hds-border: #{$o-gray-200};
+    --hds-border-strong: #{$od-border};
+    --hds-shadow: none;
+    --hds-shadow-hover: 0 2px 8px #{rgba($o-black, 0.06)};
+    gap: 16px;
+    font-size: 14px;
+
+    // Plain numbers (no small ₹ / paise) like Odoo monetary fields
+    .hds-cur,
+    .hds-dec {
+        margin: 0;
+        font-size: inherit;
+        font-weight: inherit;
+        vertical-align: baseline;
+        color: inherit;
+    }
+    .hds-cur {
+        margin-right: 0.25em;
+    }
+
+    .btn.o_hds_dashboard_card_clickable:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    // ---------- Badges & bars ----------
+    .hds-o-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        color: var(--hds-accent);
+        background: var(--hds-accent-soft);
+    }
+    .hds-o-bar {
+        flex: 1;
+        height: 6px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: $o-gray-200;
+        > div {
+            height: 100%;
+            border-radius: 999px;
+            background: var(--hds-accent);
+        }
+    }
+    .hds-o-link {
+        font-weight: 500;
+        color: $link-color;
+        cursor: pointer;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    // ---------- Sheets ----------
+    .hds-o-sheet,
+    .hds-card {
+        padding: 20px 24px;
+        background: $o-view-background-color;
+        border: 1px solid $od-border;
+        border-radius: $od-radius;
+        box-shadow: none;
+    }
+
+    // Header sheet (joins the statusbar above it)
+    .hds-o-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px 48px;
+        padding: 22px 24px;
+        border-top-color: $o-gray-200;
+        border-radius: 0 0 $od-radius $od-radius;
+    }
+    .hds-o-header-main {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-width: 0;
+    }
+    .hds-o-header-title {
+        small {
+            display: block;
+            font-size: 13.5px;
+            color: $o-gray-600;
+        }
+        h1 {
+            margin: 2px 0 0;
+            font-size: 30px;
+            font-weight: 500;
+            line-height: 1.2;
+            color: $o-gray-900;
+        }
+    }
+    // Month navigator: "This Month  [<] [October 2026 v] [>]" like Odoo's calendar / pager controls
+    .hds-o-period-nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .btn-group {
+            flex-wrap: nowrap;
+        }
+        .hds-o-nav-arrow {
+            padding-inline: 8px;
+        }
+        .hds-o-month-select {
+            width: auto;
+            min-width: 170px;
+            font-weight: 500;
+            color: $o-gray-900;
+            border-radius: 0;
+            border-color: $o-gray-300;
+            background-color: $o-view-background-color;
+            cursor: pointer;
+            box-shadow: none;
+            &:focus {
+                position: relative;
+                z-index: 1;
+                border-color: $primary;
+            }
+        }
+    }
+    // Header info strip: icon tile, small label, value; thin dividers between the fields
+    .hds-o-header-fields {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: 14px;
+        padding: 16px 0;
+        background: $o-gray-100;
+        border: 1px solid $o-gray-200;
+        border-radius: $od-radius;
+    }
+    .hds-o-field {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 4px 28px;
+        & + .hds-o-field {
+            border-left: 1px solid $o-gray-300;
+        }
+        > div {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+        label {
+            margin: 0;
+            font-size: 12.5px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: $o-gray-600;
+        }
+        > div > span {
+            font-size: 17px;
+            font-weight: 500;
+            color: $o-gray-900;
+            white-space: nowrap;
+        }
+        > div > .hds-o-field-link {
+            color: $link-color;
+        }
+        &.o_hds_dashboard_card_clickable:hover .hds-o-field-link {
+            text-decoration: underline;
+        }
+        // Value made of status chips (Payslips: Draft / To validate / Validated / Paid)
+        .hds-o-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 12px 3px 10px;
+            font-size: 14px;
+            color: var(--hds-accent);
+            background: var(--hds-accent-soft);
+            border-radius: 999px;
+            transition: box-shadow 0.1s ease;
+            &::before {
+                content: "";
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--hds-accent);
+            }
+            b {
+                font-weight: 600;
+                font-variant-numeric: tabular-nums;
+            }
+            &.is-zero {
+                color: $o-gray-600;
+                background: $o-view-background-color;
+                &::before {
+                    background: $o-gray-400;
+                }
+            }
+            &:hover {
+                box-shadow: inset 0 0 0 1px currentColor;
+            }
+        }
+    }
+    .hds-o-field-icon {
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        font-size: 23px;
+        color: $o-gray-600;
+        background: $o-view-background-color;
+        border: 1px solid $o-gray-200;
+        border-radius: 8px;
+    }
+    .hds-o-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    // ---------- KPI cards ----------
+    .hds-o-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+    }
+    .hds-o-kpi {
+        display: flex;
+        flex-direction: column;
+        padding: 16px 20px;
+        background: $o-view-background-color;
+        border: 1px solid $od-border;
+        border-radius: $od-radius;
+        transition: border-color 0.12s ease, box-shadow 0.12s ease;
+        &:hover {
+            border-color: $o-gray-400;
+            box-shadow: var(--hds-shadow-hover) !important;
+        }
+    }
+    .hds-o-kpi-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        font-size: 14.5px;
+        color: $o-gray-700;
+    }
+    .hds-o-kpi-value {
+        margin: 8px 0 12px;
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: -0.3px;
+        line-height: 1.15;
+        color: $o-gray-900;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-variant-numeric: tabular-nums;
+    }
+    .hds-o-kpi .hds-o-bar {
+        flex: none;
+    }
+    .hds-o-kpi-foot {
+        margin-top: 10px;
+        font-size: 13px;
+        color: $o-gray-600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    // ---------- Issue cards ----------
+    .hds-o-issues {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+    .hds-o-issue {
+        display: flex;
+        flex-direction: column;
+        background: $o-view-background-color;
+        border: 1px solid $od-border;
+        border-radius: $od-radius;
+    }
+    .hds-o-issue-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 20px 0;
+    }
+    .hds-o-issue-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: $o-gray-900;
+    }
+    .hds-o-issue-body {
+        flex: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 16px 24px;
+        padding: 16px 20px;
+    }
+    .hds-o-issue-btn {
+        padding: 8px 18px;
+        font-size: 15px;
+        font-weight: 500;
+        border-radius: 4px;
+    }
+    .hds-o-issue-note {
+        margin-top: 10px;
+        font-size: 13px;
+        color: $o-gray-600;
+    }
+    .hds-o-issue-side {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 14.5px;
+    }
+    .hds-o-kv {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        span {
+            color: $o-gray-700;
+        }
+        b {
+            font-weight: 500;
+            color: $o-gray-900;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+    .hds-o-issue-foot {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 20px;
+        border-top: 1px solid $o-gray-200;
+        span {
+            min-width: 90px;
+            text-align: right;
+            font-size: 13px;
+            color: $o-gray-600;
+        }
+    }
+
+    // ---------- Card sections (data health, planners, composition, obligations, joiners, compliance) ----------
+    .hds-o-list-card {
+        padding: 0;
+        overflow: hidden;
+    }
+    .hds-o-section {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+    .hds-o-section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        padding: 16px 20px 14px;
+    }
+    .hds-o-section-title {
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 1.3;
+        color: $o-gray-900;
+    }
+    .hds-o-list-hint {
+        margin-top: 2px;
+        font-size: 13.5px;
+        color: $o-gray-600;
+        b {
+            font-weight: 600;
+            color: var(--hds-accent);
+        }
+    }
+    // Issue cards inside a section sheet
+    .hds-o-issues.hds-o-section-cards {
+        padding: 0 20px 20px;
+    }
+    // An employee (avatar + name link) inside a card's key / value rows
+    .hds-o-kv .hds-o-link {
+        color: $link-color;
+    }
+    .hds-o-kv:has(.hds-o-kv-emp) {
+        min-width: 0;
+        > b:empty {
+            display: none;
+        }
+    }
+    .hds-o-kv-emp {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        min-width: 0;
+        img {
+            flex: none;
+            width: 28px;
+            height: 28px;
+            margin-top: 1px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+    }
+    .hds-o-kv-emp-text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        line-height: 1.3;
+        .hds-o-link {
+            overflow-wrap: anywhere;
+        }
+        small {
+            font-size: 12.5px;
+            color: $o-gray-600;
+        }
+    }
+    // Four cards per row (Data Health, Leave Encashment, Planner, Compliance)
+    .hds-o-issues.hds-o-cards-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        @media (max-width: 1399.98px) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (max-width: 767.98px) {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+    .hds-o-section-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        &:empty {
+            display: none;
+        }
+        .btn {
+            font-weight: 500;
+        }
+    }
+
+    .hds-o-muted {
+        color: $o-gray-600;
+    }
+    .hds-o-tag {
+        display: inline-block;
+        margin-left: 2px;
+        padding: 0 6px;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: $o-gray-700;
+        background: $o-gray-200;
+        border-radius: 3px;
+    }
+    // Empty state, like Odoo's "no content" helper
+    .hds-o-empty {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 0 20px 20px;
+        padding: 18px 20px;
+        color: $o-gray-600;
+        border: 1px dashed $od-border;
+        border-radius: 4px;
+        > .oi {
+            flex: none;
+            font-size: 28px;
+            color: var(--hds-accent);
+        }
+        b {
+            display: block;
+            font-weight: 500;
+            color: $o-gray-900;
+        }
+        span {
+            font-size: 13px;
+        }
+    }
+
+    // ---------- Trend card: Odoo sheet look ----------
+    .hds-card-header {
+        margin-bottom: 16px;
+    }
+    .hds-card-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: $o-gray-900;
+    }
+    .hds-card-sub,
+    .hds-card-hint {
+        font-size: 13.5px;
+        color: $o-gray-600;
+    }
+
+    // ---------- Responsive ----------
+    @media (max-width: 1399.98px) {
+        .hds-o-kpis {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .hds-o-issues {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+    @media (max-width: 767.98px) {
+        .hds-o-kpis,
+        .hds-o-issues {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .hds-o-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .hds-o-header-fields {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .hds-o-field + .hds-o-field {
+            border-left: 0;
+            border-top: 1px solid $o-gray-200;
+            padding-top: 12px;
+        }
+    }
+}

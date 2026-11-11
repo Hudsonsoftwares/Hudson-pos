@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Appointments List View -->
+        <template id="portal_my_appointments" name="My Appointments">
+            <t t-call="portal.portal_layout" breadcrumbs_searchbar="True">
+                <t t-call="portal.portal_searchbar" breadcrumbs_searchbar="True" title.translate="Appointments"/>
+
+                <t t-if="not appointments">
+                    <p class="alert alert-warning">There are currently no appointments for your account.</p>
+                </t>
+                
+                <t t-if="appointments" t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Appointment Date</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="appointments" t-as="booking">
+                            <tr>
+                                <td>
+                                    <span t-field="booking.start_datetime" t-options="{'widget': 'datetime'}"/>
+                                </td>
+                                <td>
+                                    <span t-field="booking.appointment_type_id.name"/>
+                                </td>
+                                <td>
+                                    <t t-if="booking.state == 'draft'">
+                                        <span class="badge rounded-pill text-bg-secondary">Draft</span>
+                                    </t>
+                                    <t t-if="booking.state == 'confirmed'">
+                                        <span class="badge rounded-pill text-bg-success">Confirmed</span>
+                                    </t>
+                                    <t t-if="booking.state == 'cancelled'">
+                                        <span class="badge rounded-pill text-bg-danger">Cancelled</span>
+                                    </t>
+                                </td>
+                                <td class="text-end">
+                                    <a t-attf-href="/my/appointment/#{booking.id}" class="btn btn-sm btn-primary">View</a>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </t>
+            </t>
+        </template>
+
+        <!-- Appointment Detail View -->
+        <template id="portal_my_appointment_detail" name="My Appointment">
+            <t t-call="portal.portal_layout">
+                <div class="row mt-4">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card mb-4">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">Appointment Details</h4>
+                                <t t-if="booking.state == 'draft'">
+                                    <span class="badge rounded-pill text-bg-secondary">Draft</span>
+                                </t>
+                                <t t-if="booking.state == 'confirmed'">
+                                    <span class="badge rounded-pill text-bg-success">Confirmed</span>
+                                </t>
+                                <t t-if="booking.state == 'cancelled'">
+                                    <span class="badge rounded-pill text-bg-danger">Cancelled</span>
+                                </t>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><t t-out="booking.appointment_type_id.name"/></h5>
+                                
+                                <div class="row mt-4">
+                                    <div class="col-md-6 mb-3">
+                                        <strong>Date &amp; Time:</strong><br/>
+                                        <span><t t-out="start_dt.strftime('%d %b %Y - %I:%M %p')"/></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <strong>Duration:</strong><br/>
+                                        <span><t t-out="booking.duration"/> hours</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <strong>Party Size:</strong><br/>
+                                        <span><t t-out="booking.party_size"/></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <strong>Location:</strong><br/>
+                                        <t t-if="booking.appointment_type_id.location == 'online'">Online</t>
+                                        <t t-else="">Office</t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white text-end">
+                                <a href="/my/appointments" class="btn btn-secondary">Back to List</a>
+                                <t t-if="booking.state != 'cancelled'">
+                                    <button class="btn btn-danger ms-2" onclick="if(confirm('Are you sure you want to cancel this appointment?')){ window.location.href='/appointment/cancel/' + this.dataset.bookingId + '?token=' + this.dataset.token; }" t-att-data-booking-id="booking.id" t-att-data-token="booking.access_token">
+                                        Cancel Appointment
+                                    </button>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Dashboard form: the period search sits in the control panel, where Odoo puts its search bar -->
+    <t t-name="hudson_in_payroll.PayrollDashboardFormView" t-inherit="web.FormView" t-inherit-mode="primary">
+        <xpath expr="//t[@t-set-slot='control-panel-actions']" position="inside">
+            <PayrollPeriodSearch/>
+        </xpath>
+    </t>
+
+    <t t-name="hudson_in_payroll.PayrollPeriodSearch">
+        <!-- The menus are siblings of the pill: Odoo styles every direct child of
+             .o_cp_searchview.rounded-pill (pill radius, padding), which would clip them -->
+        <div t-if="this.state.ready" class="o_hds_period_search d-flex h-lg-100 position-relative">
+            <div class="o_cp_searchview d-flex flex-grow-1 input-group rounded-pill" role="search">
+                <div class="o_searchview form-control d-print-contents d-flex align-items-center py-1 bg-view" role="search">
+                    <i class="o_searchview_icon oi me-2" data-icon="search" role="img"/>
+                    <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1 align-items-center mw-100">
+                        <div t-if="this.monthLabel" class="o_searchview_facet position-relative d-inline-flex rounded-2 bg-100 border border-transparent text-nowrap mw-100" role="listitem">
+                            <div class="o_searchview_facet_label d-flex align-items-center position-relative rounded-2 p-1 small bg-primary-subtle text-primary">
+                                <small class="px-1 lh-1 fw-bold">Month</small>
+                            </div>
+                            <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap overflow-hidden">
+                                <small class="o_facet_value text-truncate" t-out="this.monthLabel"/>
+                                <button class="o_facet_remove oi btn btn-link d-flex align-items-center px-1 py-0 text-danger d-print-none fs-5"
+                                        data-icon="close_small" aria-label="Remove" title="Reset to the current month" tabindex="-1"
+                                        t-on-click.stop="() => this.removeFacet('month')"/>
+                            </div>
+                        </div>
+                        <div t-if="this.fyLabel" class="o_searchview_facet position-relative d-inline-flex rounded-2 bg-100 border border-transparent text-nowrap mw-100" role="listitem">
+                            <div class="o_searchview_facet_label d-flex align-items-center position-relative rounded-2 p-1 small bg-primary-subtle text-primary">
+                                <small class="px-1 lh-1 fw-bold">Tax Year</small>
+                            </div>
+                            <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap overflow-hidden">
+                                <small class="o_facet_value text-truncate" t-out="this.fyLabel"/>
+                                <button class="o_facet_remove oi btn btn-link d-flex align-items-center px-1 py-0 text-danger d-print-none fs-5"
+                                        data-icon="close_small" aria-label="Remove" title="Reset to the current tax year" tabindex="-1"
+                                        t-on-click.stop="() => this.removeFacet('fy')"/>
+                            </div>
+                        </div>
+                        <input type="text"
+                               class="o_searchview_input o_input d-print-none flex-grow-1 w-auto border-0"
+                               placeholder="Search a month or tax year..."
+                               role="searchbox"
+                               t-att-value="this.state.query"
+                               t-on-input="this.onInput"
+                               t-on-keydown="this.onKeydown"/>
+                    </div>
+                </div>
+                <button type="button"
+                        class="o_searchview_dropdown_toggler d-print-none btn btn-outline-secondary o-dropdown-caret bg-view"
+                        t-att-class="{ show: this.state.menuOpen }"
+                        title="Toggle Search Panel"
+                        t-on-click="() => this.toggleMenu()"/>
+            </div>
+
+            <!-- Autocomplete: "Search Month for: October" -->
+            <ul t-if="this.suggestions.length" class="o_hds_ps_menu o_searchview_autocomplete dropdown-menu show" role="menu">
+                <t t-foreach="this.suggestions" t-as="item" t-key="item.key">
+                    <li>
+                        <a href="#" class="dropdown-item" t-att-class="{ focus: item_index === this.state.activeIndex }"
+                           t-on-click.prevent="(ev) => this.selectSuggestion(item, ev)">
+                            Search <b t-out="item.field"/> for: <b class="fst-italic text-primary" t-out="item.label"/>
+                        </a>
+                    </li>
+                </t>
+            </ul>
+
+            <!-- Search panel, laid out like Odoo's Filters / Group By / Favorites menu -->
+            <div t-if="this.state.menuOpen" class="o_hds_ps_menu o_hds_ps_panel o_search_bar_menu dropdown-menu show d-flex flex-wrap flex-lg-nowrap align-items-stretch p-0">
+                <!-- Quick periods -->
+                <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto border-end p-3">
+                    <div class="fs-5 mb-2">
+                        <i class="o_dropdown_title_icon oi oi-filled text-primary" data-icon="filter_alt"/>
+                        <h5 class="o_dropdown_title d-inline">Filters</h5>
+                    </div>
+                    <t t-foreach="this.quickFilters" t-as="item" t-key="item.key">
+                        <div t-if="item.newGroup" class="dropdown-divider" role="separator"/>
+                        <span class="dropdown-item o_menu_item o_hds_ps_item" role="menuitemcheckbox"
+                              t-att-aria-checked="item.selected ? 'true' : 'false'"
+                              t-att-class="{ selected: item.selected, disabled: item.disabled }"
+                              t-att-title="item.disabled ? 'This tax year is not configured' : ''"
+                              t-on-click="() => this.selectQuickFilter(item)">
+                            <i class="oi o_hds_ps_check" data-icon="check"/><t t-out="item.label"/>
+                        </span>
+                    </t>
+                </div>
+                <!-- Months of the selected tax year -->
+                <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto border-end p-3">
+                    <div class="fs-5 mb-2">
+                        <i class="o_dropdown_title_icon oi oi-filled text-action" data-icon="today"/>
+                        <h5 class="o_dropdown_title d-inline">Month</h5>
+                    </div>
+                    <t t-foreach="this.monthItems" t-as="m" t-key="m.value">
+                        <div t-if="m.newQuarter" class="dropdown-divider" role="separator"/>
+                        <span class="dropdown-item o_menu_item o_hds_ps_item" role="menuitemcheckbox"
+                              t-att-aria-checked="m.selected ? 'true' : 'false'"
+                              t-att-class="{ selected: m.selected }"
+                              t-on-click="() => this.apply('month', m.value)">
+                            <i class="oi o_hds_ps_check" data-icon="check"/><t t-out="m.label"/>
+                        </span>
+                    </t>
+                </div>
+                <!-- Tax years -->
+                <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto p-3">
+                    <div class="fs-5 mb-2">
+                        <i class="o_dropdown_title_icon oi oi-filled text-favourite" data-icon="calendar_today"/>
+                        <h5 class="o_dropdown_title d-inline">Tax Year</h5>
+                    </div>
+                    <t t-foreach="this.state.fys" t-as="fy" t-key="fy.id">
+                        <span class="dropdown-item o_menu_item o_hds_ps_item" role="menuitemcheckbox"
+                              t-att-aria-checked="fy.id === this.state.fyId ? 'true' : 'false'"
+                              t-att-class="{ selected: fy.id === this.state.fyId }"
+                              t-on-click="() => this.apply('fy', fy.id)">
+                            <i class="oi o_hds_ps_check" data-icon="check"/><t t-out="fy.short"/>
+                            <small t-if="fy.id === this.state.defaultFyId" class="ms-auto ps-3 text-muted">Current</small>
+                        </span>
+                    </t>
+                    <div class="dropdown-divider" role="separator"/>
+                    <span class="dropdown-item o_menu_item o_hds_ps_item" role="menuitem"
+                          t-att-class="{ disabled: this.state.month === this.state.defaultMonth and this.state.fyId === this.state.defaultFyId }"
+                          t-on-click="() => this.applyPeriod(this.state.defaultMonth, this.state.defaultFyId)">
+                        <i class="oi o_hds_ps_check" data-icon="check"/>Reset to Current Period
+                    </span>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

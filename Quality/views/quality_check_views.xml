@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_quality_check_list" model="ir.ui.view">
+        <field name="name">quality.check.list</field>
+        <field name="model">quality.check</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="quality_state == 'fail'" decoration-success="quality_state == 'pass'">
+                <field name="point_id" string="Reference"/>
+                <field name="name" string="Title"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="date_done" string="Checked Date"/>
+                <field name="user_id" string="Checked By" widget="many2one_avatar_user"/>
+                <field name="quality_state" string="Status" widget="badge"
+                       decoration-success="quality_state == 'pass'"
+                       decoration-danger="quality_state == 'fail'"
+                       decoration-muted="quality_state == 'none'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_quality_check_form" model="ir.ui.view">
+        <field name="name">quality.check.form</field>
+        <field name="model">quality.check</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="do_pass" type="object" string="Pass"
+                            class="btn-success" invisible="quality_state == 'pass'"/>
+                    <button name="action_fail" type="object" string="Fail"
+                            class="btn-danger" invisible="quality_state == 'fail'"/>
+                    <button name="do_measure" type="object" string="Validate Measure"
+                            class="btn-primary" invisible="test_type != 'measure' or quality_state != 'none'"/>
+                    <button name="action_generate_alert" type="object" string="Create Alert"
+                            invisible="quality_state == 'none' or alert_count > 0"/>
+                    <field name="quality_state" widget="statusbar" statusbar_visible="none,pass,fail"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_spreadsheet" type="object"
+                                class="oe_stat_button" icon="table_chart" string="Spreadsheet"
+                                invisible="test_type != 'spreadsheet'"/>
+                        <button name="action_view_alerts" type="object"
+                                class="oe_stat_button" icon="warning"
+                                invisible="alert_count == 0">
+                            <field name="alert_count" widget="statinfo" string="Alerts"/>
+                        </button>
+                    </div>
+
+
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="control_per"/>
+                            <field name="product_id"/>
+                            <field name="lot_id"/>
+                            <field name="measure" invisible="test_type != 'measure'"/>
+                            <field name="norm" invisible="1"/>
+                            <field name="tolerance_min" invisible="1"/>
+                            <field name="tolerance_max" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="picking_id" string="Picking"/>
+                            <field name="repair_id"/>
+                            <field name="production_id"/>
+                            <field name="workorder_id" invisible="not workorder_id"/>
+                            <field name="point_id"/>
+                            <field name="test_type" readonly="point_id" force_save="1"/>
+                            <field name="spreadsheet_template_id" invisible="test_type != 'spreadsheet'"/>
+                            <field name="team_id"/>
+                        </group>
+                    </group>
+
+
+
+                    <group invisible="test_type != 'picture'">
+                        <field name="picture" widget="image" filename="picture_filename"/>
+                        <field name="picture_filename" invisible="1"/>
+                    </group>
+
+                    <group invisible="test_type != 'spreadsheet'">
+                        <field name="spreadsheet_content" invisible="1"/>
+                        <field name="spreadsheet_success_cell" invisible="1"/>
+                    </group>
+
+                    <group>
+                        <field name="qty_tested" invisible="control_per != 'quantity'"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <group>
+                                <field name="instructions"/>
+                                <field name="notes"/>
+                            </group>
+                        </page>
+                        <page string="Message If Failure" invisible="not failure_message">
+                            <field name="failure_message"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_quality_check_kanban" model="ir.ui.view">
+        <field name="name">quality.check.kanban</field>
+        <field name="model">quality.check</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="quality_state"/>
+                <field name="product_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <strong><field name="point_id"/></strong>
+                                <span class="badge" t-attf-class="text-bg-#{record.quality_state.raw_value == 'pass' and 'success' or record.quality_state.raw_value == 'fail' and 'danger' or 'secondary'}">
+                                    <field name="quality_state"/>
+                                </span>
+                            </div>
+                            <div class="text-muted mb-2">
+                                <field name="product_id"/>
+                            </div>
+                            <div class="o_kanban_record_bottom mt-auto">
+                                <div class="oe_kanban_bottom_left"/>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_quality_check_search" model="ir.ui.view">
+        <field name="name">quality.check.search</field>
+        <field name="model">quality.check</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="picking_id"/>
+                <field name="production_id"/>
+                <field name="team_id"/>
+                <filter name="to_do" string="To Do" domain="[('quality_state','=','none')]"/>
+                <filter name="passed" string="Passed" domain="[('quality_state','=','pass')]"/>
+                <filter name="failed" string="Failed" domain="[('quality_state','=','fail')]"/>
+                <group>
+                    <filter name="group_team" string="Team" context="{'group_by': 'team_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'test_type'}"/>
+                    <filter name="group_state" string="Result" context="{'group_by': 'quality_state'}"/>
+                    <filter name="group_product" string="Product" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_quality_check_pivot" model="ir.ui.view">
+        <field name="name">quality.check.pivot</field>
+        <field name="model">quality.check</field>
+        <field name="arch" type="xml">
+            <pivot string="Quality Checks" sample="1">
+                <field name="date_create" type="col" interval="month"/>
+                <field name="team_id" type="row"/>
+                <field name="quality_state" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_quality_check_graph" model="ir.ui.view">
+        <field name="name">quality.check.graph</field>
+        <field name="model">quality.check</field>
+        <field name="arch" type="xml">
+            <graph string="Quality Checks" sample="1">
+                <field name="team_id"/>
+                <field name="quality_state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_quality_check_activity" model="ir.ui.view">
+        <field name="name">quality.check.activity</field>
+        <field name="model">quality.check</field>
+        <field name="arch" type="xml">
+            <activity string="Quality Checks">
+                <templates>
+                    <div t-name="activity-box">
+                        <div>
+                            <field name="name" display="full"/>
+                            <field name="product_id" muted="1" display="full"/>
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+
+    <record id="action_quality_check" model="ir.actions.act_window">
+        <field name="name">Quality Checks</field>
+        <field name="res_model">quality.check</field>
+        <field name="view_mode">list,kanban,pivot,graph,activity,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No quality checks yet</p>
+            <p>Quality Checks are generated automatically from Control Points
+               when a Transfer or Manufacturing Order is confirmed. You can also
+               create one manually.</p>
+        </field>
+    </record>
+    <record id="action_quality_check_report" model="ir.actions.act_window">
+        <field name="name">Quality Check Analysis</field>
+        <field name="res_model">quality.check</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No quality checks found</p>
+        </field>
+    </record>
+
+</odoo>

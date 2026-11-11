@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================= -->
+    <!-- 1. TDS FINANCIAL YEAR VIEWS & ACTIONS                         -->
+    <!-- ============================================================= -->
+
+    <!-- Financial Year Tree View -->
+    <record id="tds_financial_year_view_tree" model="ir.ui.view">
+        <field name="name">tds.financial.year.tree</field>
+        <field name="model">tds.financial.year</field>
+        <field name="arch" type="xml">
+            <list string="Tax Years" decoration-muted="not active" decoration-danger="is_closed">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="assessment_year" optional="show"/>
+                <field name="start_date" optional="show"/>
+                <field name="end_date" optional="show"/>
+                <field name="is_closed" optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Financial Year Form View -->
+    <record id="tds_financial_year_view_form" model="ir.ui.view">
+        <field name="name">tds.financial.year.form</field>
+        <field name="model">tds.financial.year</field>
+        <field name="arch" type="xml">
+            <form string="TDS Financial Year">
+                <header>
+                    <button name="action_close_financial_year" string="Close Financial Year" type="object" class="btn-warning" invisible="is_closed" confirm="Are you sure you want to close this Financial Year? Once closed, tax slabs and surcharge rates will be locked against structural modifications."/>
+                    <button name="action_unclose_financial_year" string="Reopen Financial Year" type="object" class="btn-secondary" invisible="not is_closed" confirm="Reopening a closed Financial Year allows administrative modifications. Proceed with caution."/>
+                    <button name="%(action_tds_financial_year_wizard)d" string="Run Roll-Over Wizard for Next FY" type="action" class="btn-primary" icon="forward"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Closed" bg_color="text-bg-warning" invisible="not is_closed"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Tax Year: 2026-27"/></h1>
+                    </div>
+                    <group>
+                        <group string="Period &amp; Assessment">
+                            <field name="code" placeholder="e.g. 2025-2026"/>
+                            <field name="assessment_year" placeholder="e.g. 2026-2027"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="tds_recalculation_from_month"/>
+                            <field name="tds_recalculation_distribution_months"/>
+                        </group>
+                        <group string="Proof Submission Window &amp; Status">
+                            <field name="proof_submission_start_date"/>
+                            <field name="proof_submission_end_date"/>
+                            <field name="declaration_cutoff_date"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="is_closed"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="New Tax Regime Slabs (Default)" name="new_tax_slabs">
+                            <div class="alert alert-info py-2 px-3 mb-3 d-flex align-items-center">
+                                <i class="fa fa-star fa-lg me-2 text-primary"/>
+                                <div><strong>New Tax Regime Income-tax Act, 2025 — Section 202(1) (Default):</strong> Standard statutory regime automatically applied to all employees unless opted out.</div>
+                            </div>
+                            <field name="new_regime_tax_slab_ids" context="{'default_financial_year_id': id, 'default_regime_code': 'new'}">
+                                <list editable="bottom" string="New Regime Slabs">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="income_from" string="Income From (₹)"/>
+                                    <field name="income_to" column_invisible="True"/>
+                                    <field name="display_income_to" string="Income To (₹)" decoration-bf="income_to == 0" decoration-info="income_to == 0"/>
+                                    <field name="rate" string="Tax Rate (%)"/>
+                                    <field name="date_from" optional="show" string="Effective From"/>
+                                    <field name="active" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Old Tax Regime Slabs (Optional)" name="old_tax_slabs">
+                            <div class="alert alert-secondary py-2 px-3 mb-3 d-flex align-items-center" style="border-left: 4px solid #38bdf8 !important;">
+                                <i class="fa fa-history fa-lg me-2 text-info" style="color: #38bdf8 !important;"/>
+                                <div class="text-body"><strong style="color: #38bdf8;">Old Tax Regime (Regular Provisions — Optional):</strong> Available for employees claiming Chapter VI-A deductions (80C, 80D, HRA, etc.) who opt out of Section 202(1).</div>
+                            </div>
+                            <field name="old_regime_tax_slab_ids" context="{'default_financial_year_id': id, 'default_regime_code': 'old'}">
+                                <list editable="bottom" string="Old Regime Slabs">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="income_from" string="Income From (₹)"/>
+                                    <field name="income_to" column_invisible="True"/>
+                                    <field name="display_income_to" string="Income To (₹)" decoration-bf="income_to == 0" decoration-muted="income_to == 0"/>
+                                    <field name="rate" string="Tax Rate (%)"/>
+                                    <field name="date_from" optional="show" string="Effective From"/>
+                                    <field name="active" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Surcharge Slabs" name="surcharge_slabs">
+                            <div class="mb-4">
+                                <div class="d-flex align-items-center mb-2 pb-1 border-bottom border-primary">
+                                    <span class="badge text-bg-primary me-2 px-2 py-1"><i class="fa fa-star me-1"/> NEW REGIME</span>
+                                    <h5 class="text-primary fw-bold mb-0">New Tax Regime Surcharges (Income-tax Act, 2025 — Section 202(1))</h5>
+                                </div>
+                                <field name="new_regime_surcharge_ids" context="{'default_financial_year_id': id, 'default_regime_code': 'new'}">
+                                    <list editable="bottom" string="New Regime Surcharges">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="income_from" string="Income From (₹)"/>
+                                        <field name="income_to" column_invisible="True"/>
+                                        <field name="display_income_to" string="Income To (₹)" decoration-bf="income_to == 0" decoration-info="income_to == 0"/>
+                                        <field name="surcharge_rate" string="Surcharge Rate (%)"/>
+                                        <field name="date_from" optional="show" string="Effective From"/>
+                                        <field name="active" optional="hide"/>
+                                    </list>
+                                </field>
+                            </div>
+                            <div class="mt-4">
+                                <div class="d-flex align-items-center mb-2 pb-1 border-bottom border-info">
+                                    <span class="badge text-bg-info text-dark me-2 px-2 py-1" style="background-color: #38bdf8 !important; color: #0f172a !important; font-weight: 600;"><i class="fa fa-history me-1"/> OLD REGIME</span>
+                                    <h5 class="fw-bold mb-0 text-info" style="color: #38bdf8 !important;">Old Tax Regime Surcharges (Regular / Old Provisions)</h5>
+                                </div>
+                                <field name="old_regime_surcharge_ids" context="{'default_financial_year_id': id, 'default_regime_code': 'old'}">
+                                    <list editable="bottom" string="Old Regime Surcharges">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="income_from" string="Income From (₹)"/>
+                                        <field name="income_to" column_invisible="True"/>
+                                        <field name="display_income_to" string="Income To (₹)" decoration-bf="income_to == 0" decoration-muted="income_to == 0"/>
+                                        <field name="surcharge_rate" string="Surcharge Rate (%)"/>
+                                        <field name="date_from" optional="show" string="Effective From"/>
+                                        <field name="active" optional="hide"/>
+                                    </list>
+                                </field>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Financial Year Search View -->
+    <record id="tds_financial_year_view_search" model="ir.ui.view">
+        <field name="name">tds.financial.year.search</field>
+        <field name="model">tds.financial.year</field>
+        <field name="arch" type="xml">
+            <search string="Search Financial Years">
+                <field name="name" string="Tax Year" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
+                <field name="code"/>
+                <field name="assessment_year"/>
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Open" name="filter_open" domain="[('is_closed', '=', False)]"/>
+                <filter string="Closed" name="filter_closed" domain="[('is_closed', '=', True)]"/>
+                <group>
+                    <filter string="Assessment Year" name="group_assessment_year" context="{'group_by': 'assessment_year'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'is_closed'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Financial Year Action -->
+    <record id="action_tds_financial_year" model="ir.actions.act_window">
+        <field name="name">Financial Years</field>
+        <field name="res_model">tds.financial.year</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="tds_financial_year_view_search"/>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new TDS Financial Year
+            </p>
+            <p>
+                Manage Indian Income Tax Financial Years (e.g. Tax Year: 2026-27).
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- 2. TDS TAX REGIME VIEWS & ACTIONS                            -->
+    <!-- ============================================================= -->
+
+    <!-- Tax Regime Tree View -->
+    <record id="tds_tax_regime_view_tree" model="ir.ui.view">
+        <field name="name">tds.tax.regime.tree</field>
+        <field name="model">tds.tax.regime</field>
+        <field name="arch" type="xml">
+            <list string="Tax Regimes">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="is_default" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Tax Regime Form View -->
+    <record id="tds_tax_regime_view_form" model="ir.ui.view">
+        <field name="name">tds.tax.regime.form</field>
+        <field name="model">tds.tax.regime</field>
+        <field name="arch" type="xml">
+            <form string="TDS Tax Regime">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" placeholder="e.g. New Tax Regime Income-tax Act, 2025 — Section 202(1)"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="is_default"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Description &amp; Notes">
+                        <field name="description" placeholder="Enter statutory notes or Section references..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tax Regime Action -->
+    <record id="action_tds_tax_regime" model="ir.actions.act_window">
+        <field name="name">Tax Regimes</field>
+        <field name="res_model">tds.tax.regime</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define Tax Regimes
+            </p>
+            <p>
+                Configure Indian Income Tax Regimes (New Tax Regime Income-tax Act, 2025 — Section 202(1), Old Regime).
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- 3. TDS TAX SLAB VIEWS & ACTIONS                               -->
+    <!-- ============================================================= -->
+
+    <!-- Tax Slab Tree View -->
+    <record id="tds_tax_slab_view_tree" model="ir.ui.view">
+        <field name="name">tds.tax.slab.tree</field>
+        <field name="model">tds.tax.slab</field>
+        <field name="arch" type="xml">
+            <list string="Income Tax Slabs">
+                <field name="sequence" widget="handle"/>
+                <field name="financial_year_id"/>
+                <field name="regime_code"/>
+                <field name="age_category"/>
+                <field name="income_from" optional="show" string="Income From (₹)"/>
+                <field name="income_to" column_invisible="True"/>
+                <field name="display_income_to" string="Income To (₹)" optional="show" decoration-bf="income_to == 0" decoration-info="income_to == 0"/>
+                <field name="rate"/>
+                <field name="date_from" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Tax Slab Search View -->
+    <record id="tds_tax_slab_view_search" model="ir.ui.view">
+        <field name="name">tds.tax.slab.search</field>
+        <field name="model">tds.tax.slab</field>
+        <field name="arch" type="xml">
+            <search string="Search Income Tax Slabs">
+                <field name="financial_year_id"/>
+                <field name="regime_code"/>
+                <field name="age_category"/>
+                <filter string="New Regime" name="filter_new" domain="[('regime_code', '=', 'new')]"/>
+                <filter string="Old Regime" name="filter_old" domain="[('regime_code', '=', 'old')]"/>
+                <separator/>
+                <filter string="General (Below 60)" name="filter_general" domain="[('age_category', '=', 'general')]"/>
+                <filter string="Senior Citizen (60–79)" name="filter_senior" domain="[('age_category', '=', 'senior')]"/>
+                <filter string="Super Senior (80+)" name="filter_super_senior" domain="[('age_category', '=', 'super_senior')]"/>
+                <group>
+                    <filter string="Tax Year" name="group_by_fy" context="{'group_by': 'financial_year_id'}"/>
+                    <filter string="Tax Regime" name="group_by_regime" context="{'group_by': 'regime_code'}"/>
+                    <filter string="Age Category" name="group_by_age_category" context="{'group_by': 'age_category'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <!-- Tax Slab Action -->
+    <record id="action_tds_tax_slab" model="ir.actions.act_window">
+        <field name="name">Tax Slabs</field>
+        <field name="res_model">tds.tax.slab</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="tds_tax_slab_view_search"/>
+        <field name="context">{'search_default_group_by_fy': 1, 'search_default_group_by_regime': 1, 'search_default_group_by_age_category': 1}</field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- 4. TDS SURCHARGE VIEWS & ACTIONS                             -->
+    <!-- ============================================================= -->
+
+    <!-- Surcharge Tree View -->
+    <record id="tds_surcharge_view_tree" model="ir.ui.view">
+        <field name="name">tds.surcharge.tree</field>
+        <field name="model">tds.surcharge</field>
+        <field name="arch" type="xml">
+            <list string="Surcharge Slabs">
+                <field name="sequence" widget="handle"/>
+                <field name="financial_year_id"/>
+                <field name="regime_code"/>
+                <field name="income_from" optional="show" string="Income From (₹)"/>
+                <field name="income_to" column_invisible="True"/>
+                <field name="display_income_to" string="Income To (₹)" optional="show" decoration-bf="income_to == 0" decoration-info="income_to == 0"/>
+                <field name="surcharge_rate"/>
+                <field name="date_from" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Surcharge Search View -->
+    <record id="tds_surcharge_view_search" model="ir.ui.view">
+        <field name="name">tds.surcharge.search</field>
+        <field name="model">tds.surcharge</field>
+        <field name="arch" type="xml">
+            <search string="Search Surcharge Slabs">
+                <field name="financial_year_id"/>
+                <field name="regime_code"/>
+                <filter string="New Regime" name="filter_new" domain="[('regime_code', '=', 'new')]"/>
+                <filter string="Old Regime" name="filter_old" domain="[('regime_code', '=', 'old')]"/>
+                <group>
+                    <filter string="Tax Year" name="group_by_fy" context="{'group_by': 'financial_year_id'}"/>
+                    <filter string="Tax Regime" name="group_by_regime" context="{'group_by': 'regime_code'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <!-- Surcharge Action -->
+    <record id="action_tds_surcharge" model="ir.actions.act_window">
+        <field name="name">Surcharge Slabs</field>
+        <field name="res_model">tds.surcharge</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="tds_surcharge_view_search"/>
+        <field name="context">{'search_default_group_by_fy': 1, 'search_default_group_by_regime': 1}</field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- 5. TDS EMPLOYEE HOME LOAN VIEWS & ACTIONS                     -->
+    <!-- ============================================================= -->
+
+    <!-- Home Loan Tree View -->
+    <record id="tds_employee_home_loan_view_tree" model="ir.ui.view">
+        <field name="name">tds.employee.home.loan.tree</field>
+        <field name="model">tds.employee.home.loan</field>
+        <field name="arch" type="xml">
+            <list string="Housing Loan Declarations" decoration-success="is_80eea_eligible" decoration-muted="state == 'draft'" decoration-danger="state == 'rejected'">
+                <field name="employee_id"/>
+                <field name="financial_year_id"/>
+                <field name="loan_sanction_date" optional="show"/>
+                <field name="loan_amount" optional="show"/>
+                <field name="property_stamp_value" optional="hide"/>
+                <field name="is_first_time_home_buyer" optional="show"/>
+                <field name="claimed_interest_amount" optional="show"/>
+                <field name="is_80eea_eligible" optional="hide"/>
+                <field name="approved_deduction_amount" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Home Loan Form View -->
+    <record id="tds_employee_home_loan_view_form" model="ir.ui.view">
+        <field name="name">tds.employee.home.loan.form</field>
+        <field name="model">tds.employee.home.loan</field>
+        <field name="arch" type="xml">
+            <form string="Housing Loan &amp; Section 80EEA Declaration">
+                <header>
+                    <button name="%(action_tds_financial_year)d" string="Submit" type="action" class="btn-primary" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="80EEA Eligible" bg_color="text-bg-success" invisible="not is_80eea_eligible"/>
+                    <widget name="web_ribbon" title="80EEA Ineligible" bg_color="text-bg-warning" invisible="is_80eea_eligible"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Tax Period">
+                            <field name="employee_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="financial_year_id"/>
+                        </group>
+                        <group string="Housing Loan Details">
+                            <field name="loan_purpose"/>
+                            <field name="borrowing_date"/>
+                            <field name="completion_date"/>
+                            <field name="lender_type"/>
+                            <field name="loan_sanction_date"/>
+                            <field name="loan_amount"/>
+                            <field name="property_stamp_value"/>
+                            <field name="is_first_time_home_buyer"/>
+                            <field name="lending_institution" placeholder="e.g. State Bank of India"/>
+                            <field name="loan_account_number" placeholder="e.g. HL123456789"/>
+                        </group>
+                    </group>
+                    <group string="Interest Claim &amp; Section 80EEA Audit">
+                        <group string="Declared Claim">
+                            <field name="claimed_interest_amount"/>
+                            <field name="eea_interest_amount"/>
+                            <field name="interest_claimed_24b"/>
+                            <field name="approved_deduction_amount"/>
+                        </group>
+                        <group string="Statutory 80EEA Result">
+                            <field name="is_80eea_eligible"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Statutory Audit Remarks" name="remarks">
+                            <field name="eligibility_remarks" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Home Loan Search View -->
+    <record id="tds_employee_home_loan_view_search" model="ir.ui.view">
+        <field name="name">tds.employee.home.loan.search</field>
+        <field name="model">tds.employee.home.loan</field>
+        <field name="arch" type="xml">
+            <search string="Search Housing Loan Declarations">
+                <field name="employee_id"/>
+                <field name="financial_year_id"/>
+                <field name="lending_institution"/>
+                <field name="loan_account_number"/>
+                <filter string="80EEA Eligible" name="filter_eligible" domain="[('is_80eea_eligible', '=', True)]"/>
+                <filter string="80EEA Ineligible" name="filter_ineligible" domain="[('is_80eea_eligible', '=', False)]"/>
+                <group>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Tax Year" name="group_by_fy" context="{'group_by': 'financial_year_id'}"/>
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Home Loan Action -->
+    <record id="action_tds_employee_home_loan" model="ir.actions.act_window">
+        <field name="name">Housing Loan &amp; Section 80EEA Declarations</field>
+        <field name="res_model">tds.employee.home.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="tds_employee_home_loan_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Declare a Housing Loan for Section 24(b) &amp; Section 80EEA
+            </p>
+            <p>
+                Manage employee housing loan declarations, loan sanction dates, property stamp duty values, and Section 80EEA eligibility checks.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- 6. INDIA TAX CONFIGURATION MENU STRUCTURE                      -->
+    <!-- ============================================================= -->
+
+    <!-- Top Parent Menu for Indian Statutory under Payroll -> Configuration -->
+    <menuitem id="menu_hds_in_tds_configuration"
+              name="Indian Statutory"
+              parent="hudson_payroll_base.menu_hr_payroll_configuration"
+              sequence="30"/>
+
+
+    <!-- Submenus -->
+    <menuitem id="menu_tds_financial_year"
+              name="TDS Financial Years"
+              parent="menu_hds_in_tds_configuration"
+              action="action_tds_financial_year"
+              sequence="10"/>
+
+    <menuitem id="menu_tds_tax_regime"
+              name="TDS Tax Regimes"
+              parent="menu_hds_in_tds_configuration"
+              action="action_tds_tax_regime"
+              sequence="20"/>
+
+    <menuitem id="menu_tds_tax_slab"
+              name="TDS Tax Slabs"
+              parent="menu_hds_in_tds_configuration"
+              action="action_tds_tax_slab"
+              sequence="30"/>
+
+    <menuitem id="menu_tds_surcharge"
+              name="TDS Surcharges"
+              parent="menu_hds_in_tds_configuration"
+              action="action_tds_surcharge"
+              sequence="40"/>
+
+    <!-- ============================================================= -->
+    <!-- 7. TAX DECLARATION SECTION & COMPONENT CONFIGURATION VIEWS   -->
+    <!-- ============================================================= -->
+
+    <!-- Section Config List View -->
+    <record id="tds_tax_section_config_view_tree" model="ir.ui.view">
+        <field name="name">tds.tax.section.config.tree</field>
+        <field name="model">tds.tax.section.config</field>
+        <field name="arch" type="xml">
+            <list string="Tax Declaration Section Configurations" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="old_regime_allowed" optional="show"/>
+                <field name="new_regime_allowed" optional="show"/>
+                <field name="effective_from" optional="hide"/>
+                <field name="effective_to" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Section Config Form View -->
+    <record id="tds_tax_section_config_view_form" model="ir.ui.view">
+        <field name="name">tds.tax.section.config.form</field>
+        <field name="model">tds.tax.section.config</field>
+        <field name="arch" type="xml">
+            <form string="Tax Declaration Section Configuration">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Section Identification">
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Regime &amp; Effective Dates">
+                            <field name="old_regime_allowed"/>
+                            <field name="new_regime_allowed"/>
+                            <field name="effective_from"/>
+                            <field name="effective_to"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sub-Components / Investment Categories" name="components">
+                            <field name="component_ids" context="{'active_test': False}">
+                                <list editable="bottom" decoration-muted="not active">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="python_field_name" optional="hide"/>
+                                    <field name="old_regime_allowed" optional="show"/>
+                                    <field name="new_regime_allowed" optional="show"/>
+                                    <field name="effective_from" optional="hide"/>
+                                    <field name="effective_to" optional="hide"/>
+                                    <field name="active" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Informational Guidance &amp; Proof Documentation" name="guidance">
+                            <group string="Statutory Eligibility Guidance">
+                                <field name="eligibility_guidance" placeholder="Detailed explanation of statutory purpose and eligibility..."/>
+                            </group>
+                            <group string="Typical Supporting Documents">
+                                <field name="typical_documents" placeholder="List typical evidence documents..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Section Config -->
+    <record id="tds_tax_section_config_view_search" model="ir.ui.view">
+        <field name="name">tds.tax.section.config.search</field>
+        <field name="model">tds.tax.section.config</field>
+        <field name="arch" type="xml">
+            <search string="Search Section Configurations">
+                <field name="name"/>
+                <field name="code"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tds_tax_section_config" model="ir.actions.act_window">
+        <field name="name">Declaration Section Configurations</field>
+        <field name="res_model">tds.tax.section.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <menuitem id="menu_tds_tax_section_config"
+              name="Declaration Sections &amp; Components"
+              parent="menu_hds_in_tds_configuration"
+              action="action_tds_tax_section_config"
+              sequence="50"/>
+
+
+
+</odoo>
+
+
+

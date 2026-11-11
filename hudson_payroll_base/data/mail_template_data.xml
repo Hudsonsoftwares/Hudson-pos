@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Email Template for Payslip -->
+    <record id="mail_template_payslip" model="mail.template">
+        <field name="name">Salary Slip: Send by Email</field>
+        <field name="model_id" ref="model_hr_payslip"/>
+        <field name="subject">Salary Slip - {{ object.employee_id.name }} - {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or object.company_id.email or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.employee_id.work_contact_id.id if object.employee_id.work_contact_id else False }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.6;">
+                <p>Dear <strong><t t-out="object.employee_id.name"/></strong>,</p>
+                <p>
+                    Please find attached your official salary slip for the period from 
+                    <strong><t t-out="object.date_from"/></strong> to <strong><t t-out="object.date_to"/></strong>.
+                </p>
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0; max-width: 450px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Reference:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="object.number or object.name"/></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 6px 0; color: #64748b;">Basic Wage:</td>
+                            <td style="padding: 6px 0; font-weight: 600; text-align: right;"><t t-out="format_amount(object.basic_wage, object.company_id.currency_id)"/></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0 0 0; color: #64748b; font-weight: bold;">Net Disbursed Amount:</td>
+                            <td style="padding: 8px 0 0 0; font-weight: bold; font-size: 15px; color: #059669; text-align: right;"><t t-out="format_amount(object.net_wage, object.company_id.currency_id)"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <p>If you have any questions or require clarification regarding your payslip details, please contact HR / Payroll department.</p>
+                <br/>
+                <p>Warm regards,</p>
+                <p style="color: #475569;">
+                    <strong><t t-out="user.name"/></strong><br/>
+                    <t t-out="object.company_id.name"/>
+                </p>
+            </div>
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('hudson_payroll_base.action_report_payslip'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Root Menu -->
+        <menuitem id="menu_hr_payroll_root"
+                  name="Payroll"
+                  sequence="65"
+                  web_icon="hudson_payroll_base,static/description/icon.png"
+                  action="action_hr_payslip_run"
+                  groups="group_payroll_user"/>
+
+        <!-- Payslips Menu -->
+        <menuitem id="menu_hr_payroll_payslips"
+                  name="Payslips"
+                  parent="menu_hr_payroll_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_action_hr_payslip_run"
+                  name="Pay Runs (Batches)"
+                  parent="menu_hr_payroll_payslips"
+                  action="action_hr_payslip_run"
+                  sequence="10"/>
+
+        <menuitem id="menu_action_hr_payslip"
+                  name="All Payslips"
+                  parent="menu_hr_payroll_payslips"
+                  action="action_hr_payslip"
+                  sequence="20"/>
+
+        <!-- Operations Menu -->
+        <menuitem id="menu_hr_payroll_operations"
+                  name="Operations"
+                  parent="menu_hr_payroll_root"
+                  sequence="20"/>
+
+        <menuitem id="menu_action_hudson_payroll_payment_advice"
+                  name="Payment Advices"
+                  parent="menu_hr_payroll_operations"
+                  action="action_hudson_payroll_payment_advice"
+                  sequence="20"/>
+
+        <!-- Employees Menu (Dropdown with Submenu) -->
+        <menuitem id="menu_hr_payroll_employees"
+                  name="Employees"
+                  parent="menu_hr_payroll_root"
+                  sequence="30"
+                  groups="group_payroll_user"/>
+
+        <menuitem id="menu_action_hr_employee_payroll"
+                  name="Employees"
+                  parent="menu_hr_payroll_employees"
+                  action="hr.open_view_employee_list_my"
+                  sequence="10"/>
+
+        <!-- Time Off Menu (Dropdown with Submenu) -->
+        <menuitem id="menu_hr_payroll_time_off_root"
+                  name="Time Off"
+                  parent="menu_hr_payroll_root"
+                  sequence="50"
+                  groups="group_payroll_user"/>
+
+        <menuitem id="menu_action_hr_payroll_time_off"
+                  name="Time Off"
+                  parent="menu_hr_payroll_time_off_root"
+                  action="hr_holidays.hr_leave_action_action_approve_department"
+                  sequence="10"/>
+
+        <!-- Salary Adjustments are managed from each employee's 'Payslip Adjustments' tab
+             and from the pay run's Select Employees > Payslip Adjustment. -->
+
+        <!-- Reporting Menu -->
+        <menuitem id="menu_hr_payroll_reporting"
+                  name="Reporting"
+                  parent="menu_hr_payroll_root"
+                  sequence="80"
+                  groups="group_payroll_user"/>
+
+
+
+        <menuitem id="menu_action_hr_payroll_headcount"
+                  name="Headcount"
+                  parent="menu_hr_payroll_reporting"
+                  action="action_hr_payroll_headcount"
+                  sequence="20"/>
+
+        <menuitem id="menu_action_hr_payslip_line_report"
+                  name="Payslip Lines"
+                  parent="menu_hr_payroll_reporting"
+                  action="action_hr_payslip_line_report"
+                  sequence="30"/>
+
+        <menuitem id="menu_action_hr_payslip_worked_days_report"
+                  name="Payslip Work Days Lines"
+                  parent="menu_hr_payroll_reporting"
+                  action="action_hr_payslip_worked_days_report"
+                  sequence="40"/>
+
+        <menuitem id="menu_action_hr_payslip_input_report"
+                  name="Payslip Other Inputs"
+                  parent="menu_hr_payroll_reporting"
+                  action="action_hr_payslip_input_report"
+                  sequence="50"/>
+
+        <!-- Configuration Menu -->
+        <menuitem id="menu_hr_payroll_configuration"
+                  name="Configuration"
+                  parent="menu_hr_payroll_root"
+                  sequence="100"
+                  groups="group_payroll_manager"/>
+
+        <!-- 1. Settings -->
+        <menuitem id="menu_hr_payroll_global_settings"
+                  name="Settings"
+                  parent="menu_hr_payroll_configuration"
+                  action="res_config_settings_action"
+                  sequence="1"
+                  groups="base.group_system"/>
+
+        <!-- 2. Work Entries Section -->
+        <menuitem id="menu_hr_payroll_work_entries_config_root"
+                  name="Work Entries"
+                  parent="menu_hr_payroll_configuration"
+                  sequence="10"/>
+
+        <menuitem id="menu_action_hr_work_entry_type"
+                  name="Work Entry Types"
+                  parent="menu_hr_payroll_work_entries_config_root"
+                  action="hr_work_entry.hr_work_entry_type_action"
+                  sequence="1"/>
+
+        <menuitem id="menu_action_working_schedules"
+                  name="Working Schedules"
+                  parent="menu_hr_payroll_work_entries_config_root"
+                  action="resource.action_resource_calendar_form"
+                  sequence="2"/>
+
+        <!-- 3. Salary Section -->
+        <menuitem id="menu_hr_payroll_salary_root"
+                  name="Salary"
+                  parent="menu_hr_payroll_configuration"
+                  sequence="20"/>
+
+        <!-- 4. Benefits Section -->
+        <menuitem id="menu_action_hr_payroll_benefit"
+                  name="Benefits"
+                  parent="menu_hr_payroll_configuration"
+                  action="action_hr_payroll_benefit"
+                  sequence="25"/>
+
+        <menuitem id="menu_action_hr_payroll_structure_type"
+                  name="Structure Types"
+                  parent="menu_hr_payroll_salary_root"
+                  action="action_hr_payroll_structure_type"
+                  sequence="1"/>
+
+        <menuitem id="menu_action_hr_payroll_structure"
+                  name="Structures"
+                  parent="menu_hr_payroll_salary_root"
+                  action="action_hr_payroll_structure"
+                  sequence="2"/>
+
+        <menuitem id="menu_action_hr_salary_rule"
+                  name="Rules"
+                  parent="menu_hr_payroll_salary_root"
+                  action="action_hr_salary_rule"
+                  sequence="3"/>
+
+        <menuitem id="menu_action_hr_rule_parameter"
+                  name="Rule Parameters"
+                  parent="menu_hr_payroll_salary_root"
+                  action="action_hr_rule_parameter"
+                  sequence="4"/>
+
+        <menuitem id="menu_action_hr_salary_rule_category"
+                  name="Rule Categories"
+                  parent="menu_hr_payroll_salary_root"
+                  action="action_hr_salary_rule_category"
+                  sequence="5"/>
+
+        <menuitem id="menu_action_hr_salary_rule_section"
+                  name="Salary Rule Sections"
+                  parent="menu_hr_payroll_salary_root"
+                  action="action_hr_salary_rule_section"
+                  sequence="6"/>
+
+        <menuitem id="menu_action_hr_payslip_input_type"
+                  name="Salary Input Types"
+                  parent="menu_hr_payroll_salary_root"
+                  action="action_hr_payslip_input_type"
+                  sequence="7"/>
+
+        <!-- 4. Dashboard Section -->
+        <menuitem id="menu_hr_payroll_dashboard_config_root"
+                  name="Dashboard"
+                  parent="menu_hr_payroll_configuration"
+                  sequence="50"/>
+
+        <menuitem id="menu_action_payroll_dashboard_warnings"
+                  name="Warnings"
+                  parent="menu_hr_payroll_dashboard_config_root"
+                  action="action_payroll_dashboard_warning"
+                  sequence="1"/>
+    </data>
+</odoo>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree / List View for ESIC Contribution Periods -->
+    <record id="esic_contribution_period_view_tree" model="ir.ui.view">
+        <field name="name">esic.contribution.period.view.list</field>
+        <field name="model">esic.contribution.period</field>
+        <field name="arch" type="xml">
+            <list string="ESIC Contribution Periods" multi_edit="1">
+                <field name="name"/>
+                <field name="summary"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="date_from" optional="show"/>
+                <field name="date_to" optional="show"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for ESIC Contribution Periods -->
+    <record id="esic_contribution_period_view_form" model="ir.ui.view">
+        <field name="name">esic.contribution.period.view.form</field>
+        <field name="model">esic.contribution.period</field>
+        <field name="arch" type="xml">
+            <form string="ESIC Contribution Period">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Period Schedule Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Statutory Contribution Periods">
+                            <label for="period1_start_month" string="Period 1 Window"/>
+                            <div class="d-flex align-items-center gap-2">
+                                <field name="period1_start_month" class="w-50" placeholder="Start Month"/>
+                                <span>to</span>
+                                <field name="period1_end_month" class="w-50" placeholder="End Month"/>
+                            </div>
+                            <label for="period2_start_month" string="Period 2 Window"/>
+                            <div class="d-flex align-items-center gap-2">
+                                <field name="period2_start_month" class="w-50" placeholder="Start Month"/>
+                                <span>to</span>
+                                <field name="period2_end_month" class="w-50" placeholder="End Month"/>
+                            </div>
+                        </group>
+                        <group string="Company &amp; Validity">
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" placeholder="Global (All Companies)"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group invisible="not summary">
+                        <group string="Schedule Summary">
+                            <field name="summary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Statutory References &amp; Remarks">
+                        <field name="description" nolabel="1" placeholder="Statutory notes, Regulation 31 details, or internal caveats..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for ESIC Contribution Periods -->
+    <record id="esic_contribution_period_view_search" model="ir.ui.view">
+        <field name="name">esic.contribution.period.view.search</field>
+        <field name="model">esic.contribution.period</field>
+        <field name="arch" type="xml">
+            <search string="Search ESIC Contribution Periods">
+                <field name="name"/>
+                <field name="company_id"/>
+                <filter string="Global (All Companies)" name="global_periods" domain="[('company_id', '=', False)]"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for ESIC Contribution Periods -->
+    <record id="action_esic_contribution_period" model="ir.actions.act_window">
+        <field name="name">ESIC Contribution Periods</field>
+        <field name="res_model">esic.contribution.period</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="esic_contribution_period_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure ESIC Contribution Periods!
+            </p>
+            <p>
+                Configure the statutory 6-month contribution period month ranges under Regulation 31 of the ESI Regulations (Default: April–September &amp; October–March).
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item under Indian Statutory Configuration -->
+    <menuitem id="menu_esic_contribution_period"
+              name="ESIC Contribution Periods"
+              parent="menu_hds_in_tds_configuration"
+              action="action_esic_contribution_period"
+              sequence="65"
+              groups="hudson_payroll_base.group_payroll_manager"/>
+</odoo>

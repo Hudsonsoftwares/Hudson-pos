@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mrp_production_form_quality_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.form.quality.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_open_quality_check_wizard" type="object" string="Quality Checks"
+                        invisible="quality_check_todo == False" class="btn-primary" icon="check"/>
+            </header>
+            <xpath expr="//header/button[@name='action_cancel']" position="before">
+                <button name="action_create_quality_alert" type="object" string="Quality Alert"
+                        class="btn-primary" invisible="not quality_alert_todo"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_quality_checks" type="object"
+                        class="oe_stat_button" icon="check_box"
+                        invisible="quality_check_count == 0">
+                    <field name="quality_check_count" widget="statinfo" string="Quality Checks"/>
+                </button>
+                <button name="action_view_quality_alerts" type="object"
+                        class="oe_stat_button" icon="warning"
+                        invisible="quality_alert_count == 0">
+                    <field name="quality_alert_count" widget="statinfo" string="Quality Alerts"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

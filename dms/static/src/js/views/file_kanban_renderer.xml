@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright 2024 Subteno - Timothée Vannier (https://www.subteno.com).
+    License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+-->
+<templates xml:space="preserve">
+    <t
+        t-name="dms.KanbanRenderer"
+        t-inherit="web.KanbanRenderer"
+        t-inherit-mode="primary"
+    >
+        <xpath expr="//div[hasclass('o_kanban_renderer')]" position="before">
+            <style>
+                .o_kanban_record.o_record_selected,
+                .o_kanban_record.dms_selected {
+                    background-color: #e8f4fd !important;
+                    border: 2px solid #0d6efd !important;
+                    box-shadow: 0 0 0 1px #0d6efd !important;
+                }
+            </style>
+            <div t-if="this.dragState.showDragZone" class="o_dropzone">
+                <i class="fa fa-cloud-upload fa-10x" />
+            </div>
+        </xpath>
+    </t>
+
+    <t
+        t-name="dms.KanbanButtons"
+        t-inherit="web.KanbanView.Buttons"
+        t-inherit-mode="primary"
+    >
+        <xpath expr="//button" position="replace">
+            <t t-if="!this.env.inDialog and this.canCreate">
+                <div class="btn-group o_dms_new_dropdown mx-1">
+                    <button type="button" class="btn btn-primary dropdown-toggle o-kanban-button-new" data-bs-toggle="dropdown">
+                        New
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item cursor-pointer" t-on-click.prevent="this.uploadDocument">
+                                <i class="fa fa-file-o me-2"/> File Upload
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item cursor-pointer" t-on-click.prevent="this.createDirectory">
+                                <i class="fa fa-folder-o me-2"/> Folder
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <input
+                    type="file"
+                    name="ufile"
+                    class="d-none"
+                    multiple="1"
+                    accept="*"
+                    t-on-change="this.onChangeFileInput"
+                />
+            </t>
+        </xpath>
+    </t>
+</templates>

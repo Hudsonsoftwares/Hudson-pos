@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Allow Document Controllers to create Root Directories -->
+    <record id="view_dms_directory_form_inherit_doc_controller" model="ir.ui.view">
+        <field name="name">dms.directory.form.inherit.doc.controller</field>
+        <field name="model">dms.directory</field>
+        <field name="inherit_id" ref="dms.view_dms_directory_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_download_directory_zip" type="object" string="Download All Files" class="btn btn-secondary" invisible="not permission_download" icon="download"/>
+            </xpath>
+            
+            <!-- Hide complete_name -->
+            <xpath expr="//h4[field[@name='complete_name']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Insert new consolidated layout -->
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <group name="dms_directory_main">
+                    <group>
+                        <field name="inherit_group_ids" invisible="not parent_id" />
+                        <field name="parent_id" options="{'no_quick_create': True}" />
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="category_id" placeholder="Internal / Human Resource" options="{'no_open': True, 'no_create': True}" />
+                        <field name="tag_ids" widget="many2many_tags" placeholder="Tags..." options="{'color_field': 'color', 'no_create_edit': True}" domain="[('category_id', 'child_of', category_id)] if category_id else []" />
+                        <field name="starred" widget="boolean_favorite" />
+                    </group>
+                </group>
+            </xpath>
+
+            <!-- Hide original fields to clear them from old groups -->
+            <xpath expr="//field[@name='is_root_directory'][@groups='!dms.group_dms_manager']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='is_root_directory'][@groups='dms.group_dms_manager']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='storage_id'][@groups='!dms.group_dms_manager']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='storage_id'][@groups='dms.group_dms_manager']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='human_size']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='count_elements']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='inherit_group_ids'][not(ancestor::group[@name='dms_directory_main'])]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='parent_id'][not(ancestor::group[@name='dms_directory_main'])]" position="attributes">
+                <attribute name="invisible">1</attribute>
+                <attribute name="required">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='category_id'][not(ancestor::group[@name='dms_directory_main'])]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids'][not(ancestor::group[@name='dms_directory_main'])]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='starred'][not(ancestor::group[@name='dms_directory_main'])]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Hide standard Groups tab -->
+            <xpath expr="//page[field[@name='group_ids']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Rebuild Access Control tab with nested tabs -->
+            <xpath expr="//page[@name='page_access']" position="replace">
+                <page name="page_access" string="Access Control">
+                    <notebook>
+                        <page name="page_access_groups" string="Access Groups">
+                            <field name="group_permission_ids" context="{'default_directory_id': id}">
+                                <list editable="bottom">
+                                    <field name="group_id" required="1"/>
+                                    <field name="perm_view"/>
+                                    <field name="perm_download"/>
+                                    <field name="perm_upload"/>
+                                    <field name="perm_edit"/>
+                                    <field name="perm_rename"/>
+                                    <field name="perm_move"/>
+                                    <field name="perm_delete"/>
+                                    <field name="perm_share"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="page_user_access" string="Users">
+                            <div class="alert alert-info d-flex flex-wrap align-items-center gap-2 py-2 mb-3" role="status" invisible="not group_member_user_ids">
+                                <span>Already covered by an access group on this folder, so they can't be added here (change their access in the Access Groups tab):</span>
+                                <field name="group_member_user_ids" widget="many2many_tags" readonly="1" nolabel="1"/>
+                            </div>
+                            <field name="group_member_partner_ids" invisible="1"/>
+                            <field name="user_permission_ids" context="{'default_directory_id': id}">
+                                <list editable="bottom">
+                                    <field name="partner_id" string="Contact" options="{'no_create_edit': True}"
+                                           domain="[('id', 'not in', parent.group_member_partner_ids)]"/>
+                                    <field name="user_id" string="User" optional="show" options="{'no_create_edit': True}"
+                                           domain="[('id', 'not in', parent.group_member_user_ids)]"/>
+                                    <field name="perm_view"/>
+                                    <field name="perm_download"/>
+                                    <field name="perm_upload"/>
+                                    <field name="perm_edit"/>
+                                    <field name="perm_rename"/>
+                                    <field name="perm_move"/>
+                                    <field name="perm_delete"/>
+                                    <field name="perm_share"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+            
+            <!-- Hide Complete Groups tab -->
+            <xpath expr="//page[field[@name='complete_group_ids']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Remove Subdirectories tab -->
+            <xpath expr="//page[@name='page_directories']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <!-- Disable default delete on form -->
+    <record id="view_dms_directory_form_inherit_trash" model="ir.ui.view">
+        <field name="name">dms.directory.form.inherit.trash</field>
+        <field name="model">dms.directory</field>
+        <field name="inherit_id" ref="dms.view_dms_directory_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Disable default delete on list and kanban, replace delete action -->
+    <record id="view_dms_directory_kanban_inherit_trash" model="ir.ui.view">
+        <field name="name">dms.directory.kanban.inherit.trash</field>
+        <field name="model">dms.directory</field>
+        <field name="inherit_id" ref="dms.view_dms_directory_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='permission_unlink']" position="after">
+                <field name="is_trashed" />
+                <field name="permission_download" />
+                <field name="permission_view" />
+                <field name="permission_edit" />
+                <field name="permission_upload" />
+                <field name="permission_delete" />
+                <field name="permission_move" />
+                <field name="parent_is_trashed" />
+            </xpath>
+            <xpath expr="//div[contains(@t-attf-class, 'oe_kanban_global_click')]" position="replace">
+                <a type="object" name="action_dms_files_all_directory" role="button" class="oe_kanban_content row g-0 text-decoration-none text-reset cursor-pointer d-flex">
+                    <div class="col-3 h-100">
+                        <img
+                            t-att-src="record.icon_url.raw_value"
+                            alt="Icon"
+                            class="img img-fluid object-fit-cover"
+                        />
+                    </div>
+                    <div class="col-8">
+                        <field name="name" class="text-truncate fw-bold" />
+                        <field
+                            name="tag_ids"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color'}"
+                        />
+                        <field name="write_date" />
+                    </div>
+                </a>
+            </xpath>
+            <!-- Remove Directories option from card menu -->
+            <xpath expr="//a[@name='action_dms_directories_all_directory']/.." position="replace"/>
+
+            <!-- Left column (card_menu_view): equal width and hide when trashed -->
+            <xpath expr="//div[@name='card_menu_view']" position="attributes">
+                <attribute name="class">d-flex flex-column flex-fill</attribute>
+                <attribute name="t-if">!record.is_trashed.raw_value</attribute>
+            </xpath>
+
+            <!-- Move Download to left column under card_menu_view after Files -->
+            <xpath expr="//a[@name='action_dms_files_all_directory']/.." position="after">
+                <div role="menuitem" t-if="!record.is_trashed.raw_value and record.permission_download and record.permission_download.raw_value">
+                    <a type="object" name="action_download_directory_zip" class="dropdown-item">
+                        <i class="fa fa-download" />
+                        Download
+                    </a>
+                </div>
+            </xpath>
+
+            <!-- Right column (o_kanban_manage_actions): equal width -->
+            <xpath expr="//div[hasclass('o_kanban_manage_actions')]" position="attributes">
+                <attribute name="class">o_kanban_manage_actions d-flex flex-column flex-fill</attribute>
+            </xpath>
+
+            <!-- Remove Open from right column -->
+            <xpath expr="//a[i[hasclass('fa-external-link')]]/.." position="replace"/>
+
+            <!-- Edit and Move in right column -->
+            <xpath expr="//a[i[hasclass('fa-pencil')]]/.." position="replace">
+                <div role="menuitem" t-if="!record.is_trashed.raw_value and record.permission_edit and record.permission_edit.raw_value">
+                    <a type="object" name="action_open_form_view" class="dropdown-item">
+                        <i class="fa fa-pencil" />
+                        Edit
+                    </a>
+                </div>
+                <div role="menuitem" t-if="!record.is_trashed.raw_value and record.permission_move and record.permission_move.raw_value">
+                    <a type="object" name="action_open_move_wizard" class="dropdown-item">
+                        <i class="fa fa-arrows" />
+                        Move
+                    </a>
+                </div>
+            </xpath>
+
+            <!-- Send to Trash / Restore / Delete permanently in right column -->
+            <xpath expr="//a[@type='delete']/.." position="replace">
+                <div role="menuitem" t-if="!record.is_trashed.raw_value and record.permission_unlink and record.permission_unlink.raw_value">
+                    <a type="object" name="action_send_to_trash" class="dropdown-item">
+                        <i class="fa fa-trash-o" />
+                        Send to Trash
+                    </a>
+                </div>
+                <div role="menuitem" t-if="record.is_trashed.raw_value and record.permission_unlink and record.permission_unlink.raw_value and !record.parent_is_trashed.raw_value">
+                    <a type="object" name="action_restore" class="dropdown-item">
+                        <i class="fa fa-undo" />
+                        Restore
+                    </a>
+                </div>
+                <div role="menuitem" t-if="record.is_trashed.raw_value and record.permission_unlink and record.permission_unlink.raw_value">
+                    <a type="delete" class="dropdown-item">
+                        <i class="fa fa-trash-o" />
+                        Delete permanently
+                    </a>
+                </div>
+            </xpath>
+
+            <!-- Remove color picker from dropdown menu -->
+            <xpath expr="//field[@widget='kanban_color_picker']/../.." position="replace"/>
+        </field>
+    </record>
+
+    <!-- Configuration > Directories: same folder cards as the documents
+         home screen (icon, name, "N Folders" / "N Files" badges). Counters
+         are plain text; clicking a card opens that folder in the sidebar
+         (KanbanController.openRecord patch in unified_kanban_renderer.js).
+         Inherits the trash inherit so its card xpaths are applied first. -->
+    <record id="view_dms_directory_kanban_folder_cards" model="ir.ui.view">
+        <field name="name">dms.directory.kanban.folder.cards</field>
+        <field name="model">dms.directory</field>
+        <field name="inherit_id" ref="dms_enterprise_features.view_dms_directory_kanban_inherit_trash"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="class" add="o_dms_directory_cards" separator=" "/>
+            </xpath>
+            <!-- "Files" opens the folder in the documents browser (same
+                 window and sidebar as My Documents), not a separate list -->
+            <xpath expr="//t[@t-name='menu']//a[@name='action_dms_files_all_directory']" position="attributes">
+                <attribute name="name">action_dms_open_in_documents</attribute>
+            </xpath>
+            <xpath expr="//t[@t-name='card']" position="replace">
+                <t t-name="card" class="o_dms_folder_card flex-row p-0">
+                    <div class="o_dms_folder_inner w-100">
+                        <div class="row g-0 h-100 w-100 p-2">
+                            <div class="col-4 d-flex justify-content-center align-items-center">
+                                <img t-att-src="record.icon_url.raw_value or '/dms/static/description/open-folder.png'"
+                                     class="o_dms_folder_icon" width="48" height="48" alt="Folder"/>
+                            </div>
+                            <div class="col-8 py-1 px-2 d-flex flex-column justify-content-center">
+                                <strong class="o_dms_folder_name text-truncate d-block mb-1 pe-3" t-out="record.name.value"/>
+                                <div class="d-flex flex-wrap gap-1">
+                                    <span t-if="record.count_directories.raw_value" class="o_dms_folder_badge">
+                                        <t t-out="record.count_directories.raw_value"/> Folders
+                                    </span>
+                                    <span class="o_dms_folder_badge">
+                                        <t t-out="record.count_files.raw_value"/> Files
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_dms_directory_tree_inherit_trash" model="ir.ui.view">
+        <field name="name">dms.directory.tree.inherit.trash</field>
+        <field name="model">dms.directory</field>
+        <field name="inherit_id" ref="dms.view_dms_directory_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="delete">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Server Action for Move in Action Menu -->
+    <record id="action_server_dms_directory_move" model="ir.actions.server">
+        <field name="name">Move</field>
+        <field name="model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.action_open_move_wizard()
+        </field>
+    </record>
+
+    <!-- Server Actions for Trash Options in the Action Menu -->
+    <record id="action_server_dms_directory_send_to_trash" model="ir.actions.server">
+        <field name="name">Send to Trash</field>
+        <field name="model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.action_send_to_trash()
+        </field>
+    </record>
+
+    <record id="action_server_dms_directory_restore" model="ir.actions.server">
+        <field name="name">Restore</field>
+        <field name="model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.action_restore()
+        </field>
+    </record>
+
+    <record id="action_server_dms_directory_download_zip" model="ir.actions.server">
+        <field name="name">Download as ZIP</field>
+        <field name="model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_model_id" ref="dms.model_dms_directory"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if record:
+                action = record.action_download_directory_zip()
+        </field>
+    </record>
+
+    <record id="view_dms_directory_tree_inherit_company" model="ir.ui.view">
+        <field name="name">dms.directory.tree.inherit.company</field>
+        <field name="model">dms.directory</field>
+        <field name="inherit_id" ref="dms.view_dms_directory_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="search_dms_directory_inherit_company" model="ir.ui.view">
+        <field name="name">dms.directory.search.inherit.company</field>
+        <field name="model">dms.directory</field>
+        <field name="inherit_id" ref="dms.search_dms_directory"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='complete_name']" position="after">
+                <field name="company_id" groups="base.group_multi_company"/>
+            </xpath>
+            <xpath expr="//searchpanel" position="attributes">
+                <attribute name="view_types">kanban,list,activity</attribute>
+            </xpath>
+            <!-- same heading as the documents sidebar -->
+            <xpath expr="//searchpanel/field[@name='parent_id']" position="attributes">
+                <attribute name="string">Directory</attribute>
+            </xpath>
+            <xpath expr="//searchpanel" position="before">
+                <group>
+                    <filter string="Company" name="groupby_company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Activity View for Directories -->
+    <record id="view_dms_directory_activity" model="ir.ui.view">
+        <field name="name">dms.directory.activity</field>
+        <field name="model">dms.directory</field>
+        <field name="arch" type="xml">
+            <activity string="Directories">
+                <field name="storage_id"/>
+                <templates>
+                    <div t-name="activity-box">
+                        <img t-att-src="activity_image('dms.directory', 'image_128', record.id.raw_value)" role="img" t-att-title="record.name.value" t-att-alt="record.name.value"/>
+                        <div>
+                            <field name="name" display="full" class="o_text_bold"/>
+                            <field name="storage_id" muted="1" display="full"/>
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+
+    <!-- Update Directory window actions to include activity view -->
+    <!-- Trashed folders belong to the Trash only, never to the directory lists -->
+    <record id="dms.action_dms_directory" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,activity,form</field>
+        <field name="domain">[("is_hidden", "=", False), ("is_trashed", "=", False)]</field>
+    </record>
+
+    <record id="dms.action_dms_directories_directory" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,activity,form</field>
+        <field name="domain">[("is_hidden", "=", False), ("is_trashed", "=", False)]</field>
+    </record>
+
+    <record id="dms.action_dms_directories_all_directory" model="ir.actions.act_window">
+        <field name="domain">[("parent_id", "child_of", active_id), ("is_hidden", "=", False), ("id", "!=", active_id), ("is_trashed", "=", False)]</field>
+    </record>
+
+    <record id="dms.action_dms_directories_storage" model="ir.actions.act_window">
+        <field name="domain">[("storage_id", "=", active_id), ("is_hidden", "=", False), ("is_trashed", "=", False)]</field>
+    </record>
+</odoo>
+

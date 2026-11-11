@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Employee LWF Deduction Rule -->
+        <record id="hds_in_rule_lwf_ee" model="hr.salary.rule">
+            <field name="name">Employee LWF</field>
+            <field name="code">LWF_EE</field>
+            <field name="sequence" eval="170"/>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_ded"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_lwf_employee()]]></field>
+            <field name="appears_on_payslip" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Employer LWF Contribution Rule (CTC Contributor) -->
+        <record id="hds_in_rule_lwf_er" model="hr.salary.rule">
+            <field name="name">Employer LWF Contribution</field>
+            <field name="code">LWF_ER</field>
+            <field name="sequence" eval="171"/>
+            <field name="category_id" ref="hudson_payroll_base.rule_category_comp"/>
+            <field name="struct_id" ref="hudson_payroll_base.structure_base"/>
+            <field name="company_id" eval="False"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"><![CDATA[result = payslip_record.hds_in_compute_lwf_employer()]]></field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="hds_in_contributes_to_employer_cost" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

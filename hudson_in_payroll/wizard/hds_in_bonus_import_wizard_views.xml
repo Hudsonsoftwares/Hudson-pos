@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hds_in_bonus_import_wizard_form" model="ir.ui.view">
+        <field name="name">hds.in.bonus.import.wizard.form</field>
+        <field name="model">hds.in.bonus.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Employee Bonus Lines">
+                <group>
+                    <field name="bonus_id" invisible="1"/>
+                    <field name="file_data" filename="file_name"/>
+                    <field name="file_name" invisible="1"/>
+                    <field name="delimiter"/>
+                </group>
+                <group string="Or Paste Text/CSV Data">
+                    <field name="paste_data" placeholder="EMP001,15000,Performance Bonus&#10;EMP002,12000,Diwali Incentive" nolabel="1"/>
+                </group>
+                <footer>
+                    <button name="action_import" string="Import Bonus Lines" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_in_bonus_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Bonus Lines</field>
+        <field name="res_model">hds.in.bonus.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

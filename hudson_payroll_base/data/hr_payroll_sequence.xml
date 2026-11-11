@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Payslip -->
+        <record id="seq_hr_payslip" model="ir.sequence">
+            <field name="name">Salary Slip</field>
+            <field name="code">hr.payslip</field>
+            <field name="prefix">SLIP/%(year)s/%(month)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Payslip Run / Batch -->
+        <record id="seq_hr_payslip_run" model="ir.sequence">
+            <field name="name">Payslip Batch</field>
+            <field name="code">hr.payslip.run</field>
+            <field name="prefix">RUN/%(year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

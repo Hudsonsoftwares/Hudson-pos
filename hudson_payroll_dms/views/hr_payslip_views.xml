@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Payslip form: the stored PDF and its status -->
+    <record id="hr_payslip_view_form_dms" model="ir.ui.view">
+        <field name="name">hr.payslip.form.dms</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_payslip_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_hds_dms_open_document" type="object" class="oe_stat_button" icon="folder"
+                        invisible="hds_dms_state != 'stored' or not hds_dms_file_id"
+                        groups="dms.group_dms_user">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Document</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='payment_date']" position="after">
+                <field name="hds_dms_file_id" invisible="1"/>
+                <label for="hds_dms_state" invisible="state not in ('done', 'paid')"/>
+                <div class="o_row" invisible="state not in ('done', 'paid')">
+                    <field name="hds_dms_state" nolabel="1"
+                           decoration-success="hds_dms_state == 'stored'"
+                           decoration-warning="hds_dms_state == 'pending'"
+                           decoration-danger="hds_dms_state == 'failed'"/>
+                    <button name="action_hds_dms_store" type="object" string="Store now" class="btn-link p-0"
+                            invisible="hds_dms_state not in ('pending', 'failed', 'none')"
+                            groups="hudson_payroll_base.group_payroll_user"/>
+                </div>
+                <field name="hds_dms_error" readonly="1" invisible="hds_dms_state != 'failed'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Payslip search: payslips not stored in Documents -->
+    <record id="hr_payslip_view_search_dms" model="ir.ui.view">
+        <field name="name">hr.payslip.search.dms</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hudson_payroll_base.hr_payslip_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='done']" position="after">
+                <separator/>
+                <filter string="Documents: Not Stored" name="hds_dms_not_stored"
+                        domain="[('state', 'in', ('done', 'paid')), ('hds_dms_state', '!=', 'stored')]"/>
+                <filter string="Documents: Failed" name="hds_dms_failed" domain="[('hds_dms_state', '=', 'failed')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

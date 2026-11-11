@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_salary_adjustment_wizard_form" model="ir.ui.view">
+        <field name="name">hr.salary.adjustment.wizard.form</field>
+        <field name="model">hr.salary.adjustment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Multiple Payslip Adjustments">
+                <sheet>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="duration" invisible="1"/>
+                    <field name="payslip_run_id" invisible="1"/>
+                    <field name="employee_wizard_id" invisible="1"/>
+                    <group>
+                        <field name="employee_ids" widget="many2many_tags_avatar" options="{'no_create': True}" placeholder="Select employees..."/>
+                        <field name="input_type_id" options="{'no_create': True}"/>
+                        <field name="amount"/>
+                        <field name="date_start"/>
+                        <field name="repeat"/>
+                        <field name="date_end" invisible="not repeat" placeholder="Until end of contract"/>
+                        <field name="company_id" groups="base.group_multi_company" invisible="payslip_run_id"/>
+                        <field name="note" placeholder="Optional reason, or reference"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create_adjustments" string="Create" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_salary_adjustment_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Multiple Payslip Adjustments</field>
+        <field name="res_model">hr.salary.adjustment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

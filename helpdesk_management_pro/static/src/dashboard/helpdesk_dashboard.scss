@@ -1,0 +1,271 @@
+/* Helpdesk Overview Dashboard Styles */
+
+/*
+ * Colour tokens. Boxes are a dark overlay on the page background, so they always read
+ * darker than the screen behind them. helpdesk_dashboard.dark.scss overrides the tokens
+ * for Odoo's dark mode.
+ */
+.o_helpdesk_dashboard_kanban_renderer,
+.o_helpdesk_dashboard {
+    --hdDash-bg: #{$o-webclient-background-color};
+    --hdDash-box: rgba(0, 0, 0, 0.07);
+    --hdDash-box-hover: rgba(0, 0, 0, 0.12);
+    --hdDash-text: #{$body-color};
+    --hdDash-star: #c98a00;
+
+    --hdDash-highlight: #714B67;      /* open tickets / priorities: Odoo purple */
+    --hdDash-highlight-text: #ffffff;
+    --hdDash-failed: #f5c211;         /* failed SLA / missed target: yellow */
+    --hdDash-failed-text: #1f2328;
+    --hdDash-success: #1a7f37;        /* SLA success / reached target: green */
+    --hdDash-success-text: #ffffff;
+}
+
+.o_helpdesk_dashboard_kanban_renderer {
+    background-color: var(--hdDash-bg);
+}
+
+.o_helpdesk_dashboard {
+    background-color: var(--hdDash-bg);
+    color: var(--hdDash-text);
+
+    .o_dashboard_action {
+        h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--hdDash-text);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Row-major 4 x 3 grid of separate boxes: cells in a row share one height, so rows line up. */
+        .o_dashboard_grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: minmax(80px, auto) minmax(36px, auto) minmax(36px, auto);
+            gap: 6px;
+        }
+
+        .o_dashboard_cell {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.4rem 0.75rem;
+            min-width: 0;
+            border-radius: 4px;
+            background-color: var(--hdDash-box);
+            transition: background-color 0.15s ease, filter 0.15s ease;
+
+            &.cursor-pointer {
+                cursor: pointer;
+            }
+
+            &.cursor-pointer:not(.o_cell_highlight, .o_cell_failed, .o_target_missed, .o_target_reached):hover {
+                background-color: var(--hdDash-box-hover);
+            }
+
+            /* rows holding an inline input + unit suffix */
+            &:has(> .o_target_input) {
+                flex-direction: row;
+            }
+
+            .o_dashboard_value {
+                font-size: 15px;
+                font-weight: 600;
+                line-height: 1.2;
+                color: inherit;
+
+                &.fs-4 {
+                    font-size: 1.6rem !important;
+                }
+            }
+
+            .o_dashboard_label {
+                font-size: 13px;
+                font-weight: 500;
+                margin-top: 2px;
+                color: inherit;
+            }
+        }
+
+        /* Row titles sit on the page background, not in a box (like standard Helpdesk) */
+        .o_cell_label {
+            align-items: flex-start;
+            text-align: start;
+            padding-left: 0;
+            background-color: transparent !important;
+
+            .o_dashboard_label {
+                color: var(--hdDash-text);
+            }
+
+            &.cursor-pointer:hover {
+                background-color: transparent;
+                text-decoration: underline;
+            }
+        }
+
+        /* State colours: they replace the box colour and set a readable text colour */
+        .o_cell_highlight {
+            background-color: var(--hdDash-highlight);
+            color: var(--hdDash-highlight-text);
+        }
+
+        .o_cell_failed,
+        .o_target_missed {
+            background-color: var(--hdDash-failed);
+            color: var(--hdDash-failed-text);
+        }
+
+        .o_target_reached {
+            background-color: var(--hdDash-success);
+            color: var(--hdDash-success-text);
+        }
+
+        .o_cell_highlight,
+        .o_cell_failed,
+        .o_target_missed,
+        .o_target_reached {
+            &.cursor-pointer:hover {
+                filter: brightness(1.08);
+            }
+        }
+
+        .o_cell_stars {
+            position: absolute;
+            top: 0.3rem;
+            right: 0.5rem;
+            font-size: 11px;
+            line-height: 1;
+            color: var(--hdDash-star) !important;
+        }
+
+        .o_cell_highlight .o_cell_stars {
+            color: #ffc107 !important;
+        }
+
+        /* Editable daily-target boxes: pencil hint on hover / while editing (like Odoo Online) */
+        .o_target_cell {
+            cursor: text;
+
+            &:hover:not(.o_target_missed, .o_target_reached) {
+                background-color: var(--hdDash-box-hover);
+            }
+
+            &:focus-within {
+                box-shadow: inset 0 0 0 1px currentColor;
+            }
+
+            .o_target_edit_icon {
+                position: absolute;
+                top: 0.3rem;
+                right: 0.45rem;
+                font-size: 11px;
+                line-height: 1;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.15s ease;
+            }
+
+            &:hover .o_target_edit_icon,
+            &:focus-within .o_target_edit_icon {
+                opacity: 0.7;
+            }
+        }
+
+        .o_target_input {
+            border: 0;
+            padding: 0;
+            margin: 0;
+            height: auto;
+            font-weight: 700;
+            color: inherit;
+            background: transparent;
+            outline: none;
+
+            &::placeholder {
+                color: inherit;
+                opacity: 0.6;
+            }
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            -moz-appearance: textfield;
+        }
+    }
+}
+
+/* Kanban Cards matching screenshot */
+.o_kanban_dashboard.o_helpdesk_kanban {
+    .o_helpdesk_team_card {
+        border-left: 4px solid #008784 !important;
+        border-radius: 4px;
+        background: var(--body-bg, #ffffff);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .o_primary {
+            font-size: 1.1rem;
+            color: var(--body-color, #212529);
+        }
+
+        .team-email {
+            color: #008784 !important;
+            font-weight: 500;
+
+            &:hover {
+                text-decoration: underline !important;
+            }
+        }
+
+        .btn-tickets {
+            background-color: #714B67 !important;
+            border-color: #714B67 !important;
+            border-radius: 4px;
+            font-size: 13px;
+
+            &:hover {
+                background-color: #5c3b53 !important;
+            }
+        }
+
+        .stat-label-link {
+            color: #008784 !important;
+            font-weight: 500;
+            font-size: 13px;
+
+            &:hover {
+                text-decoration: underline !important;
+            }
+        }
+
+        .team-stat-link {
+            color: #008784 !important;
+            transition: transform 0.15s ease;
+
+            .count {
+                color: #008784 !important;
+                line-height: 1.2;
+            }
+
+            .label {
+                color: #008784 !important;
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            &:hover {
+                transform: translateY(-2px);
+                opacity: 0.85;
+            }
+        }
+    }
+}

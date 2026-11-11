@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="group_dms_document_controller" model="res.groups">
+            <field name="name">DMS Document Controller Features</field>
+            <field name="comment">Enables advanced document controller features like revisions, approval workflows, and signature requests.</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_dms_administrator" model="res.groups">
+            <field name="name">Administrator</field>
+            <field name="implied_ids" eval="[(4, ref('dms.group_dms_manager')), (4, ref('dms_enterprise_features.group_dms_document_controller'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+    </data>
+</odoo>

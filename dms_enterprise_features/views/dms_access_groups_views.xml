@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dms_access_groups_form_inherit" model="ir.ui.view">
+        <field name="name">dms.access.group.form.inherit</field>
+        <field name="model">dms.access.group</field>
+        <field name="inherit_id" ref="dms.view_dms_access_groups_form"/>
+        <field name="arch" type="xml">
+            <!-- Hide Group info -->
+            <xpath expr="//group[@name='group']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Hide Settings -->
+            <xpath expr="//group[group/field[@name='perm_create']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Hide Computed Users -->
+            <xpath expr="//page[@name='users']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Hide Groups -->
+            <xpath expr="//page[@name='groups']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Hide Child Groups -->
+            <xpath expr="//page[@name='childs']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Rename Explicit Users to Users -->
+            <xpath expr="//page[@name='extra_users']" position="attributes">
+                <attribute name="string">Users</attribute>
+            </xpath>
+            <!-- Filter Explicit Users to exclude Portal & Managers -->
+            <xpath expr="//field[@name='explicit_user_ids']" position="before">
+                <field name="dms_manager_user_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='explicit_user_ids']" position="attributes">
+                <attribute name="domain">[('share', '=', False), ('id', 'not in', dms_manager_user_ids)]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Let's also clean up the tree view -->
+    <record id="view_dms_access_groups_tree_inherit" model="ir.ui.view">
+        <field name="name">dms.access.group.tree.inherit</field>
+        <field name="model">dms.access.group</field>
+        <field name="inherit_id" ref="dms.view_dms_access_groups_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='perm_create']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='perm_write']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='perm_unlink']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='count_directories']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

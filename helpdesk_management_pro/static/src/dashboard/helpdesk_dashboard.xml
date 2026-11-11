@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="helpdesk_management_pro.DashboardKanbanRenderer" owl="1">
+        <div class="o_helpdesk_dashboard_kanban_renderer h-100 d-flex flex-column">
+            <HelpdeskDashboard />
+            <div class="o_kanban_view position-relative flex-grow-1">
+                <t t-call="web.KanbanRenderer"/>
+            </div>
+        </div>
+    </t>
+
+    <!--
+        Both cards are laid out row by row on a 4-column CSS grid (see .o_dashboard_grid),
+        so every cell of a row shares the same height and the separator lines line up.
+    -->
+    <t t-name="helpdesk_management_pro.HelpdeskDashboard" owl="1">
+        <div class="o_helpdesk_dashboard border-bottom" t-if="this.state.metrics">
+            <div class="container-fluid px-4 py-3">
+                <div class="row o_dashboard_action">
+
+                    <!-- My Tickets Section -->
+                    <div class="col-12 col-xl-6 mb-3 mb-xl-0 pe-xl-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <h5 class="mb-0 fw-bold">My Tickets</h5>
+                        </div>
+                        <div class="o_dashboard_card o_dashboard_grid text-center">
+                            <!-- Row 1: headline counters -->
+                            <div class="o_dashboard_cell o_cell_label cursor-pointer" t-on-click="this.openMyTickets">
+                                <div class="o_dashboard_label">Open Tickets</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell o_cell_main cursor-pointer #{this.state.metrics.my_tickets > 0 ? 'o_cell_highlight' : ''}" t-on-click="this.openMyTickets">
+                                <div class="o_dashboard_value fw-bold fs-4"><t t-out="this.state.metrics.my_tickets"/></div>
+                                <div class="o_dashboard_label">Tickets</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell o_cell_main cursor-pointer #{this.state.metrics.high_priority > 0 ? 'o_cell_highlight' : ''}" t-on-click="this.openHighPriority">
+                                <div class="o_cell_stars text-warning"><i class="fa fa-star"/><i class="fa fa-star"/></div>
+                                <div class="o_dashboard_value fw-bold fs-4"><t t-out="this.state.metrics.high_priority"/></div>
+                                <div class="o_dashboard_label">High Priority</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell o_cell_main cursor-pointer #{this.state.metrics.urgent > 0 ? 'o_cell_highlight' : ''}" t-on-click="this.openUrgent">
+                                <div class="o_cell_stars text-warning"><i class="fa fa-star"/><i class="fa fa-star"/><i class="fa fa-star"/></div>
+                                <div class="o_dashboard_value fw-bold fs-4"><t t-out="this.state.metrics.urgent"/></div>
+                                <div class="o_dashboard_label">Urgent</div>
+                            </div>
+
+                            <!-- Row 2: average open hours -->
+                            <div class="o_dashboard_cell o_cell_label">
+                                <div class="o_dashboard_label">Avg Open Hours</div>
+                            </div>
+                            <div class="o_dashboard_cell cursor-pointer" t-on-click="this.openMyTickets">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.avg_open_hours"/></div>
+                            </div>
+                            <div class="o_dashboard_cell cursor-pointer" t-on-click="this.openHighPriority">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.hp_avg_open_hours"/></div>
+                            </div>
+                            <div class="o_dashboard_cell cursor-pointer" t-on-click="this.openUrgent">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.urg_avg_open_hours"/></div>
+                            </div>
+
+                            <!-- Row 3: failed SLA -->
+                            <div class="o_dashboard_cell o_cell_label cursor-pointer" t-on-click="this.openFailed">
+                                <div class="o_dashboard_label">Failed Tickets</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell cursor-pointer #{this.state.metrics.failed_tickets > 0 ? 'o_cell_failed' : ''}" t-on-click="this.openFailed">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.failed_tickets"/></div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell cursor-pointer #{this.state.metrics.hp_failed_tickets > 0 ? 'o_cell_failed' : ''}" t-on-click="this.openHpFailed">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.hp_failed_tickets"/></div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell cursor-pointer #{this.state.metrics.urg_failed_tickets > 0 ? 'o_cell_failed' : ''}" t-on-click="this.openUrgFailed">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.urg_failed_tickets"/></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Performance Section -->
+                    <div class="col-12 col-xl-6 ps-xl-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <h5 class="mb-0 fw-bold">My Performance</h5>
+                        </div>
+                        <div class="o_dashboard_card o_dashboard_grid text-center">
+                            <!-- Row 1: today -->
+                            <div class="o_dashboard_cell o_cell_label cursor-pointer" t-on-click="this.openTodayClosed">
+                                <div class="o_dashboard_label">Today</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell o_cell_main cursor-pointer #{this.performanceClass('closed', 'today')}" t-on-click="this.openTodayClosed">
+                                <div class="o_dashboard_value fw-bold fs-4"><t t-out="this.state.metrics.today"/></div>
+                                <div class="o_dashboard_label">Closed Tickets</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell o_cell_main #{this.performanceClass('success', 'today')}">
+                                <div class="o_dashboard_value fw-bold fs-4"><t t-out="this.state.metrics.sla_success_rate"/></div>
+                                <div class="o_dashboard_label">SLA Success Rate</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell o_cell_main #{this.performanceClass('rating', 'today')}">
+                                <div class="o_dashboard_value fw-bold fs-4"><t t-out="this.state.metrics.average_rating"/></div>
+                                <div class="o_dashboard_label">Average Rating</div>
+                            </div>
+
+                            <!-- Row 2: last 7 days -->
+                            <div class="o_dashboard_cell o_cell_label cursor-pointer" t-on-click="this.openLast7DaysClosed">
+                                <div class="o_dashboard_label">Avg Last 7 days</div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell cursor-pointer #{this.performanceClass('closed', '7d')}" t-on-click="this.openLast7DaysClosed">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.avg_last_7_days"/></div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell #{this.performanceClass('success', '7d')}">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.sla_success_rate_7d"/></div>
+                            </div>
+                            <div t-attf-class="o_dashboard_cell #{this.performanceClass('rating', '7d')}">
+                                <div class="o_dashboard_value"><t t-out="this.state.metrics.average_rating_7d"/></div>
+                            </div>
+
+                            <!-- Row 3: daily targets (editable) -->
+                            <div class="o_dashboard_cell o_cell_label">
+                                <div class="o_dashboard_label">Daily Target</div>
+                            </div>
+                            <!-- <label> so a click anywhere in the box focuses the input; pencil shows on hover -->
+                            <label class="o_dashboard_cell o_target_cell mb-0" title="Click to edit the daily target">
+                                <i class="fa fa-pencil o_target_edit_icon" aria-hidden="true"/>
+                                <input type="number" class="o_dashboard_value o_target_input text-center" style="width: 3.5rem;" min="0" step="1" placeholder="-" t-att-value="this.targetInputValue('closed')" t-on-change="(ev) => this.updateTarget('closed', ev)" aria-label="Daily Target"/>
+                            </label>
+                            <label class="o_dashboard_cell o_target_cell mb-0" title="Click to edit the daily target">
+                                <i class="fa fa-pencil o_target_edit_icon" aria-hidden="true"/>
+                                <input type="number" min="0" max="100" class="o_dashboard_value o_target_input text-end" style="width: 3.5rem;" placeholder="-" t-att-value="this.targetInputValue('success')" t-on-change="(ev) => this.updateTarget('success', ev)" aria-label="Daily Target"/>
+                                <span class="o_dashboard_value ms-1">%</span>
+                            </label>
+                            <label class="o_dashboard_cell o_target_cell mb-0" title="Click to edit the daily target">
+                                <i class="fa fa-pencil o_target_edit_icon" aria-hidden="true"/>
+                                <input type="number" min="0" max="5" step="0.1" class="o_dashboard_value o_target_input text-end" style="width: 2.5rem;" placeholder="-" t-att-value="this.targetInputValue('rating')" t-on-change="(ev) => this.updateTarget('rating', ev)" aria-label="Daily Target"/>
+                                <span class="o_dashboard_value ms-1">/ 5</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

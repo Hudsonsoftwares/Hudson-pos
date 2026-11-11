@@ -1,0 +1,36 @@
+/* ==========================================================================
+   Annual Report PDF Styling Fixes
+   Removes table grid structures, phantom lines, dots, and border artifacts
+   in Google Chrome (PDFium) and Microsoft Edge.
+   ========================================================================== */
+
+/* Remove ALL borders and dividers from tables across all browsers */
+.o_report_layout_standard table,
+.o_report_layout_standard table *,
+.o_report_layout_standard th,
+.o_report_layout_standard td,
+.o_report_layout_standard tr {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.o_report_layout_standard table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+}
+
+/* Ensure link targets (IDs) have proper layout for anchors */
+.o_report_layout_standard [id] {
+    position: relative;
+    z-index: 1;
+}
+
+/* Avoid page breaks inside rows */
+.o_report_layout_standard tr {
+    page-break-inside: avoid;
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Phase 1 Verified Official LWF Master Seed Data -->
+
+        <!-- 1. Maharashtra -->
+        <record id="lwf_rate_mh_verified" model="lwf.state.rate">
+            <field name="state_id" ref="base.state_in_mh"/>
+            <field name="company_id" eval="False"/>
+            <field name="emp_contribution">25.0</field>
+            <field name="empl_contribution">75.0</field>
+            <field name="deduction_frequency">half_yearly</field>
+            <field name="deduction_month_1">6</field>
+            <field name="deduction_month_2">12</field>
+            <field name="min_employee_count">10</field>
+            <field name="date_from">2024-01-01</field>
+            <field name="notification_ref">Maharashtra Labour Welfare Fund Act, 1953 (Revised Rates 2024)</field>
+            <field name="remarks">Deducted semi-annually in June and December for establishments employing 10 or more workers.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 2. Karnataka -->
+        <record id="lwf_rate_ka_verified" model="lwf.state.rate">
+            <field name="state_id" ref="base.state_in_ka"/>
+            <field name="company_id" eval="False"/>
+            <field name="emp_contribution">50.0</field>
+            <field name="empl_contribution">100.0</field>
+            <field name="deduction_frequency">annual</field>
+            <field name="deduction_month_1">12</field>
+            <field name="min_employee_count">50</field>
+            <field name="date_from">2024-01-01</field>
+            <field name="notification_ref">Karnataka Labour Welfare Fund (Amendment) Act, 2024</field>
+            <field name="remarks">Deducted annually in December for establishments employing 50 or more workers.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 3. Gujarat -->
+        <record id="lwf_rate_gj_verified" model="lwf.state.rate">
+            <field name="state_id" ref="base.state_in_gj"/>
+            <field name="company_id" eval="False"/>
+            <field name="emp_contribution">6.0</field>
+            <field name="empl_contribution">12.0</field>
+            <field name="deduction_frequency">half_yearly</field>
+            <field name="deduction_month_1">6</field>
+            <field name="deduction_month_2">12</field>
+            <field name="min_employee_count">10</field>
+            <field name="date_from">2024-01-01</field>
+            <field name="notification_ref">Gujarat Labour Welfare Fund Act, 1953 (Notification GLW/2024/01)</field>
+            <field name="remarks">Deducted semi-annually in June and December for covered establishments with 10+ workers.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 4. Kerala -->
+        <record id="lwf_rate_kl_verified" model="lwf.state.rate">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="company_id" eval="False"/>
+            <field name="emp_contribution">45.0</field>
+            <field name="empl_contribution">45.0</field>
+            <field name="deduction_frequency">half_yearly</field>
+            <field name="deduction_month_1">6</field>
+            <field name="deduction_month_2">12</field>
+            <field name="min_employee_count">10</field>
+            <field name="date_from">2024-01-01</field>
+            <field name="notification_ref">Kerala Labour Welfare Fund Act, 1975 (Revised 2024)</field>
+            <field name="remarks">Deducted semi-annually in June and December for covered establishments with 10+ workers.</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Salary Revision List View -->
+    <record id="hds_in_salary_revision_view_list" model="ir.ui.view">
+        <field name="name">hds.in.salary.revision.view.list</field>
+        <field name="model">hds.in.salary.revision</field>
+        <field name="arch" type="xml">
+            <list string="Salary Revisions" js_class="hds_salary_revision_list" create="true" edit="false" delete="false">
+                <header>
+                    <button name="%(hudson_in_payroll.action_hds_in_salary_revision_wizard)d" string="New Salary Revision" type="action" class="btn-primary"/>
+                </header>
+                <field name="name"/>
+                <field name="effective_date" optional="show"/>
+                <field name="employee_id"/>
+                <field name="employee_code" optional="show"/>
+                <field name="contract_id" string="Employee Record" optional="show"/>
+                <field name="revision_type" widget="badge" optional="show"/>
+                <field name="old_wage" widget="monetary" optional="show"/>
+                <field name="new_wage" widget="monetary" optional="show"/>
+                <field name="wage_difference" widget="monetary" class="fw-bold" optional="show"/>
+                <field name="old_employer_cost_monthly" widget="monetary" optional="hide"/>
+                <field name="new_employer_cost_monthly" widget="monetary" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-muted="state == 'draft'" decoration-danger="state == 'cancelled'" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Salary Revision Form View -->
+    <record id="hds_in_salary_revision_view_form" model="ir.ui.view">
+        <field name="name">hds.in.salary.revision.view.form</field>
+        <field name="model">hds.in.salary.revision</field>
+        <field name="arch" type="xml">
+            <form string="Salary Revision History" create="true" edit="false" delete="false">
+                <header>
+                    <button name="action_launch_wizard" string="Launch Salary Revision Wizard" type="object" class="btn-primary" invisible="id"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel Revision" type="object" class="btn-danger" invisible="state != 'approved'" confirm="Are you sure you want to cancel this Salary Revision? This will revert the employee's wage to the previous amount."/>
+                    <button name="action_draft" string="Set to Draft" type="object" class="btn-secondary" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="employee_id" readonly="1"/>
+                            <span class="text-muted ms-2" invisible="not employee_code">(<field name="employee_code" readonly="1" class="d-inline"/>)</span>
+                        </h2>
+                    </div>
+
+                    <group>
+                        <group string="Revision Info">
+                            <field name="effective_date" readonly="1"/>
+                            <field name="revision_type" readonly="1"/>
+                            <field name="contract_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                        <group string="Revision Parameters">
+                            <field name="revision_basis" readonly="1"/>
+                            <field name="capped_wage_amount" invisible="revision_basis != 'capped_wage'" readonly="1"/>
+                            <field name="computation_type" readonly="1"/>
+                            <field name="increase_percentage" invisible="computation_type != 'percentage'" readonly="1"/>
+                            <field name="increase_amount" invisible="computation_type != 'fixed_amount'" readonly="1"/>
+                            <field name="extra_amount" invisible="not extra_amount" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Salary &amp; CTC Impact">
+                            <group>
+                                <group string="Gross Salary Breakdown">
+                                    <field name="old_wage" widget="monetary" readonly="1"/>
+                                    <field name="new_wage" widget="monetary" readonly="1"/>
+                                    <field name="wage_difference" widget="monetary" readonly="1"/>
+                                </group>
+                                <group string="Employer Cost to Company (CTC)">
+                                    <field name="old_employer_cost_monthly" widget="monetary" readonly="1"/>
+                                    <field name="new_employer_cost_monthly" widget="monetary" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Statutory Impact">
+                            <group>
+                                <group string="Provident Fund (EPF &amp; EPS)">
+                                    <field name="old_epf_wage" widget="monetary" readonly="1"/>
+                                    <field name="new_epf_wage" widget="monetary" readonly="1"/>
+                                    <field name="old_employee_epf" widget="monetary" readonly="1"/>
+                                    <field name="new_employee_epf" widget="monetary" readonly="1"/>
+                                    <field name="old_employer_pf" widget="monetary" readonly="1"/>
+                                    <field name="new_employer_pf" widget="monetary" readonly="1"/>
+                                </group>
+                                <group string="ESIC &amp; Statutory Taxes">
+                                    <field name="old_esic_applicable" readonly="1"/>
+                                    <field name="new_esic_applicable" readonly="1"/>
+                                    <field name="old_employee_esic" widget="monetary" readonly="1"/>
+                                    <field name="new_employee_esic" widget="monetary" readonly="1"/>
+                                    <field name="old_employer_esic" widget="monetary" readonly="1"/>
+                                    <field name="new_employer_esic" widget="monetary" readonly="1"/>
+                                    <field name="old_pt_amount" widget="monetary" readonly="1"/>
+                                    <field name="new_pt_amount" widget="monetary" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <!-- ESIC CONTRIBUTION PERIOD STATUTORY STATUS PANEL -->
+                            <div class="w-100 mt-4">
+                                <separator string="ESIC Contribution Period Status" class="fw-bold mb-3"/>
+                                <div class="row g-3">
+                                    <!-- Left Card: Current Period -->
+                                    <div class="col-12 col-md-6">
+                                        <div class="card h-100 p-3 shadow-sm border" style="border-radius: 8px; background: rgba(128,128,128,0.06);">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="fw-bold text-uppercase small text-muted">Current Period</span>
+                                                <field name="esic_cur_period_status" widget="boolean_toggle" readonly="1" string="Current Period Eligibility"/>
+                                            </div>
+                                            <div class="fs-6 fw-bold text-primary mb-1">
+                                                <field name="esic_cur_period_label" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div class="small text-muted">
+                                                Active statutory contribution period status.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Card: Next Period -->
+                                    <div class="col-12 col-md-6">
+                                        <div class="card h-100 p-3 shadow-sm border" style="border-radius: 8px; background: rgba(128,128,128,0.06);">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="fw-bold text-uppercase small text-muted">Next Period</span>
+                                                <field name="esic_next_period_status" widget="boolean_toggle" readonly="1" string="Next Period Eligibility"/>
+                                            </div>
+                                            <div class="fs-6 fw-bold text-primary mb-1">
+                                                <field name="esic_next_period_label" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div class="small text-muted">
+                                                Eligibility re-evaluated from next period start.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Warning Alert if Reason exists -->
+                                <div class="alert alert-warning d-flex align-items-center mt-3 mb-2 p-2" role="alert" invisible="not esic_next_period_reason" style="border-radius: 6px;">
+                                    <i class="fa fa-exclamation-triangle fs-5 me-2 flex-shrink-0"/>
+                                    <div>
+                                        <strong>Wage Ceiling Notice: </strong>
+                                        <field name="esic_next_period_reason" readonly="1" nolabel="1"/>
+                                    </div>
+                                </div>
+
+                                <!-- Informational Note -->
+                                <div class="alert alert-info d-flex align-items-start mt-2 mb-2 p-2" role="alert" style="border-radius: 6px; font-size: 0.85rem;">
+                                    <i class="fa fa-info-circle fs-5 me-2 mt-1 flex-shrink-0"/>
+                                    <div>
+                                        <strong>Statutory Note: </strong>
+                                        ESIC eligibility is governed by fixed half-yearly contribution periods (Apr–Sep &amp; Oct–Mar). A salary revision during an active period does not immediately stop ESIC deductions; re-evaluation applies automatically from the start of the next period.
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+
+                        <page string="Reason &amp; Audit Trail">
+                            <group>
+                                <field name="reason" readonly="1"/>
+                                <field name="notes" readonly="1"/>
+                                <field name="created_by_id" readonly="1"/>
+                                <field name="create_date" string="Created On" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Salary Revision History -->
+    <record id="hds_in_salary_revision_view_search" model="ir.ui.view">
+        <field name="name">hds.in.salary.revision.view.search</field>
+        <field name="model">hds.in.salary.revision</field>
+        <field name="arch" type="xml">
+            <search string="Search Salary Revisions">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="employee_code"/>
+                <field name="contract_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Annual Increment" name="increment" domain="[('revision_type', '=', 'annual_increment')]"/>
+                <filter string="Promotion" name="promotion" domain="[('revision_type', '=', 'promotion')]"/>
+                <group>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Revision Type" name="group_by_revision_type" context="{'group_by': 'revision_type'}"/>
+                    <filter string="Effective Date" name="group_by_date" context="{'group_by': 'effective_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window for Salary Revision History -->
+    <record id="action_hds_in_salary_revision_history" model="ir.actions.act_window">
+        <field name="name">Salary Revision History</field>
+        <field name="res_model">hds.in.salary.revision</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hds_in_salary_revision_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Salary Revisions Found!
+            </p>
+            <p>
+                Salary revisions executed from the Employee Action menu will be stored here as immutable audit history.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item for Salary Revisions History -->
+    <menuitem id="menu_hds_in_salary_revision_history"
+              name="Salary Revisions"
+              parent="hudson_payroll_base.menu_hr_payroll_operations"
+              action="action_hds_in_salary_revision_history"
+              sequence="10"/>
+</odoo>

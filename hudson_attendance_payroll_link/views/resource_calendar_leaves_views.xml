@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Public Holidays (Time Off > Configuration > Public Holidays) Form View -->
+    <record id="resource_calendar_leave_view_form_inherit_mandatory" model="ir.ui.view">
+        <field name="name">resource.calendar.leaves.form.inherit.mandatory</field>
+        <field name="model">resource.calendar.leaves</field>
+        <field name="inherit_id" ref="resource.resource_calendar_leave_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_mandatory" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Public Holidays (Time Off > Configuration > Public Holidays) List View -->
+    <record id="resource_calendar_leave_view_tree_inherit_mandatory" model="ir.ui.view">
+        <field name="name">resource.calendar.leaves.tree.inherit.mandatory</field>
+        <field name="model">resource.calendar.leaves</field>
+        <field name="inherit_id" ref="resource.resource_calendar_leave_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_mandatory" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

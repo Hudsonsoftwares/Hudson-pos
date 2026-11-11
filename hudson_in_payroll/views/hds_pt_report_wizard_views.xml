@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Professional Tax Report Wizard Form View (ESIC / Labour Format) -->
+    <record id="hds_pt_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.pt.report.wizard.view.form</field>
+        <field name="model">hds.pt.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Professional Tax (PT) Report Wizard">
+                <header>
+                    <button name="action_generate_xlsx"
+                            string="Generate XLSX"
+                            type="object"
+                            class="btn-primary"
+                            icon="download"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Report Configuration">
+                            <field name="year" required="1" options="{'enable_formatting': False, 'format': False}"/>
+                            <field name="month" required="1"/>
+                            <field name="report_type" invisible="1"/>
+                            <field name="payslip_state"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'" required="1"/>
+                        </group>
+                        <group string="Summary Statistics">
+                            <field name="record_count" readonly="1"/>
+                            <field name="total_pt_wages" readonly="1"/>
+                            <field name="total_pt_deduction" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="xlsx_filename" invisible="1"/>
+                    <field name="xlsx_file" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Professional Tax Report Wizard List / History View -->
+    <record id="hds_pt_report_wizard_view_list" model="ir.ui.view">
+        <field name="name">hds.pt.report.wizard.view.list</field>
+        <field name="model">hds.pt.report.wizard</field>
+        <field name="arch" type="xml">
+            <list string="Professional Tax (PT) Report">
+                <field name="month"/>
+                <field name="year" options="{'enable_formatting': False, 'format': False}"/>
+                <field name="report_type"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Window Action for PT Report Wizard -->
+    <record id="action_hds_pt_report_wizard" model="ir.actions.act_window">
+        <field name="name">Professional Tax (PT) Report</field>
+        <field name="res_model">hds.pt.report.wizard</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+    </record>
+
+</odoo>

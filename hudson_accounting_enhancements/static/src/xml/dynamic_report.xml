@@ -1,0 +1,1268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hudson_dynamic_reports.DynamicReport" >
+        <t t-set="state" t-value="this.state"/>
+        <div class="o_dynamic_report_container d-flex flex-column">
+            <div class="o_dynamic_report_top_bar d-flex justify-content-between align-items-center mb-3 mt-2 px-3 position-relative" style="z-index: 1050; gap: 12px; flex-wrap: nowrap;">
+                <!-- Left: Report Title & Settings -->
+                <div class="o_dynamic_report_title_section d-flex align-items-center flex-shrink-0">
+                    <h2 class="text-dark fw-bold mb-0 d-flex align-items-center" style="font-size: 1.25rem; white-space: nowrap;">
+                        <span t-out="this.state.title"/>
+                        <div class="dropdown ms-2 o_report_title_actions" t-if="this.state.integrations.dms || this.state.integrations.knowledge">
+                            <button type="button" class="o_report_title_gear" data-bs-toggle="dropdown" aria-expanded="false" title="Actions" aria-label="Actions">
+                                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            </button>
+                            <ul class="dropdown-menu shadow-sm">
+                                <li t-if="this.state.integrations.dms">
+                                    <a class="dropdown-item cursor-pointer" t-on-click="() => this.onExportToDocuments()">Copy to Documents</a>
+                                </li>
+                                <li t-if="this.state.integrations.knowledge">
+                                    <a class="dropdown-item cursor-pointer" t-on-click="() => this.onInsertInArticle()">Insert in Article</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </h2>
+                </div>
+                
+                <!-- Center: Filters (Center Aligned!) -->
+                <div class="o_dynamic_report_filters d-flex align-items-center justify-content-center flex-grow-1 flex-wrap gap-2">
+                    <!-- Date Filter -->
+                    <t t-if="this.state.model_name === 'account.aged.report' || this.state.model_name === 'account.unrealized.currency.wizard' || this.state.model_name === 'account.unrealized.currency.report'">
+                        <div class="dropdown flex-shrink-0">
+                            <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <i class="fa fa-calendar me-1 text-secondary"></i>
+                                <span t-out="this.getAgedDateButtonLabel()"/>
+                            </button>
+                            <ul class="dropdown-menu p-2 shadow" style="min-width: 250px; border-radius: 6px;">
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedDateFilter('today')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.aged_date_type === 'today' || !this.state.filterSummary.aged_date_type"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.aged_date_type === 'today' || !this.state.filterSummary.aged_date_type ? 'fw-bold' : ''">Today</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedDateFilter('end_last_month')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.aged_date_type === 'end_last_month'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.aged_date_type === 'end_last_month' ? 'fw-bold' : ''">End of Last Month</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedDateFilter('end_last_quarter')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.aged_date_type === 'end_last_quarter'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.aged_date_type === 'end_last_quarter' ? 'fw-bold' : ''">End of Last Quarter</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedDateFilter('end_last_year')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.aged_date_type === 'end_last_year'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.aged_date_type === 'end_last_year' ? 'fw-bold' : ''">End of Last Financial Year</span>
+                                    </a>
+                                </li>
+                                <li t-if="this.state.filterSummary.aged_date_type === 'custom'">
+                                    <div class="dropdown-item d-flex align-items-center py-1 text-muted">
+                                        <span class="o_check_slot"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                                        <span class="fw-bold text-dark">Custom Date (<t t-out="this.formatDateDisplay(this.state.filterSummary.date)"/>)</span>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider my-2"/></li>
+                                <li class="px-2 py-1">
+                                    <span class="text-muted small mb-2 d-block fw-semibold">Custom Date</span>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <input type="date" class="form-control form-control-sm" t-model.proxy="this.state.customDateFrom"/>
+                                        <button class="btn btn-sm btn-primary" t-on-click="() => this.onAgedDateFilter('custom')">Apply</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="dropdown flex-shrink-0">
+                            <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <i class="fa fa-calendar me-1 text-secondary"></i>
+                                <span t-out="this.getDateButtonLabel()"/>
+                            </button>
+                            <ul class="dropdown-menu p-2 shadow" style="min-width: 270px; border-radius: 6px;">
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onDateFilter('today')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_type === 'today'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_type === 'today' ? 'fw-bold' : ''">Today</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onDateFilter('this_month')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_type === 'this_month'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_type === 'this_month' ? 'fw-bold' : ''">This Month</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onDateFilter('this_quarter')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_type === 'this_quarter'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_type === 'this_quarter' ? 'fw-bold' : ''">This Quarter</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onDateFilter('this_year')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_type === 'this_year' || (!this.state.filterSummary.date_type &amp;&amp; !['this_month','this_quarter','last_month','last_quarter','last_year','today','custom'].includes(this.state.filterSummary.date_type))"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_type === 'this_year' || (!this.state.filterSummary.date_type &amp;&amp; !['this_month','this_quarter','last_month','last_quarter','last_year','today','custom'].includes(this.state.filterSummary.date_type)) ? 'fw-bold' : ''">This Financial Year</span>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider my-2"/></li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onDateFilter('last_month')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_type === 'last_month'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_type === 'last_month' ? 'fw-bold' : ''">Last Month</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onDateFilter('last_quarter')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_type === 'last_quarter'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_type === 'last_quarter' ? 'fw-bold' : ''">Last Quarter</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onDateFilter('last_year')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_type === 'last_year'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_type === 'last_year' ? 'fw-bold' : ''">Last Financial Year</span>
+                                    </a>
+                                </li>
+                                <li t-if="this.state.filterSummary.date_type === 'custom'">
+                                    <div class="dropdown-item d-flex align-items-center py-1 text-muted">
+                                        <span class="o_check_slot"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                                        <span class="fw-bold text-dark">Custom Dates (<t t-out="this.getDateButtonLabel()"/>)</span>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider my-2"/></li>
+                                <li class="px-2 py-1">
+                                    <span class="text-muted small mb-2 d-block fw-semibold">Custom Dates</span>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <input type="date" class="form-control form-control-sm" t-model.proxy="this.state.customDateFrom"/>
+                                        <span class="text-muted small">to</span>
+                                        <input type="date" class="form-control form-control-sm" t-model.proxy="this.state.customDateTo"/>
+                                        <button class="btn btn-sm btn-primary" t-on-click="() => this.applyCustomDates()">Apply</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+
+                    <!-- Comparison Dropdown -->
+                    <t t-if="['account.annual.report', 'account.profit.and.loss', 'account.trial.balance', 'accounting.report', 'account.common.report'].includes(this.state.model_name)">
+                        <div class="dropdown flex-shrink-0">
+                            <button t-att-class="'btn dropdown-toggle fw-semibold o_report_filter_btn ' + (this.isComparisonActive() ? 'o_filter_btn_active' : 'btn-light border text-dark')" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <span t-out="this.getComparisonButtonLabel()"/>
+                            </button>
+                            <ul class="dropdown-menu shadow-sm o_comparison_dropdown">
+                                <!-- No Comparison -->
+                                <li>
+                                    <div t-att-class="'o_cmp_item ' + (this.isComparisonSelected('no_comparison') ? 'selected' : '')"
+                                         t-on-click="() => this.onComparisonFilter('no_comparison')">
+                                        <span class="o_check_slot"><t t-if="this.isComparisonSelected('no_comparison')"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.isComparisonSelected('no_comparison') ? 'fw-bold' : ''">No Comparison</span>
+                                    </div>
+                                </li>
+
+                                <!-- Previous Period -->
+                                <li>
+                                    <div t-att-class="'o_cmp_item ' + (this.isComparisonSelected('previous_period') ? 'selected' : '')"
+                                         t-on-click="() => this.onComparisonFilter('previous_period')">
+                                        <span class="o_check_slot"><t t-if="this.isComparisonSelected('previous_period')"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.isComparisonSelected('previous_period') ? 'fw-bold' : ''">Previous Period</span>
+                                        <div class="o_cmp_control" t-if="this.isComparisonSelected('previous_period')" t-on-click="(ev) => ev.stopPropagation()">
+                                            <input type="number" class="form-control o_cmp_input o_cmp_input_number" 
+                                                   t-att-value="this.state.filterSummary.previous_periods || 1" 
+                                                   min="1" 
+                                                   t-on-change="(ev) => this.onPreviousPeriodsChange(ev)"/>
+                                            <span class="o_cmp_unit">Period<t t-if="(this.state.filterSummary.previous_periods || 1) &gt; 1">s</t></span>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <!-- Same Period Last Year -->
+                                <li>
+                                    <div t-att-class="'o_cmp_item ' + (this.isComparisonSelected('same_last_year') ? 'selected' : '')"
+                                         t-on-click="() => this.onComparisonFilter('same_last_year')">
+                                        <span class="o_check_slot"><t t-if="this.isComparisonSelected('same_last_year')"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.isComparisonSelected('same_last_year') ? 'fw-bold' : ''">Same Period Last Year</span>
+                                    </div>
+                                </li>
+
+                                <!-- Percentage of -->
+                                <li class="position-relative">
+                                    <div t-att-class="'o_cmp_item ' + (this.isComparisonSelected('percentage') ? 'selected' : '')"
+                                         t-on-click="() => this.onPercentageRowClick()">
+                                        <span class="o_check_slot"><t t-if="this.isComparisonSelected('percentage')"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span class="o_cmp_label" t-att-class="this.isComparisonSelected('percentage') ? 'fw-bold' : ''">Percentage of</span>
+                                        
+                                        <!-- Trigger line matching Image 1: displays selected option or empty underline when inactive -->
+                                        <div class="o_cmp_control o_percentage_selector"
+                                             t-on-click="(ev) => this.togglePercentageMenu(ev)">
+                                            <span class="o_percentage_selected_label text-truncate" t-out="this.getPercentageBaseLabel()"/>
+                                            <svg class="o_cmp_caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Image 2 Selection Dropdown Table -->
+                                    <div t-if="this.state.percentageMenuOpen" 
+                                         class="o_percentage_dropdown_menu position-absolute bg-white shadow rounded border"
+                                         t-on-click="(ev) => ev.stopPropagation()">
+                                        <div class="o_percentage_table_header px-3 py-2 bg-light border-bottom text-muted fw-semibold small">
+                                            Name
+                                        </div>
+                                        <div class="o_percentage_table_body">
+                                            <t t-foreach="this.getPercentageBaseOptions()" t-as="opt" t-key="opt.id">
+                                                <div class="o_percentage_table_row px-3 py-2 border-bottom cursor-pointer d-flex align-items-center justify-content-between"
+                                                     t-att-class="this.state.filterSummary.percentage_base === opt.id ? 'active' : ''"
+                                                     t-on-click="(ev) => this.selectPercentageBase(opt.id, ev)">
+                                                    <span class="o_percentage_row_name" t-out="opt.name"/>
+                                                    <svg t-if="this.state.filterSummary.percentage_base === opt.id" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M13.5 4.5L6.5 11.5L3 8" stroke="#008784" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <!-- Custom Dates -->
+                                <li>
+                                    <div t-att-class="'o_cmp_item ' + (this.isCustomDatesSelected() ? 'selected' : '')"
+                                         t-on-click="() => this.onComparisonFilter('custom_dates')">
+                                        <span class="o_check_slot"><t t-if="this.isCustomDatesSelected()"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span class="o_cmp_label" t-att-class="this.isCustomDatesSelected() ? 'fw-bold' : ''">Custom Dates</span>
+                                        <div class="o_cmp_control o_cmp_dates" t-on-click="(ev) => ev.stopPropagation()">
+                                            <input type="date" class="form-control o_cmp_input o_cmp_input_date"
+                                                   t-att-value="this.state.filterSummary.date_from_cmp"
+                                                   t-on-change="(ev) => this.onDateFromCmpChange(ev)"/>
+                                            <span class="o_cmp_unit">to</span>
+                                            <input type="date" class="form-control o_cmp_input o_cmp_input_date"
+                                                   t-att-value="this.state.filterSummary.date_to_cmp"
+                                                   t-on-change="(ev) => this.onDateToCmpChange(ev)"/>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li><hr class="o_cmp_divider"/></li>
+
+                                <!-- Period order -->
+                                <li class="o_cmp_setting">
+                                    <span class="o_cmp_label">Period order</span>
+                                    <select class="form-select o_cmp_control o_cmp_select"
+                                            t-att-value="this.state.filterSummary.period_order" 
+                                            t-on-change="(ev) => this.onPeriodOrderChange(ev)">
+                                        <option value="descending" t-att-selected="this.state.filterSummary.period_order === 'descending' ? 'selected' : undefined">Descending</option>
+                                        <option value="ascending" t-att-selected="this.state.filterSummary.period_order === 'ascending' ? 'selected' : undefined">Ascending</option>
+                                    </select>
+                                </li>
+
+                                <!-- Comparison in -->
+                                <li class="o_cmp_setting">
+                                    <span class="o_cmp_label">Comparison in</span>
+                                    <select class="form-select o_cmp_control o_cmp_select"
+                                            t-att-value="this.state.filterSummary.comparison_in" 
+                                            t-on-change="(ev) => this.onComparisonInChange(ev)">
+                                        <option value="amount" t-att-selected="this.state.filterSummary.comparison_in === 'amount' ? 'selected' : undefined">Amount</option>
+                                        <option value="percentage" t-att-selected="this.state.filterSummary.comparison_in === 'percentage' ? 'selected' : undefined">Percentage</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+
+                    <!-- GAAP / Multi-Selection Filter -->
+                    <div class="dropdown flex-shrink-0" t-if="this.state.available_ledgers and this.state.available_ledgers.length > 0">
+                        <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="fa fa-book me-1 text-secondary"></i>
+                            <span t-out="this.getGaapButtonLabel()"/>
+                        </button>
+                        <ul class="dropdown-menu shadow p-2" style="border-radius: 6px; min-width: 170px;">
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.toggleGaap('local_gaap')">
+                                    <input type="checkbox" class="form-check-input me-2 my-0 cursor-pointer" t-att-checked="(this.state.filterSummary.gaap_options &amp;&amp; this.state.filterSummary.gaap_options.local_gaap) ? 'checked' : undefined" style="pointer-events: none;"/>
+                                    <span>Local Gaap</span>
+                                </a>
+                            </li>
+                            <t t-foreach="this.state.available_ledgers" t-as="ledger" t-key="ledger.id">
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.toggleGaap(ledger.id)">
+                                        <input type="checkbox" class="form-check-input me-2 my-0 cursor-pointer" t-att-checked="(this.state.filterSummary.gaap_options &amp;&amp; this.state.filterSummary.gaap_options[ledger.id]) ? 'checked' : undefined" style="pointer-events: none;"/>
+                                        <span t-out="ledger.name"/>
+                                    </a>
+                                </li>
+                            </t>
+                        </ul>
+                    </div>
+
+                    <!-- Analytic Dropdown (Accounts & Plans) -->
+                    <t t-if="['account.annual.report', 'account.profit.and.loss', 'account.trial.balance', 'account.balance.report', 'account.report.general.ledger', 'accounting.report', 'account.common.report', 'account.partner.ledger', 'account.report.partner.ledger'].includes(this.state.model_name)">
+                        <div class="dropdown flex-shrink-0">
+                            <button t-att-class="'btn dropdown-toggle fw-semibold o_report_filter_btn ' + (((this.state.filterSummary.analytic_accounts &amp;&amp; this.state.filterSummary.analytic_accounts.length) || (this.state.filterSummary.analytic_plans &amp;&amp; this.state.filterSummary.analytic_plans.length)) ? 'o_filter_btn_active' : 'btn-light border text-dark')" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <i class="fa fa-pie-chart me-1 text-secondary"/>
+                                <span t-out="(this.state.filterSummary.analytic_accounts &amp;&amp; this.state.filterSummary.analytic_accounts.length) || (this.state.filterSummary.analytic_plans &amp;&amp; this.state.filterSummary.analytic_plans.length) ? 'Analytic (' + ((this.state.filterSummary.analytic_accounts ? this.state.filterSummary.analytic_accounts.length : 0) + (this.state.filterSummary.analytic_plans ? this.state.filterSummary.analytic_plans.length : 0)) + ')' : 'Analytic'"/>
+                            </button>
+                            <div class="dropdown-menu shadow o_hudson_filter_panel">
+                                <div class="o_hfp_header">
+                                    <span><i class="fa fa-pie-chart"/>Analytic Filters</span>
+                                    <span class="o_hfp_count" t-if="((this.state.filterSummary.analytic_accounts ? this.state.filterSummary.analytic_accounts.length : 0) + (this.state.filterSummary.analytic_plans ? this.state.filterSummary.analytic_plans.length : 0))"><t t-out="((this.state.filterSummary.analytic_accounts ? this.state.filterSummary.analytic_accounts.length : 0) + (this.state.filterSummary.analytic_plans ? this.state.filterSummary.analytic_plans.length : 0))"/> selected</span>
+                                </div>
+                                <div class="o_hfp_body">
+                                    <div class="o_hfp_section">
+                                    <label class="o_hfp_label">Analytic Accounts</label>
+                                    <div class="o_hfp_search">
+                                        <svg class="o_hfp_search_icon" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                        <input type="text" class="form-control" placeholder="Search accounts..."
+                                               t-on-keyup="(ev) => this.onAnalyticSearch(ev)" t-on-focus="() => this.loadDefaultAnalytics()" t-on-click="() => this.loadDefaultAnalytics()"
+                                               t-model.proxy="this.state.analyticSearch"/>
+                                        <div class="o_hfp_results" t-if="this.state.analyticResults &amp;&amp; this.state.analyticResults.length &gt; 0">
+                                            <div t-foreach="this.state.analyticResults" t-as="a" t-key="a.id"
+                                                 class="o_hfp_result" t-on-click="() => this.selectAnalyticAccount(a)">
+                                                <span t-out="a.name"/>
+                                                <svg class="o_hfp_add_icon" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1V9M1 5H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_hfp_chips" t-if="this.state.filterSummary.analytic_accounts &amp;&amp; this.state.filterSummary.analytic_accounts.length">
+                                        <t t-foreach="this.state.filterSummary.analytic_accounts" t-as="a" t-key="a.id">
+                                            <span class="o_hfp_chip">
+                                                <span class="o_hfp_chip_label" t-att-title="a.name" t-out="a.name"/>
+                                                <button type="button" class="o_hfp_chip_remove" title="Remove account" aria-label="Remove account"
+                                                        t-on-click="(ev) => { ev.stopPropagation(); this.removeAnalyticAccount(a.id); }">
+                                                    <svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                                </button>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="o_hfp_empty" t-else="">No account selected</div>
+                                </div>
+                                    <div class="o_hfp_section">
+                                    <label class="o_hfp_label">Analytic Plans</label>
+                                    <div class="o_hfp_search">
+                                        <svg class="o_hfp_search_icon" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                        <input type="text" class="form-control" placeholder="Search plans..."
+                                               t-on-keyup="(ev) => this.onAnalyticPlanSearch(ev)" t-on-focus="() => this.loadDefaultAnalyticPlans()" t-on-click="() => this.loadDefaultAnalyticPlans()"
+                                               t-model.proxy="this.state.analyticPlanSearch"/>
+                                        <div class="o_hfp_results" t-if="this.state.analyticPlanResults &amp;&amp; this.state.analyticPlanResults.length &gt; 0">
+                                            <div t-foreach="this.state.analyticPlanResults" t-as="p" t-key="p.id"
+                                                 class="o_hfp_result" t-on-click="() => this.selectAnalyticPlan(p)">
+                                                <span t-out="p.name"/>
+                                                <svg class="o_hfp_add_icon" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1V9M1 5H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_hfp_chips" t-if="this.state.filterSummary.analytic_plans &amp;&amp; this.state.filterSummary.analytic_plans.length">
+                                        <t t-foreach="this.state.filterSummary.analytic_plans" t-as="p" t-key="p.id">
+                                            <span class="o_hfp_chip">
+                                                <span class="o_hfp_chip_label" t-att-title="p.name" t-out="p.name"/>
+                                                <button type="button" class="o_hfp_chip_remove" title="Remove plan" aria-label="Remove plan"
+                                                        t-on-click="(ev) => { ev.stopPropagation(); this.removeAnalyticPlan(p.id); }">
+                                                    <svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                                </button>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="o_hfp_empty" t-else="">No plan selected</div>
+                                </div>
+                                </div>
+                                <div class="o_hfp_footer">
+                                    <button type="button" class="btn btn-sm btn-primary" t-on-click="() => this.applyAnalyticFilters()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Asset Categories Filter (Depreciation Schedule) -->
+                    <t t-if="this.state.model_name === 'asset.depreciation.schedule'">
+                        <div class="dropdown flex-shrink-0">
+                            <button t-att-class="'btn dropdown-toggle fw-semibold o_report_filter_btn ' + ((this.state.filterSummary.asset_categories &amp;&amp; this.state.filterSummary.asset_categories.length) ? 'o_filter_btn_active' : 'btn-light border text-dark')" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <i class="fa fa-folder-open-o me-1 text-secondary"/>
+                                <span t-out="(this.state.filterSummary.asset_categories &amp;&amp; this.state.filterSummary.asset_categories.length) ? 'Categories (' + this.state.filterSummary.asset_categories.length + ')' : 'Categories'"/>
+                            </button>
+                            <div class="dropdown-menu shadow o_hudson_filter_panel">
+                                <div class="o_hfp_header">
+                                    <span><i class="fa fa-folder-open-o"/>Asset Categories</span>
+                                    <span class="o_hfp_count" t-if="(this.state.filterSummary.asset_categories ? this.state.filterSummary.asset_categories.length : 0)"><t t-out="(this.state.filterSummary.asset_categories ? this.state.filterSummary.asset_categories.length : 0)"/> selected</span>
+                                </div>
+                                <div class="o_hfp_body">
+                                    <div class="o_hfp_section">
+                                    <label class="o_hfp_label">Categories</label>
+                                    <div class="o_hfp_search">
+                                        <svg class="o_hfp_search_icon" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                        <input type="text" class="form-control" placeholder="Search categories..."
+                                               t-on-keyup="(ev) => this.onAssetCategorySearch(ev)" t-on-focus="() => this.loadDefaultAssetCategories()" t-on-click="() => this.loadDefaultAssetCategories()"
+                                               t-model.proxy="this.state.assetCategorySearch"/>
+                                        <div class="o_hfp_results" t-if="this.state.assetCategoryResults &amp;&amp; this.state.assetCategoryResults.length &gt; 0">
+                                            <div t-foreach="this.state.assetCategoryResults" t-as="c" t-key="c.id"
+                                                 class="o_hfp_result" t-on-click="() => this.selectAssetCategory(c)">
+                                                <span t-out="c.name"/>
+                                                <svg class="o_hfp_add_icon" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1V9M1 5H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_hfp_chips" t-if="this.state.filterSummary.asset_categories &amp;&amp; this.state.filterSummary.asset_categories.length">
+                                        <t t-foreach="this.state.filterSummary.asset_categories" t-as="c" t-key="c.id">
+                                            <span class="o_hfp_chip">
+                                                <span class="o_hfp_chip_label" t-att-title="c.name" t-out="c.name"/>
+                                                <button type="button" class="o_hfp_chip_remove" title="Remove category" aria-label="Remove category"
+                                                        t-on-click="(ev) => { ev.stopPropagation(); this.removeAssetCategory(c.id); }">
+                                                    <svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                                </button>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="o_hfp_empty" t-else="">All categories</div>
+                                </div>
+                                </div>
+                                <div class="o_hfp_footer">
+                                    <button type="button" class="btn btn-sm btn-primary" t-on-click="() => this.applyAssetCategoryFilters()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Account Filter -->
+                    <t t-if="this.state.model_name === 'account.aged.report'">
+                        <div class="dropdown flex-shrink-0">
+                            <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-user me-1 text-secondary"></i>
+                                <span t-out="this.getAgedAccountLabel()"/>
+                            </button>
+                            <ul class="dropdown-menu shadow p-2" style="border-radius: 6px; min-width: 200px;">
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedAccountFilter('payable')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.account_type === 'payable'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.account_type === 'payable' ? 'fw-bold' : ''">Payable</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedAccountFilter('non_trade_payable')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.account_type === 'non_trade_payable'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.account_type === 'non_trade_payable' ? 'fw-bold' : ''">Non Trade Payable</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedAccountFilter('receivable')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.account_type === 'receivable'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.account_type === 'receivable' ? 'fw-bold' : ''">Receivable</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedAccountFilter('non_trade_receivable')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.account_type === 'non_trade_receivable'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.account_type === 'non_trade_receivable' ? 'fw-bold' : ''">Non Trade Receivable</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+                    <t t-elif="['account.partner.ledger', 'account.report.partner.ledger'].includes(this.state.model_name)">
+                        <div class="dropdown flex-shrink-0">
+                            <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                <i class="fa fa-user me-1 text-dark"></i>
+                                <span t-out="this.getPartnerAccountLabel()"/>
+                            </button>
+                            <ul class="dropdown-menu shadow p-2" style="border-radius: 6px; min-width: 220px;">
+                                <li>
+                                    <a t-att-class="'dropdown-item cursor-pointer d-flex align-items-center py-2 ' + (((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.receivable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('receivable'))) ? 'fw-bold' : '')"
+                                       t-on-click="(ev) => this.togglePartnerAccountType('receivable', ev)">
+                                        <span class="o_check_slot"><t t-if="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.receivable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('receivable')))"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.receivable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('receivable'))) ? 'fw-bold' : ''">Receivable</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a t-att-class="'dropdown-item cursor-pointer d-flex align-items-center py-2 ' + (((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.non_trade_receivable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('non_trade_receivable'))) ? 'fw-bold' : '')"
+                                       t-on-click="(ev) => this.togglePartnerAccountType('non_trade_receivable', ev)">
+                                        <span class="o_check_slot"><t t-if="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.non_trade_receivable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('non_trade_receivable')))"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.non_trade_receivable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('non_trade_receivable'))) ? 'fw-bold' : ''">Non Trade Receivable</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a t-att-class="'dropdown-item cursor-pointer d-flex align-items-center py-2 ' + (((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.payable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('payable'))) ? 'fw-bold' : '')"
+                                       t-on-click="(ev) => this.togglePartnerAccountType('payable', ev)">
+                                        <span class="o_check_slot"><t t-if="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.payable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('payable')))"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.payable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('payable'))) ? 'fw-bold' : ''">Payable</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a t-att-class="'dropdown-item cursor-pointer d-flex align-items-center py-2 ' + (((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.non_trade_payable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('non_trade_payable'))) ? 'fw-bold' : '')"
+                                       t-on-click="(ev) => this.togglePartnerAccountType('non_trade_payable', ev)">
+                                        <span class="o_check_slot"><t t-if="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.non_trade_payable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('non_trade_payable')))"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="((this.state.filterSummary.partner_accounts &amp;&amp; this.state.filterSummary.partner_accounts.non_trade_payable) || (this.state.filterSummary.account_types &amp;&amp; this.state.filterSummary.account_types.includes('non_trade_payable'))) ? 'fw-bold' : ''">Non Trade Payable</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+
+                    <!-- Partners Filter -->
+                    <t t-if="['account.annual.report', 'account.profit.and.loss', 'account.aged.report', 'account.partner.ledger', 'account.report.partner.ledger', 'accounting.report', 'account.common.report'].includes(this.state.model_name)">
+                        <div class="dropdown flex-shrink-0">
+                            <button t-att-class="'btn dropdown-toggle fw-semibold o_report_filter_btn ' + (((this.state.filterSummary.partners &amp;&amp; this.state.filterSummary.partners.length) || (this.state.filterSummary.tags &amp;&amp; this.state.filterSummary.tags.length)) ? 'o_filter_btn_active' : 'btn-light border text-dark')" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <i class="fa fa-users me-1 text-secondary"></i>
+                                <t t-if="(this.state.filterSummary.partners &amp;&amp; this.state.filterSummary.partners.length) || (this.state.filterSummary.tags &amp;&amp; this.state.filterSummary.tags.length)">
+                                    <span>Partners (<t t-out="(this.state.filterSummary.partners ? this.state.filterSummary.partners.length : 0) + (this.state.filterSummary.tags ? this.state.filterSummary.tags.length : 0)"/>)</span>
+                                </t>
+                                <t t-else="">
+                                    <span>Partners</span>
+                                </t>
+                            </button>
+                            <div class="dropdown-menu shadow o_hudson_filter_panel">
+                                <div class="o_hfp_header">
+                                    <span><i class="fa fa-users"/>Partners</span>
+                                    <span class="o_hfp_count" t-if="((this.state.filterSummary.partners ? this.state.filterSummary.partners.length : 0) + (this.state.filterSummary.tags ? this.state.filterSummary.tags.length : 0))"><t t-out="((this.state.filterSummary.partners ? this.state.filterSummary.partners.length : 0) + (this.state.filterSummary.tags ? this.state.filterSummary.tags.length : 0))"/> selected</span>
+                                </div>
+                                <div class="o_hfp_body">
+                                    <div class="o_hfp_section">
+                                    <label class="o_hfp_label">Partners</label>
+                                    <div class="o_hfp_search">
+                                        <svg class="o_hfp_search_icon" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                        <input type="text" class="form-control" placeholder="Search partners..."
+                                               t-on-keyup="(ev) => this.onPartnerSearch(ev)" t-on-focus="() => this.loadDefaultPartners()" t-on-click="() => this.loadDefaultPartners()"
+                                               t-model.proxy="this.state.partnerSearch"/>
+                                        <div class="o_hfp_results" t-if="this.state.partnerResults &amp;&amp; this.state.partnerResults.length &gt; 0">
+                                            <div t-foreach="this.state.partnerResults" t-as="p" t-key="p.id"
+                                                 class="o_hfp_result" t-on-click="() => this.selectPartner(p)">
+                                                <span t-out="p.name"/>
+                                                <svg class="o_hfp_add_icon" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1V9M1 5H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_hfp_chips" t-if="this.state.filterSummary.partners &amp;&amp; this.state.filterSummary.partners.length">
+                                        <t t-foreach="this.state.filterSummary.partners" t-as="p" t-key="p.id">
+                                            <span class="o_hfp_chip">
+                                                <span class="o_hfp_chip_label" t-att-title="p.name" t-out="p.name"/>
+                                                <button type="button" class="o_hfp_chip_remove" title="Remove partner" aria-label="Remove partner"
+                                                        t-on-click="(ev) => { ev.stopPropagation(); this.removePartner(p.id); }">
+                                                    <svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                                </button>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="o_hfp_empty" t-else="">All partners</div>
+                                </div>
+                                    <div class="o_hfp_section">
+                                    <label class="o_hfp_label">Partner Tags</label>
+                                    <div class="o_hfp_search">
+                                        <svg class="o_hfp_search_icon" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                        <input type="text" class="form-control" placeholder="Search tags..."
+                                               t-on-keyup="(ev) => this.onTagSearch(ev)"
+                                               t-model.proxy="this.state.tagSearch"/>
+                                        <div class="o_hfp_results" t-if="this.state.tagResults &amp;&amp; this.state.tagResults.length &gt; 0">
+                                            <div t-foreach="this.state.tagResults" t-as="t" t-key="t.id"
+                                                 class="o_hfp_result" t-on-click="() => this.selectTag(t)">
+                                                <span t-out="t.name"/>
+                                                <svg class="o_hfp_add_icon" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1V9M1 5H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_hfp_chips" t-if="this.state.filterSummary.tags &amp;&amp; this.state.filterSummary.tags.length">
+                                        <t t-foreach="this.state.filterSummary.tags" t-as="t" t-key="t.id">
+                                            <span class="o_hfp_chip">
+                                                <span class="o_hfp_chip_label" t-att-title="t.name" t-out="t.name"/>
+                                                <button type="button" class="o_hfp_chip_remove" title="Remove tag" aria-label="Remove tag"
+                                                        t-on-click="(ev) => { ev.stopPropagation(); this.removeTag(t.id); }">
+                                                    <svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                                                </button>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="o_hfp_empty" t-else="">No tag selected</div>
+                                </div>
+                                </div>
+                                <div class="o_hfp_footer">
+                                    <button type="button" class="btn btn-sm btn-primary" t-on-click="() => this.applyPartnerFilters()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Date Basis Filter for Aged Reports -->
+                    <t t-if="this.state.model_name === 'account.aged.report'">
+                        <div class="dropdown flex-shrink-0">
+                            <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-file-text-o me-1 text-secondary"></i>
+                                <span t-out="this.state.filterSummary.date_basis === 'date' ? 'Based on Invoice Date' : 'Based on Due Date'"/>
+                            </button>
+                            <ul class="dropdown-menu shadow p-2" style="border-radius: 6px; min-width: 190px;">
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedBasisFilter('date_maturity')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_basis !== 'date'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_basis !== 'date' ? 'fw-bold' : ''">Based on Due Date</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedBasisFilter('date')">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.date_basis === 'date'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.date_basis === 'date' ? 'fw-bold' : ''">Based on Invoice Date</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+
+                    <!-- Period Interval Filter for Aged Reports -->
+                    <t t-if="this.state.model_name === 'account.aged.report'">
+                        <div class="dropdown flex-shrink-0">
+                            <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-calendar-o me-1 text-secondary"></i>
+                                <span t-out="(this.state.filterSummary.period_length || 30) + ' Days'"/>
+                            </button>
+                            <ul class="dropdown-menu shadow p-2" style="border-radius: 6px; min-width: 140px;">
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedPeriodFilter(15)">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.period_length === 15"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.period_length === 15 ? 'fw-bold' : ''">15 Days</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedPeriodFilter(30)">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.period_length === 30 || !this.state.filterSummary.period_length"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.period_length === 30 || !this.state.filterSummary.period_length ? 'fw-bold' : ''">30 Days</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedPeriodFilter(60)">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.period_length === 60"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.period_length === 60 ? 'fw-bold' : ''">60 Days</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedPeriodFilter(90)">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.period_length === 90"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.period_length === 90 ? 'fw-bold' : ''">90 Days</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onAgedPeriodFilter(120)">
+                                        <span class="o_check_slot"><t t-if="this.state.filterSummary.period_length === 120"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                        <span t-att-class="this.state.filterSummary.period_length === 120 ? 'fw-bold' : ''">120 Days</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+
+                    <!-- Exchange Rates Button (Unrealized Currency) -->
+                    <button class="btn btn-light border py-1 px-2 fw-semibold text-dark flex-shrink-0 o_report_filter_btn" 
+                            t-if="this.state.model_name === 'account.unrealized.currency.wizard' || this.state.model_name === 'account.unrealized.currency.report'"
+                            t-on-click="() => this.openExchangeRates()">
+                        <i class="fa fa-line-chart me-1 text-secondary"></i> Exchange Rates
+                    </button>
+
+                    <!-- Target Moves Dropdown (Posted Entries / With Draft Entries...) -->
+                    <div class="dropdown flex-shrink-0">
+                        <button t-att-class="'btn dropdown-toggle fw-semibold o_report_filter_btn ' + (this.isTargetMoveActive() ? 'o_filter_btn_active' : 'btn-light border text-dark')" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <i class="fa fa-sliders me-1" style="font-size: 0.85rem;"/>
+                            <span t-out="this.getTargetMoveButtonLabel()"/>
+                        </button>
+                        <ul class="dropdown-menu shadow p-2" style="border-radius: 6px; min-width: 220px;">
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onTargetMove('posted')">
+                                    <span class="o_check_slot"><t t-if="this.state.filterSummary.target_move !== 'All Entries'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                    <span t-att-class="this.state.filterSummary.target_move !== 'All Entries' ? 'fw-bold' : ''">Posted Entries Only</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onTargetMove('all')">
+                                    <span class="o_check_slot"><t t-if="this.state.filterSummary.target_move === 'All Entries'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                    <span t-att-class="this.state.filterSummary.target_move === 'All Entries' ? 'fw-bold' : ''">Include Draft Entries</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.toggleAnalyticSimulations()">
+                                    <span class="o_check_slot"><t t-if="this.state.filterSummary.analytic_simulations"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                    <span t-att-class="this.state.filterSummary.analytic_simulations ? 'fw-bold' : ''">Analytic Simulations</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onUnfoldAllToggle()">
+                                    <span class="o_check_slot"><t t-if="this.state.unfoldAll"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                    <span t-out="this.state.unfoldAll ? 'Fold All' : 'Unfold All'"/>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider my-2 border-top" style="border-color: #cbd5e1; opacity: 1; margin: 6px 0;"/></li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.toggleHideLinesAt0()">
+                                    <span class="o_check_slot"><t t-if="this.state.filterSummary.hide_lines_at_0"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                    <span t-att-class="this.state.filterSummary.hide_lines_at_0 ? 'fw-bold' : ''">Hide lines at 0</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.toggleSplitHorizontally()">
+                                    <span class="o_check_slot"><t t-if="this.state.filterSummary.split_horizontally"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span>
+                                    <span t-att-class="this.state.filterSummary.split_horizontally ? 'fw-bold' : ''">Split Horizontally</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Quick Unfold / Fold All Toggle Button -->
+                    <button t-att-class="'btn fw-semibold flex-shrink-0 o_report_filter_btn ' + (this.state.unfoldAll ? 'o_filter_btn_active' : 'btn-light border text-dark')"
+                            type="button" 
+                            title="Expand or collapse all lines"
+                            t-on-click="() => this.onUnfoldAllToggle()">
+                        <i t-att-class="this.state.unfoldAll ? 'fa fa-compress me-1 text-primary' : 'fa fa-expand me-1 text-secondary'"/>
+                        <span t-out="this.state.unfoldAll ? 'Fold All' : 'Unfold All'"/>
+                    </button>
+
+                    <!-- Currency Rounding Toggle dropdown -->
+                    <div class="dropdown flex-shrink-0">
+                        <button class="btn btn-light border dropdown-toggle fw-semibold text-dark o_report_filter_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span t-out="'In ' + (this.state.filterSummary.rounding !== undefined ? this.state.filterSummary.rounding : '') + (this.state.currency_symbol || '₹')"/>
+                        </button>
+                        <ul class="dropdown-menu shadow p-2" style="border-radius: 6px; min-width: 140px;">
+                            <li><a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onRounding('.')"><span class="o_check_slot"><t t-if="(this.state.filterSummary.rounding === undefined || this.state.filterSummary.rounding === '.')"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span> <span t-att-class="(this.state.filterSummary.rounding === undefined || this.state.filterSummary.rounding === '.') ? 'fw-bold' : ''">In .<t t-out="this.state.currency_symbol || '₹'"/></span></a></li>
+                            <li><a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onRounding('')"><span class="o_check_slot"><t t-if="this.state.filterSummary.rounding === ''"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span> <span t-att-class="this.state.filterSummary.rounding === '' ? 'fw-bold' : ''">In <t t-out="this.state.currency_symbol || '₹'"/></span></a></li>
+                            <li><a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onRounding('K')"><span class="o_check_slot"><t t-if="this.state.filterSummary.rounding === 'K'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span> <span t-att-class="this.state.filterSummary.rounding === 'K' ? 'fw-bold' : ''">In K<t t-out="this.state.currency_symbol || '₹'"/></span></a></li>
+                            <li><a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onRounding('L')"><span class="o_check_slot"><t t-if="this.state.filterSummary.rounding === 'L'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span> <span t-att-class="this.state.filterSummary.rounding === 'L' ? 'fw-bold' : ''">In L<t t-out="this.state.currency_symbol || '₹'"/></span></a></li>
+                            <li><a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.onRounding('M')"><span class="o_check_slot"><t t-if="this.state.filterSummary.rounding === 'M'"><svg class="o_check_svg" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 4.5L6.5 11.5L3 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></t></span> <span t-att-class="this.state.filterSummary.rounding === 'M' ? 'fw-bold' : ''">In M<t t-out="this.state.currency_symbol || '₹'"/></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right: Search Box, Adjustment Entry & Print/Export Dropdown -->
+                <div class="o_dynamic_report_actions d-flex align-items-center gap-2 flex-shrink-0 ms-auto">
+                    <!-- Search Box -->
+                    <div class="o_dynamic_report_search position-relative flex-shrink-0" style="width: 130px;">
+                        <i class="fa fa-search position-absolute text-muted" style="left: 9px; top: 50%; transform: translateY(-50%); font-size: 0.75rem;"></i>
+                        <input type="text" class="form-control form-control-sm ps-4 pe-3 bg-white" style="height: 32px; font-size: 0.8rem; border-radius: 6px;" placeholder="Search..." t-model.proxy="this.state.searchQuery" t-on-input="(ev) => this.onSearchInput(ev)"/>
+                        <i t-if="this.state.searchQuery" class="fa fa-times position-absolute text-muted cursor-pointer" style="right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.75rem;" t-on-click="() => { this.state.searchQuery = ''; }"/>
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-warning text-dark border shadow-sm" t-if="this.state.model_name === 'account.unrealized.currency.wizard' || this.state.model_name === 'account.unrealized.currency.report'" t-on-click="() => this.createAdjustmentEntry()" style="height: 32px; font-size: 0.8rem; border-radius: 6px;">
+                        <i class="fa fa-pencil-square-o text-warning me-1"></i> Adjustment
+                    </button>
+
+                    <!-- Print / Export Dropdown -->
+                    <div class="dropdown flex-shrink-0">
+                        <button class="btn btn-sm btn-light border dropdown-toggle fw-semibold text-dark d-flex align-items-center shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 6px; height: 32px; font-size: 0.8125rem;">
+                            <i class="fa fa-print me-1 text-secondary"></i>
+                            <span>Print / Export</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow p-2" style="border-radius: 6px; min-width: 170px;">
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.exportPDF()">
+                                    <i class="fa fa-file-pdf-o text-danger me-2"></i> <span>PDF Export</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.exportXLSX()">
+                                    <i class="fa fa-file-excel-o text-success me-2"></i> <span>Excel (XLSX)</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.exportCSV()">
+                                    <i class="fa fa-file-text-o text-primary me-2"></i> <span>CSV Export</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item cursor-pointer d-flex align-items-center py-2" t-on-click="() => this.exportJSON()">
+                                    <i class="fa fa-file-code-o text-info me-2"></i> <span>JSON Export</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unposted Notice Banner -->
+            <div t-if="this.state.alert_message" class="alert text-center py-2 px-3 mb-2 border-0 mx-3" style="background-color: #d1ecf1; color: #0c5460; font-size: 0.88rem; border-radius: 6px;">
+                <span>There are <strong>unposted Journal Entries</strong> prior or included in this period.</span>
+            </div>
+            
+            <!-- Secondary Alert Banner (e.g. Active Company Only) -->
+            <div t-if="this.state.secondary_alert_message" class="alert text-center py-2 px-3 mb-3 border-0 mx-3" style="background-color: #fff3cd; color: #856404; font-size: 0.88rem; border-radius: 6px;">
+                <span t-out="this.state.secondary_alert_message"/>
+            </div>
+            <div class="o_dynamic_report_content bg-white p-0">
+                <!-- Split Horizontally View (Two Columns) -->
+                <t t-if="this.isSplitHorizontally()">
+                    <div class="row g-3 p-3 m-0">
+                        <!-- Left Column -->
+                        <div class="col-12 col-lg-6">
+                            <div class="card border shadow-sm p-0 bg-white" style="border-radius: 6px; overflow: hidden;">
+                                <table class="table enterprise-table table-hover table-sm mb-0">
+                                    <thead>
+                                        <tr t-if="this.state.column_groups &amp;&amp; this.state.column_groups.length">
+                                            <t t-foreach="this.state.column_groups" t-as="cgrp" t-key="cgrp_index">
+                                                <th t-att-colspan="cgrp.colspan" 
+                                                    class="text-center text-nowrap py-2 px-2 border-bottom fw-bold" 
+                                                    t-out="cgrp.label"/>
+                                            </t>
+                                        </tr>
+                                        <tr>
+                                            <t t-foreach="this.state.columns" t-as="col" t-key="col.field">
+                                                <th t-att-class="this.getColumnClass(col) + ((col.type === 'monetary' || col.type === 'percentage') ? ' text-end' : '') + (col.type === 'integer' ? ' text-center' : '')">
+                                                    <span t-if="this.state.model_name === 'account.aged.report' &amp;&amp; col.field !== 'name'" class="me-1 text-muted opacity-50" style="font-size: 0.75rem;"><i class="fa fa-sort"></i></span>
+                                                    <span t-out="col.label"/>
+                                                </th>
+                                            </t>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="this.getLeftSplitLines()" t-as="line" t-key="line.id">
+                                            <tr t-if="this.isVisible(line)" 
+                                                t-att-class="{
+                                                    'o_report_line_level_1': line.level === 1 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_level_2': line.level === 2 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_level_3': line.level === 3 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_level_detail': line.level > 3 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_summary': line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_summary_banner': line.is_summary_banner, 
+                                                    'o_dynamic_report_clickable': ['account', 'move_line', 'asset'].includes(line.type) || line.account_id || (line.account_ids and line.account_ids.length) || line.move_id || line.asset_id || (this.hasChildren(line) and !line.is_summary_banner)
+                                                }"
+                                                t-on-click="() => this.onLineClicked(line)">
+                                                <t t-foreach="this.state.columns" t-as="col" t-key="col.field">
+                                                    <td t-att-class="this.getColumnClass(col) + ((col.type === 'monetary' || col.type === 'percentage') ? ' text-end' : '')">
+                                                        <t t-if="col.field === 'name'">
+                                                            <div class="o_report_line_name_container" t-att-style="'padding-left: ' + ((line.level - 1) * 20) + 'px;'">
+                                                                <span t-if="this.hasChildren(line)" 
+                                                                      class="o_report_caret me-2" 
+                                                                      t-on-click.stop="() => this.toggleExpand(line.id)"
+                                                                      t-att-title="this.state.expandedLines[line.id] ? 'Contract' : 'Expand'">
+                                                                    <i class="oi oi-fw" 
+                                                                       t-att-data-icon="this.state.expandedLines[line.id] ? 'arrow_drop_down' : 'arrow_right'"
+                                                                       t-att-class="this.state.expandedLines[line.id] ? 'fa fa-caret-down' : 'fa fa-caret-right'"/>
+                                                                </span>
+                                                                <span t-else="" class="o_report_caret_spacer me-2"/>
+                                                                
+                                                                <!-- Transaction or Invoice Icon -->
+                                                                <t t-if="line.type === 'move_line' || line.move_id">
+                                                                    <i t-if="['out_invoice', 'out_refund'].includes(line.move_type)" class="fa fa-file-text-o text-primary me-2" title="Customer Invoice"/>
+                                                                    <i t-elif="['in_invoice', 'in_refund'].includes(line.move_type)" class="fa fa-file-text text-danger me-2" title="Vendor Bill"/>
+                                                                    <i t-else="" class="fa fa-pencil-square-o text-secondary me-2" title="Journal Entry"/>
+                                                                </t>
+                                                                <t t-elif="line.asset_id || line.type === 'asset'">
+                                                                    <i class="fa fa-cubes text-primary me-2" title="Asset"/>
+                                                                </t>
+                                                                
+                                                                <span class="o_report_line_title" t-att-title="line[col.field]" t-out="line[col.field]"/>
+                                                                
+                                                                <!-- Action buttons (e.g. Partner, Statement) -->
+                                                                <t t-if="line.action_buttons &amp;&amp; line.action_buttons.length">
+                                                                    <t t-foreach="line.action_buttons" t-as="btn" t-key="btn.action">
+                                                                        <button t-att-class="'btn btn-sm shadow-none ms-2 ' + (btn.class || 'o_report_action_btn')" 
+                                                                                t-on-click.stop="() => this.onActionClicked(line, btn.action)">
+                                                                            <t t-out="btn.label"/>
+                                                                        </button>
+                                                                    </t>
+                                                                </t>
+
+                                                                <!-- GL Journal Items Button -->
+                                                                <t t-if="this.state.model_name === 'account.report.general.ledger' &amp;&amp; ['group', 'account'].includes(line.type)">
+                                                                    <button class="btn btn-sm o_report_gl_btn ms-2 text-muted shadow-none" 
+                                                                            title="View Journal Items"
+                                                                            t-on-click.stop="() => this.onActionClicked(line, 'open_journal_items')">
+                                                                        Journal Items
+                                                                    </button>
+                                                                </t>
+
+                                                                <!-- 3-Dot Dropdown Menu for Move Lines, Accounts and other reports -->
+                                                                <t t-elif="['account', 'move_line'].includes(line.type) || line.account_id || (line.account_ids &amp;&amp; line.account_ids.length) || line.move_id || line.move_line_id || (line.type === 'tax' &amp;&amp; line.tax_id) || line.asset_id">
+                                                                    <div class="dropdown d-inline-block ms-1 position-relative o_dynamic_report_dropdown">
+                                                                        <button class="btn btn-sm btn-link p-0 o_report_options_btn border-0 shadow-none" 
+                                                                                type="button" 
+                                                                                title="Options"
+                                                                                t-on-click.stop="(ev) => this.toggleLineDropdown(line.id, ev)">
+                                                                            <svg class="o_report_options_svg" width="4" height="14" viewBox="0 0 4 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                                <circle cx="2" cy="2" r="1.5"/>
+                                                                                <circle cx="2" cy="7" r="1.5"/>
+                                                                                <circle cx="2" cy="12" r="1.5"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                        <div t-if="this.state.openDropdownLineId === line.id" 
+                                                                             class="dropdown-menu show shadow border py-1 bg-white" 
+                                                                             t-att-style="(this.state.dropdownIsDropup ? 'bottom: 100%; top: auto; margin-bottom: 6px;' : 'top: 100%; margin-top: 2px;') + ' display: block; position: absolute; left: 0; z-index: 9999; min-width: 170px; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); border: 1px solid #cbd5e1;'">
+                                                                            <t t-if="line.asset_id">
+                                                                                <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                                   style="font-size: 0.85rem;"
+                                                                                   t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_asset'); }">
+                                                                                    <i class="fa fa-cubes me-2 text-primary"></i>
+                                                                                    <span>View Asset</span>
+                                                                                </a>
+                                                                            </t>
+                                                                            <t t-elif="line.move_id">
+                                                                                <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                                   style="font-size: 0.85rem;"
+                                                                                   t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_journal_entry'); }">
+                                                                                    <i class="fa fa-file-text-o me-2 text-primary"></i>
+                                                                                    <span>
+                                                                                        <t t-if="['out_invoice', 'out_refund'].includes(line.move_type)">View Invoice</t>
+                                                                                        <t t-elif="['in_invoice', 'in_refund'].includes(line.move_type)">View Bill</t>
+                                                                                        <t t-else="">View Journal Entry</t>
+                                                                                    </span>
+                                                                                </a>
+                                                                            </t>
+                                                                            <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                               style="font-size: 0.85rem;"
+                                                                               t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_journal_items'); }">
+                                                                                <i class="fa fa-list me-2 text-secondary"></i>
+                                                                                <span>Journal Items</span>
+                                                                            </a>
+                                                                            <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                               style="font-size: 0.85rem;"
+                                                                               t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_general_ledger'); }">
+                                                                                <i class="fa fa-book me-2 text-secondary"></i>
+                                                                                <span>General Ledger</span>
+                                                                            </a>
+                                                                            <t t-if="line.type === 'tax' &amp;&amp; line.tax_id">
+                                                                                <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                                   style="font-size: 0.85rem;"
+                                                                                   t-on-click.stop="() => { this.toggleLineDropdown(null); this.onAuditTax(line); }">
+                                                                                    <i class="fa fa-search me-2 text-info"></i>
+                                                                                    <span>Audit Tax</span>
+                                                                                </a>
+                                                                            </t>
+                                                                        </div>
+                                                                    </div>
+                                                                </t>
+                                                            </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-if="col.field === 'docs_count' and line.docs_count and line.journal_id">
+                                                                <a class="text-dark fw-semibold text-decoration-none cursor-pointer" 
+                                                                   t-on-click.stop="() => this.onActionClicked(line, 'open_documents')"
+                                                                   t-out="line.docs_count"/>
+                                                            </t>
+                                                            <t t-elif="col.field === 'draft_count' and line.draft_count !== '' and line.draft_count !== undefined and line.journal_id">
+                                                                <a t-att-class="'text-decoration-none cursor-pointer ' + (line.draft_count > 0 ? 'text-primary fw-semibold' : 'text-muted')" 
+                                                                   t-on-click.stop="() => this.onActionClicked(line, 'open_to_review')"
+                                                                   t-out="line.draft_count"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span t-att-class="this.getCellValueClass(line[col.field], col)"
+                                                                      t-out="this.formatCellValue(line[col.field], line, col)"/>
+                                                            </t>
+                                                        </t>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-12 col-lg-6">
+                            <div class="card border shadow-sm p-0 bg-white" style="border-radius: 6px; overflow: hidden;">
+                                <table class="table enterprise-table table-hover table-sm mb-0">
+                                    <thead>
+                                        <tr t-if="this.state.column_groups &amp;&amp; this.state.column_groups.length">
+                                            <t t-foreach="this.state.column_groups" t-as="cgrp" t-key="cgrp_index">
+                                                <th t-att-colspan="cgrp.colspan" 
+                                                    class="text-center text-nowrap py-2 px-2 border-bottom fw-bold" 
+                                                    t-out="cgrp.label"/>
+                                            </t>
+                                        </tr>
+                                        <tr>
+                                            <t t-foreach="this.state.columns" t-as="col" t-key="col.field">
+                                                <th t-att-class="this.getColumnClass(col) + ((col.type === 'monetary' || col.type === 'percentage') ? ' text-end' : '') + (col.type === 'integer' ? ' text-center' : '')">
+                                                    <span t-if="this.state.model_name === 'account.aged.report' &amp;&amp; col.field !== 'name'" class="me-1 text-muted opacity-50" style="font-size: 0.75rem;"><i class="fa fa-sort"></i></span>
+                                                    <span t-out="col.label"/>
+                                                </th>
+                                            </t>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="this.getRightSplitLines()" t-as="line" t-key="line.id">
+                                            <tr t-if="this.isVisible(line)" 
+                                                t-att-class="{
+                                                    'o_report_line_level_1': line.level === 1 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_level_2': line.level === 2 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_level_3': line.level === 3 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_level_detail': line.level > 3 and !line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_summary': line.is_summary_total and !line.is_summary_banner, 
+                                                    'o_report_line_summary_banner': line.is_summary_banner, 
+                                                    'o_dynamic_report_clickable': ['account', 'move_line', 'asset'].includes(line.type) || line.account_id || (line.account_ids and line.account_ids.length) || line.move_id || line.asset_id || (this.hasChildren(line) and !line.is_summary_banner)
+                                                }"
+                                                t-on-click="() => this.onLineClicked(line)">
+                                                <t t-foreach="this.state.columns" t-as="col" t-key="col.field">
+                                                    <td t-att-class="this.getColumnClass(col) + ((col.type === 'monetary' || col.type === 'percentage') ? ' text-end' : '')">
+                                                        <t t-if="col.field === 'name'">
+                                                            <div class="o_report_line_name_container" t-att-style="'padding-left: ' + ((line.level - 1) * 20) + 'px;'">
+                                                                <span t-if="this.hasChildren(line)" 
+                                                                      class="o_report_caret me-2" 
+                                                                      t-on-click.stop="() => this.toggleExpand(line.id)"
+                                                                      t-att-title="this.state.expandedLines[line.id] ? 'Contract' : 'Expand'">
+                                                                    <i class="oi oi-fw" 
+                                                                       t-att-data-icon="this.state.expandedLines[line.id] ? 'arrow_drop_down' : 'arrow_right'"
+                                                                       t-att-class="this.state.expandedLines[line.id] ? 'fa fa-caret-down' : 'fa fa-caret-right'"/>
+                                                                </span>
+                                                                <span t-else="" class="o_report_caret_spacer me-2"/>
+                                                                
+                                                                <!-- Transaction or Invoice Icon -->
+                                                                <t t-if="line.type === 'move_line' || line.move_id">
+                                                                    <i t-if="['out_invoice', 'out_refund'].includes(line.move_type)" class="fa fa-file-text-o text-primary me-2" title="Customer Invoice"/>
+                                                                    <i t-elif="['in_invoice', 'in_refund'].includes(line.move_type)" class="fa fa-file-text text-danger me-2" title="Vendor Bill"/>
+                                                                    <i t-else="" class="fa fa-pencil-square-o text-secondary me-2" title="Journal Entry"/>
+                                                                </t>
+                                                                
+                                                                <span class="o_report_line_title" t-att-title="line[col.field]" t-out="line[col.field]"/>
+                                                                
+                                                                <!-- Action buttons (e.g. Partner, Statement) -->
+                                                                <t t-if="line.action_buttons &amp;&amp; line.action_buttons.length">
+                                                                    <t t-foreach="line.action_buttons" t-as="btn" t-key="btn.action">
+                                                                        <button t-att-class="'btn btn-sm shadow-none ms-2 ' + (btn.class || 'o_report_action_btn')" 
+                                                                                t-on-click.stop="() => this.onActionClicked(line, btn.action)">
+                                                                            <t t-out="btn.label"/>
+                                                                        </button>
+                                                                    </t>
+                                                                </t>
+
+                                                                <!-- GL Journal Items Button -->
+                                                                <t t-if="this.state.model_name === 'account.report.general.ledger' &amp;&amp; ['group', 'account'].includes(line.type)">
+                                                                    <button class="btn btn-sm o_report_gl_btn ms-2 text-muted shadow-none" 
+                                                                            title="View Journal Items"
+                                                                            t-on-click.stop="() => this.onActionClicked(line, 'open_journal_items')">
+                                                                        Journal Items
+                                                                    </button>
+                                                                </t>
+
+                                                                <!-- 3-Dot Dropdown Menu for Move Lines, Accounts and other reports -->
+                                                                <t t-elif="['account', 'move_line'].includes(line.type) || line.account_id || (line.account_ids &amp;&amp; line.account_ids.length) || line.move_id || line.move_line_id || (line.type === 'tax' &amp;&amp; line.tax_id) || line.asset_id">
+                                                                    <div class="dropdown d-inline-block ms-1 position-relative o_dynamic_report_dropdown">
+                                                                        <button class="btn btn-sm btn-link p-0 o_report_options_btn border-0 shadow-none" 
+                                                                                type="button" 
+                                                                                title="Options"
+                                                                                t-on-click.stop="(ev) => this.toggleLineDropdown(line.id, ev)">
+                                                                            <svg class="o_report_options_svg" width="4" height="14" viewBox="0 0 4 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                                <circle cx="2" cy="2" r="1.5"/>
+                                                                                <circle cx="2" cy="7" r="1.5"/>
+                                                                                <circle cx="2" cy="12" r="1.5"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                        <div t-if="this.state.openDropdownLineId === line.id" 
+                                                                             class="dropdown-menu show shadow border py-1 bg-white" 
+                                                                             t-att-style="(this.state.dropdownIsDropup ? 'bottom: 100%; top: auto; margin-bottom: 6px;' : 'top: 100%; margin-top: 2px;') + ' display: block; position: absolute; left: 0; z-index: 9999; min-width: 170px; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); border: 1px solid #cbd5e1;'">
+                                                                            <t t-if="line.move_id">
+                                                                                <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                                   style="font-size: 0.85rem;"
+                                                                                   t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_journal_entry'); }">
+                                                                                    <i class="fa fa-file-text-o me-2 text-primary"></i>
+                                                                                    <span>
+                                                                                        <t t-if="['out_invoice', 'out_refund'].includes(line.move_type)">View Invoice</t>
+                                                                                        <t t-elif="['in_invoice', 'in_refund'].includes(line.move_type)">View Bill</t>
+                                                                                        <t t-else="">View Journal Entry</t>
+                                                                                    </span>
+                                                                                </a>
+                                                                            </t>
+                                                                            <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                               style="font-size: 0.85rem;"
+                                                                               t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_journal_items'); }">
+                                                                                <i class="fa fa-list me-2 text-secondary"></i>
+                                                                                <span>Journal Items</span>
+                                                                            </a>
+                                                                            <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                               style="font-size: 0.85rem;"
+                                                                               t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_general_ledger'); }">
+                                                                                <i class="fa fa-book me-2 text-secondary"></i>
+                                                                                <span>General Ledger</span>
+                                                                            </a>
+                                                                            <t t-if="line.type === 'tax' &amp;&amp; line.tax_id">
+                                                                                <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                                   style="font-size: 0.85rem;"
+                                                                                   t-on-click.stop="() => { this.toggleLineDropdown(null); this.onAuditTax(line); }">
+                                                                                    <i class="fa fa-search me-2 text-info"></i>
+                                                                                    <span>Audit Tax</span>
+                                                                                </a>
+                                                                            </t>
+                                                                        </div>
+                                                                    </div>
+                                                                </t>
+                                                            </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-if="col.field === 'docs_count' and line.docs_count and line.journal_id">
+                                                                <a class="text-dark fw-semibold text-decoration-none cursor-pointer" 
+                                                                   t-on-click.stop="() => this.onActionClicked(line, 'open_documents')"
+                                                                   t-out="line.docs_count"/>
+                                                            </t>
+                                                            <t t-elif="col.field === 'draft_count' and line.draft_count !== '' and line.draft_count !== undefined and line.journal_id">
+                                                                <a t-att-class="'text-decoration-none cursor-pointer ' + (line.draft_count > 0 ? 'text-primary fw-semibold' : 'text-muted')" 
+                                                                   t-on-click.stop="() => this.onActionClicked(line, 'open_to_review')"
+                                                                   t-out="line.draft_count"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span t-att-class="this.getCellValueClass(line[col.field], col)"
+                                                                      t-out="this.formatCellValue(line[col.field], line, col)"/>
+                                                            </t>
+                                                        </t>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Standard Single Table View -->
+                <t t-else="">
+                    <div t-if="this.state.companies_description" class="small fw-semibold py-2 px-3 text-uppercase border-bottom" style="color: var(--body-color, #94a3b8); font-size: 0.78rem; letter-spacing: 0.03em; background-color: var(--o-view-background-color);">
+                        <t t-out="this.state.companies_description"/>
+                    </div>
+                    <table class="table enterprise-table table-hover table-sm mb-0">
+                        <thead>
+                            <tr t-if="this.state.column_groups &amp;&amp; this.state.column_groups.length">
+                                <t t-foreach="this.state.column_groups" t-as="cgrp" t-key="cgrp_index">
+                                    <th t-att-colspan="cgrp.colspan" 
+                                        class="text-center text-nowrap py-2 px-2 border-bottom fw-bold" 
+                                        t-out="cgrp.label"/>
+                                </t>
+                            </tr>
+                            <tr>
+                                <t t-foreach="this.state.columns" t-as="col" t-key="col.field">
+                                    <th t-att-class="this.getColumnClass(col) + ((col.type === 'monetary' || col.type === 'percentage') ? ' text-end' : '') + (col.type === 'integer' ? ' text-center' : '')">
+                                        <span t-if="this.state.model_name === 'account.aged.report' &amp;&amp; col.field !== 'name'" class="me-1 text-muted opacity-50" style="font-size: 0.75rem;"><i class="fa fa-sort"></i></span>
+                                        <span t-out="col.label"/>
+                                    </th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="this.state.lines" t-as="line" t-key="line.id">
+                                <tr t-if="this.isVisible(line)" 
+                                    t-att-class="{
+                                        'o_report_line_level_1': line.level === 1 and !line.is_summary_total and !line.is_summary_banner, 
+                                        'o_report_line_level_2': line.level === 2 and !line.is_summary_total and !line.is_summary_banner, 
+                                        'o_report_line_level_3': line.level === 3 and !line.is_summary_total and !line.is_summary_banner, 
+                                        'o_report_line_level_detail': line.level > 3 and !line.is_summary_total and !line.is_summary_banner, 
+                                        'o_report_line_summary': line.is_summary_total and !line.is_summary_banner, 
+                                        'o_report_line_summary_banner': line.is_summary_banner, 
+                                        'o_dynamic_report_clickable': ['account', 'move_line', 'asset'].includes(line.type) || line.account_id || (line.account_ids and line.account_ids.length) || line.move_id || line.asset_id || (this.hasChildren(line) and !line.is_summary_banner)
+                                    }"
+                                    t-on-click="() => this.onLineClicked(line)">
+                                    <t t-foreach="this.state.columns" t-as="col" t-key="col.field">
+                                        <td t-att-class="this.getColumnClass(col) + ((col.type === 'monetary' || col.type === 'percentage') ? ' text-end' : '')">
+                                            <t t-if="col.field === 'name'">
+                                                <div class="o_report_line_name_container" t-att-style="'padding-left: ' + ((line.level - 1) * 20) + 'px;'">
+                                                    <span t-if="this.hasChildren(line)" 
+                                                          class="o_report_caret me-2" 
+                                                          t-on-click.stop="() => this.toggleExpand(line.id)"
+                                                          t-att-title="this.state.expandedLines[line.id] ? 'Contract' : 'Expand'">
+                                                        <i class="oi oi-fw" 
+                                                           t-att-data-icon="this.state.expandedLines[line.id] ? 'arrow_drop_down' : 'arrow_right'"
+                                                           t-att-class="this.state.expandedLines[line.id] ? 'fa fa-caret-down' : 'fa fa-caret-right'"/>
+                                                    </span>
+                                                    <span t-else="" class="o_report_caret_spacer me-2"/>
+                                                    
+                                                    <!-- Transaction or Invoice Icon -->
+                                                    <t t-if="line.type === 'move_line' || line.move_id">
+                                                        <i t-if="['out_invoice', 'out_refund'].includes(line.move_type)" class="fa fa-file-text-o text-primary me-2" title="Customer Invoice"/>
+                                                        <i t-elif="['in_invoice', 'in_refund'].includes(line.move_type)" class="fa fa-file-text text-danger me-2" title="Vendor Bill"/>
+                                                        <i t-else="" class="fa fa-pencil-square-o text-secondary me-2" title="Journal Entry"/>
+                                                    </t>
+                                                    <t t-elif="line.asset_id || line.type === 'asset'">
+                                                        <i class="fa fa-cubes text-primary me-2" title="Asset"/>
+                                                    </t>
+                                                    
+                                                    <span class="o_report_line_title" t-att-title="line[col.field]" t-out="line[col.field]"/>
+                                                    
+                                                    <!-- Action buttons (e.g. Partner, Statement) -->
+                                                    <t t-if="line.action_buttons &amp;&amp; line.action_buttons.length">
+                                                        <t t-foreach="line.action_buttons" t-as="btn" t-key="btn.action">
+                                                            <button t-att-class="'btn btn-sm shadow-none ms-2 ' + (btn.class || 'o_report_action_btn')" 
+                                                                    t-on-click.stop="() => this.onActionClicked(line, btn.action)">
+                                                                <t t-out="btn.label"/>
+                                                            </button>
+                                                        </t>
+                                                    </t>
+
+                                                    <!-- GL Journal Items Button -->
+                                                    <t t-if="this.state.model_name === 'account.report.general.ledger' &amp;&amp; ['group', 'account'].includes(line.type)">
+                                                        <button class="btn btn-sm o_report_gl_btn ms-2 text-muted shadow-none" 
+                                                                title="View Journal Items"
+                                                                t-on-click.stop="() => this.onActionClicked(line, 'open_journal_items')">
+                                                            Journal Items
+                                                        </button>
+                                                    </t>
+
+                                                    <!-- 3-Dot Dropdown Menu for Move Lines, Accounts and other reports -->
+                                                    <t t-elif="['account', 'move_line'].includes(line.type) || line.account_id || (line.account_ids &amp;&amp; line.account_ids.length) || line.move_id || line.move_line_id || (line.type === 'tax' &amp;&amp; line.tax_id) || line.asset_id">
+                                                        <div class="dropdown d-inline-block ms-1 position-relative o_dynamic_report_dropdown">
+                                                            <button class="btn btn-sm btn-link p-0 o_report_options_btn border-0 shadow-none" 
+                                                                    type="button" 
+                                                                    title="Options"
+                                                                    t-on-click.stop="(ev) => this.toggleLineDropdown(line.id, ev)">
+                                                                <svg class="o_report_options_svg" width="4" height="14" viewBox="0 0 4 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                    <circle cx="2" cy="2" r="1.5"/>
+                                                                    <circle cx="2" cy="7" r="1.5"/>
+                                                                    <circle cx="2" cy="12" r="1.5"/>
+                                                                </svg>
+                                                            </button>
+                                                            <div t-if="this.state.openDropdownLineId === line.id" 
+                                                                 class="dropdown-menu show shadow border py-1 bg-white" 
+                                                                 t-att-style="(this.state.dropdownIsDropup ? 'bottom: 100%; top: auto; margin-bottom: 6px;' : 'top: 100%; margin-top: 2px;') + ' display: block; position: absolute; left: 0; z-index: 9999; min-width: 170px; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); border: 1px solid #cbd5e1;'">
+                                                                <t t-if="line.asset_id">
+                                                                    <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                       style="font-size: 0.85rem;"
+                                                                       t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_asset'); }">
+                                                                        <i class="fa fa-cubes me-2 text-primary"></i>
+                                                                        <span>View Asset</span>
+                                                                    </a>
+                                                                </t>
+                                                                <t t-elif="line.move_id">
+                                                                    <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                       style="font-size: 0.85rem;"
+                                                                       t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_journal_entry'); }">
+                                                                        <i class="fa fa-file-text-o me-2 text-primary"></i>
+                                                                        <span>
+                                                                            <t t-if="['out_invoice', 'out_refund'].includes(line.move_type)">View Invoice</t>
+                                                                            <t t-elif="['in_invoice', 'in_refund'].includes(line.move_type)">View Bill</t>
+                                                                            <t t-else="">View Journal Entry</t>
+                                                                        </span>
+                                                                    </a>
+                                                                </t>
+                                                                <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                   style="font-size: 0.85rem;"
+                                                                   t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_journal_items'); }">
+                                                                    <i class="fa fa-list me-2 text-secondary"></i>
+                                                                    <span>Journal Items</span>
+                                                                </a>
+                                                                <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                   style="font-size: 0.85rem;"
+                                                                   t-on-click.stop="() => { this.toggleLineDropdown(null); this.onActionClicked(line, 'open_general_ledger'); }">
+                                                                    <i class="fa fa-book me-2 text-secondary"></i>
+                                                                    <span>General Ledger</span>
+                                                                </a>
+                                                                <t t-if="line.type === 'tax' &amp;&amp; line.tax_id">
+                                                                    <a class="dropdown-item py-1 px-3 text-dark cursor-pointer d-flex align-items-center" 
+                                                                       style="font-size: 0.85rem;"
+                                                                       t-on-click.stop="() => { this.toggleLineDropdown(null); this.onAuditTax(line); }">
+                                                                        <i class="fa fa-search me-2 text-info"></i>
+                                                                        <span>Audit Tax</span>
+                                                                    </a>
+                                                                </t>
+                                                            </div>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-if="col.field === 'docs_count' and line.docs_count and line.journal_id">
+                                                    <a class="text-dark fw-semibold text-decoration-none cursor-pointer" 
+                                                       t-on-click.stop="() => this.onActionClicked(line, 'open_documents')"
+                                                       t-out="line.docs_count"/>
+                                                </t>
+                                                <t t-elif="col.field === 'draft_count' and line.draft_count !== '' and line.draft_count !== undefined and line.journal_id">
+                                                    <a t-att-class="'text-decoration-none cursor-pointer ' + (line.draft_count > 0 ? 'text-primary fw-semibold' : 'text-muted')" 
+                                                       t-on-click.stop="() => this.onActionClicked(line, 'open_to_review')"
+                                                       t-out="line.draft_count"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-att-class="this.getCellValueClass(line[col.field], col)"
+                                                          t-out="this.formatCellValue(line[col.field], line, col)"/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

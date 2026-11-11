@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="helpdesk_landing_page_knowledge" inherit_id="helpdesk_management_pro.helpdesk_landing_page" name="Help Center: Knowledge">
+        <!-- Knowledge search results -->
+        <xpath expr="//div[@id='helpdesk_search_results']" position="inside">
+            <a t-foreach="search_results.get('articles', [])" t-as="article" t-attf-href="/knowledge/article/{{ article.id }}" class="list-group-item list-group-item-action px-0">
+                <span class="badge text-bg-light border me-2">Knowledge</span><t t-out="article.name"/>
+            </a>
+        </xpath>
+
+        <!-- Knowledge card, first in the help center cards -->
+        <xpath expr="//div[@id='helpdesk_help_center_cards']" position="inside">
+            <div class="col-md-4 mb-4 order-first" t-if="show_knowledge">
+                <div class="card border-0 rounded shadow h-100" style="border-radius: 8px !important;">
+                    <div class="card-body p-4 pt-5 d-flex flex-column">
+                        <h3 class="fw-bold text-dark mb-2">Knowledge Base</h3>
+                        <p class="text-muted mb-4 flex-grow-1">Find answers in our articles, guides and best practices.</p>
+                        <div class="mb-4" t-if="articles">
+                            <h6 class="text-muted small fw-bold text-uppercase mb-2">Quick Links</h6>
+                            <t t-foreach="articles[:5]" t-as="article">
+                                <a t-attf-href="/knowledge/article/{{ article.id }}" class="d-block p-2 bg-light rounded text-dark text-decoration-none border mb-2">
+                                    <t t-out="article.icon or ''"/> <t t-out="article.name"/>
+                                </a>
+                            </t>
+                        </div>
+                        <a t-if="root_articles" t-attf-href="/knowledge/article/{{ root_articles[0].id }}" class="btn w-100 fw-bold mt-auto" style="background-color: #E7E0F3; color: #4B3A6B; border: none;">Browse Articles</a>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hide redundant Account Holder Name field in Bank Account form under Account module (view_partner_bank_form_inherit_account primary view) -->
+    <record id="view_partner_bank_form_inherit_account_hds" model="ir.ui.view">
+        <field name="name">res.partner.bank.form.inherit.account.hds</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="account.view_partner_bank_form_inherit_account"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='holder_name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

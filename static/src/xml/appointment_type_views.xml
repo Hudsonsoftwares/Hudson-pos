@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- List View Buttons -->
+    <t t-name="appointment.appointment_type_list.Buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary">
+        <xpath expr="." position="inside">
+            <button class="btn btn-secondary ms-1" t-on-click="this.onClickShare">
+                Share
+            </button>
+        </xpath>
+    </t>
+
+    <!-- Kanban View Buttons -->
+    <t t-name="appointment.appointment_type_kanban.Buttons" t-inherit="web.KanbanView.Buttons" t-inherit-mode="primary">
+        <xpath expr="." position="inside">
+            <button class="btn btn-secondary ms-1" t-on-click="this.onClickShare">
+                Share
+            </button>
+        </xpath>
+    </t>
+</templates>

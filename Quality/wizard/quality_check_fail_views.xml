@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="quality_check_fail_view_form" model="ir.ui.view">
+        <field name="name">quality.check.fail.view.form</field>
+        <field name="model">quality.check.fail</field>
+        <field name="arch" type="xml">
+            <form string="Quality Check Failed">
+                <field name="check_id" invisible="1"/>
+                <field name="test_type" invisible="1"/>
+                <field name="quality_check_wizard_id" invisible="1"/>
+                <field name="allowed_location_ids" invisible="1"/>
+                <group>
+                    <group>
+                        <!-- control point defines failure locations: pick one of them -->
+                        <field name="failure_location_id" widget="badges_many2one"
+                               domain="[('id', 'in', allowed_location_ids)]"
+                               options="{'no_create': True, 'no_open': True}"
+                               invisible="not allowed_location_ids"
+                               required="allowed_location_ids"/>
+                        <!-- no failure locations on the control point: any internal location (optional) -->
+                        <field name="failure_location_id"
+                               invisible="allowed_location_ids"/>
+                    </group>
+                    <group invisible="test_type != 'measure' and not failure_message">
+                        <field name="message" nolabel="1" colspan="2" invisible="test_type != 'measure'"/>
+                        <!-- "Message If Failure" of the control point (copied on the check) -->
+                        <field name="failure_message" nolabel="1" colspan="2" readonly="1"
+                               invisible="not failure_message"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Confirm Measure" name="action_confirm" type="object" class="btn-primary"
+                            invisible="test_type != 'measure'"/>
+                    <button string="Correct Measure" special="cancel" class="btn-secondary"
+                            invisible="test_type != 'measure'"/>
+                    <button string="Confirm" name="action_confirm" type="object" class="btn-primary"
+                            invisible="test_type == 'measure'"/>
+                    <button string="Back" special="cancel" class="btn-secondary"
+                            invisible="test_type == 'measure'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

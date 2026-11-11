@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Paperformat: Landscape A4 with compact margins -->
+    <record id="paperformat_salary_reports_landscape" model="report.paperformat">
+        <field name="name">Salary Reports Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">6</field>
+        <field name="margin_right">6</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">4</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Paperformat: Portrait A4 for Yearly Salary by Employee (vertical layout) -->
+    <record id="paperformat_yearly_salary_portrait" model="report.paperformat">
+        <field name="name">Yearly Salary Employee Portrait</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">4</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- 1. Salary Statement Report Actions -->
+    <record id="action_report_salary_statement" model="ir.actions.report">
+        <field name="name">Salary Statement</field>
+        <field name="model">hds.salary.statement.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_salary_statement_template</field>
+        <field name="print_report_name">'Salary_Statement_%s_%s' % (object.month, object.year)</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_salary_statement_line" model="ir.actions.report">
+        <field name="name">Salary Statement Report</field>
+        <field name="model">hds.salary.statement.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_salary_statement_employee_template</field>
+        <field name="print_report_name">'%s_Salary_Statement_%s_%s' % (object.employee_id.name, object.statement_id.month, object.statement_id.year)</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- 2. Salary Register Wizard Report Action -->
+    <record id="action_report_salary_register" model="ir.actions.report">
+        <field name="name">Salary Register</field>
+        <field name="model">hds.salary.register.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_salary_register_template</field>
+<field name="print_report_name">'Salary_Register_%s_to_%s' % (object.date_from, object.date_to)</field>
+        <field name="paperformat_id" ref="paperformat_salary_reports_landscape"/>
+    </record>
+
+    <!-- 3. Yearly Salary by Employee Report Action -->
+    <record id="action_report_yearly_salary_employee" model="ir.actions.report">
+        <field name="name">Yearly Salary by Employee</field>
+        <field name="model">hds.yearly.salary.employee.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_yearly_salary_employee_template</field>
+        <field name="print_report_name">'Yearly_Salary_Report_%s' % object.year</field>
+        <field name="paperformat_id" ref="paperformat_yearly_salary_portrait"/>
+    </record>
+
+    <!-- 4. ESIC Monthly Contribution Report Action -->
+    <record id="action_report_esic" model="ir.actions.report">
+        <field name="name">ESIC Monthly Contribution Report</field>
+        <field name="model">hds.esic.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_esic_template</field>
+<field name="print_report_name">'ESIC_Report_%s_%s' % (object.month, object.year)</field>
+        <field name="paperformat_id" ref="paperformat_salary_reports_landscape"/>
+    </record>
+
+    <!-- 5. Professional Tax (PT) Report Action -->
+    <record id="action_report_pt" model="ir.actions.report">
+        <field name="name">Professional Tax Report</field>
+        <field name="model">hds.pt.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_pt_template</field>
+<field name="print_report_name">'PT_Report_%s_%s' % (object.month, object.year)</field>
+        <field name="paperformat_id" ref="paperformat_salary_reports_landscape"/>
+    </record>
+
+    <!-- 6. Labour Welfare Fund (LWF) Report Action -->
+    <record id="action_report_lwf" model="ir.actions.report">
+        <field name="name">Labour Welfare Fund Report</field>
+        <field name="model">hds.lwf.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_lwf_template</field>
+<field name="print_report_name">'LWF_Report_%s' % (object.date_from.year if object.date_from else '')</field>
+        <field name="paperformat_id" ref="paperformat_salary_reports_landscape"/>
+    </record>
+
+    <!-- 7. Gratuity Calculation Report Action -->
+    <record id="action_report_gratuity" model="ir.actions.report">
+        <field name="name">Gratuity Calculation Report</field>
+        <field name="model">hds.gratuity.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_in_payroll.report_gratuity_template</field>
+<field name="print_report_name">'Gratuity_Report_%s' % object.id</field>
+        <field name="paperformat_id" ref="paperformat_salary_reports_landscape"/>
+    </record>
+
+    <!-- Common CSS Styles Template -->
+    <template id="salary_reports_style">
+        <style>
+            .rpt-container {
+                font-family: 'Helvetica Neue', Helvetica, 'DejaVu Sans', Arial, sans-serif;
+                font-size: 8px;
+                color: #2c3e50;
+                width: 100%;
+            }
+            .rpt-header {
+                border-bottom: 2px solid #1F4E78;
+                padding-bottom: 6px;
+                margin-bottom: 8px;
+            }
+            .rpt-title {
+                font-size: 14px;
+                font-weight: bold;
+                color: #1F4E78;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .rpt-subtitle {
+                font-size: 9px;
+                color: #555555;
+            }
+            .rpt-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 6px;
+                table-layout: fixed;
+            }
+            .rpt-table th {
+                background-color: #1F4E78;
+                color: #ffffff;
+                font-size: 7.5px;
+                font-weight: bold;
+                padding: 4px 2px;
+                text-align: center;
+                border: 0.5px solid #dcdcdc;
+                word-wrap: break-word;
+            }
+            .rpt-table th.text-left {
+                text-align: left !important;
+            }
+            .rpt-table th.text-right {
+                text-align: right !important;
+            }
+            .rpt-table th.text-center {
+                text-align: center !important;
+            }
+            .rpt-table th.th-earn {
+                background-color: #2E75B6;
+            }
+            .rpt-table th.th-ded {
+                background-color: #C55A11;
+            }
+            .rpt-table th.th-net {
+                background-color: #70AD47;
+            }
+            .rpt-table th.th-er {
+                background-color: #4B6F96;
+            }
+            .rpt-table th.th-ctc {
+                background-color: #1E4620;
+            }
+            .rpt-table td {
+                font-size: 7px;
+                padding: 3px 2px;
+                border: 0.5px solid #e0e0e0;
+                vertical-align: middle;
+                word-wrap: break-word;
+            }
+            .rpt-table tr:nth-child(even) td {
+                background-color: #f9fbfd;
+            }
+            .rpt-table .text-right {
+                text-align: right;
+            }
+            .rpt-table .text-center {
+                text-align: center;
+            }
+            .rpt-table .text-left {
+                text-align: left;
+            }
+            .rpt-table tr.total-row td {
+                font-weight: bold;
+                background-color: #D9E1F2 !important;
+                border-top: 1.5px solid #1F4E78;
+                border-bottom: 1.5px solid #1F4E78;
+                color: #000000;
+                font-size: 7.5px;
+            }
+            .badge-status {
+                display: inline-block;
+                padding: 2px 6px;
+                font-size: 8px;
+                font-weight: bold;
+                border-radius: 3px;
+                background-color: #e9ecef;
+                color: #495057;
+            }
+        </style>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TEMPLATE 1: SALARY STATEMENT REPORT                                 -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_salary_statement_employee_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="line">
+                <div class="article" t-att-data-oe-model="line._name" t-att-data-oe-id="line.id" style="font-family: Arial, Helvetica, sans-serif; color: #222; font-size: 13px; line-height: 1.4; padding: 25px 35px; page-break-after: always;">
+                    
+                    <!-- Top Running Header (Timestamp | Company | Page) -->
+                    <div style="font-size: 11px; color: #333; margin-bottom: 25px;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 33%; text-align: left; font-size: 11px; color: #333;">
+                                    <span t-out="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                                </td>
+                                <td style="width: 34%; text-align: center; font-size: 11px; color: #333;">
+                                    <span t-out="line.company_id.name or line.env.company.name or ''"/>
+                                </td>
+                                <td style="width: 33%; text-align: right; font-size: 11px; color: #333;">
+                                    1 / 1
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Company Name Header -->
+                    <div style="margin-top: 15px; margin-bottom: 5px;">
+                        <h1 style="font-size: 24px; font-weight: normal; margin: 0; color: #222;">
+                            <span t-out="line.company_id.name or line.env.company.name or ''"/>
+                        </h1>
+                    </div>
+
+                    <!-- Report Title -->
+                    <div style="margin-top: 0; margin-bottom: 15px;">
+                        <h2 style="font-size: 20px; font-weight: normal; margin: 0; color: #222;">
+                            Salary Statement Report, <span t-out="line.get_statement_month_year()"/>
+                        </h2>
+                    </div>
+
+                    <!-- Divider Line -->
+                    <div style="border-top: 1.5px solid #222; margin: 12px 0 10px 0;"/>
+
+                    <!-- Employee Information Grid -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 13px;">
+                        <tr>
+                            <td style="width: 25%; font-weight: bold; padding: 3px 0; color: #111;">Employee Name :</td>
+                            <td style="width: 35%; padding: 3px 0; color: #222;"><span t-out="line.employee_id.name"/></td>
+                            <td style="width: 20%; font-weight: bold; padding: 3px 0; color: #111;">Date of Joining :</td>
+                            <td style="width: 20%; padding: 3px 0; color: #222;"><span t-out="line.date_of_joining or '-'"/></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; padding: 3px 0; color: #111;">Designation :</td>
+                            <td style="padding: 3px 0; color: #222;"><span t-out="line.designation or '-'"/></td>
+                            <td style="font-weight: bold; padding: 3px 0; color: #111;">Salary Effective from :</td>
+                            <td style="padding: 3px 0; color: #222;"><span t-out="line.salary_effective_from or '-'"/></td>
+                        </tr>
+                    </table>
+
+                    <!-- Divider Line -->
+                    <div style="border-top: 1.5px solid #222; margin: 10px 0 15px 0;"/>
+
+                    <!-- Salary Structure Banner -->
+                    <div style="background-color: #E6F4F6; padding: 8px 12px; font-weight: bold; font-size: 13px; color: #111; margin-bottom: 12px;">
+                        <span t-out="line.structure_name or 'India: Regular Pay'"/>
+                    </div>
+
+                    <!-- Salary Components Table -->
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #111;">
+                                <th style="text-align: left; padding: 8px 0; font-weight: bold; width: 65%;">Salary Components</th>
+                                <th style="text-align: right; padding: 8px 0; font-weight: bold; width: 35%;">Monthly Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Allowance Header -->
+                            <tr>
+                                <td colspan="2" style="padding: 12px 0 4px 0; font-weight: bold; font-size: 13.5px; color: #111;">Allowance:</td>
+                            </tr>
+                            <!-- Allowance Lines -->
+                            <t t-foreach="line.get_allowance_lines()" t-as="alw">
+                                <tr style="line-height: 22px;">
+                                    <td style="padding: 3px 0; color: #222;"><span t-out="alw['name']"/></td>
+                                    <td style="text-align: right; padding: 3px 0; color: #222;"><span t-out="alw['monthly_str']"/></td>
+                                </tr>
+                            </t>
+
+                            <!-- Deduction Header -->
+                            <tr>
+                                <td colspan="2" style="padding: 16px 0 4px 0; font-weight: bold; font-size: 13.5px; color: #111;">Deduction:</td>
+                            </tr>
+                            <!-- Deduction Lines -->
+                            <t t-foreach="line.get_deduction_lines()" t-as="ded">
+                                <tr style="line-height: 22px;">
+                                    <td style="padding: 3px 0; color: #222;"><span t-out="ded['name']"/></td>
+                                    <td style="text-align: right; padding: 3px 0; color: #222;"><span t-out="ded['monthly_str']"/></td>
+                                </tr>
+                            </t>
+
+                            <!-- Total Deduction Row -->
+                            <tr style="line-height: 22px;">
+                                <td style="padding: 3px 0; color: #222;">Total Deduction</td>
+                                <td style="text-align: right; padding: 3px 0; color: #222;"><span t-out="line.get_total_ded_monthly_str()"/></td>
+                            </tr>
+
+                            <!-- Net Salary Row -->
+                            <tr style="border-top: 1px solid #111; border-bottom: 2px solid #111; font-weight: bold; font-size: 13.5px; line-height: 28px;">
+                                <td style="padding: 6px 0; color: #111;">Net Salary</td>
+                                <td style="text-align: right; padding: 6px 0; color: #111;"><span t-out="line.get_net_monthly_str()"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_salary_statement_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lines" t-value="o.line_ids"/>
+                <t t-call="hudson_in_payroll.report_salary_statement_employee_template">
+                    <t t-set="docs" t-value="lines"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TEMPLATE 2: SALARY REGISTER WIZARD REPORT                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_salary_register_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="reg_data" t-value="o._get_salary_register_data()"/>
+                <t t-set="rows" t-value="reg_data['rows']"/>
+                <t t-set="totals" t-value="reg_data['totals']"/>
+
+                <div class="article rpt-container" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                    <t t-call="hudson_in_payroll.salary_reports_style"/>
+
+                    <div class="rpt-header">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 60%; vertical-align: middle;">
+                                    <div class="rpt-title">SALARY REGISTER REPORT</div>
+                                    <div class="rpt-subtitle">
+                                        <strong>Company:</strong> <span t-out="o.company_id.name"/> |
+                                        <strong>Period:</strong> <span t-out="o.date_from"/> to <span t-out="o.date_to"/>
+                                        <t t-if="o.struct_id">
+                                            | <strong>Structure:</strong> <span t-out="o.struct_id.name"/>
+                                        </t>
+                                    </div>
+                                </td>
+                                <td style="width: 40%; text-align: right; vertical-align: middle;">
+                                    <div class="rpt-subtitle">
+                                        <strong>Generated:</strong> <span t-out="context_timestamp(datetime.datetime.now()).strftime('%d-%b-%Y %H:%M')"/><br/>
+                                        <strong>Total Records:</strong> <span t-out="len(rows)"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <table class="rpt-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 3.5%;">Emp ID</th>
+                                <th class="text-left" style="width: 8.5%; padding-left: 4px;">Employee Name</th>
+                                <th class="text-left" style="width: 6%; padding-left: 4px;">Department</th>
+                                <th style="width: 5%;">Payslip #</th>
+                                <th style="width: 3.5%;">Month</th>
+                                <th class="th-earn" style="width: 4.5%;">Basic</th>
+                                <th class="th-earn" style="width: 4%;">HRA</th>
+                                <th class="th-earn" style="width: 4%;">Allowances</th>
+                                <th class="th-earn" style="width: 4%;">Other Earn</th>
+                                <th class="th-earn" style="width: 5%;">Gross</th>
+                                <th class="th-ded" style="width: 4%;">EE PF</th>
+                                <th class="th-ded" style="width: 3.5%;">EE ESI</th>
+                                <th class="th-ded" style="width: 3%;">PT</th>
+                                <th class="th-ded" style="width: 2.5%;">LWF</th>
+                                <th class="th-ded" style="width: 3.5%;">Other Ded</th>
+                                <th class="th-ded" style="width: 3.5%;">TDS</th>
+                                <th class="th-ded" style="width: 5%;">Total Ded</th>
+                                <th class="th-net" style="width: 5.5%;">Net Pay</th>
+                                <th class="th-er" style="width: 4%;">EPS (8.33%)</th>
+                                <th class="th-er" style="width: 4%;">EPF (3.67%)</th>
+                                <th class="th-er" style="width: 3.5%;">Admin (1%)</th>
+                                <th class="th-er" style="width: 4.5%;">Total ER PF</th>
+                                <th class="th-er" style="width: 3.5%;">ER ESI</th>
+                                <th class="th-er" style="width: 2.5%;">ER LWF</th>
+                                <th class="th-er" style="width: 3%;">Other ER</th>
+                                <th class="th-ctc" style="width: 6%;">Total CTC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="rows" t-as="r">
+                                <td class="text-left"><span t-out="r['emp_ref'] or ''"/></td>
+                                <td class="text-left" style="padding-left: 4px;"><strong><span t-out="r['emp_name'] or ''"/></strong></td>
+                                <td class="text-left" style="padding-left: 4px;"><span t-out="r['department'] or ''"/></td>
+                                <td class="text-left"><span t-out="r['payslip_num'] or ''"/></td>
+                                <td class="text-center"><span t-out="r['month'] or ''"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['basic'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['hra'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['alw'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['other_earn'])"/></td>
+                                <td class="text-right" style="font-weight: bold; background-color: #EBF1F5;"><span t-out="'{:,.2f}'.format(r['gross'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['pf_ee'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['esi_ee'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['pt'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['lwf_ee'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['other_ded'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['tds'])"/></td>
+                                <td class="text-right" style="font-weight: bold; background-color: #FDF2E9;"><span t-out="'{:,.2f}'.format(r['total_ded'])"/></td>
+                                <td class="text-right" style="font-weight: bold; background-color: #EAF2E8; color: #1e4620;"><span t-out="'{:,.2f}'.format(r['net'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['pf_er_eps'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['pf_er_share'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['pf_er_admin'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['pf_er'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['esi_er'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['lwf_er'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['other_er'])"/></td>
+                                <td class="text-right" style="font-weight: bold; background-color: #EBF1F5;"><span t-out="'{:,.2f}'.format(r['cost'])"/></td>
+                            </tr>
+
+                            <!-- Totals Row -->
+                            <tr class="total-row">
+                                <td colspan="5" class="text-center">TOTAL (<span t-out="len(rows)"/> Records)</td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_basic'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_hra'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_alw'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_other_earn'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_gross'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_pf_ee'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_esi_ee'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_pt'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_lwf_ee'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_other_ded'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_tds'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_total_ded'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_net'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(sum(r['pf_er_eps'] for r in rows))"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(sum(r['pf_er_share'] for r in rows))"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(sum(r['pf_er_admin'] for r in rows))"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_pf_er'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_esi_er'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_lwf_er'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_other_er'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(totals['tot_cost'])"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TEMPLATE 3: YEARLY SALARY BY EMPLOYEE WIZARD REPORT                 -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_yearly_salary_employee_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="yearly_data" t-value="o._get_yearly_data()"/>
+                <t t-set="s_rows" t-value="yearly_data['summary_rows']"/>
+                <t t-set="a_tots" t-value="yearly_data['annual_totals']"/>
+                <t t-set="emp_reports" t-value="yearly_data.get('employee_reports', [])"/>
+
+                <div class="article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id" style="font-family: Arial, Helvetica, sans-serif; color: #222222; font-size: 8px; line-height: 1.3; width: 100%; padding: 0; margin: 0;">
+
+                    <!-- ═══════════════════════════════════════════════════════════════════ -->
+                    <!-- PAGE 1: YEARLY SUMMARY MATRIX (Executive Dashboard & Color Table)  -->
+                    <!-- ═══════════════════════════════════════════════════════════════════ -->
+                    <div style="width: 100%; margin-bottom: 20px;">
+                        
+                        <!-- Top Header: Company & Report Title -->
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px;">
+                            <tr>
+                                <td style="border: none; padding: 0; vertical-align: middle;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #0F172A; line-height: 1.1; letter-spacing: -0.3px;">
+                                        <t t-out="o.company_id.name or o.env.company.name or ''"/>
+                                    </div>
+                                    <div style="font-size: 10px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px;">
+                                        Annual Salary Summary Statement
+                                    </div>
+                                </td>
+                                <td style="border: none; padding: 0; text-align: right; vertical-align: middle;">
+                                    <div style="display: inline-block; background-color: #1E3A8A; color: #ffffff; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 4px; letter-spacing: 0.5px;">
+                                        CALENDAR YEAR <t t-out="o.year"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Accent Line -->
+                        <div style="height: 2px; background-color: #1E3A8A; margin-bottom: 8px;"/>
+
+                        <!-- Metadata Pill Bar -->
+                        <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px; padding: 5px 10px; margin-bottom: 10px;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="border: none; padding: 0; font-size: 7.5px; color: #475569; width: 25%;">
+                                        <strong style="color: #1E293B;">Department:</strong>
+                                        <span style="color: #0F172A; font-weight: 600; margin-left: 2px;">
+                                            <t t-if="o.department_id"><t t-out="o.department_id.name"/></t>
+                                            <t t-else="">All Departments</t>
+                                        </span>
+                                    </td>
+                                    <td style="border: none; padding: 0; font-size: 7.5px; color: #475569; width: 25%;">
+                                        <strong style="color: #1E293B;">Payroll Period:</strong>
+                                        <span style="color: #0F172A; font-weight: 600; margin-left: 2px;">Jan <t t-out="o.year"/> &amp;ndash; Dec <t t-out="o.year"/></span>
+                                    </td>
+                                    <td style="border: none; padding: 0; font-size: 7.5px; color: #475569; width: 22%;">
+                                        <strong style="color: #1E293B;">Currency:</strong>
+                                        <span style="color: #0F172A; font-weight: 600; margin-left: 2px;">Indian Rupee (₹)</span>
+                                    </td>
+                                    <td style="border: none; padding: 0; font-size: 7.5px; color: #475569; text-align: right; width: 28%;">
+                                        <strong style="color: #1E293B;">Generated:</strong>
+                                        <span style="color: #0F172A; font-weight: 600; margin-left: 2px;">
+                                            <t t-out="context_timestamp(datetime.datetime.now()).strftime('%d-%b-%Y %H:%M')"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- 5 Executive KPI Metric Cards -->
+                        <table style="width: 100%; border-collapse: separate; border-spacing: 5px; margin-bottom: 12px;">
+                            <tr>
+                                <!-- Card 1: Headcount -->
+                                <td style="width: 18%; background-color: #F8FAFC; border: 1px solid #CBD5E1; border-top: 3px solid #64748B; border-radius: 4px; padding: 6px 8px; vertical-align: top;">
+                                    <div style="font-size: 6.5px; font-weight: bold; color: #64748B; text-transform: uppercase; letter-spacing: 0.4px;">Total Employees</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #0F172A; margin: 2px 0 1px 0;">
+                                        <t t-out="len(s_rows)"/>
+                                    </div>
+                                    <div style="font-size: 6px; color: #64748B;">Active in Period</div>
+                                </td>
+                                <!-- Card 2: Gross Pay -->
+                                <td style="width: 21%; background-color: #F0F7FF; border: 1px solid #BFDBFE; border-top: 3px solid #2563EB; border-radius: 4px; padding: 6px 8px; vertical-align: top;">
+                                    <div style="font-size: 6.5px; font-weight: bold; color: #1D4ED8; text-transform: uppercase; letter-spacing: 0.4px;">Annual Gross Pay</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #1E3A8A; margin: 2px 0 1px 0; white-space: nowrap;">
+                                        ₹ <t t-out="'{:,.2f}'.format(a_tots[12])"/>
+                                    </div>
+                                    <div style="font-size: 6px; color: #2563EB;">100% of Base Wages</div>
+                                </td>
+                                <!-- Card 3: Deductions -->
+                                <td style="width: 20%; background-color: #FFF7ED; border: 1px solid #FED7AA; border-top: 3px solid #EA580C; border-radius: 4px; padding: 6px 8px; vertical-align: top;">
+                                    <div style="font-size: 6.5px; font-weight: bold; color: #C2410C; text-transform: uppercase; letter-spacing: 0.4px;">Total Deductions</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #9A3412; margin: 2px 0 1px 0; white-space: nowrap;">
+                                        ₹ <t t-out="'{:,.2f}'.format(a_tots[13])"/>
+                                    </div>
+                                    <div style="font-size: 6px; color: #C2410C;">PF, ESI, PT, TDS &amp; Other</div>
+                                </td>
+                                <!-- Card 4: Net Pay -->
+                                <td style="width: 21%; background-color: #F0FDF4; border: 1px solid #BBF7D0; border-top: 3px solid #16A34A; border-radius: 4px; padding: 6px 8px; vertical-align: top;">
+                                    <div style="font-size: 6.5px; font-weight: bold; color: #15803D; text-transform: uppercase; letter-spacing: 0.4px;">Net Pay Disbursed</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #14532D; margin: 2px 0 1px 0; white-space: nowrap;">
+                                        ₹ <t t-out="'{:,.2f}'.format(a_tots[14])"/>
+                                    </div>
+                                    <div style="font-size: 6px; color: #15803D;">Total Employee Take-Home</div>
+                                </td>
+                                <!-- Card 5: CTC -->
+                                <td style="width: 20%; background-color: #FAF5FF; border: 1px solid #E9D5FF; border-top: 3px solid #7C3AED; border-radius: 4px; padding: 6px 8px; vertical-align: top;">
+                                    <div style="font-size: 6.5px; font-weight: bold; color: #6D28D9; text-transform: uppercase; letter-spacing: 0.4px;">Total CTC (Cost to Co.)</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #4C1D95; margin: 2px 0 1px 0; white-space: nowrap;">
+                                        ₹ <t t-out="'{:,.2f}'.format(a_tots[15])"/>
+                                    </div>
+                                    <div style="font-size: 6px; color: #6D28D9;">Gross + Employer Contrib.</div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Table Section Header -->
+                        <div style="display: table; width: 100%; margin-bottom: 5px;">
+                            <div style="display: table-cell; vertical-align: middle;">
+                                <div style="font-size: 9px; font-weight: bold; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px; border-left: 3px solid #1E3A8A; padding-left: 6px;">
+                                    Monthly Net Pay Disbursement &amp; Annual Summary
+                                </div>
+                            </div>
+                            <div style="display: table-cell; text-align: right; vertical-align: middle; font-size: 6.5px; color: #64748B;">
+                                All monthly columns represent Net Take-Home Pay (₹) &amp;bull; (<span style="color:#94a3b8;">&amp;mdash;</span>) indicates no payslip activity
+                            </div>
+                        </div>
+
+                        <!-- 19-Column Summary Matrix Table (100% Inline-Styled Executive Color Table) -->
+                        <table style="width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 3px; border: 0.5px solid #CBD5E1;">
+                            <thead>
+                                <tr>
+                                    <!-- Employee Info Headers (Corporate Navy) -->
+                                    <th style="width: 5.5%; background-color: #1E3A5F; color: #ffffff; font-size: 6.5px; font-weight: bold; padding: 5px 2px; text-align: left; border: 0.5px solid #162E4A; overflow: hidden; white-space: nowrap;">Emp Code</th>
+                                    <th style="width: 11.5%; background-color: #1E3A5F; color: #ffffff; font-size: 6.5px; font-weight: bold; padding: 5px 3px; text-align: left; border: 0.5px solid #162E4A; overflow: hidden; white-space: nowrap;">Employee Name</th>
+                                    <th style="width: 8.0%; background-color: #1E3A5F; color: #ffffff; font-size: 6.5px; font-weight: bold; padding: 5px 2px; text-align: left; border: 0.5px solid #162E4A; overflow: hidden; white-space: nowrap;">Department</th>
+                                    <!-- Month Headers (Vibrant Blue) -->
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Jan</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Feb</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Mar</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Apr</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">May</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Jun</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Jul</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Aug</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Sep</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Oct</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Nov</th>
+                                    <th style="width: 3.75%; background-color: #2563EB; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: center; border: 0.5px solid #1D4ED8;">Dec</th>
+                                    <!-- Annual Financial Totals Headers -->
+                                    <th style="width: 7.5%; background-color: #0F172A; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: right; border: 0.5px solid #020617; overflow: hidden; white-space: nowrap;">Ann. Gross</th>
+                                    <th style="width: 7.0%; background-color: #B45309; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: right; border: 0.5px solid #92400E; overflow: hidden; white-space: nowrap;">Ann. Ded.</th>
+                                    <th style="width: 7.5%; background-color: #15803D; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: right; border: 0.5px solid #166534; overflow: hidden; white-space: nowrap;">Ann. Net</th>
+                                    <th style="width: 7.5%; background-color: #1E3A8A; color: #ffffff; font-size: 6px; font-weight: bold; padding: 5px 1px; text-align: right; border: 0.5px solid #172554; overflow: hidden; white-space: nowrap;">Ann. CTC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="s_rows" t-as="sr">
+                                    <tr t-att-style="'background-color: %s;' % ('#ffffff' if sr_index % 2 == 0 else '#F8FAFC')">
+                                        <td style="font-size: 6px; font-weight: 600; color: #1E293B; padding: 5px 2px; border: 0.5px solid #CBD5E1; text-align: left; overflow: hidden; white-space: nowrap;"><t t-out="sr['emp_ref']"/></td>
+                                        <td style="font-size: 6px; font-weight: bold; color: #0F172A; padding: 5px 3px; border: 0.5px solid #CBD5E1; text-align: left; overflow: hidden; white-space: nowrap;"><t t-out="sr['emp_name']"/></td>
+                                        <td style="font-size: 6px; color: #475569; padding: 5px 2px; border: 0.5px solid #CBD5E1; text-align: left; overflow: hidden; white-space: nowrap;"><t t-out="sr['department'] or '-'"/></td>
+                                        <!-- Months -->
+                                        <t t-foreach="sr['months']" t-as="m_amt">
+                                            <td style="font-size: 5.8px; color: #1E293B; padding: 5px 1px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;">
+                                                <t t-if="m_amt != 0">
+                                                    <t t-out="'{:,.0f}'.format(m_amt)"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #94A3B8;">&amp;mdash;</span>
+                                                </t>
+                                            </td>
+                                        </t>
+                                        <!-- Milestone Highlight Columns -->
+                                        <td style="font-size: 5.8px; font-weight: bold; color: #1E3A8A; background-color: #EFF6FF !important; padding: 5px 1px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(sr['ann_gross'])"/></td>
+                                        <td style="font-size: 5.8px; font-weight: bold; color: #9A3412; background-color: #FFF7ED !important; padding: 5px 1px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(sr['ann_ded'])"/></td>
+                                        <td style="font-size: 5.8px; font-weight: bold; color: #14532D; background-color: #F0FDF4 !important; padding: 5px 1px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(sr['ann_net'])"/></td>
+                                        <td style="font-size: 5.8px; font-weight: bold; color: #1E3A8A; background-color: #EFF6FF !important; padding: 5px 1px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(sr['ann_ctc'])"/></td>
+                                    </tr>
+                                </t>
+                                <!-- Total Row -->
+                                <tr style="background-color: #E2E8F0 !important; border-top: 1.5px solid #1E3A8A !important; border-bottom: 2.5px solid #1E3A8A !important; font-weight: bold;">
+                                    <td colspan="3" style="font-size: 6.5px; font-weight: bold; color: #0F172A; padding: 5px 3px; border: 0.5px solid #94A3B8; text-align: left; white-space: nowrap;">
+                                        TOTAL (<t t-out="len(s_rows)"/> Employees)
+                                    </td>
+                                    <t t-foreach="a_tots[:12]" t-as="m_tot">
+                                        <td style="font-size: 5.8px; font-weight: bold; color: #0F172A; padding: 5px 1px; border: 0.5px solid #94A3B8; text-align: right; white-space: nowrap;">
+                                            <t t-if="m_tot != 0">
+                                                <t t-out="'{:,.0f}'.format(m_tot)"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #94A3B8;">&amp;mdash;</span>
+                                            </t>
+                                        </td>
+                                    </t>
+                                    <td style="font-size: 5.8px; font-weight: bold; color: #1E3A8A; background-color: #DBEAFE !important; padding: 5px 1px; border: 0.5px solid #94A3B8; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(a_tots[12])"/></td>
+                                    <td style="font-size: 5.8px; font-weight: bold; color: #9A3412; background-color: #FFEDD5 !important; padding: 5px 1px; border: 0.5px solid #94A3B8; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(a_tots[13])"/></td>
+                                    <td style="font-size: 5.8px; font-weight: bold; color: #14532D; background-color: #DCFCE7 !important; padding: 5px 1px; border: 0.5px solid #94A3B8; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(a_tots[14])"/></td>
+                                    <td style="font-size: 5.8px; font-weight: bold; color: #1E3A8A; background-color: #DBEAFE !important; padding: 5px 1px; border: 0.5px solid #94A3B8; text-align: right; white-space: nowrap;"><t t-out="'{:,.0f}'.format(a_tots[15])"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Verification / Sign-off Block -->
+                        <div style="margin-top: 25px; padding-top: 10px;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="width: 30%; border: none; padding: 0; text-align: center;">
+                                        <div style="border-top: 1px solid #94A3B8; width: 80%; margin: 0 auto 4px auto;"/>
+                                        <div style="font-size: 7px; font-weight: bold; color: #334155;">Prepared By</div>
+                                        <div style="font-size: 6px; color: #64748B;">HR &amp; Payroll Officer</div>
+                                    </td>
+                                    <td style="width: 40%; border: none; padding: 0; text-align: center;">
+                                        <div style="border-top: 1px solid #94A3B8; width: 60%; margin: 0 auto 4px auto;"/>
+                                        <div style="font-size: 7px; font-weight: bold; color: #334155;">Verified By</div>
+                                        <div style="font-size: 6px; color: #64748B;">Finance &amp; Accounts Manager</div>
+                                    </td>
+                                    <td style="width: 30%; border: none; padding: 0; text-align: center;">
+                                        <div style="border-top: 1px solid #94A3B8; width: 80%; margin: 0 auto 4px auto;"/>
+                                        <div style="font-size: 7px; font-weight: bold; color: #334155;">Authorized Signature</div>
+                                        <div style="font-size: 6px; color: #64748B;">Director / Managing Partner</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Footer -->
+                        <div style="font-size: 6.5px; color: #94A3B8; margin-top: 20px; border-top: 0.5px solid #E2E8F0; padding-top: 4px; display: table; width: 100%;">
+                            <div style="display: table-cell; text-align: left;">
+                                Confidential &amp;bull; For Internal Payroll &amp; Compliance Use Only
+                            </div>
+                            <div style="display: table-cell; text-align: right;">
+                                <t t-out="o.company_id.name"/> &amp;mdash; Annual Salary Summary <t t-out="o.year"/> &amp;mdash; Generated <t t-out="context_timestamp(datetime.datetime.now()).strftime('%d-%b-%Y %H:%M')"/>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════════════════════ -->
+                    <!-- PAGE 2+: PER-EMPLOYEE DETAILED ANNUAL STATEMENT (VERTICAL THEME)    -->
+                    <!-- ═══════════════════════════════════════════════════════════════════ -->
+                    <t t-foreach="emp_reports" t-as="emp">
+                        <div style="page-break-before: always;"/>
+
+                        <div style="width: 100%;">
+                            <!-- Company Header (Matching theme) -->
+                            <div style="margin-bottom: 2px;">
+                                <h1 style="font-size: 20px; font-weight: bold; color: #1e293b; margin: 0; padding: 0; line-height: 1.2;">
+                                    <t t-out="o.company_id.name or o.env.company.name or ''"/>
+                                </h1>
+                            </div>
+                            <div style="font-size: 11px; color: #475569; font-weight: 500; margin-top: 2px; margin-bottom: 8px;">
+                                Year - <t t-out="o.year"/>
+                            </div>
+                            <div style="border-top: 1.5px solid #1F4E78; margin-bottom: 10px;"/>
+
+                            <!-- Employee Info Block (Theme from image: card style) -->
+                            <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px; padding: 7px 12px; margin-bottom: 10px;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="width: 50%; font-size: 9px; padding: 2.5px 0; color: #334155; border: none;">
+                                            <strong>Employee Name :-</strong>
+                                            <span style="color: #0f172a; font-weight: bold; margin-left: 4px;"><t t-out="emp['name']"/></span>
+                                        </td>
+                                        <td style="width: 50%; font-size: 9px; padding: 2.5px 0; color: #334155; border: none;">
+                                            <strong>Designation :-</strong>
+                                            <span style="color: #0f172a; font-weight: bold; margin-left: 4px;"><t t-out="emp['job'] or '-'"/></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size: 9px; padding: 2.5px 0; color: #334155; border: none;">
+                                            <strong>Employee Code :-</strong>
+                                            <span style="color: #0f172a; font-weight: bold; margin-left: 4px;"><t t-out="emp['code'] or '-'"/></span>
+                                        </td>
+                                        <td style="font-size: 9px; padding: 2.5px 0; color: #334155; border: none;">
+                                            <strong>Department :-</strong>
+                                            <span style="color: #0f172a; font-weight: bold; margin-left: 4px;"><t t-out="emp['department'] or '-'"/></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Salary Components Title -->
+                            <div style="font-size: 9.5px; font-weight: bold; color: #1F4E78; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; padding-left: 5px; border-left: 3px solid #1F4E78;">
+                                Salary Components
+                            </div>
+
+                            <!-- Vertical Color Table: 11 Columns (100% Inline Styles) -->
+                            <table style="width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 3px; border: 0.5px solid #CBD5E1;">
+                                <thead>
+                                    <tr>
+                                        <!-- Month (Navy) -->
+                                        <th style="width: 10.5%; background-color: #1F4E78; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 6px; text-align: left; border: 0.5px solid #163857; white-space: nowrap;">Month</th>
+                                        <!-- Earnings Headers (Royal Blue) -->
+                                        <th style="width: 9.0%; background-color: #2E75B6; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #235c91; white-space: nowrap;">Basic</th>
+                                        <th style="width: 8.0%; background-color: #2E75B6; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #235c91; white-space: nowrap;">HRA</th>
+                                        <th style="width: 9.0%; background-color: #2E75B6; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #235c91; white-space: nowrap;">Allowances</th>
+                                        <th style="width: 10.5%; background-color: #1F4E78; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #163857; white-space: nowrap;">Gross Pay</th>
+                                        <!-- Deductions Headers (Rust Orange) -->
+                                        <th style="width: 7.5%; background-color: #C55A11; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #9e470d; white-space: nowrap;">PF</th>
+                                        <th style="width: 6.5%; background-color: #C55A11; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #9e470d; white-space: nowrap;">ESI</th>
+                                        <th style="width: 7.5%; background-color: #C55A11; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #9e470d; white-space: nowrap;">PT</th>
+                                        <th style="width: 9.5%; background-color: #C55A11; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #9e470d; white-space: nowrap;">TDS/Other</th>
+                                        <th style="width: 10.5%; background-color: #A04000; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 3px; text-align: right; border: 0.5px solid #7d3200; white-space: nowrap;">Total Ded.</th>
+                                        <!-- Net Pay Header (Forest Green) -->
+                                        <th style="width: 11.5%; background-color: #2E7D32; color: #ffffff; font-size: 7.5px; font-weight: bold; padding: 5px 4px; text-align: right; border: 0.5px solid #205923; white-space: nowrap;">Net Pay</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="emp['month_rows']" t-as="mr">
+                                        <tr t-att-style="'background-color: %s;' % ('#ffffff' if mr_index % 2 == 0 else '#f8fafc')">
+                                            <td style="font-size: 7.5px; font-weight: bold; color: #1F4E78; padding: 4.5px 6px; border: 0.5px solid #CBD5E1; text-align: left; white-space: nowrap;"><t t-out="mr['month']"/></td>
+                                            <td style="font-size: 7.5px; color: #222222; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['basic_str']"/></td>
+                                            <td style="font-size: 7.5px; color: #222222; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['hra_str']"/></td>
+                                            <td style="font-size: 7.5px; color: #222222; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['allowances_str']"/></td>
+                                            <td style="font-size: 7.5px; font-weight: bold; color: #0D3B66; background-color: #EBF3FA !important; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['gross_str']"/></td>
+                                            <td style="font-size: 7.5px; color: #222222; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['pf_str']"/></td>
+                                            <td style="font-size: 7.5px; color: #222222; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['esi_str']"/></td>
+                                            <td style="font-size: 7.5px; color: #222222; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['pt_str']"/></td>
+                                            <td style="font-size: 7.5px; color: #222222; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['tds_str']"/></td>
+                                            <td style="font-size: 7.5px; font-weight: bold; color: #873600; background-color: #FDF2E9 !important; padding: 4.5px 3px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['deductions_str']"/></td>
+                                            <td style="font-size: 7.5px; font-weight: bold; color: #1B5E20; background-color: #EAF5EA !important; padding: 4.5px 4px; border: 0.5px solid #CBD5E1; text-align: right; white-space: nowrap;"><t t-out="mr['net_str']"/></td>
+                                        </tr>
+                                    </t>
+                                    <!-- Annual Total Row (Strong Highlight) -->
+                                    <tr style="background-color: #D9E1F2 !important; border-top: 2px solid #1F4E78 !important; border-bottom: 2.5px solid #1F4E78 !important; font-weight: bold;">
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 6px; border: 0.5px solid #a8b8d0; text-align: left; white-space: nowrap;">Annual Total</td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['basic_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['hra_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['allowances_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #0D3B66; background-color: #D0E1F9 !important; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['gross_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['pf_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['esi_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['pt_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #000000; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['tds_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #873600; background-color: #F8D7DA !important; padding: 5px 3px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['deductions_str']"/></td>
+                                        <td style="font-size: 8px; font-weight: bold; color: #1B5E20; background-color: #D4EDDA !important; padding: 5px 4px; border: 0.5px solid #a8b8d0; text-align: right; white-space: nowrap;"><t t-out="emp['total']['net_str']"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div style="font-size: 7px; color: #888888; margin-top: 10px; border-top: 0.5px solid #CBD5E1; padding-top: 3px; text-align: right;">
+                                <t t-out="o.company_id.name"/> &amp;mdash; <t t-out="emp['name']"/> &amp;mdash; Annual Salary Statement <t t-out="o.year"/>
+                            </div>
+                        </div>
+                    </t>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TEMPLATE 4: ESIC MONTHLY CONTRIBUTION REPORT                       -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_esic_template">
+        <t t-call="web.html_container">
+            <t t-call="hudson_in_payroll.salary_reports_style"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="data" t-value="o._get_esic_data()"/>
+                <t t-set="rows" t-value="data['esic_rows']"/>
+                <div class="page rpt-container">
+                    <div class="rpt-header">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="border: none; width: 70%;">
+                                    <div class="rpt-title">
+                                        <t t-if="o.report_type == 'esic_report'">ESIC - MONTHLY STATEMENT</t>
+                                        <t t-else="">ESIC - SUMMARY</t>
+                                    </div>
+                                    <div class="rpt-subtitle">
+                                        Establishment Name: <strong><span t-out="o.company_id.name"/></strong>
+                                        <t t-if="data.get('est_code')"> | Establishment ID: <strong><span t-out="data['est_code']"/></strong></t>
+                                        | Period: <strong><span t-out="o.month"/> / <span t-out="o.year"/></strong>
+                                    </div>
+                                </td>
+                                <td style="border: none; width: 30%; text-align: right;">
+                                    <span style="font-size: 8px; color: #777;">Printed: <span t-out="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Layout 1: ESIC Monthly Statement Layout -->
+                    <t t-if="o.report_type == 'esic_report'">
+                        <table class="rpt-table">
+                            <thead>
+                                <tr style="background-color: #D9D9D9; color: #000000;">
+                                    <th style="width: 18%; text-align: left; padding-left: 6px; color: #000000; background-color: #D9D9D9;">IP NUMBER (10 DIGITS)</th>
+                                    <th class="text-left" style="width: 26%; text-align: left; padding-left: 6px; color: #000000; background-color: #D9D9D9;">IP NAME</th>
+                                    <th style="width: 14%; text-align: center; color: #000000; background-color: #D9D9D9;">NO OF DAYS</th>
+                                    <th class="text-right" style="width: 16%; text-align: right; padding-right: 6px; color: #000000; background-color: #D9D9D9;">TOTAL MONTHLY WAGES</th>
+                                    <th style="width: 12%; text-align: center; color: #000000; background-color: #D9D9D9;">REASON CODE</th>
+                                    <th style="width: 14%; text-align: center; color: #000000; background-color: #D9D9D9;">LAST WORKING DAY</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rows" t-as="r">
+                                    <td class="text-left" style="padding-left: 6px;"><span t-out="r['ip_number']"/></td>
+                                    <td class="text-left" style="padding-left: 6px;"><strong><span t-out="r.get('ip_name') or r['employee_name']"/></strong></td>
+                                    <td class="text-center"><span t-out="r['number_of_days']"/></td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(r['total_monthly_wages'])"/></td>
+                                    <td class="text-center"><span t-out="r.get('reason_code', 0)"/></td>
+                                    <td class="text-center"><span t-out="r.get('last_working_day') or '-'"/></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td colspan="2" class="text-left" style="padding-left: 6px;">TOTAL (<span t-out="len(rows)"/> EMPLOYEES)</td>
+                                    <td class="text-center">-</td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(data['tot_wages'])"/></td>
+                                    <td class="text-center">-</td>
+                                    <td class="text-center">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <!-- Layout 2: ESI Summary Layout (Unchanged) -->
+                    <t t-else="">
+                        <table class="rpt-table">
+                            <thead>
+                                <tr style="background-color: #D9D9D9; color: #000000;">
+                                    <th class="text-left" style="width: 20%; text-align: left; padding-left: 6px; color: #000000; background-color: #D9D9D9;">EMPLOYEE NAME</th>
+                                    <th style="width: 12%; text-align: center; color: #000000; background-color: #D9D9D9;">EMPLOYEE NUMBER</th>
+                                    <th class="text-left" style="width: 18%; text-align: left; padding-left: 6px; color: #000000; background-color: #D9D9D9;">STATUTORY REGISTRATION NUMBER</th>
+                                    <th class="text-right" style="width: 12%; text-align: right; padding-right: 6px; color: #000000; background-color: #D9D9D9;">ESI WAGES</th>
+                                    <th class="text-right" style="width: 13%; text-align: right; padding-right: 6px; color: #000000; background-color: #D9D9D9;">EMPLOYEE CONTRIBUTION</th>
+                                    <th class="text-right" style="width: 13%; text-align: right; padding-right: 6px; color: #000000; background-color: #D9D9D9;">EMPLOYER CONTRIBUTION</th>
+                                    <th class="text-right" style="width: 12%; text-align: right; padding-right: 6px; color: #000000; background-color: #D9D9D9;">TOTAL REMITTED</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rows" t-as="r">
+                                    <td class="text-left" style="padding-left: 6px;"><strong><span t-out="r['employee_name']"/></strong></td>
+                                    <td class="text-center"><span t-out="r['employee_number']"/></td>
+                                    <td class="text-left" style="padding-left: 6px;"><span t-out="r['ip_number']"/></td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(r['total_monthly_wages'])"/></td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(r['employee_contribution'])"/></td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(r['employer_contribution'])"/></td>
+                                    <td class="text-right" style="font-weight: bold; background-color: #EAF2E8; padding-right: 6px;"><span t-out="'{:,.2f}'.format(r['total_contribution'])"/></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td colspan="3" class="text-left" style="padding-left: 6px;">TOTAL (<span t-out="len(rows)"/> EMPLOYEES)</td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(data['tot_wages'])"/></td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(data['tot_ee'])"/></td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(data['tot_er'])"/></td>
+                                    <td class="text-right" style="padding-right: 6px;"><span t-out="'{:,.2f}'.format(data['total_payable'])"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TEMPLATE 5: PROFESSIONAL TAX (PT) REPORT                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_pt_template">
+        <t t-call="web.html_container">
+            <t t-call="hudson_in_payroll.salary_reports_style"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="data" t-value="o._get_pt_data()"/>
+                <t t-set="rows" t-value="data['pt_rows']"/>
+                <t t-set="state_summaries" t-value="data['state_summary_rows']"/>
+                <div class="page rpt-container">
+                    <div class="rpt-header">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="border: none; width: 70%;">
+                                    <div class="rpt-title">PROFESSIONAL TAX (PT) STATUTORY REPORT</div>
+                                    <div class="rpt-subtitle">
+                                        Company: <strong><span t-out="o.company_id.name"/></strong>
+                                        <t t-if="o.company_id.hds_in_professional_tax_registration_no">
+                                            | PT Reg No: <strong><span t-out="o.company_id.hds_in_professional_tax_registration_no"/></strong>
+                                        </t>
+                                        | Period: <strong><span t-out="o.month"/> / <span t-out="o.year"/></strong>
+                                        | Report Type: <strong><span t-out="dict(o._fields['report_type'].selection).get(o.report_type, '')"/></strong>
+                                    </div>
+                                </td>
+                                <td style="border: none; width: 30%; text-align: right;">
+                                    <span class="badge-status">PT Statutory Statement</span><br/>
+                                    <span style="font-size: 8px; color: #777;">Printed: <span t-out="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Summary by State if available -->
+                    <t t-if="state_summaries">
+                        <div style="font-size: 10px; font-weight: bold; color: #1F4E78; margin-top: 4px; margin-bottom: 2px;">Summary by State</div>
+                        <table class="rpt-table" style="margin-bottom: 10px;">
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width: 30%; padding-left: 6px;">State</th>
+                                    <th style="width: 20%;">Covered Employees</th>
+                                    <th style="width: 25%;" class="th-earn">Gross Taxable Wages (INR)</th>
+                                    <th style="width: 25%;" class="th-ded">Total PT Deducted (INR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state_summaries" t-as="st">
+                                    <td class="text-left" style="padding-left: 6px;"><strong><span t-out="st['state_name']"/></strong></td>
+                                    <td class="text-center"><span t-out="st['count']"/></td>
+                                    <td class="text-right"><span t-out="'{:,.2f}'.format(st['wages'])"/></td>
+                                    <td class="text-right" style="font-weight: bold; background-color: #FDF2E9;"><span t-out="'{:,.2f}'.format(st['pt'])"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <!-- Detailed Employee Rows -->
+                    <t t-if="o.report_type != 'pt_state_summary'">
+                        <div style="font-size: 10px; font-weight: bold; color: #1F4E78; margin-top: 6px; margin-bottom: 2px;">Employee Deductions Detail</div>
+                        <table class="rpt-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 14%;">Employee Code</th>
+                                    <th class="text-left" style="width: 24%; padding-left: 6px;">Employee Name</th>
+                                    <th class="text-left" style="width: 18%; padding-left: 6px;">State</th>
+                                    <th style="width: 16%;">Payslip Ref</th>
+                                    <th style="width: 14%;" class="th-earn">Gross Wages (INR)</th>
+                                    <th style="width: 14%;" class="th-ded">PT Deducted (INR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rows" t-as="r">
+                                    <td class="text-center"><span t-out="r['employee_code']"/></td>
+                                    <td class="text-left" style="padding-left: 6px;"><strong><span t-out="r['employee_name']"/></strong></td>
+                                    <td class="text-left" style="padding-left: 6px;"><span t-out="r['state_name']"/></td>
+                                    <td class="text-center"><span t-out="r.get('payslip_number') or '-'"/></td>
+                                    <td class="text-right"><span t-out="'{:,.2f}'.format(r['gross_wage'])"/></td>
+                                    <td class="text-right" style="font-weight: bold; background-color: #FDF2E9;"><span t-out="'{:,.2f}'.format(r['pt_amount'])"/></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td colspan="4" class="text-left">TOTAL (Employees: <span t-out="len(rows)"/>)</td>
+                                    <td class="text-right"><span t-out="'{:,.2f}'.format(data['tot_wages'])"/></td>
+                                    <td class="text-right"><span t-out="'{:,.2f}'.format(data['tot_pt'])"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TEMPLATE 6: LABOUR WELFARE FUND (LWF) REPORT                       -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_lwf_template">
+        <t t-call="web.html_container">
+            <t t-call="hudson_in_payroll.salary_reports_style"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="data" t-value="o._get_lwf_data()"/>
+                <t t-set="rows" t-value="data['lwf_rows']"/>
+                <div class="page rpt-container">
+                    <div class="rpt-header">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="border: none; width: 70%;">
+                                    <div class="rpt-title">LABOUR WELFARE FUND (LWF) STATUTORY REPORT</div>
+                                    <div class="rpt-subtitle">
+                                        Company: <strong><span t-out="o.company_id.name"/></strong>
+                                        <t t-if="o.company_id.hds_in_lwf_registration_no">
+                                            | LWF Reg No: <strong><span t-out="o.company_id.hds_in_lwf_registration_no"/></strong>
+                                        </t>
+                                        | Period: <strong><span t-out="o.date_from"/> to <span t-out="o.date_to"/></strong>
+                                        | Department: <strong><span t-out="data['dept_label']"/></strong>
+                                    </div>
+                                </td>
+                                <td style="border: none; width: 30%; text-align: right;">
+                                    <span class="badge-status">LWF Compliance</span><br/>
+                                    <span style="font-size: 8px; color: #777;">Printed: <span t-out="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <table class="rpt-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 14%;">LWF / Employee No</th>
+                                <th class="text-left" style="width: 22%; padding-left: 6px;">Employee Name</th>
+                                <th class="text-left" style="width: 16%; padding-left: 6px;">Department</th>
+                                <th class="text-left" style="width: 14%; padding-left: 6px;">Work State</th>
+                                <th style="width: 11%;" class="th-ded">Employee Contrib (INR)</th>
+                                <th style="width: 11%;" class="th-er">Employer Contrib (INR)</th>
+                                <th style="width: 12%;" class="th-net">Total Remittance (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="rows" t-as="r">
+                                <td class="text-center"><span t-out="r['lwf_no'] or '-'"/></td>
+                                <td class="text-left" style="padding-left: 6px;"><strong><span t-out="r['emp_name']"/></strong></td>
+                                <td class="text-left" style="padding-left: 6px;"><span t-out="r['department']"/></td>
+                                <td class="text-left" style="padding-left: 6px;"><span t-out="r['state']"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['ee_contrib'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['er_contrib'])"/></td>
+                                <td class="text-right" style="font-weight: bold; background-color: #EAF2E8;"><span t-out="'{:,.2f}'.format(r['total_contrib'])"/></td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="4" class="text-left">TOTAL (Covered Employees: <span t-out="len(rows)"/>)</td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(data['tot_ee_contrib'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(data['tot_er_contrib'])"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(data['tot_total_contrib'])"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TEMPLATE 7: GRATUITY CALCULATION REPORT                            -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <template id="report_gratuity_template">
+        <t t-call="web.html_container">
+            <t t-call="hudson_in_payroll.salary_reports_style"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="data" t-value="o._get_gratuity_data()"/>
+                <t t-set="rows" t-value="data['gratuity_rows']"/>
+                <div class="page rpt-container">
+                    <div class="rpt-header">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="border: none; width: 70%;">
+                                    <div class="rpt-title">GRATUITY CALCULATION STATUTORY REPORT</div>
+                                    <div class="rpt-subtitle">
+                                        Company: <strong><span t-out="o.company_id.name"/></strong>
+                                        | Scope Mode: <strong><span t-out="data['mode_label']"/></strong>
+                                        | Total Employees Evaluated: <strong><span t-out="data['record_count']"/></strong>
+                                        | Payment of Gratuity Act, 1972
+                                    </div>
+                                </td>
+                                <td style="border: none; width: 30%; text-align: right;">
+                                    <span style="font-size: 8px; color: #777;">Printed: <span t-out="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <table class="rpt-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Emp ID</th>
+                                <th class="text-left" style="width: 18%; padding-left: 6px;">Employee Name</th>
+                                <th class="text-left" style="width: 13%; padding-left: 6px;">Department</th>
+                                <th class="text-left" style="width: 13%; padding-left: 6px;">Job Position</th>
+                                <th style="width: 10%;">Joining Date</th>
+                                <th style="width: 7%;">Tenure (Yrs)</th>
+                                <th style="width: 12%;" class="th-earn">Last Basic + DA (INR)</th>
+                                <th style="width: 9%;">Eligibility</th>
+                                <th style="width: 15%;" class="th-net">Calculated Gratuity (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="rows" t-as="r">
+                                <td class="text-center"><span t-out="r['emp_code']"/></td>
+                                <td class="text-left" style="padding-left: 6px;"><strong><span t-out="r['emp_name']"/></strong></td>
+                                <td class="text-left" style="padding-left: 6px;"><span t-out="r['department']"/></td>
+                                <td class="text-left" style="padding-left: 6px;"><span t-out="r['job']"/></td>
+                                <td class="text-center"><span t-out="r['joining_date']"/></td>
+                                <td class="text-center"><span t-out="r['completed_years']"/></td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(r['wage_base'])"/></td>
+                                <td class="text-center">
+                                    <span t-if="r['status'] == 'Eligible'" style="color: #1e4620; font-weight: bold;">Eligible</span>
+                                    <span t-else="" style="color: #856404;">Not Eligible</span>
+                                </td>
+                                <td class="text-right" style="font-weight: bold;"><span t-out="'{:,.2f}'.format(r['raw_gratuity'])"/></td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="6" class="text-left">TOTAL (Evaluated Employees: <span t-out="len(rows)"/>)</td>
+                                <td class="text-right"><span t-out="'{:,.2f}'.format(data['tot_wage_base'])"/></td>
+                                <td class="text-center">-</td>
+                                <td class="text-right" style="font-weight: bold;"><span t-out="'{:,.2f}'.format(data['tot_raw_gratuity'])"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

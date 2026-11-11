@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hudson_loan_compute_wizard_form" model="ir.ui.view">
+        <field name="name">hudson.loan.compute.wizard.form</field>
+        <field name="model">hudson.loan.compute.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Compute New Loan">
+                <group>
+                    <group>
+                        <field name="amount"/>
+                        <label for="interest_rate"/>
+                        <div class="o_row">
+                            <field name="interest_rate"/>
+                            <span>%</span>
+                        </div>
+                        <label for="term_years"/>
+                        <div class="o_row">
+                            <field name="term_years"/>
+                            <span>years</span>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="payment_type"/>
+                        <field name="first_payment_date" invisible="payment_type != 'anniversary'" required="payment_type == 'anniversary'"/>
+                        <field name="compounding_method"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="loan_id" invisible="1"/>
+                    </group>
+                </group>
+                
+                <separator string="Preview"/>
+                <field name="line_ids" readonly="1">
+                    <list string="Preview" decoration-muted="1">
+                        <field name="date"/>
+                        <field name="principal"/>
+                        <field name="interest"/>
+                        <field name="payment"/>
+                        <field name="balance"/>
+                        <field name="currency_id" invisible="1"/>
+                    </list>
+                </field>
+
+                <footer>
+                    <button string="Apply" name="action_apply" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ticket Pivot View -->
+    <record id="helpdesk_management_pro_view_ticket_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.management.ticket.pivot</field>
+        <field name="model">helpdesk.management.ticket</field>
+        <field name="arch" type="xml">
+            <pivot string="Tickets Analysis" sample="1">
+                <field name="team_id" type="row"/>
+                <field name="stage_id" type="col"/>
+                <field name="color" invisible="1"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Ticket Graph View -->
+    <record id="helpdesk_management_pro_view_ticket_graph" model="ir.ui.view">
+        <field name="name">helpdesk.management.ticket.graph</field>
+        <field name="model">helpdesk.management.ticket</field>
+        <field name="arch" type="xml">
+            <graph string="Tickets Analysis" type="bar" stacked="True" sample="1">
+                <field name="team_id"/>
+                <field name="stage_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Rating Kanban View -->
+    <record id="helpdesk_management_pro_view_rating_kanban" model="ir.ui.view">
+        <field name="name">helpdesk.management.ticket.rating.kanban</field>
+        <field name="model">helpdesk.management.ticket.rating</field>
+        <field name="arch" type="xml">
+            <kanban create="false" class="o_kanban_mobile" sample="1">
+                <field name="rating"/>
+                <field name="user_id"/>
+                <field name="partner_id"/>
+                <field name="ticket_id"/>
+                <field name="date"/>
+                <field name="feedback"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click d-flex">
+                            <div class="oe_kanban_content d-flex w-100">
+                                <div class="me-3 d-flex align-items-center justify-content-center" style="width: 80px;">
+                                    <t t-if="record.rating.raw_value == '5' or record.rating.raw_value == '4'">
+                                        <img src="/rating/static/src/img/rating_5.svg" alt="Happy" style="width: 100%; height: auto;"/>
+                                    </t>
+                                    <t t-elif="record.rating.raw_value == '3'">
+                                        <img src="/rating/static/src/img/rating_3.svg" alt="Neutral" style="width: 100%; height: auto;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <img src="/rating/static/src/img/rating_1.svg" alt="Sad" style="width: 100%; height: auto;"/>
+                                    </t>
+                                </div>
+                                <div class="d-flex flex-column justify-content-center text-truncate flex-grow-1">
+                                    <strong class="o_kanban_record_title"><field name="user_id"/></strong>
+                                    <div>by <field name="partner_id"/></div>
+                                    <div>for <field name="ticket_id" class="text-info"/></div>
+                                    <div>on <field name="date"/></div>
+                                    <div class="mt-1 text-truncate"><field name="feedback"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Rating Form View -->
+    <record id="helpdesk_management_pro_view_rating_form" model="ir.ui.view">
+        <field name="name">helpdesk.management.ticket.rating.form</field>
+        <field name="model">helpdesk.management.ticket.rating</field>
+        <field name="arch" type="xml">
+            <form string="Customer Rating" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id" string="Assigned to" widget="many2one_avatar_user"/>
+                            <field name="team_id" string="Team"/>
+                            <field name="ticket_id" string="Ticket" class="text-info"/>
+                            <field name="feedback" string="Comment"/>
+                        </group>
+                        <group>
+                            <field name="partner_id" string="Customer" class="text-info"/>
+                            <field name="rating" string="Rating" widget="badge"
+                                   decoration-success="rating in ('4', '5')"
+                                   decoration-warning="rating == '3'"
+                                   decoration-danger="rating in ('1', '2')"/>
+                            <field name="date" string="Rated On"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Reporting Actions -->
+    <record id="helpdesk_management_pro_action_reporting" model="ir.actions.act_window">
+        <field name="name">Tickets Analysis</field>
+        <field name="res_model">helpdesk.management.ticket</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="helpdesk_management_pro.helpdesk_management_pro_view_ticket_search"/>
+    </record>
+
+    <!-- SLA Status Analysis: one line per ticket and SLA policy -->
+    <record id="helpdesk_management_pro_view_sla_report_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.management.sla.report.pivot</field>
+        <field name="model">helpdesk.management.sla.report</field>
+        <field name="arch" type="xml">
+            <pivot string="SLA Status Analysis" sample="1">
+                <field name="team_id" type="row"/>
+                <field name="status" type="col"/>
+                <field name="success_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="helpdesk_management_pro_view_sla_report_graph" model="ir.ui.view">
+        <field name="name">helpdesk.management.sla.report.graph</field>
+        <field name="model">helpdesk.management.sla.report</field>
+        <field name="arch" type="xml">
+            <graph string="SLA Status Analysis" type="bar" stacked="True" sample="1">
+                <field name="sla_id"/>
+                <field name="status"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="helpdesk_management_pro_view_sla_report_list" model="ir.ui.view">
+        <field name="name">helpdesk.management.sla.report.list</field>
+        <field name="model">helpdesk.management.sla.report</field>
+        <field name="arch" type="xml">
+            <list string="SLA Status Analysis" create="0" edit="0" delete="0" sample="1">
+                <field name="ticket_id"/>
+                <field name="team_id"/>
+                <field name="sla_id"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="stage_id" optional="show"/>
+                <field name="deadline"/>
+                <field name="reached_datetime" optional="show"/>
+                <field name="exceeded_hours" widget="float_time" optional="hide"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'reached'"
+                       decoration-danger="status == 'failed'"
+                       decoration-info="status == 'ongoing'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="helpdesk_management_pro_view_sla_report_search" model="ir.ui.view">
+        <field name="name">helpdesk.management.sla.report.search</field>
+        <field name="model">helpdesk.management.sla.report</field>
+        <field name="arch" type="xml">
+            <search string="SLA Status Analysis">
+                <field name="ticket_id"/>
+                <field name="team_id"/>
+                <field name="sla_id"/>
+                <field name="user_id"/>
+                <field name="partner_id"/>
+                <filter string="My Tickets" name="my_tickets" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Ongoing" name="ongoing" domain="[('status', '=', 'ongoing')]"/>
+                <filter string="Success" name="success" domain="[('status', '=', 'reached')]"/>
+                <filter string="Failed" name="failed" domain="[('status', '=', 'failed')]"/>
+                <separator/>
+                <filter string="Open Tickets" name="open" domain="[('ticket_closed', '=', False)]"/>
+                <filter string="Closed Tickets" name="closed" domain="[('ticket_closed', '=', True)]"/>
+                <separator/>
+                <filter string="Ticket Creation Date" name="ticket_create_date" date="ticket_create_date"/>
+                <group>
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}"/>
+                    <filter string="SLA Policy" name="group_sla" context="{'group_by': 'sla_id'}"/>
+                    <filter string="SLA Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Assigned to" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Ticket Stage" name="group_stage" context="{'group_by': 'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="helpdesk_management_pro_action_sla_analysis" model="ir.actions.act_window">
+        <field name="name">SLA Status Analysis</field>
+        <field name="res_model">helpdesk.management.sla.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="helpdesk_management_pro_view_sla_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No SLA status yet</p>
+            <p>Create SLA policies on a team with SLA enabled: new and updated tickets matching them are tracked here.</p>
+        </field>
+    </record>
+
+    <record id="helpdesk_management_pro_action_customer_ratings" model="ir.actions.act_window">
+        <field name="name">Customer Ratings</field>
+        <field name="res_model">helpdesk.management.ticket.rating</field>
+        <field name="view_mode">kanban,list,pivot,graph</field>
+    </record>
+
+    <!-- Reporting Menus -->
+    <menuitem id="helpdesk_management_pro_menu_reporting_analysis"
+              name="Tickets Analysis"
+              parent="helpdesk_management_pro_menu_reporting"
+              action="helpdesk_management_pro_action_reporting"
+              sequence="10"/>
+
+    <menuitem id="helpdesk_management_pro_menu_reporting_sla"
+              name="SLA Status Analysis"
+              parent="helpdesk_management_pro_menu_reporting"
+              action="helpdesk_management_pro_action_sla_analysis"
+              sequence="20"/>
+
+    <menuitem id="helpdesk_management_pro_menu_reporting_ratings"
+              name="Customer Ratings"
+              parent="helpdesk_management_pro_menu_reporting"
+              action="helpdesk_management_pro_action_customer_ratings"
+              sequence="30"/>
+</odoo>

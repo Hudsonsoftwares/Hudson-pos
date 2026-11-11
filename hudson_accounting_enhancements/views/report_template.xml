@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="dynamic_report_template">
+        <div class="o_dynamic_report_container" style="background: white; padding: 20px; border: 1px solid #e7e9ed; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm" style="width: 100%; margin-bottom: 0;">
+                    <thead style="border-bottom: 2px solid #dee2e6;">
+                        <tr>
+                            <t t-foreach="columns" t-as="col">
+                                <th t-attf-class="{{ 'text-end' if col.get('type') == 'monetary' else 'text-start' }}"
+                                    style="padding: 12px 8px; font-weight: bold; color: #212529; border-top: none;">
+                                    <t t-out="col.get('label')"/>
+                                </th>
+                            </t>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="lines" t-as="line">
+                            <!-- In Enterprise, level 1 (e.g. Net Profit) and Level 2 (e.g. Operating Expenses) are bold -->
+                            <t t-set="is_bold" t-value="int(line.get('level', 1)) &lt; 3"/>
+                            <!-- Accounts are usually level 3 or 4 and muted -->
+                            <t t-set="is_muted" t-value="int(line.get('level', 1)) &gt;= 3"/>
+                            
+                            <!-- Level 1 or 2 rows often have a slight background to group them -->
+                            <t t-set="row_bg" t-value="'#f4f5f7' if int(line.get('level', 1)) == 1 else ('#ffffff' if int(line.get('level', 1)) == 2 else 'transparent')"/>
+                            
+                            <tr t-attf-style="border-bottom: 1px solid #e9ecef; background-color: {{ row_bg }};">
+                                <t t-foreach="columns" t-as="col">
+                                    <td t-attf-class="{{ 'text-end' if col.get('type') == 'monetary' else 'text-start' }}"
+                                        t-attf-style="padding: 8px; {{ 'font-weight: bold; color: #212529;' if is_bold else '' }} {{ 'color: #6c757d;' if is_muted else '' }}">
+                                        
+                                        <t t-if="col.get('field') == 'name'">
+                                            <div t-attf-style="padding-left: {{ (int(line.get('level', 1)) - 1) * 20 }}px">
+                                                <t t-if="line.get('type') == 'account'">
+                                                    <!-- Slight grey dots to match enterprise look -->
+                                                    <span style="margin-right: 8px; color: #ced4da; font-size: 0.8em;">⋮</span>
+                                                </t>
+                                                <t t-elif="line.get('type') == 'report' or line.get('type') == 'group'">
+                                                    <!-- Expand arrow -->
+                                                    <span style="margin-right: 8px; color: #adb5bd; font-size: 0.8em;">▾</span>
+                                                </t>
+                                                <t t-out="line.get(col.get('field'))"/>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-if="col.get('type') == 'monetary'">
+                                                <!-- If it's a monetary type, format with 2 decimals -->
+                                                <t t-set="val" t-value="line.get(col.get('field')) or 0.0"/>
+                                                <span t-attf-style="{{ 'color: #dc3545 !important;' if val &lt; 0 else '' }}"
+                                                      t-attf-class="{{ 'text-danger' if val &lt; 0 else '' }}">
+                                                    <t t-out=" '{:,.2f}'.format(val) "/>
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-out="line.get(col.get('field'))"/>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </t>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+</odoo>

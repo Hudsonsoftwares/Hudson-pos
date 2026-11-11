@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- UAE Contract & Contract Template Form View Localization -->
+    <record id="hr_contract_template_form_view_inherit_hudson_ae" model="ir.ui.view">
+        <field name="name">hr.version.form.inherit.hudson.ae</field>
+        <field name="model">hr.version</field>
+        <field name="inherit_id" ref="hr_payroll_community.hr_contract_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Housing Allowance: Display as 'Housing Allowance' in UAE localization, otherwise keep standard 'HRA' -->
+            <xpath expr="//group[@name='allowances']//label[@for='hra']" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//label[@for='hra']" position="after">
+                <label for="hra" string="Housing Allowance" invisible="not is_uae_localization"/>
+            </xpath>
+
+            <!-- Transportation Allowance: Display as 'Transportation Allowance' in UAE localization, otherwise 'Travel Allowance' -->
+            <xpath expr="//group[@name='allowances']//label[@for='travel_allowance']" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//label[@for='travel_allowance']" position="after">
+                <label for="travel_allowance" string="Transportation Allowance" invisible="not is_uae_localization"/>
+            </xpath>
+
+            <!-- Hide India-Only Salary Components when UAE Localization is active -->
+            <!-- 1. DA (Dearness Allowance) -->
+            <xpath expr="//group[@name='allowances']//label[@for='da']" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//field[@name='da']/parent::div" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+
+            <!-- 2. Meal Allowance -->
+            <xpath expr="//group[@name='allowances']//label[@for='meal_allowance']" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//field[@name='meal_allowance']/parent::div" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+
+            <!-- 3. Medical Allowance -->
+            <xpath expr="//group[@name='allowances']//label[@for='medical_allowance']" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//field[@name='medical_allowance']/parent::div" position="attributes">
+                <attribute name="invisible">is_uae_localization</attribute>
+            </xpath>
+
+            <!-- Airfare Allowance: Display exclusively for UAE Localization (placed before balancing Fixed Allowance) -->
+            <xpath expr="//group[@name='allowances']//label[@for='fixed_allowance']" position="before">
+                <label for="airfare_allowance" string="Airfare Allowance" invisible="not is_uae_localization"/>
+                <div class="o_row" invisible="not is_uae_localization">
+                    <field name="airfare_allowance" nolabel="1"/>
+                    <span>/ month</span>
+                    <span class="ms-2 text-muted">(<field name="airfare_allowance_percent" readonly="1" digits="[16, 2]"/>%)</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

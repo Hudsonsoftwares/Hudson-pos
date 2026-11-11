@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright 2024 Hudson Community
+    License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+
+    Creates a default "Enterprise" DMS storage for auto-routed documents.
+    noupdate="1" prevents re-creating if already exists.
+-->
+<odoo noupdate="1">
+    <record id="dms_storage_enterprise" model="dms.storage">
+        <field name="name">Enterprise Documents</field>
+        <field name="save_type">file</field>
+        <field name="is_hidden">False</field>
+    </record>
+</odoo>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- 1. Registers & Statements Section -->
+        <record id="tile_pt_register" model="hds.pt.report.tile">
+            <field name="name">Professional Tax Register</field>
+            <field name="description">Complete PT deduction register listing employee wages, state slabs, and deductions</field>
+            <field name="icon">fa-table</field>
+            <field name="section">filing</field>
+            <field name="featured">1</field>
+            <field name="report_type">register</field>
+            <field name="sequence">10</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_statement" model="hds.pt.report.tile">
+            <field name="name">Employee PT Statement</field>
+            <field name="description">Employee-wise Professional Tax history and month-by-month deduction ledger</field>
+            <field name="icon">fa-id-card</field>
+            <field name="section">filing</field>
+            <field name="featured">1</field>
+            <field name="report_type">statement</field>
+            <field name="sequence">20</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <!-- 2. Summaries & Analytics Section -->
+        <record id="tile_pt_monthly_summary" model="hds.pt.report.tile">
+            <field name="name">Monthly PT Summary</field>
+            <field name="description">Monthly Professional Tax total summary statement for statutory filing</field>
+            <field name="icon">fa-calculator</field>
+            <field name="section">summary</field>
+            <field name="featured">0</field>
+            <field name="report_type">monthly_summary</field>
+            <field name="sequence">30</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_state_summary" model="hds.pt.report.tile">
+            <field name="name">State-wise PT Summary</field>
+            <field name="description">Professional Tax deductions aggregated by employee work state (MH, KA, TN, WB, etc.)</field>
+            <field name="icon">fa-map-marker</field>
+            <field name="section">summary</field>
+            <field name="featured">0</field>
+            <field name="report_type">state_summary</field>
+            <field name="sequence">40</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_company_summary" model="hds.pt.report.tile">
+            <field name="name">Company-wise PT Summary</field>
+            <field name="description">Professional Tax deductions grouped and summarized by multi-company legal entities</field>
+            <field name="icon">fa-building</field>
+            <field name="section">summary</field>
+            <field name="featured">0</field>
+            <field name="report_type">company_summary</field>
+            <field name="sequence">50</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_liability_summary" model="hds.pt.report.tile">
+            <field name="name">PT Liability Summary</field>
+            <field name="description">Total PT deducted, company liability, state liability, and headcount analysis</field>
+            <field name="icon">fa-money</field>
+            <field name="section">summary</field>
+            <field name="featured">0</field>
+            <field name="report_type">liability_summary</field>
+            <field name="sequence">60</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <!-- 3. Slab & Audit Analysis Section -->
+        <record id="tile_pt_slab_utilization" model="hds.pt.report.tile">
+            <field name="name">Salary Slab Utilization Report</field>
+            <field name="description">Employee headcount distribution across PT salary slabs, ranges, and tax amounts</field>
+            <field name="icon">fa-pie-chart</field>
+            <field name="section">analysis</field>
+            <field name="featured">0</field>
+            <field name="report_type">slab_utilization</field>
+            <field name="sequence">70</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_override_month" model="hds.pt.report.tile">
+            <field name="name">PT Override Month Report</field>
+            <field name="description">Highlights employees with Override Month deductions (e.g. Feb ₹300 in MH/KA)</field>
+            <field name="icon">fa-calendar-check-o</field>
+            <field name="section">analysis</field>
+            <field name="featured">0</field>
+            <field name="report_type">override_month</field>
+            <field name="sequence">80</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_salary_revision" model="hds.pt.report.tile">
+            <field name="name">Salary Revision Impact Report</field>
+            <field name="description">Retroactive salary revision slab movement, old vs new PT, and tax delta</field>
+            <field name="icon">fa-history</field>
+            <field name="section">analysis</field>
+            <field name="featured">0</field>
+            <field name="report_type">revision_impact</field>
+            <field name="sequence">90</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <!-- 4. Compliance & Configuration Audit Section -->
+        <record id="tile_pt_exception" model="hds.pt.report.tile">
+            <field name="name">PT Exception Report</field>
+            <field name="description">Flags missing work state, unmapped PT slabs, invalid config, or disabled company</field>
+            <field name="icon">fa-exclamation-triangle</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="report_type">exception</field>
+            <field name="sequence">100</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_compliance_audit" model="hds.pt.report.tile">
+            <field name="name">PT Compliance Audit Report</field>
+            <field name="description">Company PT Registration No., enable flags, missing setup, and compliance status</field>
+            <field name="icon">fa-shield</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="report_type">compliance_audit</field>
+            <field name="sequence">110</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_reconciliation" model="hds.pt.report.tile">
+            <field name="name">PT Reconciliation Report</field>
+            <field name="description">Reconciles calculated PT service results against actual payslip line deductions</field>
+            <field name="icon">fa-balance-scale</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="report_type">reconciliation</field>
+            <field name="sequence">120</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_state_mapping" model="hds.pt.report.tile">
+            <field name="name">Employee State Mapping Report</field>
+            <field name="description">Validates employee work location address state mapping to active state PT slabs</field>
+            <field name="icon">fa-location-arrow</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="report_type">state_mapping</field>
+            <field name="sequence">130</field>
+            <field name="country_code">IN</field>
+        </record>
+
+        <record id="tile_pt_config_audit" model="hds.pt.report.tile">
+            <field name="name">Professional Tax Configuration Audit</field>
+            <field name="description">Audits active PT state slabs, effective date ranges, override months, and archived rules</field>
+            <field name="icon">fa-sliders</field>
+            <field name="section">compliance</field>
+            <field name="featured">0</field>
+            <field name="report_type">config_audit</field>
+            <field name="sequence">140</field>
+            <field name="country_code">IN</field>
+        </record>
+
+    </data>
+</odoo>

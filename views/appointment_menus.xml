@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Top Menu Item -->
+        <menuitem id="appointment_menu_root"
+                  name="Appointments"
+                  web_icon="calendar,static/description/icon.png"
+                  groups="group_appointment_user,group_appointment_manager"
+                  sequence="100"/>
+
+        <!-- Sub Menus -->
+        <menuitem id="appointment_menu_appointments"
+                  name="Appointments"
+                  parent="appointment_menu_root"
+                  action="appointment_type_action"
+                  sequence="5"/>
+
+        <menuitem id="appointment_menu_shared_links"
+                  name="Shared Links"
+                  parent="appointment_menu_root"
+                  action="appointment_invite_action"
+                  sequence="8"/>
+
+        <menuitem id="appointment_menu_schedule"
+                  name="Schedule"
+                  parent="appointment_menu_root"
+                  sequence="10"/>
+
+        <menuitem id="appointment_menu_schedule_staff"
+                  name="Staff"
+                  parent="appointment_menu_schedule"
+                  action="action_schedule_staff"
+                  sequence="10"/>
+                  
+        <menuitem id="appointment_menu_schedule_resources"
+                  name="Resources"
+                  parent="appointment_menu_schedule"
+                  action="action_schedule_resources"
+                  sequence="20"/>
+
+        <menuitem id="appointment_menu_reporting"
+                  name="Reporting"
+                  parent="appointment_menu_root"
+                  sequence="20"/>
+
+        <menuitem id="appointment_menu_reporting_bookings"
+                  name="Bookings"
+                  parent="appointment_menu_reporting"
+                  action="action_reporting_bookings"
+                  sequence="10"/>
+
+        <menuitem id="appointment_menu_reporting_answers"
+                  name="Answers"
+                  parent="appointment_menu_reporting"
+                  action="action_reporting_answers"
+                  sequence="20"/>
+
+        <menuitem id="appointment_menu_configuration"
+                  name="Configuration"
+                  parent="appointment_menu_root"
+                  sequence="100"/>
+                  
+        <menuitem id="appointment_menu_questions"
+                  name="Questions"
+                  parent="appointment_menu_configuration"
+                  sequence="10"
+                  action="action_appointment_question"/>
+                  
+        <record id="action_appointment_reminder" model="ir.actions.act_window">
+            <field name="name">Calendar Alarm</field>
+            <field name="res_model">calendar.alarm</field>
+            <field name="view_mode">list,form</field>
+        </record>
+                  
+        <menuitem id="appointment_menu_reminders"
+                  name="Reminders"
+                  parent="appointment_menu_configuration"
+                  sequence="15"
+                  action="action_appointment_reminder"/>
+                  
+        <menuitem id="appointment_menu_resources_config"
+                  name="Resources"
+                  parent="appointment_menu_configuration"
+                  sequence="18"
+                  action="action_appointment_resource"/>
+                  
+        <menuitem id="appointment_menu_closing_days"
+                  name="Closing Days"
+                  parent="appointment_menu_configuration"
+                  sequence="20"
+                  action="action_appointment_closing_day"/>
+                  
+        <!-- Website Menu -->
+        <record id="appointment_website_menu" model="website.menu">
+            <field name="name">Appointment</field>
+            <field name="url">/appointment</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">50</field>
+        </record>
+    </data>
+</odoo>

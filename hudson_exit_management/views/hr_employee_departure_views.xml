@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- End of collaboration popup dialog view -->
+    <record id="hr_employee_departure_view_form_inherit_notice" model="ir.ui.view">
+        <field name="name">hr.employee.departure.view.form.inherit.notice</field>
+        <field name="model">hr.employee.departure</field>
+        <field name="inherit_id" ref="hr.hr_employee_departure_view_form"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='header_group']" position="after">
+                <notebook>
+                    <page name="notice_period" string="Notice Period">
+                        <group>
+                            <group>
+                                <field name="notice_period_start_date"/>
+                                <field name="notice_period_end_date"/>
+                                <field name="notice_duration"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Employee Form End of Collaboration Page Extension -->
+    <record id="view_employee_form_inherit_departure_notice" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.departure.notice</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='departure']/group[@name='header_group']" position="after">
+                <group string="Notice Period" name="notice_period_group" invisible="not notice_period_start_date and not notice_period_end_date">
+                    <group>
+                        <field name="notice_period_start_date" readonly="1"/>
+                        <field name="notice_period_end_date" readonly="1"/>
+                        <field name="notice_duration" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

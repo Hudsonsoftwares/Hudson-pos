@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Server Actions for Nocontent Presets -->
+        <record id="action_preset_meeting_server" model="ir.actions.server">
+            <field name="name">Preset: Meeting</field>
+            <field name="model_id" ref="model_appointment_type"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_preset_meeting()</field>
+        </record>
+        <record id="action_preset_video_server" model="ir.actions.server">
+            <field name="name">Preset: Video Call</field>
+            <field name="model_id" ref="model_appointment_type"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_preset_video()</field>
+        </record>
+        <record id="action_preset_table_server" model="ir.actions.server">
+            <field name="name">Preset: Table Booking</field>
+            <field name="model_id" ref="model_appointment_type"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_preset_table()</field>
+        </record>
+        <record id="action_preset_resource_server" model="ir.actions.server">
+            <field name="name">Preset: Book a Resource</field>
+            <field name="model_id" ref="model_appointment_type"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_preset_resource()</field>
+        </record>
+        
+        <!-- Kanban View -->
+        <record id="appointment_type_view_kanban" model="ir.ui.view">
+            <field name="name">appointment.type.view.kanban</field>
+            <field name="model">appointment.type</field>
+            <field name="arch" type="xml">
+                <kanban js_class="appointment_type_kanban" action="action_open_bookings" type="object" class="o_kanban_dashboard o_appointment_type_kanban">
+                    <field name="name"/>
+                    <field name="location"/>
+                    <field name="location_details"/>
+                    <field name="active"/>
+                    <field name="appointment_duration"/>
+                    <field name="appointment_count"/>
+                    <field name="booking_target"/>
+                    <field name="user_ids"/>
+                    <field name="resource_ids"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click d-flex align-items-center justify-content-between appointment_premium_row w-100 py-3 px-4 mb-2">
+                                
+                                <!-- Left side: Title -->
+                                <div class="d-flex align-items-center" style="width: 25%;">
+                                    <div class="d-flex flex-column">
+                                        <strong class="fw-bold mb-1" style="font-size: 1.3rem;">
+                                            <field name="name"/>
+                                        </strong>
+                                        <div class="text-muted" style="font-size: 0.95rem;">
+                                            <i class="oi me-1" data-icon="location_on"/> 
+                                            <span t-if="record.location.raw_value != 'custom'"><field name="location"/></span>
+                                            <span t-else=""><field name="location_details"/></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Attendees / Resources -->
+                                <div class="d-flex align-items-center" style="width: 20%;">
+                                    <t t-if="record.booking_target.raw_value == 'users'">
+                                        <field name="user_ids" widget="many2many_avatar_user"/>
+                                    </t>
+                                    <t t-if="record.booking_target.raw_value == 'resources'">
+                                        <field name="resource_ids" widget="many2many_tags"/>
+                                    </t>
+                                </div>
+                                
+                                <!-- Duration -->
+                                <div class="d-flex align-items-center justify-content-center text-muted" style="width: 10%;">
+                                    <i class="oi me-2" data-icon="schedule" style="font-size: 1.1rem;"/>
+                                    <div class="d-flex align-items-center fw-medium flex-nowrap" style="font-size: 1.1rem;">
+                                        <field name="appointment_duration" widget="float_time"/> <span class="ms-1">h</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Upcoming Meetings -->
+                                <div class="d-flex align-items-center justify-content-center" style="width: 15%;">
+                                    <span t-attf-class="fs-2 fw-bold me-2 #{record.appointment_count.raw_value > 0 ? 'text-primary' : 'text-muted'}"><field name="appointment_count"/></span>
+                                    <div class="d-flex flex-column text-muted fw-bold text-uppercase" style="line-height: 1.1; font-size: 0.75rem; letter-spacing: 0.5px;">
+                                        <span>upcoming</span>
+                                        <span>meetings</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Buttons -->
+                                <div class="d-flex justify-content-end gap-2" style="width: 30%;">
+                                    <button type="object" name="action_share" class="btn btn-sm btn-light border rounded-pill px-3 fw-bold"><i class="oi oi-filled me-1" data-icon="share"/> Share</button>
+                                    <button type="object" name="action_preview" class="btn btn-sm btn-light border rounded-pill px-3 fw-bold"><i class="oi me-1" data-icon="visibility"/> Preview</button>
+                                    <button type="object" name="action_open_form" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold"><i class="oi oi-filled me-1" data-icon="settings"/> Configure</button>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- List View -->
+        <record id="appointment_type_view_list" model="ir.ui.view">
+            <field name="name">appointment.type.view.list</field>
+            <field name="model">appointment.type</field>
+            <field name="arch" type="xml">
+                <list string="Appointment Types" js_class="appointment_type_list">
+                    <field name="name" string="Appointment Title"/>
+                    <field name="location"/>
+                    <field name="appointment_tz"/>
+                    <field name="country_ids" widget="many2many_tags"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="appointment_type_view_form" model="ir.ui.view">
+            <field name="name">appointment.type.view.form</field>
+            <field name="model">appointment.type</field>
+            <field name="arch" type="xml">
+                <form string="Appointment Type">
+                    <header>
+                        <button name="action_share" string="Share" type="object" class="oe_highlight"/>
+                        <button name="action_preview" string="Preview" type="object"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_view_resources" class="oe_stat_button" icon="inventory_2" invisible="booking_target != 'resources'">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value"><field name="resource_count"/></span>
+                                    <span class="o_stat_text">Resources</span>
+                                </div>
+                            </button>
+                            <button type="object" name="action_open_bookings" class="oe_stat_button" icon="calendar_today" icon_class="oi-filled">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value"><field name="appointment_count"/></span>
+                                    <span class="o_stat_text">Appointments</span>
+                                </div>
+                            </button>
+                            <field name="is_published" widget="website_redirect_button"/>
+                        </div>
+                        
+                        <div class="alert alert-info d-flex align-items-center mb-4" role="alert" invisible="id == False">
+                            <span class="flex-grow-1">Synchronize your Calendar to avoid double-booking</span>
+                            <button type="object" name="action_connect_google" string="Connect Google" class="btn btn-primary btn-sm ms-2"/>
+                        </div>
+
+                        <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                        
+                        <div class="oe_title mb-4">
+                            <label for="name" class="oe_edit_only" invisible="1"/>
+                            <h1><field name="name" placeholder="e.g. Video Call"/></h1>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="appointment_duration" widget="float_time"/>
+                                <field name="location" invisible="booking_target == 'resources'"/>
+                                <field name="location_details" string="Location" invisible="booking_target != 'resources' and location != 'custom'" placeholder="e.g. 123 Business St, City"/>
+                                <field name="video_link" invisible="booking_target == 'resources'"/>
+                            </group>
+                            <group>
+                                <field name="booking_target" widget="radio" options="{'horizontal': true}"/>
+                                <field name="user_ids" widget="many2many_tags_avatar" invisible="booking_target != 'users'" string="Users"/>
+                                <field name="resource_ids" widget="many2many_tags" invisible="booking_target != 'resources'" string="Resources"/>
+                                
+                                <field name="has_multiple_targets" invisible="1"/>
+                                <field name="assign_method" widget="radio" options="{'horizontal': true}" invisible="has_multiple_targets == False" help="Automatically assign an available user, or let the customer choose."/>
+                                <field name="schedule_based_on" widget="radio" options="{'horizontal': true}" invisible="has_multiple_targets == False or assign_method == 'random'" help="Should the customer select the Date first, or select the User first?"/>
+                                
+                                <label for="group_booking" string="Group Bookings"/>
+                                <div class="o_row">
+                                    <field name="group_booking"/>
+                                    <div invisible="not group_booking" class="ms-2 d-inline-flex align-items-center">
+                                        <field name="capacity" class="oe_inline text-center mx-1" style="width: 50px; border: none; border-bottom: 1px solid #dee2e6; border-radius: 0; padding-bottom: 0;" invisible="booking_target == 'resources'"/>
+                                        <field name="resource_total_capacity" class="oe_inline fw-bold mx-1" invisible="booking_target != 'resources'"/>
+                                        <span class="text-muted ms-1">attendee(s) per slot</span>
+                                    </div>
+                                </div>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Availabilities" name="availabilities">
+                                <field name="availability_ids">
+                                    <list editable="bottom">
+                                        <field name="day_of_week" string="Every"/>
+                                        <field name="start_time" string="From (h)" widget="float_time"/>
+                                        <field name="end_time" string="To (h)" widget="float_time"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Questions" name="questions">
+                                <field name="question_ids">
+                                    <list>
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name" string="Question"/>
+                                        <field name="question_type"/>
+                                        <field name="placeholder"/>
+                                        <field name="answer_ids" widget="many2many_tags"/>
+                                        <field name="is_required" widget="boolean_toggle" string="Mandatory"/>
+                                        <button name="action_view_answers" type="object" icon="bar_chart" title="Answer Breakdown" class="btn btn-link"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Communication" name="communication">
+                                <group>
+                                    <group>
+                                        <div class="oe_title mb-2" colspan="2">
+                                            <strong>INTRODUCTION PAGE</strong>
+                                        </div>
+                                        <field name="message_intro" nolabel="1" colspan="2" placeholder='e.g. "During this meeting, we will..."'/>
+                                        
+                                        <div class="oe_title mt-4 mb-2" colspan="2">
+                                            <strong>CONFIRMATION PAGE</strong>
+                                        </div>
+                                        <field name="message_confirmation" nolabel="1" colspan="2" placeholder='e.g. "Thank you for your trust, we look forward to meeting you!"'/>
+                                    </group>
+                                    <group>
+                                        <div class="oe_title mb-2" colspan="2">
+                                            <strong>EMAILS &amp; SMS</strong>
+                                        </div>
+                                        <field name="reminder_ids" widget="many2many_tags" string="Reminders" placeholder="Add reminders..."/>
+                                        <field name="booking_template_id" string="Booking Email" help="Email sent to attendees when they book an appointment."/>
+                                        <field name="cancel_template_id" string="Cancellation Email" help="Email sent to attendees when an appointment is canceled."/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Options" name="options">
+                                <group>
+                                    <group>
+                                        <field name="allow_invitations"/>
+                                        <field name="create_opportunity"/>
+                                        
+                                        <label for="has_payment_step"/>
+                                        <div>
+                                            <field name="has_payment_step" widget="boolean_toggle"/>
+                                            <div invisible="has_payment_step == False" class="mt-2">
+                                                <field name="product_id" placeholder="Booking Fees" class="w-100 mb-2"/>
+                                                <button name="%(payment.action_payment_provider)d" type="action" string="Configure Payment Providers" icon="arrow_forward" class="btn-link p-0"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <label for="auto_confirm"/>
+                                        <div>
+                                            <field name="auto_confirm" class="oe_inline" widget="boolean_toggle"/>
+                                            <span class="mx-2" invisible="auto_confirm == False">up to</span>
+                                            <field name="auto_confirm_limit" class="oe_inline" invisible="auto_confirm == False" style="width: 50px;"/>
+                                            <span class="mx-2" invisible="auto_confirm == False">% of total capacity</span>
+                                        </div>
+                                        <field name="display_pictures"/>
+                                    </group>
+                                    <group>
+                                        <field name="schedule_type" widget="radio" options="{'horizontal': true}"/>
+                                        
+                                        <label for="max_schedule_days" string="Allow Bookings"/>
+                                        <div>
+                                            <span class="me-2">Within the next</span>
+                                            <field name="max_schedule_days" class="oe_inline" style="width: 50px;"/>
+                                            <span class="mx-2">days,</span>
+                                            <br/>
+                                            <span class="me-2">at least</span>
+                                            <field name="min_schedule_hours" class="oe_inline" widget="float_time" style="width: 50px;"/>
+                                            <span class="mx-2">before start time</span>
+                                        </div>
+                                        
+                                        <label for="slot_interval" string="Create slot every"/>
+                                        <div>
+                                            <field name="slot_interval" class="oe_inline" widget="float_time"/>
+                                        </div>
+
+                                        <label for="min_cancellation_hours" string="Cancellation"/>
+                                        <div>
+                                            <span class="me-2">up to</span>
+                                            <field name="min_cancellation_hours" class="oe_inline" widget="float_time" style="width: 50px;"/>
+                                            <span class="mx-2">before the booking</span>
+                                        </div>
+                                        
+                                        <field name="appointment_tz" string="Timezone"/>
+                                        <field name="country_ids" widget="many2many_tags"/>
+                                        <field name="employee_schedule"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="appointment_type_action" model="ir.actions.act_window">
+            <field name="name">Appointment Types</field>
+            <field name="res_model">appointment.type</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="help" type="html">
+                <div class="o_view_nocontent_smiling_face d-none" style="display: none !important;"></div>
+                <div style="display: flex; flex-direction: column; align-items: center; width: 100% !important; max-width: 100% !important; margin-top: 40px;">
+                    
+                    <h1 style="font-weight: bold; margin-bottom: 10px;">Ready to make scheduling easy?</h1>
+                    <p style="color: #6c757d; font-size: 16px; margin-bottom: 40px;">Create a Schedule from scratch or use one of our templates</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; width: 100%; max-width: 1200px; padding: 0 20px;">
+                        
+                        <!-- Meeting -->
+                        <a type="action" name="%(action_preset_meeting_server)d" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 260px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; text-decoration: none; color: inherit; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s;">
+                            <i class="oi oi-4x oi-filled mb-3" data-icon="person" style="color: #714B67;"></i>
+                            <h3 style="font-weight: 600; margin-bottom: 10px; font-size: 18px; margin-top: 0; text-align: center;">Meeting</h3>
+                            <span style="color: #6c757d; font-size: 13px; line-height: 1.4; text-align: center;">Let others book a meeting in your calendar</span>
+                        </a>
+
+                        <!-- Video Call -->
+                        <a type="action" name="%(action_preset_video_server)d" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 260px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; text-decoration: none; color: inherit; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s;">
+                            <i class="oi oi-4x mb-3" data-icon="headphones" style="color: #714B67;"></i>
+                            <h3 style="font-weight: 600; margin-bottom: 10px; font-size: 18px; margin-top: 0; text-align: center;">Video Call</h3>
+                            <span style="color: #6c757d; font-size: 13px; line-height: 1.4; text-align: center;">Schedule a video meeting in a virtual room</span>
+                        </a>
+
+                        <!-- Table Booking -->
+                        <a type="action" name="%(action_preset_table_server)d" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 260px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; text-decoration: none; color: inherit; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s;">
+                            <i class="oi oi-4x mb-3" data-icon="restaurant" style="color: #714B67;"></i>
+                            <h3 style="font-weight: 600; margin-bottom: 10px; font-size: 18px; margin-top: 0; text-align: center;">Table Booking</h3>
+                            <span style="color: #6c757d; font-size: 13px; line-height: 1.4; text-align: center;">Let customers book a table in your restaurant</span>
+                        </a>
+
+                        <!-- Book a Resource -->
+                        <a type="action" name="%(action_preset_resource_server)d" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 260px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; text-decoration: none; color: inherit; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s;">
+                            <i class="oi oi-4x mb-3" data-icon="schedule" style="color: #714B67;"></i>
+                            <h3 style="font-weight: 600; margin-bottom: 10px; font-size: 18px; margin-top: 0; text-align: center;">Book a Resource</h3>
+                            <span style="color: #6c757d; font-size: 13px; line-height: 1.4; text-align: center;">Let customers book a resource such as a room</span>
+                        </a>
+
+                    </div>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

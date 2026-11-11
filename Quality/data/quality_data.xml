@@ -1,0 +1,64 @@
+<odoo noupdate="0">
+
+    <record id="quality_alert_stage_new" model="quality.alert.stage">
+        <field name="name">New</field>
+        <field name="sequence">10</field>
+        <field name="fold">False</field>
+        <field name="done">False</field>
+    </record>
+
+    <record id="quality_alert_stage_investigation" model="quality.alert.stage">
+        <field name="name">Confirmed</field>
+        <field name="sequence">20</field>
+        <field name="fold">False</field>
+        <field name="done">False</field>
+    </record>
+
+    <record id="quality_alert_stage_corrective" model="quality.alert.stage">
+        <field name="name">Action Proposed</field>
+        <field name="sequence">30</field>
+        <field name="fold">False</field>
+        <field name="done">False</field>
+    </record>
+
+    <record id="quality_alert_stage_resolved" model="quality.alert.stage">
+        <field name="name">Solved</field>
+        <field name="sequence">40</field>
+        <field name="fold">True</field>
+        <field name="done">True</field>
+    </record>
+
+    <record id="quality_team_default" model="quality.team">
+        <field name="name">Quality Department</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="quality_spreadsheet_template_default" model="quality.spreadsheet.template">
+        <field name="name">Quality Control Spreadsheet</field>
+        <field name="success_cell">B17</field>
+        <field name="spreadsheet_binary_data" type="bytes" file="Quality/data/files/quality_control_spreadsheet.json" />
+    </record>
+    <!-- Quality Alert Sequence -->
+    <record id="seq_quality_alert" model="ir.sequence">
+        <field name="name">Quality Alert</field>
+        <field name="code">quality.alert</field>
+        <field name="prefix">QA</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Default Root Causes (Quality Reasons) -->
+    <record id="reason_workcenter_failure" model="quality.reason">
+        <field name="name">Workcenter Failure</field>
+    </record>
+    <record id="reason_parts_quality" model="quality.reason">
+        <field name="name">Parts Quality</field>
+    </record>
+    <record id="reason_work_operation" model="quality.reason">
+        <field name="name">Work Operation</field>
+    </record>
+    <record id="reason_others" model="quality.reason">
+        <field name="name">Others</field>
+    </record>
+
+</odoo>

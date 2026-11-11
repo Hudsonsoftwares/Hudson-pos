@@ -1,0 +1,54 @@
+// Helpdesk team form: evenly spaced settings sections
+.o_helpdesk_team_form {
+    .o_helpdesk_settings_title {
+        margin: map-get($spacers, 5) 0 map-get($spacers, 3);
+        padding-bottom: map-get($spacers, 2);
+        border-bottom: 1px solid $border-color;
+        font-size: $h4-font-size;
+    }
+
+    .o_settings_container {
+        row-gap: map-get($spacers, 3);
+
+        .o_setting_box {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: map-get($spacers, 2);
+            padding-bottom: map-get($spacers, 2);
+        }
+    }
+
+    // Label / field rows inside a setting
+    .o_setting_right_pane .o_helpdesk_setting_row {
+        display: flex;
+        align-items: baseline;
+        gap: map-get($spacers, 2);
+        margin-top: map-get($spacers, 2);
+
+        > .o_form_label {
+            flex: 0 0 10rem;
+            margin-bottom: 0;
+        }
+
+        > .o_field_widget,
+        > div {
+            flex: 1 1 auto;
+            width: auto;
+            min-width: 0;
+        }
+
+        .o_helpdesk_setting_days {
+            flex: 0 0 4rem;
+            width: 4rem;
+
+            input {
+                text-align: center;
+            }
+        }
+    }
+
+    // Single fields placed directly in a setting use the full pane width
+    .o_setting_right_pane > .mt16 > .o_field_widget:not(.o_field_boolean) {
+        width: 100%;
+    }
+}

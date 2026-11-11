@@ -2,245 +2,803 @@
 <templates id="template" xml:space="preserve">
     <t t-name="hudson_pos_booking.BookingScreen">
         <div class="pos-booking-screen d-flex flex-column h-100 bg-view">
-            <!-- Top Header -->
-            <div class="pos-booking-header d-flex align-items-center justify-content-between p-3 border-bottom bg-light">
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-secondary btn-lg d-flex align-items-center gap-2" t-on-click="backToFloor">
-                        <i class="fa fa-arrow-left"/>
-                        <span>Back to Floor</span>
-                    </button>
-                    <h3 class="m-0 fw-bold">
-                        <i class="fa fa-calendar-check-o me-2 text-primary"/>
-                        <span>Table Bookings</span>
-                    </h3>
-                    <div t-if="!this.isOnline" class="badge bg-danger p-2 fs-6">
-                        <i class="fa fa-exclamation-triangle me-1"/>
-                        <span>Offline Mode (Read-Only)</span>
+
+            <!-- Control Panel Header (Matching Odoo Enterprise Point of Sale Bookings) -->
+            <div class="pos-booking-control-panel d-flex flex-column gap-2 bg-white border-bottom shadow-sm">
+                <!-- Top Row: Buttons, Breadcrumbs, Search, View Switchers -->
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <!-- Left: New Button, Add Closing Day, Title -->
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-purple-primary btn-sm px-3 py-1 fw-bold shadow-sm" t-on-click="() => this.openCreateModal()">
+                            New
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm px-3 py-1" t-on-click="() => this.openClosingDayModal()">
+                            Add Closing Day
+                        </button>
+                        <span class="fs-5 fw-bold text-dark ms-2">Bookings</span>
+                        <span class="text-muted small ms-1" t-if="this.totalAvailableSeats">: <t t-out="this.totalAvailableSeats"/> available</span>
+                    </div>
+
+                    <!-- Middle: Search Box with Resources Badge & Odoo Filter Dropdown -->
+                    <div class="pos-booking-search-box pos-booking-filter-dropdown-container flex-grow-1 mx-3 position-relative d-flex align-items-center">
+                        <i class="fa fa-search text-muted ms-2 me-2" style="font-size: 0.85rem;"/>
+                        <div class="search-badge d-flex align-items-center gap-1 me-1">
+                            <i class="fa fa-graduation-cap text-success" style="font-size: 0.75rem;"/>
+                            <span>Resources</span>
+                        </div>
+                        <t t-if="this.state.filterStatus !== 'all'">
+                            <div class="badge bg-primary text-white d-flex align-items-center gap-1 me-1 py-1 px-2 rounded-pill shadow-xs" style="font-size: 0.72rem;">
+                                <span t-out="this.filterStatusLabel"/>
+                                <i class="fa fa-times cursor-pointer ms-1" t-on-click="() => this.setFilterStatus('all')"/>
+                            </div>
+                        </t>
+                        <input type="text"
+                               class="flex-grow-1 border-0 bg-transparent px-1"
+                               style="outline: none; font-size: 0.85rem;"
+                               placeholder="Search..."
+                               t-att-value="this.state.searchQuery"
+                               t-on-input="(ev) => this.state.searchQuery = ev.target.value"/>
+                        <i class="fa fa-times text-muted cursor-pointer me-2" t-if="this.state.searchQuery" t-on-click="() => this.state.searchQuery = ''"/>
+
+                        <!-- Filter Toggle Button (Caret down matching Odoo Screenshot 4) -->
+                        <button class="btn btn-sm btn-link text-muted p-0 px-2 me-1"
+                                type="button"
+                                t-on-click.stop="() => this.toggleFilterDropdown()"
+                                title="Filter Bookings">
+                            <i class="fa fa-filter text-primary me-1" t-if="this.state.filterStatus !== 'all'"/>
+                            <i class="fa fa-caret-down"/>
+                        </button>
+
+                        <!-- Filter Dropdown Menu (Odoo Facets) -->
+                        <div t-if="this.state.showFilterDropdown"
+                             class="dropdown-menu show position-absolute end-0 top-100 shadow-lg py-2 mt-1 z-3"
+                             style="min-width: 240px; border: 1px solid rgba(0,0,0,0.15);">
+                            <h6 class="dropdown-header text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Filters</h6>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                               t-att-class="{'fw-bold bg-light text-primary': this.state.filterStatus === 'all'}"
+                               t-on-click="() => this.setFilterStatus('all')">
+                                <span>All Bookings</span>
+                                <i t-if="this.state.filterStatus === 'all'" class="fa fa-check text-primary"/>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                               t-att-class="{'fw-bold bg-light text-primary': this.state.filterStatus === 'confirmed'}"
+                               t-on-click="() => this.setFilterStatus('confirmed')">
+                                <span><i class="fa fa-calendar-check-o text-warning me-2"/>Confirmed / Booked</span>
+                                <i t-if="this.state.filterStatus === 'confirmed'" class="fa fa-check text-primary"/>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                               t-att-class="{'fw-bold bg-light text-primary': this.state.filterStatus === 'checked_in'}"
+                               t-on-click="() => this.setFilterStatus('checked_in')">
+                                <span><i class="fa fa-sign-in text-primary me-2"/>Checked In</span>
+                                <i t-if="this.state.filterStatus === 'checked_in'" class="fa fa-check text-primary"/>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                               t-att-class="{'fw-bold bg-light text-primary': this.state.filterStatus === 'prepaid'}"
+                               t-on-click="() => this.setFilterStatus('prepaid')">
+                                <span><i class="fa fa-cutlery text-success me-2"/>Prepaid Food Orders</span>
+                                <i t-if="this.state.filterStatus === 'prepaid'" class="fa fa-check text-primary"/>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                               t-att-class="{'fw-bold bg-light text-primary': this.state.filterStatus === 'checked_out'}"
+                               t-on-click="() => this.setFilterStatus('checked_out')">
+                                <span><i class="fa fa-check-circle-o text-purple me-2"/>Released / Checked Out</span>
+                                <i t-if="this.state.filterStatus === 'checked_out'" class="fa fa-check text-primary"/>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                               t-att-class="{'fw-bold bg-light text-primary': this.state.filterStatus === 'no_show'}"
+                               t-on-click="() => this.setFilterStatus('no_show')">
+                                <span><i class="fa fa-times-circle-o text-danger me-2"/>No Show</span>
+                                <i t-if="this.state.filterStatus === 'no_show'" class="fa fa-check text-primary"/>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Controls: View Switchers with Distinct Labels -->
+                    <div class="btn-group btn-group-sm shadow-xs" role="group" aria-label="View Switcher">
+                        <button class="btn view-switcher-btn d-flex align-items-center gap-1 px-3 py-1 fw-bold"
+                                t-att-class="{'active': this.state.viewMode === 'gantt'}"
+                                t-on-click="() => this.setViewMode('gantt')"
+                                title="Timeline / Gantt View">
+                            <span>📊 Gantt</span>
+                        </button>
+                        <button class="btn view-switcher-btn d-flex align-items-center gap-1 px-3 py-1 fw-bold"
+                                t-att-class="{'active': this.state.viewMode === 'list'}"
+                                t-on-click="() => this.setViewMode('list')"
+                                title="List View">
+                            <span>📑 List</span>
+                        </button>
+                        <button class="btn view-switcher-btn d-flex align-items-center gap-1 px-3 py-1 fw-bold"
+                                t-att-class="{'active': this.state.viewMode === 'calendar'}"
+                                t-on-click="() => this.setViewMode('calendar')"
+                                title="Calendar View">
+                            <span>📅 Calendar</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Date Filter Tabs & New Booking Button -->
-                <div class="d-flex align-items-center gap-2">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-primary"
-                                t-att-class="{'active': this.state.filterDate === 'today'}"
-                                t-on-click="() => this.state.filterDate = 'today'">Today</button>
-                        <button type="button" class="btn btn-outline-primary"
-                                t-att-class="{'active': this.state.filterDate === 'tomorrow'}"
-                                t-on-click="() => this.state.filterDate = 'tomorrow'">Tomorrow</button>
-                        <button type="button" class="btn btn-outline-primary"
-                                t-att-class="{'active': this.state.filterDate === 'all'}"
-                                t-on-click="() => this.state.filterDate = 'all'">All</button>
+                <!-- Second Row: Navigation (< > Period Today Fullscreen Title) -->
+                <div class="d-flex align-items-center justify-content-between pt-1 flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-1 flex-wrap">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary px-2" t-on-click="() => this.prevPeriod()" title="Previous">
+                                <i class="fa fa-chevron-left"/>
+                            </button>
+                            <button class="btn btn-outline-secondary px-2" t-on-click="() => this.nextPeriod()" title="Next">
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+                        </div>
+
+                        <!-- Period Dropdown: Day, Week, Month, Quarter, Year, Date Range (Matching Screenshot 4) -->
+                        <div class="pos-booking-period-dropdown-container position-relative ms-1">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle px-3 text-capitalize d-flex align-items-center gap-1 shadow-xs fw-semibold"
+                                    type="button"
+                                    t-on-click.stop="() => this.togglePeriodDropdown()">
+                                <t t-out="this.calendarPeriodLabel"/>
+                            </button>
+                            <div t-if="this.state.showPeriodDropdown"
+                                 class="dropdown-menu show position-absolute shadow-lg py-2 mt-1 z-3"
+                                 style="min-width: 260px; left: 0; top: 100%; border: 1px solid rgba(0,0,0,0.15);">
+                                <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                                   t-att-class="{'fw-bold bg-light text-primary': this.state.calendarPeriod === 'day'}"
+                                   t-on-click="() => this.selectPeriod('day')">
+                                    <span>Day</span>
+                                    <i t-if="this.state.calendarPeriod === 'day'" class="fa fa-check text-primary"/>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                                   t-att-class="{'fw-bold bg-light text-primary': this.state.calendarPeriod === 'week'}"
+                                   t-on-click="() => this.selectPeriod('week')">
+                                    <span>Week</span>
+                                    <i t-if="this.state.calendarPeriod === 'week'" class="fa fa-check text-primary"/>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                                   t-att-class="{'fw-bold bg-light text-primary': this.state.calendarPeriod === 'month'}"
+                                   t-on-click="() => this.selectPeriod('month')">
+                                    <span>Month</span>
+                                    <i t-if="this.state.calendarPeriod === 'month'" class="fa fa-check text-primary"/>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                                   t-att-class="{'fw-bold bg-light text-primary': this.state.calendarPeriod === 'quarter'}"
+                                   t-on-click="() => this.selectPeriod('quarter')">
+                                    <span>Quarter</span>
+                                    <i t-if="this.state.calendarPeriod === 'quarter'" class="fa fa-check text-primary"/>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
+                                   t-att-class="{'fw-bold bg-light text-primary': this.state.calendarPeriod === 'year'}"
+                                   t-on-click="() => this.selectPeriod('year')">
+                                    <span>Year</span>
+                                    <i t-if="this.state.calendarPeriod === 'year'" class="fa fa-check text-primary"/>
+                                </a>
+
+                                <hr class="dropdown-divider my-2"/>
+
+                                <!-- Custom Date Range Picker: [ 11/11/2026 ] ➔ [ 11/11/2026 ] [ Apply ] -->
+                                <div class="px-3 py-1">
+                                    <div class="d-flex align-items-center gap-1 mb-2">
+                                        <input type="date" class="form-control form-control-sm px-1 py-1"
+                                               style="font-size: 0.78rem;"
+                                               t-att-value="this.state.customStartDate"
+                                               t-on-change="(ev) => this.state.customStartDate = ev.target.value"/>
+                                        <i class="fa fa-arrow-right text-muted small"/>
+                                        <input type="date" class="form-control form-control-sm px-1 py-1"
+                                               style="font-size: 0.78rem;"
+                                               t-att-value="this.state.customEndDate"
+                                               t-on-change="(ev) => this.state.customEndDate = ev.target.value"/>
+                                    </div>
+                                    <button class="btn btn-purple-primary btn-sm w-100 fw-bold"
+                                            t-on-click="() => this.applyCustomDateRange()">
+                                        Apply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-secondary btn-sm px-3 ms-1" t-on-click="() => this.today()">
+                            Today
+                        </button>
+
+                        <span class="fs-6 fw-bold text-dark ms-2" t-out="this.periodTitle"/>
+
+                        <!-- Jump to Upcoming Bookings Button if current date has none -->
+                        <t t-if="!this.dateBookings.length and this.upcomingBookingsSummary">
+                            <button class="btn btn-warning btn-sm ms-2 px-2 py-0 fw-semibold text-dark rounded-pill shadow-xs"
+                                    t-on-click="() => this.jumpToDate(this.upcomingBookingsSummary.dateStr)"
+                                    title="Click to jump to upcoming bookings">
+                                📅 <t t-out="this.upcomingBookingsSummary.count"/> bookings on <t t-out="this.upcomingBookingsSummary.formattedDate"/> →
+                            </button>
+                        </t>
+
+                        <!-- List All-Dates Toggle -->
+                        <button t-if="this.state.viewMode === 'list'"
+                                class="btn btn-sm ms-2 fw-semibold rounded-pill px-2 py-0 border"
+                                t-att-class="this.state.showAllDates ? 'btn-primary text-white' : 'btn-light text-dark'"
+                                t-on-click="() => this.state.showAllDates = !this.state.showAllDates"
+                                title="Toggle between selected date and all upcoming dates">
+                            <span t-if="!this.state.showAllDates">🔍 Filter: Today Only</span>
+                            <span t-else="">🌐 Showing All Dates (<t t-out="this.allBookings.length"/> Bookings)</span>
+                        </button>
                     </div>
 
-                    <button class="btn btn-primary btn-lg d-flex align-items-center gap-2 ms-2"
-                            t-att-disabled="!this.isOnline"
-                            t-on-click="openCreateModal">
-                        <i class="fa fa-plus"/>
-                        <span>New Booking</span>
-                    </button>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-light text-dark border px-2 py-1">
+                            Total: <strong class="text-primary"><t t-out="this.allBookings.length"/></strong> Bookings
+                        </span>
+                        <div t-if="!this.isOnline" class="badge bg-danger py-1 px-2">
+                            <i class="fa fa-exclamation-triangle me-1"/>Offline
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Kanban Columns Container -->
-            <div class="pos-booking-columns d-flex flex-fill p-3 gap-3 overflow-hidden">
-                <!-- Column 1: Booked (Confirmed) -->
-                <div class="booking-column d-flex flex-column flex-fill bg-light rounded border p-2 overflow-hidden"
-                     t-on-dragover="onDragOver"
-                     t-on-drop="(ev) => this.onDrop(ev, 'confirmed')">
-                    <div class="column-header d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
-                        <span class="fw-bold fs-5 text-warning-emphasis">
-                            <i class="fa fa-clock-o me-1"/> Booked
-                        </span>
-                        <span class="badge bg-warning text-dark fs-6 rounded-pill" t-out="this.bookedList.length"/>
+            <!-- ======================================================== -->
+            <!-- 1. GANTT / TIMELINE VIEW (Exact Match to New Screenshot) -->
+            <!-- ======================================================== -->
+            <div t-if="this.state.viewMode === 'gantt'" class="pos-gantt-wrapper flex-grow-1 d-flex flex-column overflow-hidden bg-white">
+                <div class="pos-gantt-scrollable flex-grow-1 overflow-auto">
+                    <!-- Gantt Header Row -->
+                    <div class="pos-gantt-header-row">
+                        <div class="pos-gantt-resource-header">
+                            <span>Resources</span>
+                        </div>
+                        <div class="pos-gantt-timeline-header">
+                            <div class="pos-gantt-date-label" t-out="this.currentFormattedDate"/>
+                            <div class="pos-gantt-hours-row">
+                                <t t-foreach="this.hours" t-as="h" t-key="h.hour">
+                                    <div class="pos-gantt-hour-cell" t-out="h.label"/>
+                                </t>
+                            </div>
+                        </div>
                     </div>
-                    <div class="column-cards d-flex flex-column gap-2 overflow-auto flex-fill p-1">
-                        <t t-foreach="this.bookedList" t-as="b" t-key="b.id">
-                            <div class="card p-3 shadow-sm border-start border-4 border-warning cursor-grab"
-                                 draggable="true"
-                                 t-on-dragstart="(ev) => this.onDragStart(ev, b)">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <h5 class="m-0 fw-bold" t-out="b.customerDisplayName"/>
-                                    <span class="badge bg-secondary" style="font-size: 0.8rem;">
-                                        <i class="fa fa-user me-1"/><t t-out="b.party_size"/> guests
+
+                    <!-- Unassigned Resources Row -->
+                    <div class="pos-gantt-row">
+                        <div class="pos-gantt-resource-cell text-muted">
+                            <i class="fa fa-question-circle text-secondary"/>
+                            <span>Unassigned</span>
+                        </div>
+                        <div class="pos-gantt-timeline-track">
+                            <t t-foreach="this.hours" t-as="h" t-key="h.hour">
+                                <div class="pos-gantt-slot"
+                                     t-on-dragover="(ev) => this.onGanttSlotDragOver(ev)"
+                                     t-on-drop="(ev) => this.onGanttSlotDrop(ev, null, h.hour)"
+                                     t-on-click="() => this.onSlotClick(null, h.hour)"/>
+                            </t>
+                            <div t-if="this.nowMarkerLeft" class="pos-gantt-now-indicator" t-attf-style="left: {{ this.nowMarkerLeft }};"/>
+
+                            <t t-foreach="this.unassignedBookings" t-as="b" t-key="b.id">
+                                <div class="pos-gantt-pill"
+                                     draggable="true"
+                                     t-on-dragstart="(ev) => this.onGanttPillDragStart(ev, b)"
+                                     t-att-style="this.getBookingStyle(b)"
+                                     t-on-click.stop="() => this.openEditModal(b)"
+                                     t-attf-title="{{ b.customerDisplayName }} | 📞 {{ b.customerDisplayPhone || 'No phone' }} | ✉️ {{ b.customerDisplayEmail || 'No email' }} | 🪑 {{ b.party_size }}p ({{ b.startTimeStr }}-{{ b.endTimeStr }})">
+                                    <span class="text-truncate flex-grow-1">
+                                        <t t-out="b.customerDisplayName"/> <t t-out="b.party_size"/>p
+                                    </span>
+                                    <div class="pos-gantt-resize-handle"
+                                         t-on-mousedown.stop="(ev) => this.onResizeStart(ev, b)"
+                                         title="Drag to resize duration"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Table Rows -->
+                    <t t-foreach="this.activeTables" t-as="tbl" t-key="tbl.id">
+                        <div class="pos-gantt-row">
+                            <div class="pos-gantt-resource-cell">
+                                <span class="fw-semibold">Table <t t-out="tbl.table_number || tbl.name"/></span>
+                                <span class="text-muted ms-1 small" title="Seats">
+                                    🪑 <t t-out="tbl.seats"/>
+                                </span>
+                            </div>
+                            <div class="pos-gantt-timeline-track">
+                                <t t-foreach="this.hours" t-as="h" t-key="h.hour">
+                                    <div class="pos-gantt-slot"
+                                         t-on-dragover="(ev) => this.onGanttSlotDragOver(ev)"
+                                         t-on-drop="(ev) => this.onGanttSlotDrop(ev, tbl, h.hour)"
+                                         t-on-click="() => this.onSlotClick(tbl, h.hour)"
+                                         t-attf-title="Book Table {{ tbl.table_number }} at {{ h.label }}"/>
+                                </t>
+                                <div t-if="this.nowMarkerLeft" class="pos-gantt-now-indicator" t-attf-style="left: {{ this.nowMarkerLeft }};"/>
+
+                                <t t-foreach="this.getBookingsForTable(tbl.id)" t-as="b" t-key="b.id">
+                                    <div class="pos-gantt-pill"
+                                         draggable="true"
+                                         t-on-dragstart="(ev) => this.onGanttPillDragStart(ev, b)"
+                                         t-att-style="this.getBookingStyle(b)"
+                                         t-on-click.stop="() => this.openEditModal(b)"
+                                         t-attf-title="{{ b.customerDisplayName }} | 📞 {{ b.customerDisplayPhone || 'No phone' }} | ✉️ {{ b.customerDisplayEmail || 'No email' }} | 🪑 {{ b.party_size }}p ({{ b.startTimeStr }}-{{ b.endTimeStr }}){{ b.has_food_order ? ' | Food: ' + b.food_order_summary : '' }}">
+                                        <div class="d-flex align-items-center gap-1 text-truncate flex-grow-1" style="min-width: 0;">
+                                            <span t-if="b.has_food_order" class="badge rounded-pill bg-warning text-dark px-1 py-0 shadow-xs" title="Pre-ordered Food" style="font-size: 9.5px; font-weight: 700;">🍽️ Food</span>
+                                            <span class="text-truncate fw-bold">
+                                                <t t-out="b.customerDisplayName"/>
+                                            </span>
+                                            <span class="badge bg-white text-dark border rounded-pill px-1" style="font-size: 9.5px;">
+                                                <t t-out="b.party_size"/>p
+                                            </span>
+                                            <span t-if="b.food_order_summary" class="text-muted small text-truncate d-none d-xl-inline" style="font-size: 10px;">
+                                                • <t t-out="b.food_order_summary"/>
+                                            </span>
+                                        </div>
+                                        <div class="pos-gantt-resize-handle"
+                                             t-on-mousedown.stop="(ev) => this.onResizeStart(ev, b)"
+                                             title="Drag to resize duration"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 2. LIST VIEW (Odoo Enterprise Clean Style)     -->
+            <!-- ============================================== -->
+            <div t-if="this.state.viewMode === 'list'" class="pos-booking-list-wrapper flex-grow-1 overflow-auto bg-white">
+                <table class="table table-hover align-middle mb-0 pos-booking-table">
+                    <thead class="pos-booking-thead">
+                        <tr>
+                            <th style="width: 40px;" class="ps-3 text-center">
+                                <input type="checkbox" class="form-check-input" style="cursor: pointer;"/>
+                            </th>
+                            <th style="min-width: 160px;">Guest Name</th>
+                            <th style="min-width: 120px;">Time</th>
+                            <th style="min-width: 120px;">Table</th>
+                            <th style="min-width: 80px;">Guests</th>
+                            <th style="min-width: 130px;">Phone</th>
+                            <th style="min-width: 220px;">Pre-Order / Notes</th>
+                            <th style="min-width: 110px;">Status</th>
+                            <th style="min-width: 170px;" class="text-end pe-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-if="!this.displayedBookings.length">
+                            <td colspan="9" class="text-center text-muted py-5">
+                                <i class="fa fa-calendar-check-o fa-2x mb-2 d-block opacity-50"/>
+                                <span class="fw-semibold">No bookings found for the selected period.</span>
+                            </td>
+                        </tr>
+                        <t t-foreach="this.displayedBookings" t-as="b" t-key="b.id">
+                            <tr class="cursor-pointer pos-booking-row" t-on-click="() => this.openEditModal(b)">
+                                <td class="ps-3 text-center" t-on-click.stop="() => {}">
+                                    <input type="checkbox" class="form-check-input" style="cursor: pointer;"/>
+                                </td>
+                                <!-- Name & Email -->
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="pos-avatar rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0">
+                                            <t t-out="(b.customerDisplayName || 'G')[0].toUpperCase()"/>
+                                        </div>
+                                        <div>
+                                            <span class="pos-guest-name"><t t-out="b.customerDisplayName"/></span>
+                                            <span t-if="b.customerDisplayEmail" class="pos-guest-email d-block text-truncate" style="max-width: 160px;" t-att-title="b.customerDisplayEmail">
+                                                <t t-out="b.customerDisplayEmail"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <!-- Time -->
+                                <td>
+                                    <div class="pos-booking-time d-flex align-items-center gap-1">
+                                        <i class="fa fa-clock-o text-primary"/>
+                                        <span><t t-out="b.startTimeStr || '16:00'"/> - <t t-out="b.endTimeStr || '18:00'"/></span>
+                                    </div>
+                                    <span t-if="this.state.showAllDates &amp;&amp; b.startDateStr" class="pos-date-subtext">
+                                        <t t-out="b.startDateStr"/>
+                                    </span>
+                                </td>
+                                <!-- Table -->
+                                <td>
+                                    <span t-if="b.tableDisplayNames &amp;&amp; b.tableDisplayNames !== 'No Table'" class="pos-table-badge">
+                                        <i class="fa fa-cutlery me-1"/> <t t-out="b.tableDisplayNames"/>
+                                    </span>
+                                    <span t-else="" class="pos-no-table-badge">
+                                        <i class="fa fa-cutlery me-1 text-muted"/>No Table
+                                    </span>
+                                </td>
+                                <!-- Guests -->
+                                <td>
+                                    <span class="pos-guests-badge">
+                                        <i class="fa fa-users me-1 text-muted"/> <t t-out="b.party_size || 1"/>p
+                                    </span>
+                                </td>
+                                <!-- Phone -->
+                                <td>
+                                    <span t-if="b.customerDisplayPhone" class="pos-phone-text">
+                                        <i class="fa fa-phone me-1"/> <t t-out="b.customerDisplayPhone"/>
+                                    </span>
+                                    <span t-else="" class="pos-phone-empty">-</span>
+                                </td>
+                                <!-- Pre-Order / Notes -->
+                                <td>
+                                    <div class="d-flex flex-column gap-1">
+                                        <span t-if="b.has_food_order" class="pos-food-badge" title="Pre-ordered Food">
+                                            🍽️ <t t-out="b.food_order_summary || 'Food'"/> (<t t-out="this.pos.formatCurrency(b.food_order_total)"/>)
+                                        </span>
+                                        <span t-if="b.guest_details" class="pos-notes-text text-truncate" style="max-width: 240px;" t-att-title="b.guest_details">
+                                            <i class="fa fa-comment-o me-1"/> <t t-out="b.guest_details"/>
+                                        </span>
+                                    </div>
+                                </td>
+                                <!-- Status -->
+                                <td>
+                                    <span t-if="b.state === 'checked_in'" class="pos-status-pill status-checked-in">
+                                        <i class="fa fa-sign-in me-1"/>Checked In
+                                    </span>
+                                    <span t-elif="b.state === 'checked_out'" class="pos-status-pill status-released">
+                                        <i class="fa fa-check-circle me-1"/>Released
+                                    </span>
+                                    <span t-elif="b.state === 'no_show'" class="pos-status-pill status-no-show">
+                                        <i class="fa fa-times-circle me-1"/>No Show
+                                    </span>
+                                    <span t-elif="b.state === 'pending_payment'" class="pos-status-pill status-pending">
+                                        <i class="fa fa-clock-o me-1"/>Pending
+                                    </span>
+                                    <span t-else="" class="pos-status-pill status-booked">
+                                        <i class="fa fa-calendar-check-o me-1"/>Booked
+                                    </span>
+                                </td>
+                                <!-- Actions -->
+                                <td class="text-end pe-3" t-on-click.stop="() => {}">
+                                    <t t-if="b.state === 'checked_out'">
+                                        <span class="pos-released-tag">
+                                            <i class="fa fa-check text-success me-1"/>Table Released
+                                        </span>
+                                    </t>
+                                    <t t-elif="b.state === 'checked_in'">
+                                        <button class="btn btn-sm btn-outline-danger py-1 px-2 fw-semibold me-1 shadow-xs"
+                                                t-on-click.stop="() => this.releaseBookingTable(b)"
+                                                title="Release Table">
+                                            <i class="fa fa-sign-out me-1"/>Release
+                                        </button>
+                                        <button class="btn btn-sm btn-primary py-1 px-2 fw-bold shadow-xs text-white"
+                                                t-on-click.stop="() => this.openBookingOrder(b)"
+                                                title="Open Table Order &amp; Billing in POS">
+                                            <i class="fa fa-cutlery me-1"/>Order
+                                        </button>
+                                    </t>
+                                    <t t-elif="b.state === 'no_show'">
+                                        <span class="text-muted small fst-italic">No Show</span>
+                                    </t>
+                                    <t t-else="">
+                                        <button class="btn btn-sm btn-success py-1 px-3 fw-bold me-1 shadow-xs text-white"
+                                                t-on-click.stop="() => this.checkInBooking(b)"
+                                                title="Check In Guest">
+                                            <i class="fa fa-check me-1"/>Check In
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold shadow-xs"
+                                                t-on-click.stop="() => this.openBookingOrder(b)"
+                                                title="Open Table Order in POS">
+                                            <i class="fa fa-cutlery me-1"/>Order
+                                        </button>
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 4. CALENDAR MONTH VIEW                         -->
+            <!-- ============================================== -->
+            <div t-if="this.state.viewMode === 'calendar'" class="pos-calendar-wrapper flex-grow-1 d-flex">
+                <div class="pos-calendar-main flex-grow-1 d-flex flex-column bg-white">
+                    <div class="pos-calendar-header-row d-flex border-bottom bg-light">
+                        <div class="pos-calendar-week-corner text-muted small fw-bold d-flex align-items-center justify-content-center">#</div>
+                        <div class="pos-calendar-day-header flex-fill text-center py-2 fw-bold text-secondary">SUN</div>
+                        <div class="pos-calendar-day-header flex-fill text-center py-2 fw-bold text-secondary">MON</div>
+                        <div class="pos-calendar-day-header flex-fill text-center py-2 fw-bold text-secondary">TUE</div>
+                        <div class="pos-calendar-day-header flex-fill text-center py-2 fw-bold text-secondary">WED</div>
+                        <div class="pos-calendar-day-header flex-fill text-center py-2 fw-bold text-secondary">THU</div>
+                        <div class="pos-calendar-day-header flex-fill text-center py-2 fw-bold text-secondary">FRI</div>
+                        <div class="pos-calendar-day-header flex-fill text-center py-2 fw-bold text-secondary">SAT</div>
+                    </div>
+                    <div class="pos-calendar-body d-flex flex-column flex-grow-1">
+                        <t t-foreach="this.calendarWeeks" t-as="w" t-key="w_index">
+                            <div class="pos-calendar-week-row d-flex flex-fill border-bottom">
+                                <div class="pos-calendar-week-label text-muted small fw-bold d-flex align-items-start justify-content-center pt-2 border-end bg-light">
+                                    <t t-out="w.weekNumber"/>
+                                </div>
+                                <t t-foreach="w.days" t-as="d" t-key="d_index">
+                                    <div class="pos-calendar-cell flex-fill d-flex flex-column border-end position-relative"
+                                         t-att-class="{'bg-other-month': !d.isCurrentMonth, 'bg-selected-day': d.isSelected}"
+                                         t-on-click="() => this.onCalendarDayClick(d)">
+                                        <div class="pos-calendar-cell-header p-1 d-flex align-items-center justify-content-between">
+                                            <span t-if="d.isToday" class="pos-calendar-today-badge">
+                                                <t t-out="d.dayNumber"/>
+                                            </span>
+                                            <span t-else="" class="pos-calendar-day-num fw-semibold" t-att-class="{'text-muted opacity-50': !d.isCurrentMonth}">
+                                                <t t-out="d.dayNumber"/>
+                                            </span>
+                                            <span t-if="d.bookings.length" class="badge rounded-pill bg-light text-secondary border small" style="font-size: 0.65rem;">
+                                                <t t-out="d.bookings.length"/>
+                                            </span>
+                                        </div>
+                                        <div class="pos-calendar-events-container flex-grow-1 p-1 overflow-auto">
+                                            <t t-foreach="d.bookings" t-as="b" t-key="b.id || b_index">
+                                                <div class="pos-calendar-event-pill mb-1 p-1 rounded shadow-xs cursor-pointer d-flex align-items-center gap-1 text-truncate"
+                                                     t-att-class="b.state === 'checked_in' ? 'bg-success text-white' : (b.state === 'no_show' ? 'bg-secondary text-white' : 'bg-primary-subtle text-primary border border-primary-subtle')"
+                                                     t-on-click.stop="() => this.openEditModal(b)">
+                                                    <span class="fw-bold small"><t t-out="b.startTimeStr"/></span>
+                                                    <span class="text-truncate flex-grow-1 small"><t t-out="b.customerDisplayName"/></span>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 5. CREATE / EDIT BOOKING MODAL (Screenshot)    -->
+            <!-- ============================================== -->
+            <div t-if="this.state.showBookingModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.45); z-index: 1050;">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
+                    <div class="modal-content shadow-lg border-0 rounded-4 overflow-hidden">
+                        <!-- Modal Header -->
+                        <div class="modal-header border-0 pb-0 pt-3 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="modal-title fw-bold text-dark m-0 d-flex align-items-center gap-2">
+                                <i class="fa fa-calendar-check-o text-primary"/>
+                                <t t-if="this.state.editingBookingId">
+                                    <span>Reservation:</span>
+                                    <span class="text-primary" t-out="this.state.newBooking.customer_name || 'Guest'"/>
+                                </t>
+                                <t t-else="">Create Booking</t>
+                            </h5>
+                            <button type="button" class="btn-close" t-on-click="() => this.closeBookingModal()"/>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="modal-body px-4 pt-3 pb-2">
+                            <!-- Conflict Alert Banner (Matches Screenshot exactly) -->
+                            <div t-if="this.tableConflictWarning" class="alert alert-warning py-2 px-3 small d-flex align-items-center gap-2 mb-3 rounded-3" style="background-color: #fef3d6; border-color: #f9dfa0; color: #784400;">
+                                <i class="fa fa-exclamation-circle fs-5 flex-shrink-0"/>
+                                <span class="fw-semibold" t-out="this.tableConflictWarning"/>
+                            </div>
+
+                            <!-- Guest Name Field (Prominent First Field) -->
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase mb-1">
+                                    <i class="fa fa-user me-1 text-primary"/> Guest Name
+                                </label>
+                                <input type="text"
+                                       class="form-control form-control-lg border rounded-3 px-3 shadow-none fs-5 fw-semibold"
+                                       placeholder='Guest Name (e.g. "Nimya Thomas")'
+                                       t-att-value="this.state.newBooking.customer_name"
+                                       t-on-input="(ev) => this.state.newBooking.customer_name = ev.target.value"/>
+                            </div>
+
+                            <!-- Date & Time Range Row -->
+                            <div class="d-flex align-items-center mb-3 text-secondary">
+                                <i class="fa fa-clock-o fs-5 me-3 text-muted" style="width: 20px;"/>
+                                <div class="d-flex align-items-center gap-2 flex-grow-1 flex-wrap">
+                                    <input type="date" class="form-control form-control-sm" style="width: 135px;"
+                                           t-att-value="this.state.newBooking.date_str"
+                                           t-on-change="(ev) => this.state.newBooking.date_str = ev.target.value"/>
+                                    <input type="time" class="form-control form-control-sm" style="width: 95px;"
+                                           t-att-value="this.state.newBooking.start_time"
+                                           t-on-change="(ev) => this.state.newBooking.start_time = ev.target.value"/>
+                                    <span class="text-muted fw-bold">→</span>
+                                    <select class="form-select form-select-sm" style="width: 110px;"
+                                            t-att-value="this.state.newBooking.duration_hours"
+                                            t-on-change="(ev) => this.state.newBooking.duration_hours = ev.target.value">
+                                        <option value="1.0">1 hour</option>
+                                        <option value="1.5">1.5 hours</option>
+                                        <option value="2.0">2 hours</option>
+                                        <option value="2.5">2.5 hours</option>
+                                        <option value="3.0">3 hours</option>
+                                    </select>
+                                    <span class="small text-muted" t-out="this.modalFormattedTimeRange"/>
+                                </div>
+                            </div>
+
+                            <!-- Seats Row -->
+                            <div class="d-flex align-items-center mb-3 text-secondary">
+                                <i class="fa fa-users fs-5 me-3 text-muted" style="width: 20px;"/>
+                                <div class="d-flex align-items-center gap-2 flex-grow-1">
+                                    <input type="number" min="1" max="50" class="form-control form-control-sm" style="width: 75px;"
+                                           t-att-value="this.state.newBooking.party_size"
+                                           t-on-input="(ev) => this.state.newBooking.party_size = ev.target.value"/>
+                                    <span class="text-muted small">
+                                        seats (<t t-out="this.totalAvailableSeats"/> available)
                                     </span>
                                 </div>
-                                <div class="text-muted small mb-2 d-flex flex-wrap gap-3">
-                                    <span t-if="b.customerDisplayPhone"><i class="fa fa-phone me-1"/><t t-out="b.customerDisplayPhone"/></span>
-                                    <span><i class="fa fa-clock-o me-1"/><t t-out="b.startTimeStr"/> - <t t-out="b.endTimeStr"/></span>
-                                    <span class="fw-bold text-dark"><i class="fa fa-cutlery me-1"/><t t-out="b.tableDisplayNames"/></span>
+                            </div>
+
+                            <!-- Phone Row -->
+                            <div class="d-flex align-items-center mb-3 text-secondary">
+                                <i class="fa fa-phone fs-5 me-3 text-muted" style="width: 20px;"/>
+                                <div class="flex-grow-1">
+                                    <input type="text" class="form-control form-control-sm"
+                                           placeholder="Phone Number"
+                                           t-att-value="this.state.newBooking.customer_phone"
+                                           t-on-input="(ev) => this.state.newBooking.customer_phone = ev.target.value"/>
                                 </div>
-                                <div t-if="b.guest_details" class="alert alert-secondary py-1 px-2 small mb-2 text-truncate" t-out="b.guest_details"/>
-                                <div class="d-flex gap-1 mt-auto pt-2 border-top">
-                                    <button class="btn btn-sm btn-primary flex-fill" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'checked_in')">
-                                        <i class="fa fa-check me-1"/>Check In
+                            </div>
+
+                            <!-- Email Row -->
+                            <div class="d-flex align-items-center mb-3 text-secondary">
+                                <i class="fa fa-envelope-o fs-5 me-3 text-muted" style="width: 20px;"/>
+                                <div class="flex-grow-1">
+                                    <input type="email" class="form-control form-control-sm"
+                                           placeholder="Email Address"
+                                           t-att-value="this.state.newBooking.customer_email"
+                                           t-on-input="(ev) => this.state.newBooking.customer_email = ev.target.value"/>
+                                </div>
+                            </div>
+
+                            <!-- Table Row -->
+                            <div class="d-flex align-items-center mb-3 text-secondary">
+                                <i class="fa fa-cutlery fs-5 me-3 text-muted" style="width: 20px;"/>
+                                <div class="flex-grow-1 d-flex align-items-center gap-2 flex-wrap">
+                                    <span t-if="this.modalSelectedTable" class="badge bg-light text-dark border px-3 py-2 rounded-pill d-inline-flex align-items-center gap-2 fs-6">
+                                        <i class="fa fa-cutlery text-secondary"/>
+                                        <span>Table <t t-out="this.modalSelectedTable.table_number || this.modalSelectedTable.name"/> (<t t-out="this.modalSelectedTable.seats"/>)</span>
+                                        <i class="fa fa-times text-muted cursor-pointer ms-1 hover-danger" t-on-click="() => this.unassignModalTable()" title="Remove Table"/>
+                                    </span>
+                                    <select t-else="" class="form-select form-select-sm" style="max-width: 280px;"
+                                            t-att-value="this.state.newBooking.table_id"
+                                            t-on-change="(ev) => this.state.newBooking.table_id = ev.target.value">
+                                        <option value="">Select a table...</option>
+                                        <t t-foreach="this.activeTables" t-as="tbl" t-key="tbl.id">
+                                            <option t-att-value="tbl.id">
+                                                Table <t t-out="tbl.table_number || tbl.name"/> (🪑 <t t-out="tbl.seats"/> seats)
+                                                <t t-if="tbl.parent_id"> [Merged with Table <t t-out="tbl.parent_id.table_number || tbl.parent_id.name"/>]</t>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Calendar Row -->
+                            <div class="d-flex align-items-center mb-3 text-secondary">
+                                <i class="fa fa-calendar fs-5 me-3 text-muted" style="width: 20px;"/>
+                                <div class="text-muted small">
+                                    <t t-out="this.pos.config.booking_appointment_type_id ? (this.pos.config.booking_appointment_type_id[1] || 'Table Booking') : 'No calendar'"/>
+                                </div>
+                            </div>
+
+                            <!-- Notes Row -->
+                            <div class="d-flex align-items-start mb-3 text-secondary">
+                                <i class="fa fa-file-text-o fs-5 me-3 text-muted pt-1" style="width: 20px;"/>
+                                <div class="flex-grow-1">
+                                    <textarea class="form-control form-control-sm" rows="2"
+                                              placeholder="Notes, dietary restrictions, allergies..."
+                                              t-att-value="this.state.newBooking.notes"
+                                              t-on-input="(ev) => this.state.newBooking.notes = ev.target.value"/>
+                                </div>
+                            </div>
+
+                            <!-- Pre-Ordered Food Section -->
+                            <div t-if="this.currentModalBooking &amp;&amp; this.currentModalBooking.has_food_order"
+                                 class="mt-3 p-3 bg-light border rounded-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="fw-bold text-dark d-flex align-items-center gap-2">
+                                        <i class="fa fa-cutlery text-warning"/>
+                                        <span>Pre-Ordered Food Items</span>
+                                    </div>
+                                    <span class="badge bg-success fs-6">
+                                        Total: <t t-out="this.pos.formatCurrency(this.currentModalBooking.food_order_total)"/>
+                                    </span>
+                                </div>
+                                <div t-if="this.currentModalBooking.food_order_summary" class="text-secondary small mb-2">
+                                    <t t-out="this.currentModalBooking.food_order_summary"/>
+                                </div>
+                                <div t-if="this.currentModalBooking.food_order_details &amp;&amp; this.currentModalBooking.food_order_details.length"
+                                     class="d-flex flex-column gap-1 bg-white p-2 rounded border small">
+                                    <t t-foreach="this.currentModalBooking.food_order_details" t-as="item" t-key="item_index">
+                                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                                            <span>
+                                                <strong class="me-1"><t t-out="item.qty"/>x</strong>
+                                                <t t-out="item.name"/>
+                                            </span>
+                                            <span class="text-muted fw-semibold">
+                                                <t t-out="this.pos.formatCurrency(item.subtotal || (item.qty * item.price_unit))"/>
+                                            </span>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="modal-footer border-0 px-4 pb-4 pt-2 d-flex justify-content-between align-items-center">
+                            <!-- Left: Save -->
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-purple-primary px-4 fw-bold shadow-xs"
+                                        t-on-click="() => this.saveBooking()">
+                                    Save
+                                </button>
+                            </div>
+
+                            <!-- Right: Status State Toggles [Booked] [Check In] [No Show] & [Open Order] -->
+                            <div class="d-flex align-items-center gap-2">
+                                <t t-if="this.state.newBooking.state === 'checked_out'">
+                                    <span class="badge py-2 px-3 fw-bold d-flex align-items-center gap-1 shadow-xs" style="font-size: 0.85rem; background-color: #f5f3ff; color: #6d28d9; border: 1.5px solid #ddd6fe;">
+                                        <i class="fa fa-check-circle text-success"/> Table Released (Completed)
+                                    </span>
+                                </t>
+                                <t t-else="">
+                                    <button type="button"
+                                            class="btn btn-sm px-3 py-1 fw-bold"
+                                            t-att-class="this.state.newBooking.state === 'confirmed' ? 'btn-primary text-white shadow-sm' : 'btn-outline-primary'"
+                                            t-on-click="() => this.setModalBookingState('confirmed')">
+                                        Booked
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'no_show')">
+                                    <button type="button"
+                                            class="btn btn-sm px-3 py-1 fw-bold"
+                                            t-att-class="this.state.newBooking.state === 'checked_in' ? 'btn-success text-white shadow-sm' : 'btn-outline-success'"
+                                            t-on-click="() => this.setModalBookingState('checked_in')">
+                                        Check In
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-sm px-3 py-1 fw-bold"
+                                            t-att-class="this.state.newBooking.state === 'no_show' ? 'btn-danger text-white shadow-sm' : 'btn-outline-secondary text-muted'"
+                                            t-on-click="() => this.setModalBookingState('no_show')">
                                         No Show
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'cancelled')">
-                                        Cancel
+                                    <button t-if="this.state.editingBookingId and this.state.newBooking.state === 'checked_in'"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-danger px-3 py-1 fw-bold"
+                                            t-on-click="() => this.releaseModalTable()"
+                                            title="Release Table">
+                                        Release Table
                                     </button>
-                                </div>
+                                    <button t-if="this.state.editingBookingId"
+                                            type="button" class="btn btn-sm btn-primary ms-2 px-3 fw-bold shadow-sm d-flex align-items-center gap-1"
+                                            t-on-click="() => this.openTableOrderFromModal()">
+                                        <i class="fa fa-cutlery"/>
+                                        <span>Open Order &amp; Bill</span>
+                                    </button>
+                                </t>
                             </div>
-                        </t>
-                        <div t-if="!this.bookedList.length" class="text-center text-muted p-4">
-                            No booked reservations
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 2: Checked-In -->
-                <div class="booking-column d-flex flex-column flex-fill bg-light rounded border p-2 overflow-hidden"
-                     t-on-dragover="onDragOver"
-                     t-on-drop="(ev) => this.onDrop(ev, 'checked_in')">
-                    <div class="column-header d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
-                        <span class="fw-bold fs-5 text-primary">
-                            <i class="fa fa-check-circle me-1"/> Checked In
-                        </span>
-                        <span class="badge bg-primary fs-6 rounded-pill" t-out="this.checkedInList.length"/>
-                    </div>
-                    <div class="column-cards d-flex flex-column gap-2 overflow-auto flex-fill p-1">
-                        <t t-foreach="this.checkedInList" t-as="b" t-key="b.id">
-                            <div class="card p-3 shadow-sm border-start border-4 border-primary cursor-grab"
-                                 draggable="true"
-                                 t-on-dragstart="(ev) => this.onDragStart(ev, b)">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <h5 class="m-0 fw-bold" t-out="b.customerDisplayName"/>
-                                    <span class="badge bg-info text-white" style="font-size: 0.8rem;">
-                                        <i class="fa fa-user me-1"/><t t-out="b.party_size"/> guests
-                                    </span>
-                                </div>
-                                <div class="text-muted small mb-2 d-flex flex-wrap gap-3">
-                                    <span t-if="b.customerDisplayPhone"><i class="fa fa-phone me-1"/><t t-out="b.customerDisplayPhone"/></span>
-                                    <span><i class="fa fa-clock-o me-1"/><t t-out="b.startTimeStr"/> - <t t-out="b.endTimeStr"/></span>
-                                    <span class="fw-bold text-dark"><i class="fa fa-cutlery me-1"/><t t-out="b.tableDisplayNames"/></span>
-                                </div>
-                                <div t-if="b.guest_details" class="alert alert-secondary py-1 px-2 small mb-2 text-truncate" t-out="b.guest_details"/>
-                                <div class="d-flex gap-1 mt-auto pt-2 border-top">
-                                    <button class="btn btn-sm btn-success flex-fill" t-on-click="() => this.openTableOrder(b)">
-                                        <i class="fa fa-cutlery me-1"/>Open Table
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'confirmed')">
-                                        Revert
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'cancelled')">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </t>
-                        <div t-if="!this.checkedInList.length" class="text-center text-muted p-4">
-                            No checked-in guests
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 3: No-Show -->
-                <div class="booking-column d-flex flex-column flex-fill bg-light rounded border p-2 overflow-hidden"
-                     t-on-dragover="onDragOver"
-                     t-on-drop="(ev) => this.onDrop(ev, 'no_show')">
-                    <div class="column-header d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
-                        <span class="fw-bold fs-5 text-secondary">
-                            <i class="fa fa-user-times me-1"/> No Show
-                        </span>
-                        <span class="badge bg-secondary fs-6 rounded-pill" t-out="this.noShowList.length"/>
-                    </div>
-                    <div class="column-cards d-flex flex-column gap-2 overflow-auto flex-fill p-1">
-                        <t t-foreach="this.noShowList" t-as="b" t-key="b.id">
-                            <div class="card p-3 shadow-sm border-start border-4 border-secondary opacity-75 cursor-grab"
-                                 draggable="true"
-                                 t-on-dragstart="(ev) => this.onDragStart(ev, b)">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <h5 class="m-0 fw-bold" t-out="b.customerDisplayName"/>
-                                    <span class="badge bg-secondary" style="font-size: 0.8rem;">
-                                        <i class="fa fa-user me-1"/><t t-out="b.party_size"/> guests
-                                    </span>
-                                </div>
-                                <div class="text-muted small mb-2 d-flex flex-wrap gap-3">
-                                    <span t-if="b.customerDisplayPhone"><i class="fa fa-phone me-1"/><t t-out="b.customerDisplayPhone"/></span>
-                                    <span><i class="fa fa-clock-o me-1"/><t t-out="b.startTimeStr"/></span>
-                                    <span class="fw-bold text-dark"><i class="fa fa-cutlery me-1"/><t t-out="b.tableDisplayNames"/></span>
-                                </div>
-                                <div class="d-flex gap-1 mt-auto pt-2 border-top">
-                                    <button class="btn btn-sm btn-outline-primary flex-fill" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'confirmed')">
-                                        Reinstate
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" t-att-disabled="!this.isOnline" t-on-click="() => this.setBookingState(b, 'cancelled')">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </t>
-                        <div t-if="!this.noShowList.length" class="text-center text-muted p-4">
-                            No no-show records
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Create Walk-in / Booking Modal -->
-            <div t-if="this.state.showCreateModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <!-- ============================================== -->
+            <!-- 6. ADD CLOSING DAY MODAL                       -->
+            <!-- ============================================== -->
+            <div t-if="this.state.showClosingDayModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
+                    <div class="modal-content shadow-lg border-0 rounded-4 overflow-hidden">
+                        <div class="modal-header bg-light">
                             <h5 class="modal-title fw-bold">
-                                <i class="fa fa-calendar-plus-o me-2 text-primary"/>New Table Booking / Walk-in
+                                <i class="fa fa-ban me-2 text-warning"/>Add Closing Day
                             </h5>
-                            <button type="button" class="btn-close" t-on-click="closeCreateModal"/>
+                            <button type="button" class="btn-close" t-on-click="() => this.closeClosingDayModal()"/>
                         </div>
                         <div class="modal-body">
+                            <p class="text-muted">
+                                Select a date to close bookings or mark a public holiday.
+                            </p>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Customer Name</label>
-                                <input type="text" class="form-control form-control-lg"
-                                       placeholder="e.g. John Doe (or Walk-in)"
-                                       t-model="this.state.newBooking.customer_name"/>
+                                <label class="form-label fw-bold">Closing Date</label>
+                                <input type="date" class="form-control"
+                                       t-att-value="this.state.closingDate"
+                                       t-on-change="(ev) => this.state.closingDate = ev.target.value"/>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Phone Number (Optional)</label>
+                                <label class="form-label fw-bold">Reason</label>
                                 <input type="text" class="form-control"
-                                       placeholder="+1 555 123 4567"
-                                       t-model="this.state.newBooking.customer_phone"/>
-                                <div class="form-text">No email required for walk-in guest bookings.</div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <label class="form-label fw-bold">Party Size</label>
-                                    <input type="number" min="1" max="50" class="form-control"
-                                           t-model="this.state.newBooking.party_size"/>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label fw-bold">Time</label>
-                                    <input type="time" class="form-control"
-                                           t-model="this.state.newBooking.start_time"/>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Preferred Table</label>
-                                <select class="form-select" t-model="this.state.newBooking.table_id">
-                                    <option value="">Auto-Assign Table</option>
-                                    <t t-foreach="this.availableTables" t-as="tbl" t-key="tbl.id">
-                                        <option t-att-value="tbl.id">
-                                            Table <t t-out="tbl.table_number"/> (<t t-out="tbl.seats"/> seats)
-                                        </option>
-                                    </t>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Notes</label>
-                                <textarea class="form-control" rows="2"
-                                          placeholder="Allergies, high chair, window seat..."
-                                          t-model="this.state.newBooking.notes"/>
+                                       placeholder="e.g. Renovation, Private Event, Holiday"
+                                       t-att-value="this.state.closingReason"
+                                       t-on-input="(ev) => this.state.closingReason = ev.target.value"/>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" t-on-click="closeCreateModal">Cancel</button>
-                            <button type="button" class="btn btn-primary btn-lg" t-on-click="submitNewBooking">Create Booking</button>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary" t-on-click="() => this.closeClosingDayModal()">Close</button>
+                            <button type="button" class="btn btn-primary" t-on-click="() => this.confirmClosingDay()">Confirm Closing Day</button>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </t>
 </templates>
-

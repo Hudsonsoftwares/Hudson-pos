@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Salary Revision Wizard Form View -->
+    <record id="hds_in_salary_revision_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.in.salary.revision.wizard.form</field>
+        <field name="model">hds.in.salary.revision.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Salary Revision">
+                <sheet>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="preview_show_pf" invisible="1"/>
+                    <field name="preview_show_esic" invisible="1"/>
+                    <field name="preview_show_pt" invisible="1"/>
+                    <field name="preview_show_lwf" invisible="1"/>
+
+                    <!-- SECTION 1: EMPLOYEE INFORMATION -->
+                    <separator string="1. Employee Information" colspan="2"/>
+                    <field name="is_employee_readonly" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" readonly="is_employee_readonly"/>
+                            <field name="employee_id"
+                                   readonly="is_employee_readonly"
+                                   options="{'no_create': True, 'no_open': True}"
+                                   domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                            <field name="employee_code" readonly="1"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                        </group>
+                        <group>
+                            <field name="contract_id" readonly="1"/>
+                            <field name="struct_id" readonly="1"/>
+                            <field name="current_wage" widget="monetary" readonly="1"/>
+                            <field name="current_employer_cost_monthly" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- SECTION 2: REVISION DETAILS -->
+                    <separator string="2. Revision Details" colspan="2"/>
+                    <group>
+                        <group>
+                            <field name="effective_date"/>
+                            <field name="revision_type"/>
+                        </group>
+                        <group>
+                            <field name="computation_type"/>
+                            <field name="increase_percentage" invisible="computation_type != 'percentage'"/>
+                            <field name="extra_amount" invisible="computation_type != 'percentage'" widget="monetary"/>
+                            <field name="increase_amount" invisible="computation_type != 'fixed_amount'" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <!-- SECTION 3: REVISION BASIS ("APPLIES ON") -->
+                    <separator string="3. Revision Basis" colspan="2"/>
+                    <group>
+                        <group>
+                            <field name="revision_basis" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="capped_wage_amount" invisible="revision_basis != 'capped_wage'" required="revision_basis == 'capped_wage'" widget="monetary" placeholder="e.g. ₹25,000"/>
+                        </group>
+                    </group>
+
+                    <!-- SECTION 3b: SALARY BREAKDOWN UPDATE MODE -->
+                    <separator string="3b. Salary Breakdown Update Mode" colspan="2"/>
+                    <group>
+                        <group>
+                            <field name="breakdown_distribution_mode" widget="radio"/>
+                        </group>
+                    </group>
+
+                    <!-- AUTO GENERATE MODE PREVIEW PANEL -->
+                    <group string="Projected Salary Breakdown Preview" invisible="breakdown_distribution_mode != 'auto_structure'">
+                        <div class="alert alert-success col-12" role="alert">
+                            ✓ Salary breakdown generated automatically from the configured Salary Structure. Review projected values below before confirming.
+                        </div>
+                        <group string="Core Salary Components">
+                            <field name="auto_preview_basic_salary" string="Current Basic" widget="monetary"/>
+                            <field name="auto_preview_revised_basic" string="Revised Basic" class="fw-bold text-success" widget="monetary"/>
+                            <field name="auto_preview_hra" string="Current HRA" widget="monetary"/>
+                            <field name="auto_preview_revised_hra" string="Revised HRA" class="fw-bold text-success" widget="monetary"/>
+                            <field name="auto_preview_da" string="Current DA" widget="monetary"/>
+                            <field name="auto_preview_revised_da" string="Revised DA" class="fw-bold text-success" widget="monetary"/>
+                            <field name="auto_preview_travel" string="Current Travel" widget="monetary"/>
+                            <field name="auto_preview_revised_travel" string="Revised Travel" class="fw-bold text-success" widget="monetary"/>
+                        </group>
+                        <group string="Allowances &amp; Balancing Component">
+                            <field name="auto_preview_meal" string="Current Meal" widget="monetary"/>
+                            <field name="auto_preview_revised_meal" string="Revised Meal" class="fw-bold text-success" widget="monetary"/>
+                            <field name="auto_preview_medical" string="Current Medical" widget="monetary"/>
+                            <field name="auto_preview_revised_medical" string="Revised Medical" class="fw-bold text-success" widget="monetary"/>
+                            <field name="auto_preview_other" string="Current Other" widget="monetary"/>
+                            <field name="auto_preview_revised_other" string="Revised Other" class="fw-bold text-success" widget="monetary"/>
+                            <field name="auto_preview_fixed" string="Current Fixed (Balancing)" widget="monetary"/>
+                            <field name="auto_preview_revised_fixed" string="Revised Fixed (Balancing)" class="fw-bold text-primary" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <!-- MANUAL / COPY CURRENT BREAKDOWN EDIT PANEL -->
+                    <group string="Salary Component Distribution &amp; Allocation" invisible="breakdown_distribution_mode not in ('copy_current', 'manual_adjust')">
+                        <div class="alert alert-info col-12" role="alert" invisible="breakdown_distribution_mode != 'copy_current'">
+                            ⭐ Loaded current employee contract breakdown. Modify any component amounts below as needed.
+                        </div>
+                        <group>
+                            <field name="manual_basic_salary" widget="monetary" placeholder="Basic Salary"/>
+                            <field name="manual_hra" widget="monetary" placeholder="HRA"/>
+                            <field name="manual_da" widget="monetary" placeholder="DA"/>
+                            <field name="manual_travel_allowance" widget="monetary" placeholder="Travel Allowance"/>
+                        </group>
+                        <group>
+                            <field name="manual_meal_allowance" widget="monetary" placeholder="Meal Allowance"/>
+                            <field name="manual_medical_allowance" widget="monetary" placeholder="Medical Allowance"/>
+                            <field name="manual_other_allowance" widget="monetary" placeholder="Other Allowance"/>
+                            <field name="manual_fixed_allowance" widget="monetary" placeholder="Fixed Allowance"/>
+                        </group>
+                    </group>
+
+                    <!-- LIVE VALIDATION SUMMARY & AUTO BALANCE PANEL -->
+                    <group invisible="breakdown_distribution_mode not in ('copy_current', 'manual_adjust')">
+                        <group string="Validation Summary">
+                            <field name="revised_wage" string="Revised Gross Salary" widget="monetary" class="fw-bold"/>
+                            <field name="manual_breakdown_total" string="Allocated Components" widget="monetary" class="fw-bold text-primary"/>
+                            <field name="manual_breakdown_remaining" string="Remaining Amount" widget="monetary" class="fw-bold text-danger"/>
+                            <field name="manual_breakdown_is_equal" invisible="1"/>
+                        </group>
+                        <group string="Actions &amp; Balance Status">
+                            <button name="action_auto_balance_remaining" string="Auto Balance Remaining" type="object" class="btn-outline-primary mb-2" icon="calculate"/>
+                            <div class="alert alert-success col-12" role="alert" invisible="not manual_breakdown_is_equal">
+                                ✓ Salary Breakdown Balanced
+                            </div>
+                            <div class="alert alert-danger col-12" role="alert" invisible="manual_breakdown_is_equal">
+                                ⚠ Remaining Amount must be zero before confirmation.
+                            </div>
+                        </group>
+                    </group>
+
+                    <!-- SECTION 4: REASON & NOTES -->
+                    <separator string="4. Reason &amp; Notes" colspan="2"/>
+                    <group>
+                        <field name="reason" placeholder="State reason for salary revision..."/>
+                        <field name="notes" placeholder="Additional notes or approval context..."/>
+                    </group>
+
+                    <!-- SECTION 5: PAYROLL IMPACT PREVIEW -->
+                    <separator string="5. Payroll Impact Preview" colspan="2"/>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Simulated Preview:</strong> Displays projected payroll &amp; statutory impact. No records will be modified until you click <em>Confirm Salary Revision</em>.
+                    </div>
+
+                    <group>
+                        <group string="Salary Summary">
+                            <field name="current_wage" string="Current Gross" widget="monetary" readonly="1" force_save="1"/>
+                            <field name="revised_wage" string="Revised Gross" class="fw-bold text-success" widget="monetary" readonly="1" force_save="1"/>
+                            <field name="wage_difference" string="Difference" class="fw-bold" widget="monetary" readonly="1" force_save="1"/>
+                            <field name="preview_old_ctc" string="Current Employer Cost" widget="monetary" readonly="1" force_save="1"/>
+                            <field name="preview_new_ctc" string="Estimated Employer Cost" class="fw-bold text-primary" widget="monetary" readonly="1" force_save="1"/>
+                        </group>
+                        <group string="Provident Fund (EPF &amp; EPS)" invisible="not preview_show_pf">
+                            <field name="preview_old_epf_wage" widget="monetary"/>
+                            <field name="preview_new_epf_wage" widget="monetary"/>
+                            <field name="preview_new_ee_epf" string="Employee EPF" widget="monetary"/>
+                            <field name="preview_new_er_pf" string="Employer PF" widget="monetary"/>
+                            <field name="preview_new_eps" string="EPS" widget="monetary"/>
+                            <field name="preview_new_edli" string="EDLI" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="ESIC Coverage &amp; Deductions" invisible="not preview_show_esic">
+                            <field name="preview_old_esic_app" string="Old ESIC Applicable" widget="boolean_toggle"/>
+                            <field name="preview_new_esic_app" string="Estimated ESIC Coverage" widget="boolean_toggle"/>
+                            <field name="preview_new_ee_esic" string="Employee ESIC" widget="monetary"/>
+                            <field name="preview_new_er_esic" string="Employer ESIC" widget="monetary"/>
+                        </group>
+                        <group string="Statutory Taxes &amp; Funds" invisible="not preview_show_pt and not preview_show_lwf">
+                            <field name="preview_pt_amount" string="Professional Tax" widget="monetary" invisible="not preview_show_pt"/>
+                            <field name="preview_lwf_amount" string="Labour Welfare Fund" widget="monetary" invisible="not preview_show_lwf"/>
+                        </group>
+                    </group>
+
+                    <!-- ESIC CONTRIBUTION PERIOD STATUTORY STATUS PANEL -->
+                    <div invisible="not preview_show_esic" class="w-100 mt-4">
+                        <separator string="ESIC Contribution Period Status" class="fw-bold mb-3"/>
+                        <div class="row g-3">
+                            <!-- Left Card: Current Period -->
+                            <div class="col-12 col-md-6">
+                                <div class="card h-100 p-3 shadow-sm border" style="border-radius: 8px; background: rgba(128,128,128,0.06);">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-bold text-uppercase small text-muted">Current Period</span>
+                                        <field name="preview_esic_cur_period_status" widget="boolean_toggle" readonly="1" string="Current Period Eligibility"/>
+                                    </div>
+                                    <div class="fs-6 fw-bold text-primary mb-1">
+                                        <field name="preview_esic_cur_period_label" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div class="small text-muted">
+                                        Active statutory contribution period status.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Card: Next Period -->
+                            <div class="col-12 col-md-6">
+                                <div class="card h-100 p-3 shadow-sm border" style="border-radius: 8px; background: rgba(128,128,128,0.06);">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-bold text-uppercase small text-muted">Next Period</span>
+                                        <field name="preview_esic_next_period_status" widget="boolean_toggle" readonly="1" string="Next Period Eligibility"/>
+                                    </div>
+                                    <div class="fs-6 fw-bold text-primary mb-1">
+                                        <field name="preview_esic_next_period_label" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div class="small text-muted">
+                                        Eligibility re-evaluated from next period start.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Warning Alert if Reason exists -->
+                        <div class="alert alert-warning d-flex align-items-center mt-3 mb-2 p-2" role="alert" invisible="not preview_esic_next_period_reason" style="border-radius: 6px;">
+                            <i class="fa fa-exclamation-triangle fs-5 me-2 flex-shrink-0"/>
+                            <div>
+                                <strong>Wage Ceiling Notice: </strong>
+                                <field name="preview_esic_next_period_reason" readonly="1" nolabel="1"/>
+                            </div>
+                        </div>
+
+                        <!-- Informational Note -->
+                        <div class="alert alert-info d-flex align-items-start mt-2 mb-2 p-2" role="alert" style="border-radius: 6px; font-size: 0.85rem;">
+                            <i class="fa fa-info-circle fs-5 me-2 mt-1 flex-shrink-0"/>
+                            <div>
+                                <strong>Statutory Note: </strong>
+                                ESIC eligibility is governed by fixed half-yearly contribution periods (Apr–Sep &amp; Oct–Mar). A salary revision during an active period does not immediately stop ESIC deductions; re-evaluation applies automatically from the start of the next period.
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_revision" string="Confirm Salary Revision" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action Window for Salary Revision Wizard -->
+    <record id="action_hds_in_salary_revision_wizard" model="ir.actions.act_window">
+        <field name="name">Salary Revision</field>
+        <field name="res_model">hds.in.salary.revision.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Salary Increase: compact dialog (as in Odoo) on the same wizard and revision service -->
+    <record id="hds_in_salary_increase_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.in.salary.increase.wizard.form</field>
+        <field name="model">hds.in.salary.revision.wizard</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form string="Salary Increase">
+                <field name="employee_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="employee_count" invisible="1"/>
+                <field name="employee_ids" invisible="1"/>
+                <field name="revision_type" invisible="1"/>
+                <field name="computation_type" invisible="1"/>
+                <field name="breakdown_distribution_mode" invisible="1"/>
+                <group>
+                    <field name="effective_date" string="Date of Salary Increase"/>
+                    <label for="increase_percentage" string="Increase Rate"/>
+                    <div class="d-flex align-items-center">
+                        <field name="increase_percentage" class="oe_inline" style="max-width: 8rem;"/>
+                        <span class="ms-1">%</span>
+                    </div>
+                    <label for="revision_basis" string="Applies on"/>
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <field name="revision_basis" widget="radio" options="{'horizontal': true}" nolabel="1"/>
+                        <field name="capped_wage_amount" widget="monetary" class="oe_inline" style="max-width: 10rem;"
+                               invisible="revision_basis != 'capped_wage'" required="revision_basis == 'capped_wage'"/>
+                    </div>
+                    <field name="extra_amount" widget="monetary"/>
+                </group>
+                <div class="text-muted" invisible="employee_count &gt; 1 or not employee_id">
+                    <field name="employee_id" readonly="1" class="oe_inline fw-semibold" options="{'no_open': True}"/>:
+                    <field name="current_wage" widget="monetary" readonly="1" class="oe_inline"/>
+                    <i class="oi oi-arrow-right mx-1" title="New wage"/>
+                    <field name="revised_wage" widget="monetary" readonly="1" class="oe_inline fw-semibold"/>
+                </div>
+                <div class="text-muted" invisible="employee_count &lt;= 1">
+                    The increase applies to <field name="employee_count" readonly="1" class="oe_inline fw-semibold"/> employees.
+                </div>
+                <footer>
+                    <button name="action_confirm_salary_increase" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                    <button name="action_open_detailed_revision" string="Advanced" type="object" class="btn-link ms-auto"
+                            invisible="employee_count &gt; 1"
+                            title="Compare the current and the new salary (breakdown, PF, ESIC, statutory deductions)"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Salary Increase > Advanced: read-only comparison of the current and the new salary -->
+    <record id="hds_in_salary_increase_comparison_view_form" model="ir.ui.view">
+        <field name="name">hds.in.salary.increase.comparison.form</field>
+        <field name="model">hds.in.salary.revision.wizard</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <form string="Salary Increase - Comparison">
+                <field name="company_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="employee_ids" invisible="1"/>
+                <field name="contract_id" invisible="1"/>
+                <field name="revision_type" invisible="1"/>
+                <field name="computation_type" invisible="1"/>
+                <field name="increase_amount" invisible="1"/>
+                <field name="breakdown_distribution_mode" invisible="1"/>
+                <field name="increase_percentage" invisible="1"/>
+                <field name="revision_basis" invisible="1"/>
+                <field name="capped_wage_amount" invisible="1"/>
+                <field name="extra_amount" invisible="1"/>
+                <field name="preview_show_pf" invisible="1"/>
+                <field name="preview_show_esic" invisible="1"/>
+                <field name="preview_show_pt" invisible="1"/>
+                <field name="preview_show_lwf" invisible="1"/>
+                <div class="d-flex flex-wrap gap-3 mb-3">
+                    <span><span class="text-muted">Employee: </span>
+                        <field name="employee_id" readonly="1" class="oe_inline fw-semibold" options="{'no_open': True}"/></span>
+                    <span><span class="text-muted">From: </span>
+                        <field name="effective_date" readonly="1" class="oe_inline fw-semibold"/></span>
+                </div>
+
+                <h5>Salary Summary</h5>
+                <table class="table table-sm align-middle mb-4">
+                    <thead><tr><th/><th class="text-end">Current</th><th class="text-end">New</th></tr></thead>
+                    <tbody>
+                        <tr><td>Gross Salary</td>
+                            <td class="text-end"><field name="current_wage" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="revised_wage" widget="monetary" readonly="1"/></td></tr>
+                        <tr><td>Employer Cost</td>
+                            <td class="text-end"><field name="preview_old_ctc" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="preview_new_ctc" widget="monetary" readonly="1"/></td></tr>
+                        <tr><td>Increase</td><td/>
+                            <td class="text-end fw-bold text-success"><field name="wage_difference" widget="monetary" readonly="1"/></td></tr>
+                    </tbody>
+                </table>
+
+                <h5>Projected Salary Breakdown Preview</h5>
+                <table class="table table-sm align-middle mb-4">
+                    <thead><tr><th/><th class="text-end">Current</th><th class="text-end">New</th></tr></thead>
+                    <tbody>
+                        <tr class="table-active"><td colspan="3" class="fw-semibold">Core Salary Components</td></tr>
+                        <tr invisible="not auto_preview_basic_salary and not auto_preview_revised_basic"><td>Basic</td>
+                            <td class="text-end"><field name="auto_preview_basic_salary" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_basic" widget="monetary" readonly="1"/></td></tr>
+                        <tr invisible="not auto_preview_hra and not auto_preview_revised_hra"><td>HRA</td>
+                            <td class="text-end"><field name="auto_preview_hra" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_hra" widget="monetary" readonly="1"/></td></tr>
+                        <tr invisible="not auto_preview_da and not auto_preview_revised_da"><td>DA</td>
+                            <td class="text-end"><field name="auto_preview_da" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_da" widget="monetary" readonly="1"/></td></tr>
+                        <tr invisible="not auto_preview_travel and not auto_preview_revised_travel"><td>Travel</td>
+                            <td class="text-end"><field name="auto_preview_travel" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_travel" widget="monetary" readonly="1"/></td></tr>
+                        <tr class="table-active"><td colspan="3" class="fw-semibold">Allowances &amp; Balancing Component</td></tr>
+                        <tr invisible="not auto_preview_meal and not auto_preview_revised_meal"><td>Meal</td>
+                            <td class="text-end"><field name="auto_preview_meal" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_meal" widget="monetary" readonly="1"/></td></tr>
+                        <tr invisible="not auto_preview_medical and not auto_preview_revised_medical"><td>Medical</td>
+                            <td class="text-end"><field name="auto_preview_medical" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_medical" widget="monetary" readonly="1"/></td></tr>
+                        <tr invisible="not auto_preview_other and not auto_preview_revised_other"><td>Other</td>
+                            <td class="text-end"><field name="auto_preview_other" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_other" widget="monetary" readonly="1"/></td></tr>
+                        <tr><td>Fixed (Balancing)</td>
+                            <td class="text-end"><field name="auto_preview_fixed" widget="monetary" readonly="1"/></td>
+                            <td class="text-end fw-bold"><field name="auto_preview_revised_fixed" widget="monetary" readonly="1"/></td></tr>
+                    </tbody>
+                </table>
+
+                <div invisible="not preview_show_pf">
+                    <h5>Provident Fund (EPF &amp; EPS)</h5>
+                    <table class="table table-sm align-middle mb-4">
+                        <thead><tr><th/><th class="text-end">Current</th><th class="text-end">New</th></tr></thead>
+                        <tbody>
+                            <tr><td>EPF Wage</td>
+                                <td class="text-end"><field name="preview_old_epf_wage" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_new_epf_wage" widget="monetary" readonly="1"/></td></tr>
+                            <tr><td>Employee EPF</td>
+                                <td class="text-end"><field name="preview_old_ee_epf" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_new_ee_epf" widget="monetary" readonly="1"/></td></tr>
+                            <tr><td>Employer PF</td>
+                                <td class="text-end"><field name="preview_old_er_pf" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_new_er_pf" widget="monetary" readonly="1"/></td></tr>
+                            <tr><td>EPS</td>
+                                <td class="text-end"><field name="preview_old_eps" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_new_eps" widget="monetary" readonly="1"/></td></tr>
+                            <tr><td>EDLI</td>
+                                <td class="text-end"><field name="preview_old_edli" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_new_edli" widget="monetary" readonly="1"/></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div invisible="not preview_show_esic and not preview_show_pt and not preview_show_lwf">
+                    <h5>Statutory Taxes &amp; Funds</h5>
+                    <table class="table table-sm align-middle mb-2">
+                        <thead><tr><th/><th class="text-end">Current</th><th class="text-end">New</th></tr></thead>
+                        <tbody>
+                            <tr invisible="not preview_show_esic"><td>ESIC Applicable</td>
+                                <td class="text-end"><field name="preview_old_esic_app" widget="boolean" readonly="1"/></td>
+                                <td class="text-end"><field name="preview_new_esic_app" widget="boolean" readonly="1"/></td></tr>
+                            <tr invisible="not preview_show_esic"><td>Employee ESIC</td>
+                                <td class="text-end"><field name="preview_old_ee_esic" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_new_ee_esic" widget="monetary" readonly="1"/></td></tr>
+                            <tr invisible="not preview_show_esic"><td>Employer ESIC</td>
+                                <td class="text-end"><field name="preview_old_er_esic" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_new_er_esic" widget="monetary" readonly="1"/></td></tr>
+                            <tr invisible="not preview_show_pt"><td>Professional Tax</td>
+                                <td class="text-end"><field name="preview_old_pt_amount" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_pt_amount" widget="monetary" readonly="1"/></td></tr>
+                            <tr invisible="not preview_show_lwf"><td>Labour Welfare Fund</td>
+                                <td class="text-end"><field name="preview_lwf_amount" widget="monetary" readonly="1"/></td>
+                                <td class="text-end fw-bold"><field name="preview_lwf_amount" widget="monetary" readonly="1"/></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="text-muted small" invisible="not preview_show_esic">
+                        ESIC coverage is re-evaluated at the start of the next contribution period (Apr–Sep, Oct–Mar).
+                    </div>
+                </div>
+                <footer>
+                    <button name="action_confirm_salary_increase" string="Confirm" type="object" class="btn-primary"/>
+                    <button name="action_back_to_salary_increase" string="Back" type="object" class="btn-secondary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hds_in_salary_increase_wizard" model="ir.actions.act_window">
+        <field name="name">Salary Increase</field>
+        <field name="res_model">hds.in.salary.revision.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="hds_in_salary_increase_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Employee form ⚙ menu and employee list Actions (one or several employees) -->
+    <record id="action_server_employee_salary_revision" model="ir.actions.server">
+        <field name="name">Salary Increase</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+action = env['ir.actions.act_window']._for_xml_id('hudson_in_payroll.action_hds_in_salary_increase_wizard')
+action['context'] = {
+    'active_id': records[:1].id,
+    'active_ids': records.ids,
+    'active_model': 'hr.employee',
+    'default_employee_id': records[:1].id,
+    'default_is_employee_readonly': True,
+    'default_increase_percentage': 0.0,
+    'default_computation_type': 'percentage',
+    'default_breakdown_distribution_mode': 'auto_structure',
+}
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Daily Scheduled Action: Contract and Work Permit Expiry Notifications -->
+    <record id="ir_cron_notify_expiring_contract_work_permit" model="ir.cron">
+        <field name="name">Payroll: Check Expiring Contracts &amp; Work Permits</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="state">code</field>
+        <field name="code">model.notify_expiring_contract_work_permit()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

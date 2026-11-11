@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Request Form View -->
+    <record id="view_hds_leave_encashment_request_form" model="ir.ui.view">
+        <field name="name">hds.leave.encashment.request.form</field>
+        <field name="model">hds.leave.encashment.request</field>
+        <field name="arch" type="xml">
+            <form string="Leave Encashment Request">
+                <header>
+                    <button name="action_submit" string="Submit Request" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary" invisible="state != 'submitted'" groups="hr_holidays.group_hr_holidays_user,hudson_payroll_base.group_payroll_user"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" invisible="state != 'submitted'" groups="hr_holidays.group_hr_holidays_user,hudson_payroll_base.group_payroll_user"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('paid', 'cancelled')"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state not in ('rejected', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Policy">
+                            <field name="is_officer" invisible="1"/>
+                            <field name="employee_id" readonly="state != 'draft' or not is_officer"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="policy_id" readonly="state != 'draft'"/>
+                            <field name="eligible_leave_type_ids" invisible="1"/>
+                            <field name="leave_type_id" domain="[('id', 'in', eligible_leave_type_ids)]" readonly="state != 'draft'"/>
+                            <field name="request_date" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Leave Days &amp; Estimated Amount">
+                            <field name="available_balance" force_save="1"/>
+                            <field name="requested_days" readonly="state != 'draft'"/>
+                            <field name="remaining_balance_after" force_save="1"/>
+                            <field name="daily_rate" force_save="1"/>
+                            <field name="projected_amount" class="oe_subtotal_footer_separator fw-bold" force_save="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Payroll &amp; Leave Allocation Integration" name="payroll_integration">
+                            <group>
+                                <group string="Payslip Processing">
+                                    <field name="payslip_id" readonly="1"/>
+                                </group>
+                                <group string="Leave Allocation Deduction">
+                                    <field name="allocation_id" readonly="1"/>
+                                    <field name="deducted_days" readonly="1"/>
+                                    <field name="leave_id" readonly="1" invisible="not leave_id"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info mt-2" role="alert" invisible="state != 'approved'">
+                                <strong>Pending Payroll Processing:</strong> This request is approved and will be automatically paid on the employee's next monthly payslip (under salary rule <code>LEAVE_ENCASH</code>). Leave balance (<field name="deducted_days" readonly="1" class="d-inline"/> days) has been deducted directly from allocation <strong><field name="allocation_id" readonly="1" class="d-inline"/></strong>.
+                            </div>
+                            <div class="alert alert-success mt-2" role="alert" invisible="state != 'paid'">
+                                <strong>Processed &amp; Paid:</strong> Encashed on payslip <strong><field name="payslip_id" readonly="1" class="d-inline"/></strong>. <field name="deducted_days" readonly="1" class="d-inline"/> days deducted from Leave Allocation <strong><field name="allocation_id" readonly="1" class="d-inline"/></strong>.
+                            </div>
+                        </page>
+                        <page string="Approval Audit &amp; Remarks" name="audit_notes">
+                            <group>
+                                <group string="Approval Details">
+                                    <field name="approved_by" readonly="1"/>
+                                    <field name="approval_date" readonly="1"/>
+                                    <field name="rejection_reason" readonly="1" invisible="not rejection_reason"/>
+                                </group>
+                                <group string="Remarks">
+                                    <field name="notes" placeholder="Reason or justification for this encashment request..." readonly="state in ('paid', 'cancelled')"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Request List View -->
+    <record id="view_hds_leave_encashment_request_tree" model="ir.ui.view">
+        <field name="name">hds.leave.encashment.request.list</field>
+        <field name="model">hds.leave.encashment.request</field>
+        <field name="arch" type="xml">
+            <list string="Leave Encashment Requests" default_order="request_date desc, id desc">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="policy_id"/>
+                <field name="leave_type_id"/>
+                <field name="request_date"/>
+                <field name="requested_days"/>
+                <field name="projected_amount" widget="monetary"/>
+                <field name="payslip_id" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-primary="state == 'approved'"
+                       decoration-success="state == 'paid'"
+                       decoration-danger="state in ('rejected', 'cancelled')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Request Search View -->
+    <!-- Days and amounts of the requests (Payroll dashboard: Leave Encashment Requests cards) -->
+    <record id="view_hds_leave_encashment_request_list_breakdown" model="ir.ui.view">
+        <field name="name">hds.leave.encashment.request.list.breakdown</field>
+        <field name="model">hds.leave.encashment.request</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Leave Encashment Requests" create="false" default_order="request_date, id">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name" optional="show"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="leave_type_id"/>
+                <field name="request_date"/>
+                <field name="available_balance" string="Balance Before (Days)" optional="show"/>
+                <field name="requested_days" sum="Total Days"/>
+                <field name="remaining_balance_after" string="Balance After (Days)" optional="show"/>
+                <field name="daily_rate" widget="monetary"/>
+                <field name="projected_amount" string="Encashment Amount" widget="monetary" sum="Total Encashment" class="fw-bold text-primary"/>
+                <field name="payslip_id" optional="show"/>
+                <field name="approved_by" optional="hide"/>
+                <field name="approval_date" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-primary="state == 'approved'"
+                       decoration-success="state == 'paid'"
+                       decoration-danger="state in ('rejected', 'cancelled')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hds_leave_encashment_request_search" model="ir.ui.view">
+        <field name="name">hds.leave.encashment.request.search</field>
+        <field name="model">hds.leave.encashment.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Encashment Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="policy_id"/>
+                <field name="leave_type_id"/>
+                <separator/>
+                <filter string="My Requests" name="my_requests" domain="[('employee_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Draft" name="state_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="state_submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Approved" name="state_approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Paid" name="state_paid" domain="[('state', '=', 'paid')]"/>
+                <group>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Policy" name="group_by_policy" context="{'group_by': 'policy_id'}"/>
+                    <filter string="Leave Type" name="group_by_leave_type" context="{'group_by': 'leave_type_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Request Date" name="group_by_date" context="{'group_by': 'request_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Employee Self-Service in Time Off -->
+    <record id="action_hds_leave_encashment_request_my" model="ir.actions.act_window">
+        <field name="name">My Leave Encashments</field>
+        <field name="res_model">hds.leave.encashment.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+        <field name="search_view_id" ref="view_hds_leave_encashment_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Submit a new Leave Encashment Request!
+            </p>
+            <p>
+                Request to encash your accrued unavailed leaves. Once approved, the amount will be paid on your next monthly payslip.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for Managers / HR Approvers in Time Off -->
+    <record id="action_hds_leave_encashment_request" model="ir.actions.act_window">
+        <field name="name">Leave Encashment Requests</field>
+        <field name="res_model">hds.leave.encashment.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hds_leave_encashment_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Submit a new Leave Encashment Request!
+            </p>
+            <p>
+                Employees can request to encash accrued unavailed leaves. Once approved, the amount will be processed on the next monthly payslip.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu 1: Employee Self-Service under Time Off -> My Time -->
+    <menuitem id="menu_hds_leave_encashment_request_my"
+              name="Leave Encashment"
+              parent="hr_holidays.menu_hr_holidays_my_leaves"
+              action="action_hds_leave_encashment_request_my"
+              sequence="30"/>
+
+    <!-- Menu 2: Approvals / Management under Time Off -> Management -->
+    <menuitem id="menu_hds_leave_encashment_request"
+              name="Leave Encashment Management"
+              parent="hr_holidays.menu_hr_holidays_management"
+              action="action_hds_leave_encashment_request"
+              sequence="30"
+              groups="hr_holidays.group_hr_holidays_user,hudson_payroll_base.group_payroll_user"/>
+</odoo>

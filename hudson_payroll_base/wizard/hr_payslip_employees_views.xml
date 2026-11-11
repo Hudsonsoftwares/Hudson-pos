@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Select Employees Dialog - Matching Screenshot 3 -->
+        <record id="view_hr_payslip_by_employees" model="ir.ui.view">
+            <field name="name">hr_payslip_by_employees</field>
+            <field name="model">hr.payslip.employees</field>
+            <field name="arch" type="xml">
+                <form string="Select Employees">
+                    <sheet class="p-0">
+                        <field name="payslip_run_id" invisible="1"/>
+                        <field name="existing_employee_ids" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="selected_employee_ids_json" invisible="1"/>
+                        <field name="employee_ids" nolabel="1" widget="employee_selection_table"
+                               domain="['|', ('company_id', '=', False), ('company_id', '=', company_id), ('id', 'not in', existing_employee_ids)]">
+                            <list string="Select Employees" default_order="name asc" create="false" delete="false" limit="200">
+                                <field name="avatar_128" widget="image" options="{'size': [24, 24], 'img_class': 'rounded-circle'}" width="30" nolabel="1"/>
+                                <field name="name" string="Name"/>
+                                <field name="work_phone" string="Work Phone" optional="show"/>
+                                <field name="currency_id" column_invisible="True"/>
+                                <field name="contract_wage" string="Wage" widget="monetary" optional="show"/>
+                                <field name="parent_id" string="Manager" widget="many2one_avatar_employee" optional="show"/>
+                                <field name="review_status" string="Review" widget="badge" decoration-success="True" optional="show"/>
+                                <field name="employee_type_id" string="Type" optional="hide"/>
+                                <field name="department_id" optional="hide"/>
+                                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                            </list>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button name="action_select" type="object"
+                                string="Select" class="btn-primary"
+                                style="background-color: #632b6e; border-color: #632b6e; font-weight: 500; min-width: 80px;"/>
+                        <button name="action_create_employee" type="object"
+                                string="Create" class="btn-secondary ms-2"/>
+                        <button name="action_back" type="object"
+                                string="Back" class="btn-secondary ms-2"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_payslip_by_employees" model="ir.actions.act_window">
+            <field name="name">Add Employees to Pay Run</field>
+            <field name="res_model">hr.payslip.employees</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

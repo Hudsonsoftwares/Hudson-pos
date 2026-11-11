@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hds_gratuity_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">hds.gratuity.report.wizard.view.form</field>
+        <field name="model">hds.gratuity.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Gratuity Calculation Report">
+                <header>
+                    <button name="action_export_xlsx"
+                            string="Generate / Export XLSX"
+                            type="object"
+                            class="btn-primary"
+                            icon="download"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Report Scope">
+                            <field name="selection_mode" required="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'" required="1"/>
+                        </group>
+                        <group string="Summary Statistics">
+                            <field name="record_count" readonly="1"/>
+                            <field name="eligible_count" readonly="1"/>
+                            <field name="ineligible_count" readonly="1"/>
+                            <field name="total_wage_base" readonly="1"/>
+                            <field name="total_gratuity_payable" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Employees Selection" invisible="selection_mode != 'by_employee'">
+                            <field name="employee_ids" widget="many2many" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]">
+                                <list string="Select Employees" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="work_email" optional="show"/>
+                                    <field name="department_id" optional="show"/>
+                                    <field name="job_id" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Departments Selection" invisible="selection_mode != 'by_department'">
+                            <field name="department_ids" widget="many2many" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]">
+                                <list string="Select Departments" editable="bottom">
+                                    <field name="display_name"/>
+                                    <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Job Positions Selection" invisible="selection_mode != 'by_job'">
+                            <field name="job_ids" widget="many2many" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]">
+                                <list string="Select Job Positions" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="department_id" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Salary Structures Selection" invisible="selection_mode != 'by_structure'">
+                            <field name="structure_ids" widget="many2many" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]">
+                                <list string="Select Salary Structures" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="code" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Employee Tags Selection" invisible="selection_mode != 'by_tag'">
+                            <field name="category_ids" widget="many2many">
+                                <list string="Select Employee Tags" editable="bottom">
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="xlsx_filename" invisible="1"/>
+                    <field name="xlsx_file" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hds_gratuity_report_wizard_view_list" model="ir.ui.view">
+        <field name="name">hds.gratuity.report.wizard.view.list</field>
+        <field name="model">hds.gratuity.report.wizard</field>
+        <field name="arch" type="xml">
+            <list string="Gratuity Calculation Report">
+                <field name="create_date" widget="date" string="Date" width="220px"/>
+                <field name="selection_mode" width="220px"/>
+                <field name="name" string="Report Name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hds_gratuity_report_wizard" model="ir.actions.act_window">
+        <field name="name">Gratuity Calculation Report</field>
+        <field name="res_model">hds.gratuity.report.wizard</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Headcount List View -->
+        <record id="hr_payroll_headcount_view_list" model="ir.ui.view">
+            <field name="name">hr.payroll.headcount.list</field>
+            <field name="model">hr.payroll.headcount</field>
+            <field name="arch" type="xml">
+                <list string="Headcount">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="create_uid" widget="many2one_avatar_user" string="Created by"/>
+                    <field name="write_date" string="Last Updated on"/>
+                    <field name="employee_count" string="Employees"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Headcount Form View -->
+        <record id="hr_payroll_headcount_view_form" model="ir.ui.view">
+            <field name="name">hr.payroll.headcount.form</field>
+            <field name="model">hr.payroll.headcount</field>
+            <field name="arch" type="xml">
+                <form string="Headcount">
+                    <header>
+                        <button name="action_populate" string="Populate" type="object" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Headcount Name..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                            <group>
+                                <field name="company_id" groups="base.group_multi_company" required="1"/>
+                                <field name="employee_count"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Department Breakdown" name="page_breakdown">
+                                <field name="line_ids">
+                                    <list editable="bottom">
+                                        <field name="department_id" domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                                        <field name="employee_count"/>
+                                        <field name="employee_ids" widget="many2many_tags"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Headcount Search View -->
+        <record id="hr_payroll_headcount_view_search" model="ir.ui.view">
+            <field name="name">hr.payroll.headcount.search</field>
+            <field name="model">hr.payroll.headcount</field>
+            <field name="arch" type="xml">
+                <search string="Search Headcount">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <group>
+                        <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Headcount Action -->
+        <record id="action_hr_payroll_headcount" model="ir.actions.act_window">
+            <field name="name">Headcount</field>
+            <field name="res_model">hr.payroll.headcount</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="hr_payroll_headcount_view_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No previous headcounts have been found.
+                </p>
+                <p>
+                    An Headcount report will provide you the quantity of running contracts on a specific period of time, grouped by Department.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-company restrictions (an ir.access without group is a restriction) -->
+
+    <record id="account_multi_ledger_comp_rule" model="ir.access">
+        <field name="name">Multi Ledger multi-company</field>
+        <field name="model_id" ref="model_account_multi_ledger"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="account_working_file_comp_rule" model="ir.access">
+        <field name="name">Working File multi-company</field>
+        <field name="model_id" ref="model_account_working_file"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="account_horizontal_group_comp_rule" model="ir.access">
+        <field name="name">Horizontal Group multi-company</field>
+        <field name="model_id" ref="model_account_horizontal_group"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

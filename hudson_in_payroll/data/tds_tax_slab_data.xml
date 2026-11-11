@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ============================================================= -->
+        <!-- NEW TAX REGIME SLABS (FY 2026-27 / AY 2027-28 - SECTION 115BAC)-->
+        <!-- Age Category: general (uniform for all ages under New Regime)  -->
+        <!-- ============================================================= -->
+
+        <!-- Slab 1: 0 - 4,00,000 (0%) -->
+        <record id="hds_in_tds_slab_new_1" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="age_category">general</field>
+            <field name="sequence">1</field>
+            <field name="income_from">0.0</field>
+            <field name="income_to">400000.0</field>
+            <field name="rate">0.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 2: 4,00,000 - 8,00,000 (5%) -->
+        <record id="hds_in_tds_slab_new_2" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="age_category">general</field>
+            <field name="sequence">2</field>
+            <field name="income_from">400000.0</field>
+            <field name="income_to">800000.0</field>
+            <field name="rate">5.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 3: 8,00,000 - 12,00,000 (10%) -->
+        <record id="hds_in_tds_slab_new_3" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="age_category">general</field>
+            <field name="sequence">3</field>
+            <field name="income_from">800000.0</field>
+            <field name="income_to">1200000.0</field>
+            <field name="rate">10.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 4: 12,00,000 - 16,00,000 (15%) -->
+        <record id="hds_in_tds_slab_new_4" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="age_category">general</field>
+            <field name="sequence">4</field>
+            <field name="income_from">1200000.0</field>
+            <field name="income_to">1600000.0</field>
+            <field name="rate">15.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 5: 16,00,000 - 20,00,000 (20%) -->
+        <record id="hds_in_tds_slab_new_5" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="age_category">general</field>
+            <field name="sequence">5</field>
+            <field name="income_from">1600000.0</field>
+            <field name="income_to">2000000.0</field>
+            <field name="rate">20.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 6: 20,00,000 - 24,00,000 (25%) -->
+        <record id="hds_in_tds_slab_new_6" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="age_category">general</field>
+            <field name="sequence">6</field>
+            <field name="income_from">2000000.0</field>
+            <field name="income_to">2400000.0</field>
+            <field name="rate">25.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 7: Above 24,00,000 (30%) -->
+        <record id="hds_in_tds_slab_new_7" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_new"/>
+            <field name="regime_code">new</field>
+            <field name="age_category">general</field>
+            <field name="sequence">7</field>
+            <field name="income_from">2400000.0</field>
+            <field name="income_to">0.0</field>
+            <field name="rate">30.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- OLD TAX REGIME SLABS — GENERAL (Below 60) (FY 2026-27)        -->
+        <!-- Basic Exemption: ₹2,50,000                                    -->
+        <!-- ============================================================= -->
+
+        <!-- Slab 1: 0 - 2,50,000 (0%) -->
+        <record id="hds_in_tds_slab_old_1" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">general</field>
+            <field name="sequence">1</field>
+            <field name="income_from">0.0</field>
+            <field name="income_to">250000.0</field>
+            <field name="rate">0.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 2: 2,50,000 - 5,00,000 (5%) -->
+        <record id="hds_in_tds_slab_old_2" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">general</field>
+            <field name="sequence">2</field>
+            <field name="income_from">250000.0</field>
+            <field name="income_to">500000.0</field>
+            <field name="rate">5.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 3: 5,00,000 - 10,00,000 (20%) -->
+        <record id="hds_in_tds_slab_old_3" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">general</field>
+            <field name="sequence">3</field>
+            <field name="income_from">500000.0</field>
+            <field name="income_to">1000000.0</field>
+            <field name="rate">20.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Slab 4: Above 10,00,000 (30%) -->
+        <record id="hds_in_tds_slab_old_4" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">general</field>
+            <field name="sequence">4</field>
+            <field name="income_from">1000000.0</field>
+            <field name="income_to">0.0</field>
+            <field name="rate">30.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- OLD TAX REGIME SLABS — SENIOR CITIZEN (60–79) (FY 2026-27)    -->
+        <!-- Basic Exemption: ₹3,00,000 (Section 2(1) Proviso)            -->
+        <!-- ============================================================= -->
+
+        <!-- Senior Slab 1: 0 - 3,00,000 (0%) -->
+        <record id="hds_in_tds_slab_old_senior_1" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">senior</field>
+            <field name="sequence">1</field>
+            <field name="income_from">0.0</field>
+            <field name="income_to">300000.0</field>
+            <field name="rate">0.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Senior Slab 2: 3,00,000 - 5,00,000 (5%) -->
+        <record id="hds_in_tds_slab_old_senior_2" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">senior</field>
+            <field name="sequence">2</field>
+            <field name="income_from">300000.0</field>
+            <field name="income_to">500000.0</field>
+            <field name="rate">5.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Senior Slab 3: 5,00,000 - 10,00,000 (20%) -->
+        <record id="hds_in_tds_slab_old_senior_3" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">senior</field>
+            <field name="sequence">3</field>
+            <field name="income_from">500000.0</field>
+            <field name="income_to">1000000.0</field>
+            <field name="rate">20.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Senior Slab 4: Above 10,00,000 (30%) -->
+        <record id="hds_in_tds_slab_old_senior_4" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">senior</field>
+            <field name="sequence">4</field>
+            <field name="income_from">1000000.0</field>
+            <field name="income_to">0.0</field>
+            <field name="rate">30.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- OLD TAX REGIME SLABS — SUPER SENIOR CITIZEN (80+) (FY 2026-27)-->
+        <!-- Basic Exemption: ₹5,00,000 (Section 2(1) Second Proviso)     -->
+        <!-- No 5% slab for Super Senior Citizens                          -->
+        <!-- ============================================================= -->
+
+        <!-- Super Senior Slab 1: 0 - 5,00,000 (0%) -->
+        <record id="hds_in_tds_slab_old_super_senior_1" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">super_senior</field>
+            <field name="sequence">1</field>
+            <field name="income_from">0.0</field>
+            <field name="income_to">500000.0</field>
+            <field name="rate">0.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Super Senior Slab 2: 5,00,000 - 10,00,000 (20%) -->
+        <record id="hds_in_tds_slab_old_super_senior_2" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">super_senior</field>
+            <field name="sequence">2</field>
+            <field name="income_from">500000.0</field>
+            <field name="income_to">1000000.0</field>
+            <field name="rate">20.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+        <!-- Super Senior Slab 3: Above 10,00,000 (30%) -->
+        <record id="hds_in_tds_slab_old_super_senior_3" model="tds.tax.slab">
+            <field name="financial_year_id" ref="hds_in_tds_fy_2025_2026"/>
+            <field name="regime_id" ref="hds_in_tds_regime_old"/>
+            <field name="regime_code">old</field>
+            <field name="age_category">super_senior</field>
+            <field name="sequence">3</field>
+            <field name="income_from">1000000.0</field>
+            <field name="income_to">0.0</field>
+            <field name="rate">30.0</field>
+            <field name="date_from">2026-04-01</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pricelist_happy_hour" model="product.pricelist">
+        <field name="name">Happy Hour (20% Off)</field>
+        <field name="item_ids" eval="[
+            Command.create({
+                'compute_price': 'discount',
+                'price_discount': 20.0,
+                'applied_on': '3_global',
+            })
+        ]"/>
+    </record>
+
+    <record id="pricelist_vip" model="product.pricelist">
+        <field name="name">VIP Member (15% Off)</field>
+        <field name="item_ids" eval="[
+            Command.create({
+                'compute_price': 'discount',
+                'price_discount': 15.0,
+                'applied_on': '3_global',
+            })
+        ]"/>
+    </record>
+</odoo>

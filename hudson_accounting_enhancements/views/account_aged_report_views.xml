@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════
+         Aged Receivable / Payable Report — Enterprise-Style
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Wizard / Parameter form view -->
+    <record id="view_aged_report_form" model="ir.ui.view">
+        <field name="name">account.aged.report.form</field>
+        <field name="model">account.aged.report</field>
+        <field name="arch" type="xml">
+            <form string="Aged Report">
+                <sheet>
+                    <!-- Parameters row -->
+                    <group>
+                        <group string="Parameters">
+                            <field name="as_of_date"/>
+                            <field name="period_length"/>
+                            <field name="show_draft" widget="boolean_toggle"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Filter">
+                            <field name="account_type" widget="radio"/>
+                            <field name="partner_ids" widget="many2many_tags"
+                                   options="{'no_open': True, 'no_create': True}"
+                                   placeholder="All Partners..."/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 mt-2 mb-3">
+                        <button name="action_generate" type="object"
+                                string="Generate Report" class="btn btn-primary"/>
+                        <button name="action_print_pdf" type="object"
+                                string="Print PDF" class="btn btn-secondary"
+                                invisible="not line_ids"/>
+                    </div>
+
+                    <!-- Result table — inline like Enterprise -->
+                    <div invisible="not line_ids">
+                        <h4 class="mt-3 mb-2" style="color:#2c3e50; font-weight:bold;">
+                            Report as of <field name="as_of_date" readonly="1" nolabel="1"/>
+                        </h4>
+                        <field name="line_ids" readonly="1" nolabel="1">
+                            <list string="Aged Lines" decoration-bf="is_total == True"
+                                  decoration-danger="total &lt; 0">
+                                <field name="partner_name" string="Partner"/>
+                                <field name="not_due" string="Not Due" sum="Total Not Due"/>
+                                <field name="p0" string="1-30" sum="Total 1-30"/>
+                                <field name="p1" string="31-60" sum="Total 31-60"/>
+                                <field name="p2" string="61-90" sum="Total 61-90"/>
+                                <field name="p3" string="91-120" sum="Total 91-120"/>
+                                <field name="p4" string="Older" sum="Total Older"/>
+                                <field name="total" string="Total" sum="Grand Total"/>
+                                <field name="is_total" column_invisible="1"/>
+                                <field name="currency_id" column_invisible="1"/>
+                            </list>
+                        </field>
+                    </div>
+                </sheet>
+                <footer>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Actions ─────────────────────────────────────────────────────── -->
+
+    <record id="action_server_aged_receivable" model="ir.actions.server">
+        <field name="name">Aged Receivable</field>
+        <field name="model_id" ref="hudson_accounting_enhancements.model_account_aged_report"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.aged.report'].create({
+    'account_type': 'receivable',
+})
+data = wiz.read()[0]
+action = {
+    'name': 'Aged Receivable',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'account.aged.report',
+        'wizard_id': wiz.id,
+        'data': data
+    }
+}
+        </field>
+    </record>
+
+    <record id="action_server_aged_payable" model="ir.actions.server">
+        <field name="name">Aged Payable</field>
+        <field name="model_id" ref="hudson_accounting_enhancements.model_account_aged_report"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.aged.report'].create({
+    'account_type': 'payable',
+})
+data = wiz.read()[0]
+action = {
+    'name': 'Aged Payable',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'account.aged.report',
+        'wizard_id': wiz.id,
+        'data': data
+    }
+}
+        </field>
+    </record>
+
+    <record id="action_server_aged_partner_balance" model="ir.actions.server">
+        <field name="name">Aged Partner Balance</field>
+        <field name="model_id" ref="hudson_accounting_enhancements.model_account_aged_report"/>
+        <field name="state">code</field>
+        <field name="code">
+wiz = env['account.aged.report'].create({
+    'account_type': 'receivable',
+})
+data = wiz.read()[0]
+action = {
+    'name': 'Aged Partner Balance',
+    'type': 'ir.actions.client',
+    'tag': 'hudson_dynamic_reports.dynamic_report',
+    'params': {
+        'model_name': 'account.aged.report',
+        'wizard_id': wiz.id,
+        'data': data
+    }
+}
+        </field>
+    </record>
+
+</odoo>

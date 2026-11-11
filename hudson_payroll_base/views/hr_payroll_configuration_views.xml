@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ======================================================== -->
+    <!-- 1. SALARY INPUT TYPES VIEWS & ACTION                     -->
+    <!-- ======================================================== -->
+    <record id="hr_payslip_input_type_view_tree" model="ir.ui.view">
+        <field name="name">hr.payslip.input.type.list</field>
+        <field name="model">hr.payslip.input.type</field>
+        <field name="arch" type="xml">
+            <list string="Salary Input Types">
+                <field name="name" string="Description"/>
+                <field name="code"/>
+                <field name="input_line_type_ids" string="Availability in Structure" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_payslip_input_type_view_kanban" model="ir.ui.view">
+        <field name="name">hr.payslip.input.type.kanban</field>
+        <field name="model">hr.payslip.input.type</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex flex-column">
+                            <strong class="o_kanban_record_title"><field name="name"/></strong>
+                            <span class="text-muted"><field name="code"/></span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="hr_payslip_input_type_view_form" model="ir.ui.view">
+        <field name="name">hr.payslip.input.type.form</field>
+        <field name="model">hr.payslip.input.type</field>
+        <field name="arch" type="xml">
+            <form string="Salary Input Type">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Description" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Reimbursement, Overtime, Bonus"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="country_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Availability in Structure" name="structures">
+                            <field name="input_line_type_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_payslip_input_type_view_search" model="ir.ui.view">
+        <field name="name">hr.payslip.input.type.search</field>
+        <field name="model">hr.payslip.input.type</field>
+        <field name="arch" type="xml">
+            <search string="Search Salary Input Types">
+                <field name="name" string="Description"/>
+                <field name="code"/>
+                <field name="country_id"/>
+                <field name="input_line_type_ids"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_payslip_input_type" model="ir.actions.act_window">
+        <field name="name">Salary Input Types</field>
+        <field name="res_model">hr.payslip.input.type</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hr_payslip_input_type_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Salary Input Type
+            </p>
+            <p>
+                Define external input codes that can be added to payslips (e.g. Reimbursement, Commissions, Deductions).
+            </p>
+        </field>
+    </record>
+
+    <!-- ======================================================== -->
+    <!-- 2. SALARY RULE SECTIONS VIEWS & ACTION                   -->
+    <!-- ======================================================== -->
+    <record id="hr_salary_rule_section_view_tree" model="ir.ui.view">
+        <field name="name">hr.salary.rule.section.list</field>
+        <field name="model">hr.salary.rule.section</field>
+        <field name="arch" type="xml">
+            <list string="Salary Rule Sections">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="struct_ids" string="Available in Salary Structure" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_salary_rule_section_view_form" model="ir.ui.view">
+        <field name="name">hr.salary.rule.section.form</field>
+        <field name="model">hr.salary.rule.section</field>
+        <field name="arch" type="xml">
+            <form string="Salary Rule Section">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Inputs"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Available in Salary Structure" name="structures">
+                            <field name="struct_ids"/>
+                        </page>
+                        <page string="Salary Rules" name="rules">
+                            <field name="rule_ids">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="category_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_salary_rule_section_view_search" model="ir.ui.view">
+        <field name="name">hr.salary.rule.section.search</field>
+        <field name="model">hr.salary.rule.section</field>
+        <field name="arch" type="xml">
+            <search string="Search Salary Rule Sections">
+                <field name="name"/>
+                <field name="struct_ids"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_salary_rule_section" model="ir.actions.act_window">
+        <field name="name">Salary Rule Sections</field>
+        <field name="res_model">hr.salary.rule.section</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hr_salary_rule_section_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Salary Rule Section
+            </p>
+            <p>
+                Organize salary rules into logical sections within salary structures.
+            </p>
+        </field>
+    </record>
+
+    <!-- ======================================================== -->
+    <!-- 2. PAYROLL DASHBOARD WARNINGS VIEWS & ACTION             -->
+    <!-- ======================================================== -->
+    <record id="hr_payroll_dashboard_warning_view_tree" model="ir.ui.view">
+        <field name="name">hr.payroll.dashboard.warning.list</field>
+        <field name="model">hr.payroll.dashboard.warning</field>
+        <field name="arch" type="xml">
+            <list string="Payroll Dashboard Warnings" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color" widget="color"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_payroll_dashboard_warning_view_form" model="ir.ui.view">
+        <field name="name">hr.payroll.dashboard.warning.form</field>
+        <field name="model">hr.payroll.dashboard.warning</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Dashboard Warning">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="color" widget="color"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_payroll_dashboard_warning" model="ir.actions.act_window">
+        <field name="name">Payroll Dashboard Warnings</field>
+        <field name="res_model">hr.payroll.dashboard.warning</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure Payroll Dashboard Warning Indicators
+            </p>
+            <p>
+                Set up and color-code warning indicators for discrepancies, missing contracts, and payment delays on the payroll dashboard.
+            </p>
+        </field>
+    </record>
+</odoo>

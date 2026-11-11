@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_accounting_enhancements.GridView">
+        <div class="o_grid_view h-100 d-flex flex-column">
+            <Layout className="'o_grid_layout'" display="this.display">
+                <t t-set-slot="control-panel-additional-actions">
+                    <CogMenu/>
+                </t>
+                <t t-set-slot="control-panel-actions">
+                    <SearchBar toggler="this.searchBarToggler"/>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <t t-component="this.searchBarToggler.component" t-props="this.searchBarToggler.props"/>
+                </t>
+                <t t-set-slot="control-panel-buttons">
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Add a Line Button (Matches Image 1 and Image 5) -->
+                        <button type="button" class="btn btn-primary o_grid_button_add fw-medium" t-on-click="this.onAddLine">
+                            Add a Line
+                        </button>
+
+                        <!-- Period Navigator (Today, <, Year v, >) -->
+                        <div class="btn-group o_grid_period_navigator" role="group" aria-label="Period Navigation">
+                            <button type="button" class="btn btn-secondary o_grid_button_today" t-on-click="this.onToday">
+                                Today
+                            </button>
+                            <button type="button" class="btn btn-secondary o_grid_button_prev" t-on-click="this.onPrevPeriod" aria-label="Previous Period">
+                                <i class="oi oi-chevron-left"/>
+                            </button>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-secondary dropdown-toggle o_grid_range_dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="me-1" t-out="this.state.periodLabel"/>
+                                </button>
+                                <ul class="dropdown-menu shadow-sm">
+                                    <li>
+                                        <a class="dropdown-item" href="#" t-att-class="{'active': this.state.rangeType === 'year'}" t-on-click.prevent="() => this.onRangeChange('year')">
+                                            Year
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" t-att-class="{'active': this.state.rangeType === 'month'}" t-on-click.prevent="() => this.onRangeChange('month')">
+                                            Month
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button type="button" class="btn btn-secondary o_grid_button_next" t-on-click="this.onNextPeriod" aria-label="Next Period">
+                                <i class="oi oi-chevron-right"/>
+                            </button>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Grid Table Matrix Body (Matches Image 5) -->
+                <div class="o_grid_container flex-grow-1 overflow-auto bg-view p-3">
+                    <t t-if="this.state.isLoading">
+                        <div class="text-center p-5 text-muted">
+                            <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+                            <div class="mt-2">Loading Analytic Grid...</div>
+                        </div>
+                    </t>
+                    <t t-elif="!this.state.rows.length">
+                        <div class="text-center p-5 text-muted">
+                            <p class="fs-5 text-secondary">No analytic records found for <span class="fw-bold" t-out="this.state.periodLabel"/>.</p>
+                            <button type="button" class="btn btn-primary mt-2" t-on-click="this.onAddLine">
+                                Add a Line
+                            </button>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="table-responsive o_grid_table_wrapper border rounded">
+                            <table class="table table-bordered table-sm o_grid_table align-middle mb-0">
+                                <thead>
+                                    <tr class="table-light">
+                                        <th class="o_grid_header_account o_grid_col_fixed_left text-start px-3 py-2 fw-semibold" style="min-width: 240px;">
+                                            Analytic Account
+                                        </th>
+                                        <t t-foreach="this.state.columns" t-as="col" t-key="col.key">
+                                            <th class="text-end px-2 py-2 fw-semibold" style="min-width: 100px;">
+                                                <t t-out="col.label"/>
+                                            </th>
+                                        </t>
+                                        <th class="o_grid_header_total o_grid_col_fixed_right text-end px-3 py-2 fw-bold text-white" style="min-width: 130px;">
+                                            Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="this.state.rows" t-as="row" t-key="row.id">
+                                        <!-- Main Analytic Account Row -->
+                                        <tr class="o_grid_row_account">
+                                            <td class="o_grid_col_fixed_left text-start px-3 py-2 fw-semibold">
+                                                <div class="d-inline-flex align-items-center gap-2">
+                                                    <i t-if="row.subrows.length"
+                                                       class="oi oi-fw cursor-pointer text-muted"
+                                                       t-att-data-icon="this.isRowExpanded(row.id) ? 'arrow_drop_down' : 'arrow_right'"
+                                                       t-att-class="this.isRowExpanded(row.id) ? 'fa fa-caret-down' : 'fa fa-caret-right'"
+                                                       t-on-click.stop="() => this.toggleRow(row.id)"/>
+                                                    <span class="o_grid_account_link cursor-pointer"
+                                                          t-on-click="() => this.onAccountClick(row.id)"
+                                                          t-out="row.name"/>
+                                                </div>
+                                            </td>
+                                            <t t-foreach="this.state.columns" t-as="col" t-key="col.key">
+                                                <td class="text-end px-2 py-2 o_grid_cell cursor-pointer"
+                                                    t-att-class="{
+                                                        'o_grid_cell_selected': this.isCellSelected(row.id, col.key),
+                                                        'text-danger fw-semibold': (row.values[col.key] || 0) &lt; 0,
+                                                        'text-muted opacity-75': (row.values[col.key] || 0) === 0
+                                                    }"
+                                                    t-on-click="() => this.onCellClick(row, col)"
+                                                    t-on-dblclick="() => this.onCellDblClick(row, col)"
+                                                    data-tooltip="Double click to edit/add line">
+                                                    <div class="d-flex justify-content-end align-items-center gap-1">
+                                                        <i t-if="this.isCellSelected(row.id, col.key)" class="oi oi-search small text-muted"/>
+                                                        <span t-out="this.formatCurrency(row.values[col.key] || 0)"/>
+                                                    </div>
+                                                </td>
+                                            </t>
+                                            <!-- Row Total Column (Dark gray background, bold white text) -->
+                                            <td class="o_grid_row_total o_grid_col_fixed_right text-end px-3 py-2 fw-bold text-white">
+                                                <span t-out="this.formatCurrency(row.total || 0)"/>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Expandable Breakdown Subrows (Lines / details) -->
+                                        <t t-if="this.isRowExpanded(row.id)">
+                                            <t t-foreach="row.subrows" t-as="sub" t-key="sub.name">
+                                                <tr class="o_grid_subrow bg-light">
+                                                    <td class="o_grid_col_fixed_left text-start ps-5 py-1 text-muted small">
+                                                        <span class="fst-italic" t-out="sub.name"/>
+                                                    </td>
+                                                    <t t-foreach="this.state.columns" t-as="col" t-key="col.key">
+                                                        <td class="text-end px-2 py-1 small"
+                                                            t-att-class="{
+                                                                'text-danger': (sub.values[col.key] || 0) &lt; 0,
+                                                                'text-muted opacity-75': (sub.values[col.key] || 0) === 0
+                                                            }">
+                                                            <span t-out="this.formatCurrency(sub.values[col.key] || 0)"/>
+                                                        </td>
+                                                    </t>
+                                                    <td class="o_grid_subrow_total o_grid_col_fixed_right text-end px-3 py-1 small fw-bold"
+                                                        t-att-class="{
+                                                            'o_grid_subrow_negative': (sub.total || 0) &lt; 0,
+                                                            'o_grid_subrow_positive': (sub.total || 0) &gt; 0,
+                                                            'o_grid_subrow_zero': (sub.total || 0) === 0
+                                                        }">
+                                                        <span t-out="this.formatCurrency(sub.total || 0)"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="o_grid_footer_total fw-bold table-light border-top border-dark">
+                                        <td class="o_grid_footer_account o_grid_col_fixed_left text-start px-3 py-2">Total</td>
+                                        <t t-foreach="this.state.columns" t-as="col" t-key="col.key">
+                                            <td class="text-end px-2 py-2"
+                                                t-att-class="{
+                                                    'text-danger': (this.state.columnTotals[col.key] || 0) &lt; 0,
+                                                    'text-muted opacity-75': (this.state.columnTotals[col.key] || 0) === 0
+                                                }">
+                                                <span t-out="this.formatCurrency(this.state.columnTotals[col.key] || 0)"/>
+                                            </td>
+                                        </t>
+                                        <td class="o_grid_grand_total o_grid_col_fixed_right text-end px-3 py-2 text-white fw-bold">
+                                            <span t-out="this.formatCurrency(this.state.grandTotal || 0)"/>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </t>
+                </div>
+            </Layout>
+        </div>
+    </t>
+
+</templates>

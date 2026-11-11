@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Employee Form View with UAE Statutory Classification & Salary Breakdown -->
+    <record id="view_employee_form_inherit_hudson_ae_payroll" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.hudson.ae.payroll</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_payroll_community.view_employee_form"/>
+        <field name="arch" type="xml">
+            <!-- UAE Salary Breakdown Presentation on Payroll Tab -->
+            <xpath expr="//group[@name='allowances']//label[@for='hra']" position="attributes">
+                <attribute name="string">Housing Allowance</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//label[@for='travel_allowance']" position="attributes">
+                <attribute name="string">Transport Allowance</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//label[@for='da']" position="attributes">
+                <attribute name="invisible">company_country_code in ('AE', 'ARE')</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//field[@name='da']/parent::div" position="attributes">
+                <attribute name="invisible">company_country_code in ('AE', 'ARE')</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//label[@for='meal_allowance']" position="attributes">
+                <attribute name="invisible">company_country_code in ('AE', 'ARE')</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//field[@name='meal_allowance']/parent::div" position="attributes">
+                <attribute name="invisible">company_country_code in ('AE', 'ARE')</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//label[@for='medical_allowance']" position="attributes">
+                <attribute name="invisible">company_country_code in ('AE', 'ARE')</attribute>
+            </xpath>
+            <xpath expr="//group[@name='allowances']//field[@name='medical_allowance']/parent::div" position="attributes">
+                <attribute name="invisible">company_country_code in ('AE', 'ARE')</attribute>
+            </xpath>
+
+            <!-- UAE Statutory Classification Tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="UAE Statutory Classification" name="uae_statutory_classification_page" invisible="company_country_code not in ('AE', 'ARE')">
+                    <field name="uae_pension_authority_status" invisible="1"/>
+                    <div class="alert alert-warning mb-3" role="alert" invisible="uae_pension_authority_status != 'authority_not_enabled_at_company'">
+                        <field name="uae_pension_authority_warning" readonly="1" nolabel="1"/>
+                    </div>
+                    <group>
+                        <group string="Statutory &amp; Jurisdiction Classification">
+                            <field name="country_id" string="Nationality"/>
+                            <field name="uae_employee_category" readonly="1"/>
+                            <field name="uae_gcc_country_id" invisible="uae_employee_category != 'gcc_national'" required="uae_employee_category == 'gcc_national'"/>
+                            <field name="uae_jurisdiction_type"/>
+                            <field name="uae_jurisdiction_id"
+                                   placeholder="Select Jurisdiction Profile"
+                                   domain="[('emirate_id', '=', uae_emirate_id), ('jurisdiction_type', '=', uae_jurisdiction_type)]"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="uae_statutory_status"/>
+                            <field name="uae_continuous_service_start_date"/>
+                            <field name="uae_overtime_eligibility"/>
+                        </group>
+                        <group string="Pension &amp; Social Security Registration">
+                            <field name="uae_emirate_id" placeholder="Select Applicable Emirate"/>
+                            <field name="uae_pension_authority_id" readonly="1"/>
+                            <field name="uae_pension_authority_status"
+                                   widget="badge"
+                                   decoration-success="uae_pension_authority_status == 'valid'"
+                                   decoration-danger="uae_pension_authority_status == 'authority_not_enabled_at_company'"
+                                   decoration-muted="uae_pension_authority_status == 'not_applicable'"
+                                   invisible="uae_employee_category not in ('uae_national', 'gcc_national')"
+                                   readonly="1"/>
+                            <field name="uae_pension_scheme_id"
+                                   placeholder="Select Applicable Scheme (Legacy vs New Law)"
+                                   domain="['|', ('active', '=', True), ('id', '=', uae_pension_scheme_id)]"
+                                   context="{'active_test': False}"
+                                   options="{'no_create': True, 'no_create_edit': True}"
+                                   invisible="uae_employee_category not in ('uae_national', 'gcc_national')"/>
+                            <field name="uae_pension_registration_status"/>
+                            <field name="uae_pension_registration_number" placeholder="e.g. GPSSA-123456" invisible="uae_pension_registration_status in ('exempt', 'not_applicable')"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

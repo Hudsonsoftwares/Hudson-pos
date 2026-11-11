@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stage Form View -->
+    <record id="helpdesk_management_pro_view_stage_form" model="ir.ui.view">
+        <field name="name">helpdesk.management.stage.form</field>
+        <field name="model">helpdesk.management.stage</field>
+        <field name="arch" type="xml">
+            <form string="Helpdesk Stage">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_tickets" type="object" class="oe_stat_button" icon="confirmation_number">
+                            <field name="ticket_count" widget="statinfo" string="Tickets"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Awaiting Customer Feedback"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="template_id" context="{'default_model': 'helpdesk.management.ticket'}"/>
+                            <field name="fold"/>
+                            <field name="is_close"/>
+                        </group>
+                        <group>
+                            <field name="team_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   placeholder="All teams"/>
+                            <field name="sequence" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Add a description to help your team understand the purpose of this stage..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Stage List View -->
+    <record id="helpdesk_management_pro_view_stage_tree" model="ir.ui.view">
+        <field name="name">helpdesk.management.stage.list</field>
+        <field name="model">helpdesk.management.stage</field>
+        <field name="arch" type="xml">
+            <list string="Stages" multi_edit="1">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="team_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="template_id" optional="hide"/>
+                <field name="is_close" optional="hide"/>
+                <field name="fold"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Stage Search View -->
+    <record id="helpdesk_management_pro_view_stage_search" model="ir.ui.view">
+        <field name="name">helpdesk.management.stage.search</field>
+        <field name="model">helpdesk.management.stage</field>
+        <field name="arch" type="xml">
+            <search string="Stages">
+                <field name="name"/>
+                <field name="team_ids"/>
+                <field name="template_id"/>
+                <filter string="Folded" name="folded" domain="[('fold', '=', True)]"/>
+                <filter string="Closing Stages" name="closing" domain="[('is_close', '=', True)]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Helpdesk Team" name="group_team" context="{'group_by': 'team_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Stage Action -->
+    <record id="helpdesk_management_pro_action_stages" model="ir.actions.act_window">
+        <field name="name">Stages</field>
+        <field name="res_model">helpdesk.management.stage</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="helpdesk_management_pro_view_stage_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No stages found. Let's create one!
+            </p>
+            <p>
+                Adapt your pipeline to your workflow by adding stages <i>(e.g. Awaiting Customer Feedback, etc.)</i>.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="helpdesk_management_pro_menu_stages"
+              name="Stages"
+              parent="helpdesk_management_pro_menu_config"
+              action="helpdesk_management_pro_action_stages"
+              active="True"
+              groups="helpdesk_management_pro.group_helpdesk_manager"
+              sequence="15"/>
+</odoo>

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sub-template for rendering a single payslip page layout without outer loop/layout duplication -->
+    <template id="report_payslip_page_content">
+        <t t-set="pdata" t-value="o.get_payslip_pdf_data()"/>
+
+        <div class="page" style="font-family: 'Helvetica Neue', Helvetica, 'DejaVu Sans', Arial, sans-serif; font-size: 9px; color: #000000; line-height: 1.25; padding: 0; margin: 0; page-break-inside: avoid; page-break-after: avoid;">
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 1. HEADER BAND (COMPANY LOGO, DETAILS & TITLE) -->
+            <!-- ══════════════════════════════════════════════ -->
+            <div style="border: 1px solid #000000; padding: 6px 10px; margin-bottom: 5px; background: #ffffff; page-break-inside: avoid;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="width: 20%; vertical-align: middle;">
+                            <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 48px; max-width: 130px;"/>
+                        </td>
+                        <td style="width: 80%; vertical-align: middle; text-align: right;">
+                            <div style="font-size: 14px; font-weight: bold; color: #000000; text-transform: uppercase;">
+                                <t t-out="o.company_id.name"/>
+                            </div>
+                            <div style="font-size: 8.5px; color: #333333; margin-top: 2px;">
+                                <t t-out="o.company_id.street"/><t t-if="o.company_id.street2">, <t t-out="o.company_id.street2"/></t>
+                                <t t-if="o.company_id.city">, <t t-out="o.company_id.city"/></t>
+                                <t t-if="o.company_id.partner_id and o.company_id.partner_id.state_id">, <t t-out="o.company_id.partner_id.state_id.name"/></t>
+                                <t t-if="o.company_id.zip"> - <t t-out="o.company_id.zip"/></t>
+                            </div>
+                            <div style="font-size: 11px; font-weight: bold; color: #003366; margin-top: 4px; text-transform: uppercase;">
+                                Payslip for the month of <t t-out="pdata['month_str']"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 2. COMPACT EMPLOYEE INFO GRID                  -->
+            <!-- ══════════════════════════════════════════════ -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000000; margin-bottom: 5px; page-break-inside: avoid;">
+                <tr>
+                    <td style="width: 15%; padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Employee Number</td>
+                    <td style="width: 35%; padding: 3px 5px; border-right: 1px solid #000000; border-bottom: 1px solid #000000;"><t t-out="pdata['emp_no']"/></td>
+                    <td style="width: 15%; padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Name</td>
+                    <td style="width: 35%; padding: 3px 5px; border-bottom: 1px solid #000000; font-weight: bold;"><t t-out="o.employee_id.name"/></td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Location</td>
+                    <td style="padding: 3px 5px; border-right: 1px solid #000000; border-bottom: 1px solid #000000;"><t t-out="pdata['location']"/></td>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Joining Date</td>
+                    <td style="padding: 3px 5px; border-bottom: 1px solid #000000;"><t t-out="pdata['joining_date']"/></td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Designation</td>
+                    <td style="padding: 3px 5px; border-right: 1px solid #000000; border-bottom: 1px solid #000000;"><t t-out="o.employee_id.job_id.name if o.employee_id.job_id else 'N/A'"/></td>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Date of Birth</td>
+                    <td style="padding: 3px 5px; border-bottom: 1px solid #000000;"><t t-out="pdata['dob']"/></td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Gender</td>
+                    <td style="padding: 3px 5px; border-right: 1px solid #000000; border-bottom: 1px solid #000000;"><t t-out="pdata['gender']"/></td>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">Department</td>
+                    <td style="padding: 3px 5px; border-bottom: 1px solid #000000;"><t t-out="o.employee_id.department_id.name if o.employee_id.department_id else 'N/A'"/></td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">PAN</td>
+                    <td style="padding: 3px 5px; border-right: 1px solid #000000; border-bottom: 1px solid #000000;"><t t-out="pdata['pan']"/></td>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">PF Number</td>
+                    <td style="padding: 3px 5px; border-bottom: 1px solid #000000;"><t t-out="pdata['epf_no']"/></td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">ESI Number</td>
+                    <td style="padding: 3px 5px; border-right: 1px solid #000000; border-bottom: 1px solid #000000;"><t t-out="pdata['esic_no']"/></td>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; border-bottom: 1px solid #000000; background: #f4f6f8;">UAN</td>
+                    <td style="padding: 3px 5px; border-bottom: 1px solid #000000;"><t t-out="pdata['uan']"/></td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; background: #f4f6f8;">Aadhaar</td>
+                    <td style="padding: 3px 5px; border-right: 1px solid #000000;"><t t-out="pdata['aadhaar']"/></td>
+                    <td style="padding: 3px 5px; font-weight: bold; border-right: 1px solid #000000; background: #f4f6f8;">Tax Regime</td>
+                    <td style="padding: 3px 5px;"><t t-out="pdata.get('regime_display', 'N/A')"/></td>
+                </tr>
+            </table>
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 3. EARNINGS & DEDUCTIONS SIDE-BY-SIDE          -->
+            <!-- ══════════════════════════════════════════════ -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000000; margin-bottom: 5px; page-break-inside: avoid;">
+                <tr style="background: #e8edf3; font-weight: bold; text-align: center;">
+                    <td style="width: 26%; padding: 4px 6px; border-right: 1px solid #000000; border-bottom: 1px solid #000000; text-align: left;">EARNINGS</td>
+                    <td style="width: 12%; padding: 4px 6px; border-right: 1px solid #000000; border-bottom: 1px solid #000000; text-align: right;">Amount (INR)</td>
+                    <td style="width: 12%; padding: 4px 6px; border-right: 1px solid #000000; border-bottom: 1px solid #000000; text-align: right;">YTD Amount</td>
+
+                    <td style="width: 26%; padding: 4px 6px; border-right: 1px solid #000000; border-bottom: 1px solid #000000; text-align: left;">DEDUCTIONS</td>
+                    <td style="width: 12%; padding: 4px 6px; border-right: 1px solid #000000; border-bottom: 1px solid #000000; text-align: right;">Amount (INR)</td>
+                    <td style="width: 12%; padding: 4px 6px; border-bottom: 1px solid #000000; text-align: right;">YTD Amount</td>
+                </tr>
+                <tr>
+                    <!-- EARNINGS COLUMN -->
+                    <td colspan="3" style="width: 50%; vertical-align: top; padding: 0; border-right: 1px solid #000000;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <t t-foreach="pdata['earnings_lines']" t-as="eline">
+                                <tr style="border-bottom: 1px solid #eef2f5;">
+                                    <td style="width: 52%; padding: 3px 6px;"><t t-out="eline['name']"/></td>
+                                    <td style="width: 24%; padding: 3px 6px; text-align: right;"><t t-out="'{:,.2f}'.format(eline['amount'])"/></td>
+                                    <td style="width: 24%; padding: 3px 6px; text-align: right;"><t t-out="'{:,.2f}'.format(eline['ytd'])"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="not pdata['earnings_lines']">
+                                <tr><td colspan="3" style="padding: 6px; text-align: center; color: #777;">No Earnings</td></tr>
+                            </t>
+                        </table>
+                    </td>
+                    <!-- DEDUCTIONS COLUMN -->
+                    <td colspan="3" style="width: 50%; vertical-align: top; padding: 0;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <t t-foreach="pdata['deductions_lines']" t-as="dline">
+                                <tr style="border-bottom: 1px solid #eef2f5;">
+                                    <td style="width: 52%; padding: 3px 6px;"><t t-out="dline['name']"/></td>
+                                    <td style="width: 24%; padding: 3px 6px; text-align: right;"><t t-out="'{:,.2f}'.format(dline['amount'])"/></td>
+                                    <td style="width: 24%; padding: 3px 6px; text-align: right;"><t t-out="'{:,.2f}'.format(dline['ytd'])"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="not pdata['deductions_lines']">
+                                <tr><td colspan="3" style="padding: 6px; text-align: center; color: #777;">No Deductions</td></tr>
+                            </t>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 4. ATTENDANCE & STATUTORY CALC BASE STRIP      -->
+            <!-- ══════════════════════════════════════════════ -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000000; margin-bottom: 5px; background: #fafafa; page-break-inside: avoid;">
+                <tr>
+                    <td style="padding: 4px 8px; text-align: center; font-size: 9px;">
+                        <strong>STD DAYS : </strong> <t t-out="pdata['std_days']"/> &#160;&#160;|&#160;&#160;
+                        <strong>DAYS WORKED : </strong> <t t-out="pdata['days_worked']"/> &#160;&#160;|&#160;&#160;
+                        <strong>LOP DAYS : </strong> <t t-out="pdata['lop_days']"/>
+                        <t t-if="pdata['lop_rev_days'] &gt; 0">
+                            &#160;&#160;|&#160;&#160;
+                            <strong>LOP REV DAYS : </strong> <t t-out="pdata['lop_rev_days']"/>
+                        </t>
+                        <t t-if="pdata.get('pf_wage', 0.0) &gt; 0">
+                            &#160;&#160;|&#160;&#160;
+                            <strong>PF WAGE (CALC BASE) : </strong> INR <t t-out="'{:,.2f}'.format(pdata['pf_wage'])"/>
+                        </t>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 5. PAYMENT INFO ROW                            -->
+            <!-- ══════════════════════════════════════════════ -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000000; margin-bottom: 5px; background: #ffffff; page-break-inside: avoid;">
+                <tr>
+                    <td style="padding: 4px 8px; text-align: center; font-size: 9px;">
+                        <strong>PAYMENT MODE : </strong> <t t-out="pdata['payment_mode']"/> &#160;&#160;&#160;&#160;|&#160;&#160;&#160;&#160;
+                        <strong>BANK : </strong> <t t-out="pdata['bank_name']"/> &#160;&#160;&#160;&#160;|&#160;&#160;&#160;&#160;
+                        <strong>A/C NO. : </strong> <t t-out="pdata['acc_no']"/>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 5B. TAX COMPUTATION BLOCK (TDS ENABLED ONLY)   -->
+            <!-- ══════════════════════════════════════════════ -->
+            <t t-if="pdata.get('show_tds_block')">
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000000; margin-bottom: 5px; font-size: 8px; page-break-inside: avoid;">
+                <tr style="background: #e8edf3; font-weight: bold; text-align: center;">
+                    <td colspan="4" style="width: 50%; padding: 3px 5px; border-right: 1px solid #000000; border-bottom: 1px solid #000000; text-align: left;">
+                        GROSS INCOME &amp; EXEMPTIONS (ANNUAL PROJECTED)
+                    </td>
+                    <td colspan="2" style="width: 50%; padding: 3px 5px; border-bottom: 1px solid #000000; text-align: left;">
+                        DEDUCTIONS (<t t-out="pdata.get('regime_header', 'OLD REGIME')"/>) &amp; TAX COMPUTATION
+                    </td>
+                </tr>
+                <tr>
+                    <!-- LEFT COLUMN: GROSS INCOME TABLE -->
+                    <td colspan="4" style="width: 50%; vertical-align: top; padding: 0; border-right: 1px solid #000000;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 8px;">
+                            <tr style="background: #f4f6f8; font-weight: bold; border-bottom: 1px solid #000000;">
+                                <td style="width: 46%; padding: 2px 4px;">Earning Head</td>
+                                <td style="width: 18%; padding: 2px 4px; text-align: right;">Annual (INR)</td>
+                                <td style="width: 18%; padding: 2px 4px; text-align: right;">Exempt (INR)</td>
+                                <td style="width: 18%; padding: 2px 4px; text-align: right;">Taxable (INR)</td>
+                            </tr>
+                            <t t-foreach="pdata['tax_comp_income']" t-as="inc">
+                                <tr style="border-bottom: 1px solid #eef2f5;">
+                                    <td style="padding: 2px 4px; vertical-align: middle;">
+                                        <div t-attf-style="font-weight: #{'600' if inc.get('is_perquisite') else 'normal'};">
+                                            <t t-out="inc['head']"/>
+                                        </div>
+                                        <t t-if="inc.get('note')">
+                                            <div style="font-size: 6.8px; color: #5a6268; line-height: 1.15; margin-top: 1px;">
+                                                <t t-out="inc['note']"/>
+                                            </div>
+                                        </t>
+                                    </td>
+                                    <td style="padding: 2px 4px; text-align: right; vertical-align: middle;"><t t-out="'{:,.2f}'.format(inc['annual'])"/></td>
+                                    <td style="padding: 2px 4px; text-align: right; vertical-align: middle;"><t t-out="'{:,.2f}'.format(inc['exempt'])"/></td>
+                                    <td style="padding: 2px 4px; text-align: right; vertical-align: middle;"><t t-out="'{:,.2f}'.format(inc['taxable'])"/></td>
+                                </tr>
+                            </t>
+                            <tr style="background: #f8f9fa; font-weight: bold; border-top: 1px solid #000000;">
+                                <td style="padding: 2px 4px;">Gross Taxable Income</td>
+                                <td style="padding: 2px 4px; text-align: right;"><t t-out="'{:,.2f}'.format(pdata['gti_annual'])"/></td>
+                                <td style="padding: 2px 4px; text-align: right;"><t t-out="'{:,.2f}'.format(pdata['gti_exempt'])"/></td>
+                                <td style="padding: 2px 4px; text-align: right;"><t t-out="'{:,.2f}'.format(pdata['gti_taxable'])"/></td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <!-- RIGHT COLUMN: DEDUCTIONS & TAX SUMMARY -->
+                    <td colspan="2" style="width: 50%; vertical-align: top; padding: 0;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 8px;">
+                            <tr style="background: #f4f6f8; font-weight: bold; border-bottom: 1px solid #000000;">
+                                <td style="width: 70%; padding: 2px 4px;">Deduction / Section</td>
+                                <td style="width: 30%; padding: 2px 4px; text-align: right;">Amount (INR)</td>
+                            </tr>
+                            <t t-foreach="pdata['tax_comp_deductions']" t-as="ded">
+                                <tr style="border-bottom: 1px solid #eef2f5;">
+                                    <td style="padding: 2px 4px;"><t t-out="ded['name']"/></td>
+                                    <td style="padding: 2px 4px; text-align: right;"><t t-out="'{:,.2f}'.format(ded['amount'])"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="not pdata['tax_comp_deductions']">
+                                <tr><td colspan="2" style="padding: 4px; text-align: center; color: #777;">No Deductions Claimed</td></tr>
+                            </t>
+                            <tr t-if="pdata.get('total_tax_deductions', 0) &gt; 0" style="background: #fdfdfe; border-top: 1px solid #000000; font-weight: bold;">
+                                <td style="padding: 2px 4px;">Total Allowable Deductions</td>
+                                <td style="padding: 2px 4px; text-align: right;">(<t t-out="'{:,.2f}'.format(pdata['total_tax_deductions'])"/>)</td>
+                            </tr>
+                            <tr style="background: #f8f9fa; font-weight: bold; border-top: 1px solid #000000;">
+                                <td style="padding: 2px 4px;">Income Chargeable to Tax</td>
+                                <td style="padding: 2px 4px; text-align: right;"><t t-out="'{:,.2f}'.format(pdata['net_taxable_income'])"/></td>
+                            </tr>
+                        </table>
+
+                        <!-- Tax Summary Box -->
+                        <table style="width: 100%; border-collapse: collapse; font-size: 8px; border-top: 1px solid #000000; background: #fafafa;">
+                            <tr>
+                                <td style="padding: 2px 4px; font-weight: bold;">Income Tax: INR <t t-out="'{:,.2f}'.format(pdata.get('tax_after_rebate', pdata.get('base_tax', 0.0)))"/></td>
+                                <td style="padding: 2px 4px; font-weight: bold; text-align: right;">
+                                    Surcharge<t t-if="pdata.get('surcharge_rate', 0) &gt; 0"> (<t t-out="'{:.0f}'.format(pdata['surcharge_rate'])"/>%)</t>: INR <t t-out="'{:,.2f}'.format(pdata.get('surcharge_before_relief', pdata.get('surcharge', 0.0)))"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 2px 4px; font-weight: bold;">Marginal Relief: INR <t t-out="'{:,.2f}'.format(pdata.get('marginal_relief', 0.0))"/></td>
+                                <td style="padding: 2px 4px; font-weight: bold; text-align: right;">Health &amp; Education Cess (4%): INR <t t-out="'{:,.2f}'.format(pdata.get('cess', 0.0))"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 2px 4px; font-weight: bold;">Total TDS Liability: INR <t t-out="'{:,.2f}'.format(pdata.get('total_annual_tax', 0.0))"/></td>
+                                <td style="padding: 2px 4px; font-weight: bold; text-align: right;">TDS Deducted (This Month): INR <t t-out="'{:,.2f}'.format(pdata.get('current_month_tds', 0.0))"/></td>
+                            </tr>
+                            <tr t-if="pdata.get('prev_employer_tds', 0.0) &gt; 0">
+                                <td style="padding: 2px 4px; font-weight: bold; color: #5a3e00;">Prev. Employer TDS (Form 12B): INR <t t-out="'{:,.2f}'.format(pdata.get('prev_employer_tds', 0.0))"/></td>
+                                <td style="padding: 2px 4px; font-weight: bold; text-align: right;">TDS Recovered YTD (Current Empl.): INR <t t-out="'{:,.2f}'.format(pdata['tds_recovered_ytd'])"/></td>
+                            </tr>
+                            <tr t-else="">
+                                <td style="padding: 2px 4px; font-weight: bold;">TDS Recovered YTD (inc. current): INR <t t-out="'{:,.2f}'.format(pdata['tds_recovered_ytd'])"/></td>
+                                <td style="padding: 2px 4px; font-weight: bold; text-align: right;">Remaining TDS Liability: INR <t t-out="'{:,.2f}'.format(pdata['remaining_tds_liability'])"/></td>
+                            </tr>
+                            <tr t-if="pdata.get('prev_employer_tds', 0.0) &gt; 0">
+                                <td style="padding: 2px 4px; font-weight: bold;">Remaining TDS Liability: INR <t t-out="'{:,.2f}'.format(pdata['remaining_tds_liability'])"/></td>
+                                <td style="padding: 2px 4px; font-weight: bold; text-align: right;"></td>
+                            </tr>
+                            <tr style="border-top: 1px solid #eef2f5; font-weight: bold; background: #eef4f8;">
+                                <td style="padding: 2px 4px;">Remaining Months: <t t-out="pdata['remaining_months']"/> <t t-if="pdata['remaining_months'] == 1">Month</t><t t-else="">Months</t></td>
+                                <td style="padding: 2px 4px; text-align: right; color: #003366;">Projected Monthly TDS: INR <t t-out="'{:,.2f}'.format(pdata['projected_monthly_tds'])"/></td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+            </t>
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 6. TOTALS BAR & PROMINENT NET SALARY           -->
+            <!-- ══════════════════════════════════════════════ -->
+            <table style="width: 100%; border-collapse: collapse; border: 2px solid #000000; margin-bottom: 15px; background: #e9ecef; font-size: 9.5px; page-break-inside: avoid;">
+                <tr>
+                    <td style="width: 33%; padding: 6px 10px; font-weight: bold;">
+                        Total Earnings: INR <span style="font-size: 11px;"><t t-out="'{:,.2f}'.format(pdata['total_earnings'])"/></span>
+                    </td>
+                    <td style="width: 33%; padding: 6px 10px; font-weight: bold; border-left: 1px solid #000000;">
+                        Total Deductions: INR <span style="font-size: 11px;"><t t-out="'{:,.2f}'.format(pdata['total_deductions'])"/></span>
+                    </td>
+                    <td style="width: 34%; padding: 6px 10px; font-weight: bold; background: #d4edda; color: #155724; border-left: 2px solid #000000; text-align: right;">
+                        Net Salary: INR <span style="font-size: 13px; font-weight: bold;"><t t-out="'{:,.2f}'.format(pdata['net_salary'])"/></span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ══════════════════════════════════════════════ -->
+            <!-- 7. AUTHORIZED SIGNATURE LINE                   -->
+            <!-- ══════════════════════════════════════════════ -->
+            <table style="width: 100%; border-collapse: collapse; margin-top: 30px; page-break-inside: avoid;">
+                <tr>
+                    <td style="width: 60%; vertical-align: bottom; font-size: 8px; color: #666666;">
+                        This is a computer-generated payslip and does not require a physical signature if issued electronically.
+                    </td>
+                    <td style="width: 40%; text-align: right; vertical-align: bottom;">
+                        <div style="border-top: 1px solid #000000; width: 180px; display: inline-block; text-align: center; padding-top: 4px; font-weight: bold; font-size: 9.5px;">
+                            Authorized Signature
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </template>
+
+    <!-- Full replacement of report_payslip_document to bypass web.external_layout.
+         The web.external_layout renders the top-left company header box using
+         company.state_id from the Odoo standard layout, which may show a stale state
+         (e.g. Chhattisgarh even though the company is in Kerala).
+         Our report_payslip_page_content has its own complete header with logo,
+         company name, and correct address (including state from partner_id.state_id).
+         We use web.report_layout for proper paper sizing without the address header. -->
+    <template id="report_payslip_custom" inherit_id="hudson_payroll_base.report_payslip_document" priority="99">
+        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+            <attribute name="t-call">web.basic_layout</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('page')]" position="replace">
+            <div class="o_hds_in_payslip">
+                <!-- The report stylesheet gives every table cell a solid style (width 0), which the
+                     PDF engine draws in collapsed tables: cells keep only the borders of the design -->
+                <style>
+                    .o_hds_in_payslip table, .o_hds_in_payslip tbody, .o_hds_in_payslip thead,
+                    .o_hds_in_payslip tr, .o_hds_in_payslip td, .o_hds_in_payslip th { border-style: none; }
+                </style>
+                <t t-call="hudson_in_payroll.report_payslip_page_content"/>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- The payslip has its own header: no space reserved for the company document header -->
+    <record id="paperformat_payslip" model="report.paperformat">
+        <field name="name">Payslip A4</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="hudson_payroll_base.action_report_payslip" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_payslip"/>
+    </record>
+</odoo>
+

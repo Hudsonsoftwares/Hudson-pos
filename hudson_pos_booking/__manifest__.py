@@ -15,17 +15,22 @@
         - Direct linking between POS Orders and Bookings
         - Scheduled no-show processing
         - Real-time bus synchronization
+        - Permanent Pre-Order Food preset & schedule
     """,
-    'depends': ['pos_restaurant', 'appointment'],
+    'depends': ['pos_restaurant', 'appointment', 'pos_self_order', 'account', 'payment_demo'],
     'data': [
         'security/ir.access.csv',
         'data/ir_cron_data.xml',
+        'data/pos_preset_data.xml',
         'views/restaurant_table_views.xml',
         'views/pos_config_views.xml',
         'views/appointment_booking_views.xml',
+        'views/appointment_templates.xml',
+        'views/account_invoice_report_templates.xml',
     ],
     'assets': {
         'point_of_sale._assets_pos': [
+            'hudson_pos_booking/static/src/scss/booking_screen.scss',
             'hudson_pos_booking/static/src/js/booking_model.js',
             'hudson_pos_booking/static/src/js/restaurant_table_patch.js',
             'hudson_pos_booking/static/src/js/pos_store_patch.js',
@@ -34,6 +39,7 @@
             'hudson_pos_booking/static/src/xml/booking_screen.xml',
         ],
     },
+    'post_init_hook': '_post_init_hook',
     'installable': True,
     'auto_install': True,
     'license': 'LGPL-3',

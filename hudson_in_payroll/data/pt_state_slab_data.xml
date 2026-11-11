@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Authoritative Professional Tax State Slab Master Seed Data -->
+
+        <!-- 1. Maharashtra -->
+        <record id="pt_slab_mh_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mh"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">male</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">7500.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="special_rules">Male slab</field>
+            <field name="remarks">Cross-confirmed, 3+ sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_mh_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mh"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">male</field>
+            <field name="salary_from">7501.0</field>
+            <field name="salary_to">10000.0</field>
+            <field name="pt_amount">175.0</field>
+            <field name="special_rules">Male slab</field>
+            <field name="remarks">Cross-confirmed, 3+ sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_mh_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mh"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">male</field>
+            <field name="salary_from">10001.0</field>
+            <field name="pt_amount">200.0</field>
+            <field name="override_month">2</field>
+            <field name="override_amount">300.0</field>
+            <field name="special_rules">Male slab; Rs.300 in February instead of Rs.200 (annual total Rs.2,500)</field>
+            <field name="remarks">Cross-confirmed, 3+ sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_mh_04" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mh"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">female</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">25000.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="special_rules">Female slab (VERIFY: one source said Rs.10,000 threshold instead of Rs.25,000 for women - confirm before using)</field>
+            <field name="remarks">2 sources agree on 25,000; 1 source said 10,000</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_mh_05" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mh"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">female</field>
+            <field name="salary_from">25001.0</field>
+            <field name="pt_amount">200.0</field>
+            <field name="special_rules">Female slab, no February surcharge</field>
+            <field name="remarks">2 sources agree on 25,000; 1 source said 10,000</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 2. Karnataka -->
+        <record id="pt_slab_ka_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ka"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">24999.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="special_rules">Revised under Karnataka Act No.33 of 2025, effective 1 Apr 2025</field>
+            <field name="remarks">Primary source: PRS India bill text + 5 dated secondary sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_ka_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ka"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">25000.0</field>
+            <field name="pt_amount">200.0</field>
+            <field name="override_month">2</field>
+            <field name="override_amount">300.0</field>
+            <field name="special_rules">Rs.300 in February instead of Rs.200 (annual total Rs.2,500)</field>
+            <field name="remarks">Primary source: PRS India bill text + 5 dated secondary sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 3. West Bengal -->
+        <record id="pt_slab_wb_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_wb"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">10000.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="remarks">Single detailed source (INDPayroll), not cross-verified</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_wb_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_wb"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">10001.0</field>
+            <field name="salary_to">15000.0</field>
+            <field name="pt_amount">110.0</field>
+            <field name="remarks">Single detailed source (INDPayroll), not cross-verified</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_wb_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_wb"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">15001.0</field>
+            <field name="salary_to">25000.0</field>
+            <field name="pt_amount">130.0</field>
+            <field name="remarks">Single detailed source (INDPayroll), not cross-verified</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_wb_04" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_wb"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">25001.0</field>
+            <field name="salary_to">40000.0</field>
+            <field name="pt_amount">150.0</field>
+            <field name="remarks">Single detailed source (INDPayroll), not cross-verified</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_wb_05" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_wb"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">40001.0</field>
+            <field name="pt_amount">200.0</field>
+            <field name="remarks">Single detailed source (INDPayroll), not cross-verified</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 4. Andhra Pradesh -->
+        <record id="pt_slab_ap_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ap"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">15000.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="remarks">Corroborated by 2 sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_ap_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ap"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">15001.0</field>
+            <field name="salary_to">20000.0</field>
+            <field name="pt_amount">150.0</field>
+            <field name="remarks">Corroborated by 2 sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_ap_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ap"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">20001.0</field>
+            <field name="pt_amount">200.0</field>
+            <field name="remarks">Corroborated by 2 sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 5. Telangana -->
+        <record id="pt_slab_tg_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ts"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">15000.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="remarks">Single detailed source (INDPayroll)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tg_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ts"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">15001.0</field>
+            <field name="salary_to">20000.0</field>
+            <field name="pt_amount">150.0</field>
+            <field name="remarks">Single detailed source (INDPayroll)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tg_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_ts"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">20001.0</field>
+            <field name="pt_amount">200.0</field>
+            <field name="remarks">Single detailed source (INDPayroll)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 6. Tamil Nadu -->
+        <record id="pt_slab_tn_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">21000.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2 sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">21001.0</field>
+            <field name="salary_to">30000.0</field>
+            <field name="pt_amount">135.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2 sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">30001.0</field>
+            <field name="salary_to">45000.0</field>
+            <field name="pt_amount">315.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2 sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_04" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">45001.0</field>
+            <field name="salary_to">60000.0</field>
+            <field name="pt_amount">690.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2 sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_05" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">60001.0</field>
+            <field name="salary_to">75000.0</field>
+            <field name="pt_amount">1025.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2 sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_06" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">75001.0</field>
+            <field name="pt_amount">1250.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2 sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 7. Gujarat -->
+        <record id="pt_slab_gj_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_gj"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">5999.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="remarks">Detailed slab single-sourced; top-band figure corroborated separately</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_gj_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_gj"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">6000.0</field>
+            <field name="salary_to">8999.0</field>
+            <field name="pt_amount">80.0</field>
+            <field name="remarks">Detailed slab single-sourced; top-band figure corroborated separately</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_gj_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_gj"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">9000.0</field>
+            <field name="salary_to">11999.0</field>
+            <field name="pt_amount">150.0</field>
+            <field name="remarks">Detailed slab single-sourced; top-band figure corroborated separately</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_gj_04" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_gj"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">12000.0</field>
+            <field name="pt_amount">200.0</field>
+            <field name="remarks">Corroborated by 2 sources</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 8. Madhya Pradesh -->
+        <record id="pt_slab_mp_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mp"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">18750.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="remarks">Single detailed source (INDPayroll)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_mp_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mp"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">18751.0</field>
+            <field name="salary_to">25000.0</field>
+            <field name="pt_amount">125.0</field>
+            <field name="remarks">Single detailed source (INDPayroll)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_mp_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_mp"/>
+            <field name="periodicity">monthly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">25001.0</field>
+            <field name="pt_amount">208.0</field>
+            <field name="special_rules">Rs.2,500/year</field>
+            <field name="remarks">Single detailed source (INDPayroll)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 9. Kerala -->
+        <record id="pt_slab_kl_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">11999.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">12000.0</field>
+            <field name="salary_to">17999.0</field>
+            <field name="pt_amount">120.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">18000.0</field>
+            <field name="salary_to">29999.0</field>
+            <field name="pt_amount">180.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_04" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">30000.0</field>
+            <field name="salary_to">44999.0</field>
+            <field name="pt_amount">300.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_05" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">45000.0</field>
+            <field name="salary_to">59999.0</field>
+            <field name="pt_amount">450.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_06" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">60000.0</field>
+            <field name="salary_to">74999.0</field>
+            <field name="pt_amount">600.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_07" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">75000.0</field>
+            <field name="salary_to">99999.0</field>
+            <field name="pt_amount">750.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_08" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">100000.0</field>
+            <field name="salary_to">124999.0</field>
+            <field name="pt_amount">1000.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_kl_09" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_kl"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">125000.0</field>
+            <field name="pt_amount">1250.0</field>
+            <field name="special_rules">Amount is PER HALF-YEAR, not monthly</field>
+            <field name="remarks">Periodicity confirmed by 2+ sources; band figures single-sourced</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- 15. Tamil Nadu (Half-Yearly Statutory Slabs) -->
+        <record id="pt_slab_tn_01" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">0.0</field>
+            <field name="salary_to">21000.0</field>
+            <field name="pt_amount">0.0</field>
+            <field name="special_rules">Statutory Tamil Nadu Town Panchayats &amp; Municipalities Rule (Half-Yearly)</field>
+            <field name="remarks">Amount is per half-year (H1: Apr-Sep, H2: Oct-Mar)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_02" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">21001.0</field>
+            <field name="salary_to">30000.0</field>
+            <field name="pt_amount">135.0</field>
+            <field name="special_rules">Statutory Tamil Nadu Town Panchayats &amp; Municipalities Rule (Half-Yearly)</field>
+            <field name="remarks">Amount is per half-year (H1: Apr-Sep, H2: Oct-Mar)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_03" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">30001.0</field>
+            <field name="salary_to">45000.0</field>
+            <field name="pt_amount">315.0</field>
+            <field name="special_rules">Statutory Tamil Nadu Town Panchayats &amp; Municipalities Rule (Half-Yearly)</field>
+            <field name="remarks">Amount is per half-year (H1: Apr-Sep, H2: Oct-Mar)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_04" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">45001.0</field>
+            <field name="salary_to">60000.0</field>
+            <field name="pt_amount">690.0</field>
+            <field name="special_rules">Statutory Tamil Nadu Town Panchayats &amp; Municipalities Rule (Half-Yearly)</field>
+            <field name="remarks">Amount is per half-year (H1: Apr-Sep, H2: Oct-Mar)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_05" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">60001.0</field>
+            <field name="salary_to">75000.0</field>
+            <field name="pt_amount">1025.0</field>
+            <field name="special_rules">Statutory Tamil Nadu Town Panchayats &amp; Municipalities Rule (Half-Yearly)</field>
+            <field name="remarks">Amount is per half-year (H1: Apr-Sep, H2: Oct-Mar)</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="pt_slab_tn_06" model="pt.state.slab">
+            <field name="state_id" ref="base.state_in_tn"/>
+            <field name="periodicity">half_yearly</field>
+            <field name="gender">all</field>
+            <field name="salary_from">75001.0</field>
+            <field name="pt_amount">1250.0</field>
+            <field name="special_rules">Statutory Tamil Nadu Town Panchayats &amp; Municipalities Rule (Half-Yearly)</field>
+            <field name="remarks">Amount is per half-year (H1: Apr-Sep, H2: Oct-Mar)</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

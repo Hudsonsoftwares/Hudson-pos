@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hds_form_138_view_kanban" model="ir.ui.view">
+        <field name="name">hds.form.138.kanban</field>
+        <field name="model">hds.form.138</field>
+        <field name="arch" type="xml">
+            <kanban class="o_hds_form_138_kanban">
+                <header>
+                    <button name="action_generate_current_fy" string="Generate For Current FY" type="object" display="always"/>
+                </header>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <main class="flex-grow-1">
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                                <span class="badge rounded-pill border text-body px-3 py-2"><field name="quarter"/></span>
+                                <field name="state" widget="badge" decoration-warning="state == 'draft'" decoration-success="state == 'done'"/>
+                                <span class="text-muted">FY <field name="financial_year_code"/></span>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="text-muted small text-uppercase">Deposit Period</div>
+                                    <div class="fw-semibold">
+                                        <field name="date_from"/>
+                                        <i class="oi oi-arrow-right mx-1" title="to"/>
+                                        <field name="date_to"/>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-muted small text-uppercase">Due Date</div>
+                                    <div class="fw-semibold"><field name="due_date"/></div>
+                                </div>
+                            </div>
+                        </main>
+                        <aside class="d-flex flex-column align-items-end justify-content-center gap-2 ms-3">
+                            <span class="text-muted"><field name="challan_count" class="fw-bold text-body"/> Challans</span>
+                            <button name="action_open_details" type="object" class="btn btn-primary">Details</button>
+                        </aside>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="hds_form_138_view_list" model="ir.ui.view">
+        <field name="name">hds.form.138.list</field>
+        <field name="model">hds.form.138</field>
+        <field name="arch" type="xml">
+            <list string="Form 138">
+                <header>
+                    <button name="action_generate_current_fy" string="Generate For Current FY" type="object" display="always"/>
+                </header>
+                <field name="financial_year_id"/>
+                <field name="quarter"/>
+                <field name="date_from" string="Deposit Period" widget="daterange" options="{'end_date_field': 'date_to'}"/>
+                <field name="date_to" column_invisible="1"/>
+                <field name="due_date"/>
+                <field name="challan_count" string="Challans"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="text_filename" optional="hide"/>
+                <field name="state" widget="badge" decoration-warning="state == 'draft'" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hds_form_138_view_form" model="ir.ui.view">
+        <field name="name">hds.form.138.form</field>
+        <field name="model">hds.form.138</field>
+        <field name="arch" type="xml">
+            <form string="Form 138">
+                <header>
+                    <button name="action_done" string="Mark as Done" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_generate_text_file" string="Generate Text File" type="object" class="btn-primary"
+                            invisible="state != 'done'"/>
+                    <button name="action_draft" string="Set to Draft" type="object" invisible="state != 'done'"
+                            groups="hudson_payroll_base.group_payroll_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <div class="alert alert-info mb-0" role="status" invisible="state != 'done'">
+                    The text file contains the File Header, Batch Header, one Challan Detail record per deposited
+                    challan and one Deductee Detail record per employee of the challan.
+                </div>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="financial_year_id" readonly="state == 'done'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="quarter" widget="radio" options="{'horizontal': true}" readonly="state == 'done'"/>
+                            <field name="date_from" string="Quarter Period" widget="daterange"
+                                   options="{'end_date_field': 'date_to'}" readonly="1"/>
+                            <field name="date_to" invisible="1"/>
+                            <field name="due_date" readonly="state == 'done'"/>
+                        </group>
+                        <group>
+                            <field name="company_id" readonly="id" groups="base.group_multi_company"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="currency_id" invisible="1"/>
+                            <label for="text_file"/>
+                            <div>
+                                <field name="text_file" filename="text_filename" invisible="not text_file" nolabel="1"/>
+                                <span class="text-muted" invisible="text_file">Not Generated</span>
+                            </div>
+                            <field name="text_filename" invisible="1"/>
+                            <field name="tds_amount"/>
+                            <field name="total_paid"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Challans" name="challans">
+                            <field name="challan_ids" readonly="1">
+                                <list>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="date_from" string="Challan Period" widget="daterange"
+                                           options="{'end_date_field': 'date_to'}"/>
+                                    <field name="date_to" column_invisible="1"/>
+                                    <field name="paid_date"/>
+                                    <field name="challan_number"/>
+                                    <field name="bsr_code"/>
+                                    <field name="tds_amount" sum="Total"/>
+                                    <field name="penalty_amount" sum="Total"/>
+                                    <field name="interest_amount" sum="Total"/>
+                                    <field name="total_paid" sum="Total"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'done'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Regular Statement" name="regular_statement">
+                            <group>
+                                <group>
+                                    <field name="earlier_regular_statement" readonly="state == 'done'"/>
+                                    <field name="previous_token_number" readonly="state == 'done'"
+                                           invisible="not earlier_regular_statement"
+                                           required="earlier_regular_statement and state == 'draft'"
+                                           placeholder="15-digit token number"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Deductee Details" name="deductee_details">
+                            <field name="statement_line_ids" readonly="1">
+                                <list decoration-danger="not pan">
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="employee_id" widget="many2one_avatar_employee"/>
+                                    <field name="pan"/>
+                                    <field name="paid_date"/>
+                                    <field name="gross_wage" sum="Total"/>
+                                    <field name="tds_amount" sum="Total"/>
+                                    <field name="challan_id"/>
+                                    <field name="deposit_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hds_form_138_view_search" model="ir.ui.view">
+        <field name="name">hds.form.138.search</field>
+        <field name="model">hds.form.138</field>
+        <field name="arch" type="xml">
+            <search string="Form 138">
+                <field name="financial_year_id"/>
+                <filter name="current_fy" string="Current FY"
+                        domain="[('financial_year_id.start_date', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                                 ('financial_year_id.end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                <group>
+                    <filter name="group_financial_year" string="Financial Year" context="{'group_by': 'financial_year_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hds_form_138_quarters" model="ir.actions.act_window">
+        <field name="name">Form 138</field>
+        <field name="res_model">hds.form.138</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="hds_form_138_view_search"/>
+        <field name="context">{'search_default_current_fy': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No Forms Found :(</p>
+            <p>Click "Generate For Current FY" to generate the quarterly Form 138 records for the current financial year.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_hds_form_138"
+              name="Form 138"
+              parent="menu_hds_statutory_reports"
+              action="action_hds_form_138_quarters"
+              sequence="74"/>
+</odoo>

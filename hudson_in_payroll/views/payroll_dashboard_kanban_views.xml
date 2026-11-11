@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================= -->
+    <!-- 1. KANBAN VIEW FOR BOARD-PINNABLE PAYROLL KPI SNAPSHOT            -->
+    <!-- ================================================================= -->
+    <record id="hds_payroll_dashboard_view_kanban" model="ir.ui.view">
+        <field name="name">hds.payroll.dashboard.kanban</field>
+        <field name="model">hds.payroll.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard o_payroll_kpi_kanban" create="false" delete="false">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="financial_year_id"/>
+                <field name="payroll_month_num"/>
+                <field name="currency_id"/>
+                <field name="total_payroll_cost"/>
+                <field name="total_net_pay"/>
+                <field name="active_employee_count"/>
+                <field name="tds_this_month"/>
+                <field name="old_regime_count"/>
+                <field name="new_regime_count"/>
+                <field name="pending_actions_count"/>
+                <field name="missing_pan_count"/>
+                <field name="missing_bank_count"/>
+                <field name="pending_declarations_count"/>
+                <field name="epf_total_liability"/>
+                <field name="esic_total_liability"/>
+                <field name="pt_total_liability"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click p-3 rounded-3 bg-white shadow-sm border border-1 border-light position-relative w-100" style="min-width: 320px; font-family: inherit;">
+                            
+                            <!-- Header: Title & Period Badge -->
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-light">
+                                <div>
+                                    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                                        <i class="fa fa-dashboard text-primary"/>
+                                        <field name="name"/>
+                                    </h5>
+                                    <span class="text-muted small">
+                                        <field name="financial_year_id"/> | Month: <field name="payroll_month_num"/>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Primary Financial KPI Grid (2x2) -->
+                            <div class="row g-2 mb-3">
+                                <!-- Total Payroll Cost -->
+                                <div class="col-6">
+                                    <div class="p-2 rounded-2 bg-light border-start border-4 border-primary">
+                                        <div class="text-muted small fw-semibold">Total Payroll Cost</div>
+                                        <div class="fs-5 fw-bold text-dark mt-1">
+                                            <field name="total_payroll_cost" widget="monetary"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Net Salary Payable -->
+                                <div class="col-6">
+                                    <div class="p-2 rounded-2 bg-light border-start border-4 border-success">
+                                        <div class="text-muted small fw-semibold">Net Pay Disbursed</div>
+                                        <div class="fs-5 fw-bold text-dark mt-1">
+                                            <field name="total_net_pay" widget="monetary"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Active Employees -->
+                                <div class="col-6">
+                                    <div class="p-2 rounded-2 bg-light border-start border-4 border-info">
+                                        <div class="text-muted small fw-semibold">Active Workforce</div>
+                                        <div class="fs-5 fw-bold text-dark mt-1">
+                                            <field name="active_employee_count"/> <span class="fs-6 fw-normal text-muted">Emps</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- TDS Deducted This Month -->
+                                <div class="col-6">
+                                    <div class="p-2 rounded-2 bg-light border-start border-4 border-secondary">
+                                        <div class="text-muted small fw-semibold">TDS This Month</div>
+                                        <div class="fs-5 fw-bold text-dark mt-1">
+                                            <field name="tds_this_month" widget="monetary"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Regime Breakdown & Statutory Pills -->
+                            <div class="p-2 rounded-2 mb-3 bg-body-tertiary border border-light">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small fw-bold text-secondary">Tax Regime Split:</span>
+                                    <span class="small font-monospace">
+                                        <span class="badge bg-indigo text-white me-1" style="background-color: #4f46e5;">Old: <field name="old_regime_count"/></span>
+                                        <span class="badge bg-cyan text-white" style="background-color: #0284c7;">New (Sec 202(1)): <field name="new_regime_count"/></span>
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center small text-muted pt-1 border-top border-light">
+                                    <span>EPF: <field name="epf_total_liability" widget="monetary"/></span>
+                                    <span>ESIC: <field name="esic_total_liability" widget="monetary"/></span>
+                                    <span>PT: <field name="pt_total_liability" widget="monetary"/></span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Quick Drill-Down Action Buttons -->
+                            <div class="d-flex justify-content-between align-items-center gap-1 pt-2 border-top border-light">
+                                <button type="object" name="action_view_missing_pan_employees" class="btn btn-sm btn-outline-danger flex-grow-1 text-truncate" title="View Employees with Missing PAN">
+                                    <i class="fa fa-id-card-o me-1"/> PAN (<field name="missing_pan_count"/>)
+                                </button>
+                                <button type="object" name="action_view_missing_bank_employees" class="btn btn-sm btn-outline-warning flex-grow-1 text-truncate" title="View Employees with Missing Bank Info">
+                                    <i class="fa fa-university me-1"/> Bank (<field name="missing_bank_count"/>)
+                                </button>
+                                <button type="object" name="action_view_pending_declarations" class="btn btn-sm btn-outline-primary flex-grow-1 text-truncate" title="View Pending Tax Declarations">
+                                    <i class="fa fa-file-text-o me-1"/> Decl (<field name="pending_declarations_count"/>)
+                                </button>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- 2. GRAPH & PIVOT VIEWS FOR PAYROLL KPI DASHBOARD                  -->
+    <!-- ================================================================= -->
+    <record id="hds_payroll_dashboard_view_graph" model="ir.ui.view">
+        <field name="name">hds.payroll.dashboard.graph</field>
+        <field name="model">hds.payroll.dashboard</field>
+        <field name="arch" type="xml">
+            <graph string="Payroll KPI Analytics" type="bar" sample="1">
+                <field name="payroll_month_num"/>
+                <field name="total_payroll_cost" type="measure"/>
+                <field name="total_net_pay" type="measure"/>
+                <field name="tds_this_month" type="measure"/>
+                <field name="epf_total_liability" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="hds_payroll_dashboard_view_pivot" model="ir.ui.view">
+        <field name="name">hds.payroll.dashboard.pivot</field>
+        <field name="model">hds.payroll.dashboard</field>
+        <field name="arch" type="xml">
+            <pivot string="Payroll KPI Matrix" sample="1">
+                <field name="financial_year_id" type="row"/>
+                <field name="payroll_month_num" type="col"/>
+                <field name="total_payroll_cost" type="measure"/>
+                <field name="total_net_pay" type="measure"/>
+                <field name="active_employee_count" type="measure"/>
+                <field name="tds_this_month" type="measure"/>
+                <field name="old_regime_count" type="measure"/>
+                <field name="new_regime_count" type="measure"/>
+                <field name="pending_actions_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- 3. GRAPH & PIVOT VIEWS FOR TAX REGIME DISTRIBUTION               -->
+    <!-- ================================================================= -->
+    <record id="tds_employee_tax_regime_view_graph" model="ir.ui.view">
+        <field name="name">tds.employee.tax.regime.graph</field>
+        <field name="model">tds.employee.tax.regime</field>
+        <field name="arch" type="xml">
+            <graph string="Tax Regime Distribution (Old vs New)" type="pie" sample="1">
+                <field name="regime_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="tds_employee_tax_regime_view_pivot" model="ir.ui.view">
+        <field name="name">tds.employee.tax.regime.pivot</field>
+        <field name="model">tds.employee.tax.regime</field>
+        <field name="arch" type="xml">
+            <pivot string="Tax Regime Distribution Matrix" sample="1">
+                <field name="financial_year_id" type="row"/>
+                <field name="regime_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- 4. WINDOW ACTIONS PINNABLE INTO COMMUNITY DASHBOARD (BOARD)       -->
+    <!-- ================================================================= -->
+    
+    <!-- Action 1: Payroll KPI Snapshot (Kanban) -->
+    <record id="action_hds_payroll_kpi_snapshot" model="ir.actions.act_window">
+        <field name="name">Payroll KPI Snapshot</field>
+        <field name="res_model">hds.payroll.dashboard</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="hds_payroll_dashboard_view_kanban"/>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Pin live Payroll KPIs to your Community Dashboard!
+            </p>
+            <p>
+                Open Favorites in the search bar and click <strong>"Add to my Dashboard"</strong> to place this live Payroll KPI Snapshot tile inside the native Dashboards app.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action 2: Tax Regime Distribution Breakdown (Graph & Pivot) -->
+    <record id="action_hds_payroll_regime_analysis" model="ir.actions.act_window">
+        <field name="name">Tax Regime Breakdown</field>
+        <field name="res_model">tds.employee.tax.regime</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="context">{'search_default_group_by_regime': 1}</field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Analyze Employee Tax Regime Selections (Old vs New Tax Regime Income-tax Act, 2025 — Section 202(1)).
+            </p>
+            <p>
+                Pin this chart tile to your Community Dashboard via Favorites &gt; <strong>"Add to my Dashboard"</strong>.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action 3: Payroll Cost & Compliance Metric Trends (Graph & Pivot) -->
+    <record id="action_hds_payroll_cost_analysis" model="ir.actions.act_window">
+        <field name="name">Payroll Metrics Analysis</field>
+        <field name="res_model">hds.payroll.dashboard</field>
+        <field name="view_mode">graph,pivot,kanban,form</field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Track Total Payroll Cost, Net Pay, and Statutory Liabilities across periods.
+            </p>
+            <p>
+                Pin this visual metric trend to your Community Dashboard via Favorites &gt; <strong>"Add to my Dashboard"</strong>.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- 5. MENU ITEMS                                                     -->
+    <!-- ================================================================= -->
+
+    <!-- Reporting Section: Tax Regime Analysis -->
+    <menuitem id="menu_hds_payroll_regime_analysis"
+              name="Tax Regime Breakdown"
+              parent="hudson_payroll_base.menu_hr_payroll_reporting"
+              action="action_hds_payroll_regime_analysis"
+              groups="hudson_payroll_base.group_payroll_manager,base.group_system"
+              sequence="25"/>
+
+    <!-- Reporting Section: Payroll Metrics Analysis -->
+    <menuitem id="menu_hds_payroll_cost_analysis"
+              name="Payroll Metric Trends"
+              parent="hudson_payroll_base.menu_hr_payroll_reporting"
+              action="action_hds_payroll_cost_analysis"
+              groups="hudson_payroll_base.group_payroll_manager,base.group_system"
+              sequence="26"/>
+
+</odoo>

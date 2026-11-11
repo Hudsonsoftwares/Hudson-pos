@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- ========================================================================= -->
+        <!-- 1. Federal Labour Authority (Mainland)                                    -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_mohre" model="uae.labour.authority">
+            <field name="name">Ministry of Human Resources &amp; Emiratisation (MOHRE)</field>
+            <field name="code">MOHRE</field>
+            <field name="authority_type">mohre</field>
+            <field name="jurisdiction_type">mainland</field>
+            <field name="description">Federal regulatory authority governing private mainland employment in the UAE.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 2. Abu Dhabi Free Zone Authorities                                       -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_adgm" model="uae.labour.authority">
+            <field name="name">Abu Dhabi Global Market Registration Authority (ADGM)</field>
+            <field name="code">ADGM_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_auh"/>
+            <field name="description">Regulatory authority for ADGM Free Zone entities and employment regulations.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_masdar" model="uae.labour.authority">
+            <field name="name">Masdar City Free Zone Authority</field>
+            <field name="code">MASDAR_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_auh"/>
+            <field name="description">Masdar City Free Zone governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_twofour54" model="uae.labour.authority">
+            <field name="name">Media Zone Authority (twofour54)</field>
+            <field name="code">TWFOUR54_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_auh"/>
+            <field name="description">Media Zone Authority governing twofour54 media and entertainment entities.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_adafz" model="uae.labour.authority">
+            <field name="name">Abu Dhabi Airports Free Zone Authority</field>
+            <field name="code">ADAFZ_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_auh"/>
+            <field name="description">Abu Dhabi Airports Free Zone (ADAFZ) governing authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_kezad" model="uae.labour.authority">
+            <field name="name">Khalifa Economic Zones Abu Dhabi (KEZAD) Authority</field>
+            <field name="code">KEZAD_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_auh"/>
+            <field name="description">KEZAD industrial and commercial free zone authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_adic" model="uae.labour.authority">
+            <field name="name">ZonesCorp / Abu Dhabi Industrial City Authority</field>
+            <field name="code">ADIC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_auh"/>
+            <field name="description">Industrial City of Abu Dhabi (ICAD / ADIC) governing authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 3. Dubai Free Zone Authorities                                           -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_difc" model="uae.labour.authority">
+            <field name="name">Dubai International Financial Centre Authority (DIFC)</field>
+            <field name="code">DIFC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Regulatory authority for DIFC Free Zone entities and financial employment contracts.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dmcc" model="uae.labour.authority">
+            <field name="name">Dubai Multi Commodities Centre Authority (DMCC)</field>
+            <field name="code">DMCC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">DMCC regulatory authority for commodities, trade, and free zone employment.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_jafza" model="uae.labour.authority">
+            <field name="name">Jebel Ali Free Zone Authority (JAFZA)</field>
+            <field name="code">JAFZA_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Jebel Ali Free Zone governing authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dafza" model="uae.labour.authority">
+            <field name="name">Dubai Airport Freezone Authority (DAFZA)</field>
+            <field name="code">DAFZA_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Dubai Airport Freezone governing authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dso" model="uae.labour.authority">
+            <field name="name">Dubai Integrated Economic Zones Authority (DIEZ / DSO)</field>
+            <field name="code">DSO_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Dubai Silicon Oasis / DIEZ regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dubai_south" model="uae.labour.authority">
+            <field name="name">Dubai South Authority (DWC)</field>
+            <field name="code">DUBAI_SOUTH_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Dubai South / Dubai World Central Free Zone regulatory body.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_ifza" model="uae.labour.authority">
+            <field name="name">International Free Zone Authority (IFZA)</field>
+            <field name="code">IFZA_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">International Free Zone Authority (IFZA) operating under Dubai Silicon Oasis / DIEZ.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dic" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai Internet City Authority</field>
+            <field name="code">DIC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Dubai Internet City technology cluster.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dmc" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai Media City Authority</field>
+            <field name="code">DMC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Dubai Media City cluster.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dkp" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai Knowledge Park Authority</field>
+            <field name="code">DKP_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Dubai Knowledge Park educational hub.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dpc" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai Production City Authority</field>
+            <field name="code">DPC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Dubai Production City media and publishing cluster.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dsc" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai Studio City Authority</field>
+            <field name="code">DSC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Dubai Studio City broadcasting and film production.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dsp" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai Science Park Authority</field>
+            <field name="code">DSP_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Dubai Science Park life science and energy community.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_d3" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai Design District Authority (d3)</field>
+            <field name="code">D3_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Dubai Design District creative cluster.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dhcc" model="uae.labour.authority">
+            <field name="name">Dubai Healthcare City Authority (DHCA)</field>
+            <field name="code">DHCC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing body for Dubai Healthcare City clinical and medical commercial entities.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_meydan" model="uae.labour.authority">
+            <field name="name">Meydan Free Zone Authority</field>
+            <field name="code">MEYDAN_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for Meydan Free Zone entities.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_ihc" model="uae.labour.authority">
+            <field name="name">International Humanitarian City Authority</field>
+            <field name="code">IHC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Regulatory authority for IHC non-profit and humanitarian commercial entities.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dcc" model="uae.labour.authority">
+            <field name="name">Dubai CommerCity Authority</field>
+            <field name="code">DCC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Dedicated e-commerce free zone authority operating under DIEZ.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_diac" model="uae.labour.authority">
+            <field name="name">TECOM Group / Dubai International Academic City Authority</field>
+            <field name="code">DIAC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for DIAC higher education free zone community.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_expo_city" model="uae.labour.authority">
+            <field name="name">Expo City Dubai Authority</field>
+            <field name="code">EXPO_CITY_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing regulatory authority for Expo City Dubai commercial zone.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dwtc" model="uae.labour.authority">
+            <field name="name">Dubai World Trade Centre Authority (DWTCA)</field>
+            <field name="code">DWTC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Governing authority for DWTC One Central and exhibition free zone jurisdiction.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_daz" model="uae.labour.authority">
+            <field name="name">Dubai Auto Zone Authority</field>
+            <field name="code">DAZ_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Regulatory authority for Dubai Auto Zone (DAZ / DUCAMZ).</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_dmcity" model="uae.labour.authority">
+            <field name="name">Dubai Maritime City Authority</field>
+            <field name="code">DMCITY_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_dxb"/>
+            <field name="description">Regulatory authority for Dubai Maritime City Free Zone.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 4. Sharjah Free Zone Authorities                                         -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_saif" model="uae.labour.authority">
+            <field name="name">Sharjah Airport International Free Zone Authority (SAIF)</field>
+            <field name="code">SAIF_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_shj"/>
+            <field name="description">SAIF Zone governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_hamriyah" model="uae.labour.authority">
+            <field name="name">Hamriyah Free Zone Authority</field>
+            <field name="code">HAMRIYAH_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_shj"/>
+            <field name="description">Hamriyah Free Zone governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_shams" model="uae.labour.authority">
+            <field name="name">Sharjah Media City Authority (SHAMS)</field>
+            <field name="code">SHAMS_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_shj"/>
+            <field name="description">Sharjah Media City (SHAMS) governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_spcfz" model="uae.labour.authority">
+            <field name="name">Sharjah Publishing City Free Zone Authority</field>
+            <field name="code">SPCFZ_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_shj"/>
+            <field name="description">Sharjah Publishing City Free Zone governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_srtip" model="uae.labour.authority">
+            <field name="name">Sharjah Research Technology &amp; Innovation Park Authority</field>
+            <field name="code">SRTIP_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_shj"/>
+            <field name="description">SRTIP Free Zone governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 5. Ajman Free Zone Authorities                                           -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_ajman" model="uae.labour.authority">
+            <field name="name">Ajman Free Zone Authority</field>
+            <field name="code">AJMAN_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_ajm"/>
+            <field name="description">Ajman Free Zone governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_amc" model="uae.labour.authority">
+            <field name="name">Ajman Media City Free Zone Authority</field>
+            <field name="code">AMC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_ajm"/>
+            <field name="description">Ajman Media City Free Zone governing authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 6. Umm Al Quwain Free Zone Authorities                                   -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_uaqftz" model="uae.labour.authority">
+            <field name="name">Umm Al Quwain Free Trade Zone Authority</field>
+            <field name="code">UAQFTZ_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_uaq"/>
+            <field name="description">UAQ FTZ governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 7. Ras Al Khaimah Free Zone Authorities                                  -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_rakez" model="uae.labour.authority">
+            <field name="name">Ras Al Khaimah Economic Zone Authority (RAKEZ)</field>
+            <field name="code">RAKEZ_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_rak"/>
+            <field name="description">RAKEZ governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_rakmc" model="uae.labour.authority">
+            <field name="name">RAK Maritime City Free Zone Authority</field>
+            <field name="code">RAKMC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_rak"/>
+            <field name="description">RAK Maritime City governing authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_rak_inc" model="uae.labour.authority">
+            <field name="name">Ras Al Khaimah Innovation City Authority (RAK INC)</field>
+            <field name="code">RAK_INC_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_rak"/>
+            <field name="description">RAK INC governing authority (formerly known as RAK Digital Assets Oasis / RAK DAO).</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ========================================================================= -->
+        <!-- 8. Fujairah Free Zone Authorities                                        -->
+        <!-- ========================================================================= -->
+        <record id="labour_authority_ffz" model="uae.labour.authority">
+            <field name="name">Fujairah Free Zone Authority</field>
+            <field name="code">FFZ_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_fuj"/>
+            <field name="description">Fujairah Free Zone governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_creative_city" model="uae.labour.authority">
+            <field name="name">Creative City Fujairah Authority</field>
+            <field name="code">CREATIVE_CITY_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_fuj"/>
+            <field name="description">Creative City Fujairah media and commercial regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="labour_authority_foiz" model="uae.labour.authority">
+            <field name="name">Fujairah Oil Industry Zone Authority</field>
+            <field name="code">FOIZ_AUTH</field>
+            <field name="authority_type">free_zone</field>
+            <field name="jurisdiction_type">free_zone</field>
+            <field name="emirate_id" ref="emirate_fuj"/>
+            <field name="description">Fujairah Oil Industry Zone (FOIZ) governing regulatory authority.</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Budget Lines pivot action -->
+    <record id="act_crossovered_budget_lines_pivot_view" model="ir.actions.act_window">
+        <field name="name">Budgets</field>
+        <field name="res_model">account.budget.line</field>
+        <field name="view_mode">pivot,list,form,graph</field>
+        <field name="view_id" eval="False"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Click to create a new budget line.
+          </p>
+        </field>
+    </record>
+
+    <!-- Add Budgets tab to Analytic Account form view matching Enterprise layout -->
+    <record id="view_account_analytic_account_form_inherit_hudson_budget" model="ir.ui.view">
+        <field name="name">account.analytic.account.form.inherit.hudson.budget</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+        <field name="priority" eval="60"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Budgets" name="budgets">
+                    <field name="budget_line_ids" readonly="1">
+                        <list string="Budgets" create="0" delete="0" edit="0">
+                            <field name="budget_id" string="Budget Analytic"/>
+                            <field name="date_from" string="Start Date"/>
+                            <field name="date_to" string="End Date"/>
+                            <field name="planned_amount" string="Commitment"/>
+                            <field name="liquidation_amount" string="Liquidation"/>
+                            <field name="theoretical_amount" string="Expected"/>
+                            <field name="practical_amount" string="Achieved"/>
+                            <field name="budget_state" string="Budget State" widget="badge" decoration-info="budget_state == 'draft'" decoration-success="budget_state in ('validate', 'done')" decoration-danger="budget_state == 'cancel'"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Budget Form View to customize Budget Lines tab matching Enterprise layout -->
+    <record id="view_account_budget_form_inherit_hudson_lines" model="ir.ui.view">
+        <field name="name">account.budget.form.inherit.hudson.lines</field>
+        <field name="model">account.budget</field>
+        <field name="inherit_id" ref="om_account_budget.view_account_budget_form"/>
+        <field name="priority" eval="50"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='lines']/field[@name='line_ids']" position="attributes">
+                <attribute name="context">{'default_date_from': date_from, 'default_date_to': date_to, 'default_budget_type': budget_type}</attribute>
+            </xpath>
+            <xpath expr="//page[@name='lines']/field[@name='line_ids']/list" position="replace">
+                <list string="Budget Lines" editable="bottom"
+                      decoration-danger="is_over_budget"
+                      decoration-success="budget_type == 'revenue' and is_above_budget">
+                    <field name="sequence" widget="handle"/>
+                    <field name="account_id" string="Project Plan" optional="show" options="{'no_create_edit': False}"/>
+                    <field name="budget_type" string="Budget Type" optional="show" column_invisible="parent.budget_type != 'both'"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="planned_amount" string="Commitment" sum="Commitment"/>
+                    <field name="liquidation_amount" string="Liquidation" sum="Liquidation" optional="hide"/>
+                    <field name="theoretical_amount" string="Expected" sum="Expected" optional="hide"
+                           column_invisible="parent.state == 'draft'"/>
+                    <field name="practical_amount" string="Achieved" sum="Achieved"
+                           column_invisible="parent.state == 'draft'"/>
+                    <field name="achievement" string="%" widget="percentage" optional="show"
+                           column_invisible="parent.state == 'draft'"/>
+                    <button type="object" name="action_open_budget_entries" string="Audit"
+                            class="btn-link" column_invisible="parent.state == 'draft'"/>
+                    <field name="is_above_budget" column_invisible="1"/>
+                    <field name="is_over_budget" column_invisible="1"/>
+                </list>
+            </xpath>
+            <xpath expr="//page[@name='lines']/field[@name='line_ids']/form" position="replace">
+                <form string="Budget Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="budget_type" widget="radio" options="{'horizontal': true}"/>
+                                <field name="account_id" string="Project Plan"/>
+                            </group>
+                            <group>
+                                <field name="planned_amount" string="Commitment"/>
+                                <field name="liquidation_amount" string="Liquidation"/>
+                                <field name="theoretical_amount" string="Expected"/>
+                                <field name="practical_amount" string="Achieved"/>
+                                <field name="achievement" widget="percentage"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

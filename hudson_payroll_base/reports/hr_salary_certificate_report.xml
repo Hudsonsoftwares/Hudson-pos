@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Salary Certificate: employee > Print > Salary Certificate (payroll users only: it shows salary) -->
+    <record id="action_report_salary_certificate" model="ir.actions.report">
+        <field name="name">Salary Certificate</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_payroll_base.report_salary_certificate</field>
+        <field name="print_report_name">'Salary_Certificate_' + (object.name or '').replace(' ', '_')</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[(6, 0, [ref('hudson_payroll_base.group_payroll_user'), ref('hudson_payroll_base.group_payroll_manager')])]"/>
+    </record>
+
+    <template id="report_salary_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="contract" t-value="o.version_id"/>
+                <t t-set="company" t-value="o.company_id or res_company"/>
+                <t t-set="currency" t-value="company.currency_id"/>
+                <t t-set="employee_type" t-value="contract.employee_type_id.name or o.employee_type_id.name"/>
+                <t t-set="start_date" t-value="contract.contract_date_start or o.first_contract_date"/>
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size: 13px;">
+                        <p class="text-end mt-3">
+                            <span t-out="context_timestamp(datetime.datetime.now())" t-options="{'widget': 'date'}"/>
+                        </p>
+
+                        <p class="mt-4 mb-4" style="font-size: 15px;">
+                            <strong><u>Subject: Salary Certificate</u></strong>
+                        </p>
+
+                        <p>Dear Sir/Madam,</p>
+                        <p>
+                            This is to certify that the following individual is employed at
+                            <span t-out="company.name"/><t t-if="employee_type"> on <t t-out="'an' if employee_type[:1].lower() in 'aeiou' else 'a'"/>
+                            <span t-out="employee_type"/> basis</t>.
+                        </p>
+
+                        <table class="table table-bordered mt-3 mb-4" style="width: 100%; border: 1px solid #000;">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold" style="width: 60%;">Employee Name</td>
+                                    <td><span t-out="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Passport Number</td>
+                                    <td><span t-out="o.passport_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Nationality</td>
+                                    <td><span t-out="o.country_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Designation</td>
+                                    <td><span t-out="o.job_title or o.job_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Start Date</td>
+                                    <td><span t-if="start_date" t-out="start_date" t-options="{'widget': 'date'}"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Monthly Basic Salary</td>
+                                    <td>
+                                        <span t-if="contract" t-out="contract.basic_salary"
+                                              t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Total Salary</td>
+                                    <td>
+                                        <span t-if="contract" t-out="contract.wage"
+                                              t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            This letter was issued at the request of the employee and does not constitute any legal
+                            obligation or guarantee on the part of <span t-out="company.name"/>.
+                        </p>
+                        <p>
+                            Should you require any further information please contact our Human Resource Department<t t-if="company.phone"> on <span t-out="company.phone"/></t>.
+                        </p>
+
+                        <p class="mt-5">Sincerely,</p>
+                        <p><span t-out="user.name"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

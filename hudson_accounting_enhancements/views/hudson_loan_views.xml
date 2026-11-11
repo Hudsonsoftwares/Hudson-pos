@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+
+    <!-- account.move List View for Loan Entries (Enterprise matching) -->
+    <record id="view_account_move_loan_entries_tree" model="ir.ui.view">
+        <field name="name">account.move.loan.entries.list</field>
+        <field name="model">account.move</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Loan Entries" default_order="date asc, id asc" sample="1">
+                <field name="company_currency_id" column_invisible="True"/>
+                <field name="made_sequence_gap" column_invisible="True"/>
+                <field name="date"/>
+                <field name="name" string="Number" decoration-danger="made_sequence_gap and state == 'posted'" widget="char_with_placeholder_field" placeholder="/"/>
+                <field name="partner_id" optional="show"/>
+                <field name="ref" string="Reference"/>
+                <field name="journal_id"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="amount_total_signed" string="Total" sum="Total" decoration-bf="1"/>
+                <field name="state" string="Status" widget="badge" 
+                       decoration-info="state == 'draft'" 
+                       decoration-success="state == 'posted'" 
+                       decoration-danger="state == 'cancel'"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- hudson.loan List View -->
+    <record id="view_hudson_loan_tree" model="ir.ui.view">
+        <field name="name">hudson.loan.tree</field>
+        <field name="model">hudson.loan</field>
+        <field name="arch" type="xml">
+            <list string="Loans">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="amount_borrowed"/>
+                <field name="outstanding_balance"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'draft'" 
+                       decoration-success="state == 'running'"
+                       decoration-primary="state == 'closed'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- hudson.loan Form View -->
+    <record id="view_hudson_loan_form" model="ir.ui.view">
+        <field name="name">hudson.loan.form</field>
+        <field name="model">hudson.loan</field>
+        <field name="arch" type="xml">
+            <form string="Loan">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_compute" string="Compute" type="object" invisible="state != 'draft'"/>
+                    <button name="action_close" string="Close Loan" type="object" class="oe_highlight" invisible="state != 'running'"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ('draft', 'running')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,running,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_entries" type="object" class="oe_stat_button" icon="menu" invisible="move_count == 0">
+                            <field name="move_count" widget="statinfo" string="Loan Entries"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Loan name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="amount_borrowed"/>
+                            <field name="interest"/>
+                            <field name="outstanding_balance"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="duration"/>
+                            <field name="asset_group"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Amortization schedule" name="schedule">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list string="Amortization schedule" editable="bottom" decoration-muted="is_posted == True">
+                                    <field name="date"/>
+                                    <field name="principal" sum="Total Principal"/>
+                                    <field name="interest" sum="Total Interest"/>
+                                    <field name="payment" sum="Total Payments"/>
+                                    <field name="balance"/>
+                                    <field name="is_posted" readonly="1" widget="boolean_toggle"/>
+                                    <field name="move_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Loan Settings" name="settings">
+                            <group>
+                                <group>
+                                    <field name="long_term_account_id" readonly="state != 'draft'"/>
+                                    <field name="short_term_account_id" readonly="state != 'draft'"/>
+                                    <field name="expense_account_id" readonly="state != 'draft'"/>
+                                    <field name="journal_id" readonly="state != 'draft'"/>
+                                </group>
+                                <group>
+                                    <field name="skip_until_date" placeholder="1st amortization schedule" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- hudson.loan Search View -->
+    <record id="view_hudson_loan_search" model="ir.ui.view">
+        <field name="name">hudson.loan.search</field>
+        <field name="model">hudson.loan</field>
+        <field name="arch" type="xml">
+            <search string="Loans">
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Running" name="running" domain="[('state', '=', 'running')]"/>
+                <filter string="Closed" name="closed" domain="[('state', '=', 'closed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <group>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by': 'date'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- hudson.loan Action -->
+    <record id="action_hudson_loan" model="ir.actions.act_window">
+        <field name="name">Loans</field>
+        <field name="res_model">hudson.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hudson_loan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Loan
+            </p>
+        </field>
+    </record>
+
+    <!-- hudson.loan.line Pivot View (Loans Analysis) -->
+    <record id="view_hudson_loan_line_pivot" model="ir.ui.view">
+        <field name="name">hudson.loan.line.pivot</field>
+        <field name="model">hudson.loan.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Loans Analysis" sample="1">
+                <field name="loan_id" type="row"/>
+                <field name="date" interval="year" type="col"/>
+                <field name="principal" type="measure"/>
+                <field name="interest" type="measure"/>
+                <field name="payment" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- hudson.loan.line List View -->
+    <record id="view_hudson_loan_line_tree" model="ir.ui.view">
+        <field name="name">hudson.loan.line.list</field>
+        <field name="model">hudson.loan.line</field>
+        <field name="arch" type="xml">
+            <list string="Loans Analysis" create="false" edit="false">
+                <field name="date"/>
+                <field name="loan_id"/>
+                <field name="principal" sum="Total Principal"/>
+                <field name="interest" sum="Total Interest"/>
+                <field name="payment" sum="Total Payment"/>
+                <field name="balance"/>
+                <field name="is_posted" widget="badge" decoration-success="is_posted == True" decoration-muted="is_posted == False"/>
+                <field name="move_id" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- hudson.loan.line Graph View -->
+    <record id="view_hudson_loan_line_graph" model="ir.ui.view">
+        <field name="name">hudson.loan.line.graph</field>
+        <field name="model">hudson.loan.line</field>
+        <field name="arch" type="xml">
+            <graph string="Loans Analysis" type="bar" sample="1">
+                <field name="date" interval="year"/>
+                <field name="payment" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- hudson.loan.line Search View -->
+    <record id="view_hudson_loan_line_search" model="ir.ui.view">
+        <field name="name">hudson.loan.line.search</field>
+        <field name="model">hudson.loan.line</field>
+        <field name="arch" type="xml">
+            <search string="Loans Analysis">
+                <field name="loan_id"/>
+                <field name="date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter string="Current" name="current" domain="[('loan_id.state', '=', 'running')]"/>
+                <filter string="Closed" name="closed" domain="[('loan_id.state', '=', 'closed')]"/>
+                <filter string="Draft" name="draft" domain="[('loan_id.state', '=', 'draft')]"/>
+                <separator/>
+                <filter string="Posted" name="posted" domain="[('is_posted', '=', True)]"/>
+                <filter string="Unposted" name="unposted" domain="[('is_posted', '=', False)]"/>
+                <group>
+                    <filter string="Loan" name="group_by_loan" context="{'group_by': 'loan_id'}"/>
+                    <filter string="Month" name="group_by_date_month" context="{'group_by': 'date:month'}"/>
+                    <filter string="Year" name="group_by_date_year" context="{'group_by': 'date:year'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by': 'loan_state'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- hudson.loan.line Form View -->
+    <record id="view_hudson_loan_line_form" model="ir.ui.view">
+        <field name="name">hudson.loan.line.form</field>
+        <field name="model">hudson.loan.line</field>
+        <field name="arch" type="xml">
+            <form string="Loan Amortization Line" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="loan_id"/>
+                            <field name="date"/>
+                            <field name="is_posted"/>
+                            <field name="move_id"/>
+                        </group>
+                        <group>
+                            <field name="principal"/>
+                            <field name="interest"/>
+                            <field name="payment"/>
+                            <field name="balance"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Loans Analysis Action -->
+    <record id="action_hudson_loan_analysis" model="ir.actions.act_window">
+        <field name="name">Loans Analysis</field>
+        <field name="res_model">hudson.loan.line</field>
+        <field name="view_mode">pivot,list,graph,form</field>
+        <field name="search_view_id" ref="view_hudson_loan_line_search"/>
+        <field name="context">{'search_default_current': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No loan lines found to analyze.
+            </p>
+        </field>
+    </record>
+
+</odoo>

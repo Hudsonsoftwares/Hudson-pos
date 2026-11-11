@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Override the OM Reconcile dashboard button to open Hudson transactions view
+         with the "To Review" filter applied instead of the OM Bank Reconciliation screen -->
+    <record id="view_hudson_bank_dashboard_kanban_override" model="ir.ui.view">
+        <field name="name">account.journal.dashboard.kanban.hudson.override</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="om_account_reconcile.account_journal_dashboard_kanban_view"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <!-- Replace "Reconcile X" button → "X to Reconcile" that opens our transactions view -->
+            <xpath expr="//button[hasclass('o_om_dashboard_reconcile')]" position="replace">
+                <button t-if="dashboard.number_to_reconcile &gt; 0" type="object"
+                        name="om_action_open_bank_reconciliation"
+                        class="btn btn-secondary o_om_dashboard_reconcile"
+                        groups="account.group_account_basic">
+                    <span t-out="dashboard.number_to_reconcile"/> to Reconcile
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hide the OM Bank Reconciliation menu entries (replaced by our workflow in Transactions) -->
+    <menuitem id="om_account_reconcile.menu_reconciliation" active="False"/>
+
+</odoo>

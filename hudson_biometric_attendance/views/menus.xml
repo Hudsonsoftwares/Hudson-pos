@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Biometric Integration Root Menu (under HR Attendance Root) -->
+    <menuitem id="menu_hudson_biometric_root"
+              name="Biometric Integration"
+              parent="hr_attendance.menu_hr_attendance_root"
+              sequence="30"
+              groups="group_biometric_attendance_user"/>
+
+    <!-- Devices Menu -->
+    <menuitem id="menu_hudson_attendance_device"
+              name="Biometric Devices"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_device"
+              sequence="10"
+              groups="group_biometric_attendance_manager"/>
+
+    <!-- Field Mappings Menu -->
+    <menuitem id="menu_hudson_attendance_field_mapping"
+              name="Field Mappings"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_field_mapping"
+              sequence="15"
+              groups="group_biometric_attendance_manager"/>
+
+    <!-- Employee Mappings Menu -->
+    <menuitem id="menu_hudson_attendance_employee_mapping"
+              name="Employee Mappings"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_employee_mapping"
+              sequence="18"
+              groups="group_biometric_attendance_manager"/>
+
+    <!-- Raw Punch Logs Menu -->
+    <menuitem id="menu_hudson_attendance_raw_punch_all"
+              name="Raw Punch Logs"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_raw_punch_all"
+              sequence="20"
+              groups="group_biometric_attendance_user"/>
+
+    <!-- Unmapped Punches Queue -->
+    <menuitem id="menu_hudson_attendance_raw_punch_unmapped"
+              name="Unmapped Punches"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_raw_punch_unmapped"
+              sequence="30"
+              groups="group_biometric_attendance_user"/>
+
+    <!-- Failed Punches Queue -->
+    <menuitem id="menu_hudson_attendance_raw_punch_failed"
+              name="Failed Punches"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_raw_punch_failed"
+              sequence="40"
+              groups="group_biometric_attendance_user"/>
+
+    <!-- Sync Jobs Menu -->
+    <menuitem id="menu_hudson_attendance_sync_job"
+              name="Sync Jobs"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_sync_job"
+              sequence="50"
+              groups="group_biometric_attendance_manager"/>
+
+    <!-- Webhook Logs Menu -->
+    <menuitem id="menu_hudson_attendance_webhook_log"
+              name="Webhook Ingest Logs"
+              parent="menu_hudson_biometric_root"
+              action="action_hudson_attendance_webhook_log"
+              sequence="60"
+              groups="group_biometric_attendance_manager"/>
+
+    <!-- Management: Attendance Approval, Anomalies and Regularization -->
+    <menuitem id="menu_hudson_attendance_approval"
+              name="Attendance Approval"
+              parent="hr_attendance.menu_hr_attendance_view_attendances_management"
+              action="hr_attendance.hr_attendance_management_action"
+              sequence="10"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hudson_attendance_anomaly"
+              name="Attendance Anomalies"
+              parent="hr_attendance.menu_hr_attendance_view_attendances_management"
+              action="action_hudson_attendance_anomaly"
+              sequence="25"
+              groups="group_biometric_attendance_user"/>
+
+    <menuitem id="menu_hudson_attendance_regularization"
+              name="Regularization Requests"
+              parent="hr_attendance.menu_hr_attendance_view_attendances_management"
+              action="action_hudson_attendance_regularization"
+              sequence="26"
+              groups="group_biometric_attendance_user"/>
+</odoo>
