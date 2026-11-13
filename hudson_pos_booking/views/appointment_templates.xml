@@ -6,19 +6,19 @@
         <!-- Error Banner when fully booked / no resource available -->
         <xpath expr="//div[hasclass('o_appointment_preview')]//t[@t-if=&quot;request.params.get('error') == 'cancel_too_late'&quot;]" position="after">
             <t t-if="request.params.get('error') in ('no_resource_available', 'no_user_available')">
-                <div class="alert alert-info border-0 shadow-sm rounded-4 p-4 mb-4 text-start" role="alert" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-left: 6px solid #e17055 !important;">
+                <div class="alert o_booking_notice o_booking_notice_warm shadow-sm rounded-4 p-4 mb-4 text-start" role="alert">
                     <div class="d-flex align-items-center mb-2">
                         <span class="fs-2 me-2">🍽️</span>
-                        <h4 class="mb-0 fw-bold text-dark">Online Table Bookings Full for this Slot</h4>
+                        <h4 class="mb-0 fw-bold o_booking_title">Online Table Bookings Full for this Slot</h4>
                     </div>
-                    <p class="mb-2 text-secondary" style="font-size: 15px; line-height: 1.6;">
+                    <p class="mb-2 o_booking_subtitle" style="font-size: 15px; line-height: 1.6;">
                         All reservable tables for your requested guest count are currently occupied at this time.
                     </p>
-                    <div class="p-3 bg-white rounded-3 border-start border-4 border-warning my-2">
-                        <h6 class="fw-bold text-dark mb-1">
+                    <div class="p-3 o_booking_subpanel rounded-3 border-start border-4 border-warning my-2">
+                        <h6 class="fw-bold o_booking_title mb-1">
                             <i class="oi oi-filled text-warning me-1" data-icon="restaurant"/> Walk-In Dine-In Guests are Always Our Priority!
                         </h6>
-                        <p class="mb-0 text-muted small" style="line-height: 1.5;">
+                        <p class="mb-0 o_booking_subtitle small" style="line-height: 1.5;">
                             We always prioritize our walk-in guests. Even when online bookings are fully reserved for a given time slot, you are always welcome to visit us directly for a dine-in experience. Our host team will be delighted to seat you!
                         </p>
                     </div>
@@ -28,20 +28,20 @@
 
         <!-- No Slots Available on Selected Date: Warm Hospitality Message -->
         <xpath expr="//div[hasclass('o_appointment_preview')]//div[hasclass('alert-warning')][i[@data-icon='warning']]" position="replace">
-            <div class="alert alert-info border-0 shadow-sm rounded-4 p-4 mt-4 text-start bg-white" style="border-left: 6px solid #0984e3 !important;">
+            <div class="alert o_booking_notice o_booking_notice_info shadow-sm rounded-4 p-4 mt-4 text-start">
                 <div class="d-flex align-items-center mb-2">
                     <span class="fs-2 me-2">🍽️</span>
-                    <h5 class="mb-0 fw-bold text-dark">Online Booking Currently Unavailable for this Slot</h5>
+                    <h5 class="mb-0 fw-bold o_booking_title">Online Booking Currently Unavailable for this Slot</h5>
                 </div>
-                <p class="text-secondary mb-2" style="font-size: 14px; line-height: 1.6;">
+                <p class="o_booking_subtitle mb-2" style="font-size: 14px; line-height: 1.6;">
                     Online table reservations are currently full for the selected date and guest count.
                 </p>
-                <div class="p-3 rounded-3 bg-light border border-primary-subtle">
-                    <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                <div class="p-3 rounded-3 o_booking_subpanel">
+                    <div class="fw-bold o_booking_title mb-1 d-flex align-items-center gap-1">
                         <span>✨</span>
                         <span>Direct Walk-in Guests Always Warmly Welcomed!</span>
                     </div>
-                    <p class="text-muted small mb-0" style="line-height: 1.5;">
+                    <p class="o_booking_subtitle small mb-0" style="line-height: 1.5;">
                         We give top priority to direct walk-in guests. Feel free to visit us directly during opening hours to enjoy your dine-in experience!
                     </p>
                 </div>
@@ -51,9 +51,9 @@
 
     <!-- 2. Optional Pre-Order Food Section on Details Form (/appointment/<id>/info) -->
     <template id="appointment_info_inherit_preorder_food" inherit_id="appointment.appointment_info">
-        <!-- 0. Expand Outer Container to Modern Full Width (Eliminates Cramped Blank Right Margin) -->
+        <!-- 0. Expand Outer Container to Modern Full Width while Preserving Theme Color Scheme -->
         <xpath expr="//div[hasclass('o_appointment_info')]//div[hasclass('container')][hasclass('premium-card')]" position="attributes">
-            <attribute name="class">container-fluid px-3 px-xl-5 mt-3 mb-5 premium-card</attribute>
+            <attribute name="class">container-fluid px-3 px-xl-5 mt-3 mb-5 premium-card o_cc o_cc1</attribute>
             <attribute name="style">max-width: 1560px; margin: 0 auto; width: 100%;</attribute>
         </xpath>
 
@@ -62,19 +62,18 @@
             <attribute name="class">col-12</attribute>
         </xpath>
 
-        <!-- 2. Move Appointment Info Column to a Sleek Full-Width Top Banner -->
+        <!-- 2. Move Appointment Info Column to a Sleek Full-Width Adaptive Top Banner -->
         <xpath expr="//div[hasclass('o_appointment_info')]//div[hasclass('col-lg-4')]" position="attributes">
-            <attribute name="class">col-12 order-first mb-4 p-3 bg-light rounded-4 border d-flex flex-wrap align-items-center justify-content-between gap-3 shadow-xs</attribute>
-            <attribute name="style">background: linear-gradient(135deg, #f8fafc, #f1f5f9) !important; border: 1px solid #e2e8f0 !important;</attribute>
+            <attribute name="class">col-12 order-first mb-4 p-3 o_booking_banner rounded-4 d-flex flex-wrap align-items-center justify-content-between gap-3 shadow-xs</attribute>
+            <attribute name="style"></attribute>
         </xpath>
 
         <!-- 3. Pre-Order Food & Special Notes inserted before submit button -->
         <xpath expr="//form//t[@t-if='appointment_type.has_payment_step']" position="before">
             <!-- FULL WIDTH PRE-ORDER FOOD CARD -->
-            <div t-if="food_products" id="preorder_container" class="card border-0 shadow-sm rounded-4 mt-4 mb-4 overflow-hidden w-100" 
+            <div t-if="food_products" id="preorder_container" class="card shadow-sm rounded-4 mt-4 mb-4 overflow-hidden w-100 o_booking_card"
                  t-att-data-currency-symbol="currency_symbol or '$'"
-                 t-att-data-combos="combos_data_json or '{}'"
-                 style="border: 1px solid #e2e8f0 !important; background: #ffffff;">
+                 t-att-data-combos="combos_data_json or '{}'">
                 
                 <!-- Decorative Warm Hospitality Top Accent Bar -->
                 <div style="height: 5px; background: linear-gradient(90deg, #ea580c, #f59e0b, #10b981);"/>
@@ -83,20 +82,20 @@
                     <!-- Top Invitation Row (Always Visible) -->
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-xs"
-                                 style="width: 52px; height: 52px; background: linear-gradient(135deg, #fef3c7, #fde68a); font-size: 26px;">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-xs o_booking_icon_badge"
+                                 style="width: 52px; height: 52px; font-size: 26px;">
                                 🍽️
                             </div>
                             <div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <h5 class="fw-bold mb-0 text-dark" style="letter-spacing: -0.3px; font-size: 19px;">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <h5 class="fw-bold mb-0 o_booking_title" style="letter-spacing: -0.3px; font-size: 19px;">
                                         Pre-Order Food for Dine-In?
                                     </h5>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1" style="font-size: 11px; font-weight: 600;">
+                                    <span class="badge o_booking_badge_soft_success rounded-pill px-2 py-1" style="font-size: 11px; font-weight: 600;">
                                         Optional
                                     </span>
                                 </div>
-                                <p class="text-muted small mb-0 mt-1" style="font-size: 13.5px;">
+                                <p class="o_booking_subtitle small mb-0 mt-1" style="font-size: 13.5px;">
                                     Pre-select your dishes to have them freshly cooked and served to your table upon arrival.
                                 </p>
                             </div>
@@ -104,12 +103,11 @@
 
                         <!-- Right Button / Toggle & Selected Summary -->
                         <div class="d-flex align-items-center gap-2 flex-wrap">
-                            <div id="preorder_collapsed_badge" class="d-none badge bg-success text-white px-3 py-2 rounded-pill fs-6 fw-bold shadow-xs">
+                            <div id="preorder_collapsed_badge" class="d-none badge o_booking_badge_status px-3 py-2 rounded-pill fs-6 fw-bold shadow-xs">
                                 ✓ <span id="collapsed_items_count">0 items</span> (<span id="collapsed_total_price">$0.00</span>)
                             </div>
                             <button type="button" id="btn_toggle_food_menu"
-                                    class="btn fw-bold px-4 py-2 rounded-pill shadow-xs d-flex align-items-center gap-2"
-                                    style="background: #f59e0b; color: #ffffff; border: none; font-size: 14px; transition: all 0.2s ease;">
+                                    class="btn fw-bold px-4 py-2 rounded-pill shadow-xs d-flex align-items-center gap-2 o_booking_toggle_btn">
                                 <span id="toggle_food_btn_text">🍽️ Pre-Order Food</span>
                                 <span id="toggle_food_icon" style="font-size: 13px;">▼</span>
                             </button>
@@ -117,20 +115,20 @@
                     </div>
 
                     <!-- Collapsible Food Selection Section (Hidden by default!) -->
-                    <div id="preorder_food_body" class="d-none mt-4 pt-3 border-top">
+                    <div id="preorder_food_body" class="d-none mt-4 pt-3 border-top o_booking_divider">
                         <!-- Top Bar inside menu: Live Total Badge -->
-                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-4 border flex-wrap gap-2">
+                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 o_booking_subpanel rounded-4 flex-wrap gap-2">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="fs-5">📋</span>
-                                <span class="fw-bold text-dark">Dine-In Menu (<t t-out="len(food_products)"/> dishes available)</span>
+                                <span class="fw-bold o_booking_title">Dine-In Menu (<t t-out="len(food_products)"/> dishes available)</span>
                             </div>
                             <div class="d-flex align-items-center gap-3">
                                 <div class="text-end">
-                                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.5px;">Pre-Order Total: </span>
-                                    <span id="preorder_total_display" class="fw-bolder fs-5 text-success">
+                                    <span class="o_booking_subtitle text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.5px;">Pre-Order Total: </span>
+                                    <span id="preorder_total_display" class="fw-bolder fs-5 o_booking_accent_green">
                                         <t t-out="currency_symbol or '$'"/> 0.00
                                     </span>
-                                    <span id="preorder_items_count_badge" class="text-muted small ms-1" style="font-size: 11px;">(0 items)</span>
+                                    <span id="preorder_items_count_badge" class="o_booking_subtitle small ms-1" style="font-size: 11px;">(0 items)</span>
                                 </div>
                             </div>
                         </div>
@@ -140,15 +138,13 @@
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
                                 <!-- Category Buttons -->
                                 <div class="d-flex flex-wrap gap-2 align-items-center" id="category_pills_container">
-                                    <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold category-pill active-cat-btn"
-                                            data-cat-id="all"
-                                            style="font-size: 12.5px; background-color: #1e293b; color: #ffffff; border: 1px solid #1e293b; box-shadow: 0 2px 4px rgba(30,41,59,0.2);">
+                                    <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold category-pill o_booking_cat_pill active-cat-btn"
+                                            data-cat-id="all">
                                         All Dishes (<t t-out="len(food_products)"/>)
                                     </button>
                                     <t t-foreach="food_categories" t-as="cat">
-                                        <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold category-pill"
-                                                t-att-data-cat-id="cat['id']"
-                                                style="font-size: 12.5px; background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0;">
+                                        <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold category-pill o_booking_cat_pill"
+                                                t-att-data-cat-id="cat['id']">
                                             <t t-out="cat['name']"/> (<t t-out="cat['count']"/>)
                                         </button>
                                     </t>
@@ -157,11 +153,11 @@
                                 <!-- Live Search Box -->
                                 <div style="min-width: 220px; max-width: 300px;" class="ms-auto flex-grow-1 flex-sm-grow-0">
                                     <div class="input-group input-group-sm">
-                                        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3 text-muted">
+                                        <span class="input-group-text o_booking_input_addon border-end-0 rounded-start-pill ps-3">
                                             <i class="oi" data-icon="search"/>
                                         </span>
-                                        <input type="text" id="preorder_search_input" 
-                                               class="form-control border-start-0 rounded-end-pill bg-white"
+                                        <input type="text" id="preorder_search_input"
+                                               class="form-control o_booking_input border-start-0 rounded-end-pill"
                                                placeholder="Search menu dishes..." style="font-size: 12.5px;"/>
                                     </div>
                                 </div>
@@ -178,46 +174,45 @@
                                  t-att-data-categories="prod_cat_ids"
                                  t-att-data-name="prod.name.lower()"
                                  t-att-data-is-combo="'true' if is_combo else 'false'">
-                                <div class="food-dish-card card h-100 p-2 d-flex flex-row align-items-center justify-content-between gap-2 shadow-xs rounded-3"
-                                     t-att-id="'dish_card_' + str(prod.id)"
-                                     style="border: 1px solid #e9ecef; background: #ffffff; transition: all 0.2s ease;">
+                                <div class="food-dish-card o_dish_card card h-100 p-2 d-flex flex-row align-items-center justify-content-between gap-2 shadow-xs rounded-3"
+                                     t-att-id="'dish_card_' + str(prod.id)">
                                     
                                     <!-- Dish Image & Details -->
                                     <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 0;">
                                         <t t-if="prod.image_128">
-                                            <img t-attf-src="/web/image/product.product/#{prod.id}/image_128" 
-                                                 class="rounded-3 shadow-xs" 
-                                                 style="width: 52px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid #edf2f7;" 
+                                            <img t-attf-src="/web/image/product.product/#{prod.id}/image_128"
+                                                 class="rounded-3 shadow-xs o_booking_divider"
+                                                 style="width: 52px; height: 52px; object-fit: cover; flex-shrink: 0; border-width: 1px; border-style: solid;"
                                                  alt="Dish"/>
                                         </t>
                                         <t t-else="">
-                                            <div class="rounded-3 d-flex align-items-center justify-content-center bg-light text-muted"
-                                                 style="width: 52px; height: 52px; flex-shrink: 0; font-size: 22px; border: 1px solid #edf2f7;">
+                                            <div class="rounded-3 d-flex align-items-center justify-content-center o_booking_subpanel o_booking_title"
+                                                 style="width: 52px; height: 52px; flex-shrink: 0; font-size: 22px;">
                                                 🍲
                                             </div>
                                         </t>
                                         <div class="flex-grow-1" style="min-width: 0;">
                                             <div class="d-flex align-items-center gap-1">
-                                                <span class="fw-bold text-dark text-truncate" style="font-size: 13.5px; line-height: 1.3;" t-out="prod.name"/>
+                                                <span class="fw-bold o_booking_title text-truncate" style="font-size: 13.5px; line-height: 1.3;" t-out="prod.name"/>
                                                 <t t-if="is_combo">
-                                                    <span class="badge border rounded-pill px-2 py-0 text-dark flex-shrink-0" style="font-size: 9.5px; background: #fef3c7; border-color: #fde68a !important; color: #92400e !important;">
+                                                    <span class="badge rounded-pill px-2 py-0 o_booking_badge_combo flex-shrink-0" style="font-size: 9.5px;">
                                                         🍱 Combo
                                                     </span>
                                                 </t>
                                             </div>
                                             <div class="d-flex align-items-center gap-2 mt-1">
                                                 <t t-set="prod_price_incl" t-value="product_prices.get(prod.id, prod.lst_price) if product_prices else prod.lst_price"/>
-                                                <span class="fw-bold text-success" style="font-size: 13.5px;">
+                                                <span class="fw-bold o_booking_accent_green" style="font-size: 13.5px;">
                                                     <t t-out="currency_symbol or '$'"/> <t t-out="'%.2f' % prod_price_incl"/>
                                                 </span>
-                                                <span class="badge bg-success-subtle text-success border border-success-subtle dish-selected-badge d-none rounded-pill" style="font-size: 10px;">
+                                                <span class="badge o_booking_badge_soft_success dish-selected-badge d-none rounded-pill" style="font-size: 10px;">
                                                     ✓ Added
                                                 </span>
                                             </div>
                                             <!-- Combo Selections Preview & Customize Button -->
                                             <t t-if="is_combo">
-                                                <div class="combo-subtext-preview text-truncate d-none mt-1" t-att-id="'combo_subtext_' + str(prod.id)" style="font-size: 11px; color: #15803d; font-weight: 600;"></div>
-                                                <a href="javascript:void(0)" class="combo-customize-btn d-none small" t-att-data-prod-id="prod.id" style="font-size: 11px; color: #0284c7; font-weight: 600; text-decoration: underline;">
+                                                <div class="combo-subtext-preview o_booking_accent_green text-truncate d-none mt-1" t-att-id="'combo_subtext_' + str(prod.id)" style="font-size: 11px; font-weight: 600;"></div>
+                                                <a href="javascript:void(0)" class="combo-customize-btn o_booking_accent_link d-none small" t-att-data-prod-id="prod.id" style="font-size: 11px; font-weight: 600; text-decoration: underline;">
                                                     ✏️ Customize Choices
                                                 </a>
                                                 <input type="hidden" t-attf-name="food_combo_data_#{prod.id}" t-att-id="'food_combo_data_' + str(prod.id)" value=""/>
@@ -225,25 +220,21 @@
                                         </div>
                                     </div>
 
-                                    <!-- UI-Friendly Stepper Control (Fresh Emerald Green & Soft Gray, NO HARSH BLUE) -->
-                                    <div class="d-flex align-items-center bg-white rounded-pill px-1 py-1 border flex-shrink-0 dish-stepper-wrap" 
-                                         style="border-color: #cbd5e1 !important; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
-                                        <button type="button" 
+                                    <!-- Theme-Adaptive Stepper Control -->
+                                    <div class="d-flex align-items-center o_booking_stepper rounded-pill px-1 py-1 flex-shrink-0 dish-stepper-wrap">
+                                        <button type="button"
                                                 class="btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center preorder-btn-minus"
-                                                t-att-data-prod-id="prod.id" 
-                                                style="width: 28px; height: 28px; background: #f8fafc; border: 1px solid #e2e8f0; font-weight: 700; color: #475569; font-size: 15px; line-height: 1;">
+                                                t-att-data-prod-id="prod.id">
                                             −
                                         </button>
                                         <input type="number" min="0" max="99" value="0"
                                                t-attf-name="food_qty_#{prod.id}"
                                                t-att-id="'food_qty_' + str(prod.id)"
                                                t-att-data-price="prod_price_incl"
-                                               class="form-control form-control-sm text-center fw-bold border-0 bg-transparent p-0 preorder-qty-input"
-                                               style="width: 32px; font-size: 13px; box-shadow: none; color: #0f172a;"/>
-                                        <button type="button" 
-                                                class="btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center preorder-btn-plus text-white"
-                                                t-att-data-prod-id="prod.id" 
-                                                style="width: 28px; height: 28px; background: #16a34a; border: 1px solid #16a34a; font-weight: 700; font-size: 15px; line-height: 1; box-shadow: 0 2px 4px rgba(22, 163, 74, 0.28);">
+                                               class="form-control form-control-sm text-center fw-bold border-0 bg-transparent p-0 preorder-qty-input"/>
+                                        <button type="button"
+                                                class="btn btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center preorder-btn-plus"
+                                                t-att-data-prod-id="prod.id">
                                             +
                                         </button>
                                     </div>
@@ -254,12 +245,11 @@
                     </div>
 
                     <!-- Live Selection Summary Drawer -->
-                    <div id="preorder_summary_bar" class="d-none mt-3 p-3 rounded-3 d-flex align-items-center justify-content-between flex-wrap gap-2"
-                         style="background-color: #f0fdf4; border: 1px solid #bbf7d0;">
+                    <div id="preorder_summary_bar" class="d-none mt-3 p-3 rounded-3 d-flex align-items-center justify-content-between flex-wrap gap-2 o_booking_summary_bar">
                         <div class="d-flex align-items-center gap-2">
                             <span class="fs-5">✨</span>
-                            <span class="text-dark small">
-                                <strong id="summary_dishes_text">0 items selected</strong> • Total: <strong class="text-success" id="summary_total_text">$ 0.00</strong>
+                            <span class="o_booking_title small">
+                                <strong id="summary_dishes_text">0 items selected</strong> • Total: <strong class="o_booking_accent_green" id="summary_total_text">$ 0.00</strong>
                             </span>
                         </div>
                         <button type="button" id="btn_clear_preorder" class="btn btn-sm btn-link text-danger text-decoration-none p-0 fw-semibold" style="font-size: 12px;">
@@ -272,13 +262,13 @@
                 <!-- COMBO CUSTOMIZATION MODAL (POS STYLE) -->
                 <div class="modal fade" id="comboModal" tabindex="-1" aria-hidden="true" style="display: none; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
-                            <div class="modal-header border-bottom px-4 py-3" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
+                        <div class="modal-content o_cc o_cc1 rounded-4 shadow-lg overflow-hidden">
+                            <div class="modal-header o_booking_subpanel o_booking_divider border-bottom px-4 py-3">
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="fs-3">🍱</span>
                                     <div>
-                                        <h5 class="modal-title fw-bold text-dark mb-0" id="comboModalTitle">Customize Your Combo</h5>
-                                        <p class="text-muted small mb-0" style="font-size: 12px;">Choose 1 item from each section below</p>
+                                        <h5 class="modal-title fw-bold o_booking_title mb-0" id="comboModalTitle">Customize Your Combo</h5>
+                                        <p class="o_booking_subtitle small mb-0" style="font-size: 12px;">Choose 1 item from each section below</p>
                                     </div>
                                 </div>
                                 <button type="button" class="btn-close" id="comboModalCloseBtn" aria-label="Close"></button>
@@ -286,14 +276,14 @@
                             <div class="modal-body p-4" id="comboModalBody" style="max-height: 62vh; overflow-y: auto;">
                                 <!-- Combo Groups dynamically rendered here -->
                             </div>
-                            <div class="modal-footer border-top px-4 py-3 d-flex justify-content-between align-items-center" style="background: #f8fafc;">
+                            <div class="modal-footer o_booking_subpanel o_booking_divider border-top px-4 py-3 d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span class="text-muted small">Combo Price: </span>
-                                    <strong class="text-success fs-5 fw-bolder" id="comboModalPriceDisplay">$ 0.00</strong>
+                                    <span class="o_booking_subtitle small">Combo Price: </span>
+                                    <strong class="o_booking_accent_green fs-5 fw-bolder" id="comboModalPriceDisplay">$ 0.00</strong>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" id="comboModalCancelBtn">Cancel</button>
-                                    <button type="button" class="btn btn-success rounded-pill px-4 fw-bold text-white shadow-xs" id="comboModalConfirmBtn" style="background: #16a34a; border-color: #16a34a;">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 o_booking_title o_booking_divider" id="comboModalCancelBtn">Cancel</button>
+                                    <button type="button" class="btn btn-success rounded-pill px-4 fw-bold text-white shadow-xs" id="comboModalConfirmBtn" style="background: #15803d; border-color: #15803d;">
                                         Confirm &amp; Add Combo
                                     </button>
                                 </div>
@@ -340,12 +330,11 @@
 
                             meta.groups.forEach(function(group, gIdx) {
                                 var groupCard = document.createElement('div');
-                                groupCard.className = 'mb-4 p-3 bg-light rounded-3 border';
-                                groupCard.style.borderColor = '#e2e8f0';
+                                groupCard.className = 'mb-4 p-3 o_booking_subpanel rounded-3';
 
                                 var groupHeader = document.createElement('div');
-                                groupHeader.className = 'd-flex justify-content-between align-items-center mb-3 pb-2 border-bottom';
-                                groupHeader.innerHTML = '<h6 class="fw-bold mb-0 text-dark" style="font-size: 14.5px;">' + (gIdx + 1) + '. ' + group.name + '</h6><span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">Choose 1</span>';
+                                groupHeader.className = 'd-flex justify-content-between align-items-center mb-3 pb-2 border-bottom o_booking_divider';
+                                groupHeader.innerHTML = '<h6 class="fw-bold mb-0 o_booking_title" style="font-size: 14.5px;">' + (gIdx + 1) + '. ' + group.name + '</h6><span class="badge o_booking_badge_soft_neutral" style="font-size: 10px;">Choose 1</span>';
                                 groupCard.appendChild(groupHeader);
 
                                 var optionsGrid = document.createElement('div');
@@ -357,21 +346,18 @@
                                     optCol.className = 'col-md-6 col-12';
 
                                     var radioId = 'combo_item_' + group.id + '_' + item.id;
-                                    var extraPriceHtml = item.extra_price > 0 ? (' <span class="badge bg-success-subtle text-success small">+' + currSymbol + ' ' + parseFloat(item.extra_price).toFixed(2) + '</span>') : '';
+                                    var extraPriceHtml = item.extra_price > 0 ? (' <span class="badge o_booking_badge_soft_success small">+' + currSymbol + ' ' + parseFloat(item.extra_price).toFixed(2) + '</span>') : '';
 
                                     var optCard = document.createElement('label');
-                                    optCard.className = 'card h-100 p-2 d-flex flex-row align-items-center gap-2 rounded-3 border cursor-pointer combo-opt-label w-100';
+                                    optCard.className = 'card h-100 p-2 d-flex flex-row align-items-center gap-2 rounded-3 cursor-pointer combo-opt-label o_dish_card w-100' + (isSelected ? ' is-selected' : '');
                                     optCard.htmlFor = radioId;
                                     optCard.style.cursor = 'pointer';
-                                    optCard.style.transition = 'all 0.2s ease';
-                                    optCard.style.borderColor = isSelected ? '#16a34a' : '#e2e8f0';
-                                    optCard.style.backgroundColor = isSelected ? '#f0fdf4' : '#ffffff';
 
-                                    var imgHtml = item.image_url ? ('<img src="' + item.image_url + '" class="rounded-2" style="width: 42px; height: 42px; object-fit: cover;" alt=""/>') : '<div class="rounded-2 bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">🍲</div>';
+                                    var imgHtml = item.image_url ? ('<img src="' + item.image_url + '" class="rounded-2" style="width: 42px; height: 42px; object-fit: cover;" alt=""/>') : '<div class="rounded-2 o_booking_subpanel o_booking_title d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">🍲</div>';
 
                                     optCard.innerHTML = '<input type="radio" name="combo_group_' + group.id + '" id="' + radioId + '" value="' + item.id + '" class="form-check-input mt-0 me-1" ' + (isSelected ? 'checked="checked"' : '') + ' data-prod-id="' + item.product_id + '" data-name="' + item.name.replace(/"/g, '&quot;') + '" data-group-name="' + group.name.replace(/"/g, '&quot;') + '" data-extra-price="' + (parseFloat(item.extra_price) || 0) + '" style="cursor: pointer;"/>' +
                                         imgHtml +
-                                        '<div class="flex-grow-1" style="min-width: 0;"><div class="fw-semibold text-dark text-truncate" style="font-size: 13px;">' + item.name + '</div>' + extraPriceHtml + '</div>';
+                                        '<div class="flex-grow-1" style="min-width: 0;"><div class="fw-semibold o_booking_title text-truncate" style="font-size: 13px;">' + item.name + '</div>' + extraPriceHtml + '</div>';
 
                                     optCol.appendChild(optCard);
                                     optionsGrid.appendChild(optCol);
@@ -388,13 +374,7 @@
                                     body.querySelectorAll('input[name="' + groupName + '"]').forEach(function(r) {
                                         var lbl = r.closest('label');
                                         if (lbl) {
-                                            if (r.checked) {
-                                                lbl.style.borderColor = '#16a34a';
-                                                lbl.style.backgroundColor = '#f0fdf4';
-                                            } else {
-                                                lbl.style.borderColor = '#e2e8f0';
-                                                lbl.style.backgroundColor = '#ffffff';
-                                            }
+                                            lbl.classList.toggle('is-selected', r.checked);
                                         }
                                     });
                                 });
@@ -509,9 +489,7 @@
                                     itemsCount += qty;
                                     dishesCount += 1;
                                     if (card) {
-                                        card.style.borderColor = '#16a34a';
-                                        card.style.backgroundColor = '#f0fdf4';
-                                        card.style.boxShadow = '0 3px 8px rgba(22, 163, 74, 0.12)';
+                                        card.classList.add('is-selected');
                                     }
                                     if (badge) {
                                         badge.classList.remove('d-none');
@@ -524,12 +502,9 @@
                                     }
                                 } else {
                                     if (card) {
-                                        card.style.borderColor = '#e9ecef';
-                                        card.style.backgroundColor = '#ffffff';
-                                        card.style.boxShadow = 'none';
+                                        card.classList.remove('is-selected');
                                     }
                                     if (badge) {
-                                        badge.classList.remove('d-none');
                                         badge.classList.add('d-none');
                                     }
                                     if (comboSub) comboSub.classList.add('d-none');
@@ -598,17 +573,13 @@
                                     foodBody.classList.remove('d-none');
                                     if (toggleText) toggleText.textContent = '✕ Close Food Menu';
                                     if (toggleIcon) toggleIcon.textContent = '▲';
-                                    toggleBtn.style.background = '#e2e8f0';
-                                    toggleBtn.style.color = '#1e293b';
-                                    toggleBtn.style.border = '1px solid #cbd5e1';
+                                    toggleBtn.classList.add('is-open');
                                     foodBody.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                                 } else {
                                     foodBody.classList.add('d-none');
                                     if (toggleText) toggleText.textContent = '🍽️ Pre-Order Food';
                                     if (toggleIcon) toggleIcon.textContent = '▼';
-                                    toggleBtn.style.background = '#f59e0b';
-                                    toggleBtn.style.color = '#ffffff';
-                                    toggleBtn.style.border = 'none';
+                                    toggleBtn.classList.remove('is-open');
                                 }
                             });
                         }
@@ -703,17 +674,9 @@
                         document.querySelectorAll('.category-pill').forEach(function(pill) {
                             pill.addEventListener('click', function() {
                                 document.querySelectorAll('.category-pill').forEach(function(p) {
-                                    p.style.backgroundColor = '#f8fafc';
-                                    p.style.color = '#475569';
-                                    p.style.borderColor = '#e2e8f0';
-                                    p.style.boxShadow = 'none';
                                     p.classList.remove('active-cat-btn');
                                 });
                                 this.classList.add('active-cat-btn');
-                                this.style.backgroundColor = '#1e293b';
-                                this.style.color = '#ffffff';
-                                this.style.borderColor = '#1e293b';
-                                this.style.boxShadow = '0 2px 4px rgba(30,41,59,0.2)';
 
                                 activeCat = this.getAttribute('data-cat-id');
                                 filterDishes();
@@ -736,27 +699,26 @@
             </div>
 
             <!-- CUSTOMER SPECIAL REQUESTS & NOTES CARD (FULL WIDTH) -->
-            <div class="card border-0 shadow-sm rounded-4 mt-3 mb-4 p-4 bg-white w-100" 
-                 style="border: 1px solid #e2e8f0 !important;">
+            <div class="card shadow-sm rounded-4 mt-3 mb-4 p-4 w-100 o_booking_card">
                 <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width: 44px; height: 44px; background: linear-gradient(135deg, #fef3c7, #fde68a); font-size: 22px;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 o_booking_icon_badge"
+                         style="width: 44px; height: 44px; font-size: 22px;">
                         📝
                     </div>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <h6 class="fw-bold mb-0 text-dark" style="font-size: 15px;">
+                            <h6 class="fw-bold mb-0 o_booking_title" style="font-size: 15px;">
                                 Special Requests &amp; Notes for Restaurant
                             </h6>
-                            <span class="badge bg-secondary-subtle text-secondary small fw-normal">Optional</span>
+                            <span class="badge o_booking_badge_soft_neutral small fw-normal">Optional</span>
                         </div>
-                        <p class="text-muted small mb-2 mt-1" style="font-size: 13px;">
+                        <p class="o_booking_subtitle small mb-2 mt-1" style="font-size: 13px;">
                             Celebrating a birthday or anniversary? Have dietary restrictions, allergies, or prefer a quiet/window table? Let us know below!
                         </p>
-                        <textarea name="customer_notes" id="customer_notes" 
-                                  class="form-control rounded-3" rows="3"
+                        <textarea name="customer_notes" id="customer_notes"
+                                  class="form-control o_booking_input rounded-3" rows="3"
                                   placeholder="e.g. Celebrating an anniversary; please prepare a nice window table if available. 1 guest is allergic to shellfish."
-                                  style="resize: vertical; font-size: 13.5px; line-height: 1.5; border-color: #cbd5e1;"></textarea>
+                                  style="resize: vertical; font-size: 13.5px; line-height: 1.5;"></textarea>
                     </div>
                 </div>
             </div>
@@ -770,41 +732,41 @@
 
     <!-- 3. Pre-Order Food reminder, Table Assignment & Invoice Download on Confirmation Page -->
     <template id="appointment_confirmation_inherit_dine_in_food" inherit_id="appointment.appointment_confirmation">
-        <xpath expr="//div[hasclass('o_appointment_confirmation')]//div[hasclass('premium-card')]//div[hasclass('row')]//div[hasclass('col-lg-7')]" position="inside">
-            <div t-if="booking" class="card border-0 shadow-sm rounded-4 mt-4 overflow-hidden" style="border: 1px solid #e2e8f0 !important; background: #ffffff;">
+        <xpath expr="//div[hasclass('o_appointment_confirmation')]//div[hasclass('premium-card')]/div[hasclass('row')]" position="after">
+            <div t-if="booking" class="card shadow-sm rounded-4 mt-4 overflow-hidden o_booking_card">
                 <!-- Decorative Top Accent -->
                 <div style="height: 5px; background: linear-gradient(90deg, #10b981, #f59e0b, #6366f1);"/>
 
                 <div class="p-4">
                     <!-- Warm Header -->
                     <div class="text-center mb-4">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 shadow-xs"
-                             style="width: 58px; height: 58px; background: linear-gradient(135deg, #ecfdf5, #d1fae5); font-size: 28px;">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 shadow-xs o_booking_icon_badge_success"
+                             style="width: 58px; height: 58px; font-size: 28px;">
                             🍽️
                         </div>
-                        <h4 class="fw-bold text-dark mb-1" style="letter-spacing: -0.3px;">
+                        <h4 class="fw-bold o_booking_title mb-1" style="letter-spacing: -0.3px;">
                             Table Reserved &amp; Welcome to Our Restaurant!
                         </h4>
-                        <p class="text-muted small mb-0">
+                        <p class="o_booking_subtitle small mb-0">
                             We are delighted to host you. Your table is confirmed and prepared for your arrival.
                         </p>
                     </div>
 
                     <!-- Assigned Table Details Badge Grid -->
-                    <div t-if="booking.sudo().table_ids" class="p-3 bg-light rounded-4 border mb-3">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
-                            <span class="text-uppercase fw-bold text-muted" style="font-size: 11px; letter-spacing: 0.5px;">
+                    <div t-if="booking.sudo().table_ids" class="p-3 o_booking_subpanel rounded-4 mb-3">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom o_booking_divider">
+                            <span class="text-uppercase fw-bold o_booking_subtitle" style="font-size: 11px; letter-spacing: 0.5px;">
                                 📍 Assigned Table Details
                             </span>
-                            <span class="badge bg-success text-white rounded-pill px-3 py-1 fw-bold" style="font-size: 11px;">
+                            <span class="badge o_booking_badge_status rounded-pill px-3 py-1 fw-bold" style="font-size: 11px;">
                                 Reserved &amp; Ready
                             </span>
                         </div>
                         <div class="row g-2 text-start">
                             <div class="col-sm-6">
-                                <div class="p-2 bg-white rounded-3 border">
-                                    <div class="text-muted small" style="font-size: 11px;">Assigned Table:</div>
-                                    <div class="fw-bold text-dark fs-6">
+                                <div class="p-2 o_booking_tile rounded-3">
+                                    <div class="o_booking_subtitle small" style="font-size: 11px;">Assigned Table:</div>
+                                    <div class="fw-bold o_booking_title fs-6">
                                         <t t-set="first_tbl" t-value="booking.sudo().table_ids[0]"/>
                                         <i class="fa fa-cutlery text-warning me-1"/>
                                         <t t-if="first_tbl.table_number">
@@ -814,15 +776,15 @@
                                             <t t-out="first_tbl.display_name"/>
                                         </t>
                                         <t t-if="first_tbl.floor_id">
-                                            <span class="text-secondary small fw-normal ms-1">(<t t-out="first_tbl.floor_id.name"/>)</span>
+                                            <span class="o_booking_subtitle small fw-normal ms-1">(<t t-out="first_tbl.floor_id.name"/>)</span>
                                         </t>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="p-2 bg-white rounded-3 border">
-                                    <div class="text-muted small" style="font-size: 11px;">Party Size:</div>
-                                    <div class="fw-bold text-dark fs-6">
+                                <div class="p-2 o_booking_tile rounded-3">
+                                    <div class="o_booking_subtitle small" style="font-size: 11px;">Party Size:</div>
+                                    <div class="fw-bold o_booking_title fs-6">
                                         🪑 <t t-out="booking.party_size"/> Guests
                                     </div>
                                 </div>
@@ -831,12 +793,11 @@
                     </div>
 
                     <!-- Warm Hospitality Meeting Message -->
-                    <div class="alert alert-info border-0 rounded-3 p-3 mb-3 text-start d-flex align-items-start gap-2"
-                         style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-left: 4px solid #16a34a !important; color: #166534;">
+                    <div class="alert o_booking_welcome_banner rounded-3 p-3 mb-3 text-start d-flex align-items-start gap-2">
                         <span class="fs-5 flex-shrink-0">✨</span>
                         <div>
-                            <strong class="d-block mb-1" style="font-size: 14px;">Our Team is Excited to Welcome You!</strong>
-                            <p class="mb-0 small" style="line-height: 1.5; color: #15803d;">
+                            <strong class="d-block mb-1 o_booking_title" style="font-size: 14px;">Our Team is Excited to Welcome You!</strong>
+                            <p class="mb-0 small o_booking_subtitle" style="line-height: 1.5; opacity: 0.9;">
                                 Your table has been reserved specifically for your party. Our host and culinary team are looking forward to greeting you and making your dine-in experience truly exceptional.
                             </p>
                         </div>
@@ -844,16 +805,16 @@
 
                     <!-- Pre-Ordered Food Summary (If Any) -->
                     <t t-if="booking.sudo().has_food_order">
-                        <div class="p-3 bg-light rounded-4 border mb-3 text-start">
+                        <div class="p-3 o_booking_subpanel rounded-4 mb-3 text-start">
                             <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-                                <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 13.5px;">
+                                <span class="fw-bold o_booking_title d-flex align-items-center gap-1" style="font-size: 13.5px;">
                                     <i class="fa fa-cutlery text-warning"/> Pre-Ordered Dishes
                                 </span>
-                                <span class="badge bg-success fs-6 fw-bold">
+                                <span class="badge o_booking_badge_status fs-6 fw-bold">
                                     Pre-Paid: <t t-out="booking.sudo().food_order_total and ('$' + '%.2f' % booking.sudo().food_order_total) or ''"/>
                                 </span>
                             </div>
-                            <div class="text-secondary small">
+                            <div class="o_booking_subtitle small">
                                 <t t-out="booking.sudo().food_order_summary"/>
                             </div>
                         </div>
@@ -861,17 +822,16 @@
 
                     <!-- Special Requests / Notes (If Any) -->
                     <t t-if="booking.sudo().guest_details">
-                        <div class="p-3 bg-white rounded-3 border text-start mb-3">
-                            <span class="text-muted small d-block mb-1">📝 <strong>Special Requests / Allergies:</strong></span>
-                            <span class="text-dark small"><t t-out="booking.sudo().guest_details"/></span>
+                        <div class="p-3 o_booking_tile rounded-3 text-start mb-3">
+                            <span class="o_booking_subtitle small d-block mb-1">📝 <strong>Special Requests / Allergies:</strong></span>
+                            <span class="o_booking_title small"><t t-out="booking.sudo().guest_details"/></span>
                         </div>
                     </t>
 
                     <!-- Download Invoice / Receipt Button -->
                     <div t-if="booking.sudo().sale_order_id" class="d-flex justify-content-center mt-3 pt-2">
                         <a t-attf-href="/appointment/#{booking.id}/invoice?token=#{booking.access_token}"
-                           class="btn btn-outline-success rounded-pill px-4 py-2 fw-bold shadow-xs d-inline-flex align-items-center gap-2"
-                           style="border-width: 2px;">
+                           class="btn rounded-pill px-4 py-2 fw-bold shadow-xs d-inline-flex align-items-center gap-2 o_booking_invoice_btn">
                             <i class="fa fa-file-pdf-o fs-5 text-danger"/>
                             <span>Download Invoice &amp; Payment Receipt (PDF)</span>
                         </a>

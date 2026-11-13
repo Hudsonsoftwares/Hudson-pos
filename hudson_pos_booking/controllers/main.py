@@ -93,6 +93,18 @@ from odoo.addons.appointment.controllers.main import AppointmentController
 
 class PosAppointmentController(AppointmentController):
 
+    def _should_send_immediate_confirmation(self, appointment_type, booking, kwargs):
+        import math
+        for key, val in kwargs.items():
+            if key.startswith('food_qty_') and val:
+                try:
+                    f_val = float(val)
+                    if not math.isinf(f_val) and not math.isnan(f_val) and 1 <= int(f_val) <= 50:
+                        return False
+                except (ValueError, TypeError, OverflowError):
+                    continue
+        return super()._should_send_immediate_confirmation(appointment_type, booking, kwargs)
+
     @http.route(['/appointment/<model("appointment.type"):appointment_type>/info'], type='http', auth='public', website=True, methods=['GET', 'POST'])
     def appointment_info(self, appointment_type, **kwargs):
         res = super().appointment_info(appointment_type, **kwargs)
@@ -189,8 +201,8 @@ class PosAppointmentController(AppointmentController):
         booking = None
         if hasattr(response, 'qcontext') and 'booking' in response.qcontext:
             booking = response.qcontext['booking']
-        elif hasattr(response, 'location') and '/appointment/' in (response.location or ''):
-            m = re.search(r'/appointment/(\d+)', response.location)
+        elif hasattr(response, 'location') and '/payment' in (response.location or ''):
+            m = re.search(r'/appointment/(\d+)/payment', response.location)
             if m:
                 booking = request.env['appointment.booking'].sudo().browse(int(m.group(1)))
 
@@ -345,7 +357,11 @@ class PosAppointmentController(AppointmentController):
                         if not partner_id:
                             partner_id = request.env.ref('base.public_partner').id
                         SaleOrder = request.env['sale.order'].sudo().with_company(company)
-                        warehouse = request.env['stock.warehouse'].sudo().search([('company_id', '=', company.id)], limit=1)
+                        warehouse = (
+                            request.env['stock.warehouse'].sudo().search([('company_id', '=', company.id)], limit=1)
+                            if 'stock.warehouse' in request.env
+                            else False
+                        )
                         pricelist = request.env['product.pricelist'].sudo().search([
                             ('company_id', 'in', (company.id, False)),
                         ], limit=1)
@@ -357,7 +373,7 @@ class PosAppointmentController(AppointmentController):
                             'prepayment_percent': 1.0,
                             'order_line': so_lines,
                         }
-                        if warehouse:
+                        if warehouse and 'warehouse_id' in SaleOrder._fields:
                             so_vals['warehouse_id'] = warehouse.id
                         if pricelist:
                             so_vals['pricelist_id'] = pricelist.id
@@ -373,17 +389,21 @@ class PosAppointmentController(AppointmentController):
                         if preorder_lines:
                             preorder_lines.unlink()
                             booking._compute_food_order_info()
+                        if booking.state in ('confirmed', 'checked_in') and not booking.confirmation_sent:
+                            booking.sudo()._send_booking_confirmation_notifications()
+            elif booking.state in ('confirmed', 'checked_in') and not booking.confirmation_sent:
+                booking.sudo()._send_booking_confirmation_notifications()
 
         return response
 
     @http.route([
-        '/appointment/<model("appointment.booking"):booking>/invoice',
         '/appointment/<int:booking_id>/invoice',
         '/appointment/<string:booking_ref>/invoice',
     ], type='http', auth='public', website=True)
-    def appointment_booking_invoice(self, booking=None, booking_id=None, booking_ref=None, **kwargs):
+    def appointment_booking_invoice(self, booking_id=None, booking_ref=None, **kwargs):
         request.update_env(user=SUPERUSER_ID)
-        if not booking and booking_id:
+        booking = None
+        if booking_id:
             booking = request.env['appointment.booking'].browse(booking_id)
         if not booking and booking_ref:
             try:

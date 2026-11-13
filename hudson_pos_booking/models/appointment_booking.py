@@ -33,6 +33,7 @@ class AppointmentBooking(models.Model):
     company_id = fields.Many2one(
         'res.company',
         string='Company',
+        related=None,
         compute='_compute_company_id',
         store=True,
         readonly=False,
@@ -268,23 +269,42 @@ class AppointmentBooking(models.Model):
             else:
                 booking.food_order_summary = ""
 
-    @api.depends('appointment_type_id', 'company_id')
+    @api.depends('appointment_type_id', 'appointment_type_id.resource_ids', 'company_id')
     def _compute_allowed_resource_ids(self):
-        Table = self.env['restaurant.table'].sudo()
+        Resource = self.env['appointment.resource'].sudo()
         for booking in self:
+            company = (booking.company_id if hasattr(booking, 'company_id') and booking.company_id else False) or self.env.company
             if booking.appointment_type_id:
-                booking.allowed_resource_ids = booking.appointment_type_id.resource_ids
+                if booking.appointment_type_id.resource_ids:
+                    booking.allowed_resource_ids = booking.appointment_type_id.resource_ids
+                else:
+                    booking.allowed_resource_ids = Resource._get_allowed_booking_resources(
+                        company=company,
+                        exclude_appointment_type_id=booking.appointment_type_id.id,
+                    )
             else:
-                company = (booking.company_id if hasattr(booking, 'company_id') and booking.company_id else False) or self.env.company
-                domain = [
-                    ('allow_website_booking', '=', True),
-                    ('active', '=', True),
-                    ('appointment_resource_id', '!=', False)
-                ]
-                tables = Table.search(domain + [
-                    '|', ('company_id', '=', False), ('company_id', '=', company.id)
-                ])
-                booking.allowed_resource_ids = tables.mapped('appointment_resource_id')
+                booking.allowed_resource_ids = Resource._get_allowed_booking_resources(company=company)
+
+    @api.constrains('appointment_type_id', 'resource_ids')
+    def _check_exclusive_event_table(self):
+        AppType = self.env['appointment.type'].sudo()
+        for booking in self:
+            if not booking.appointment_type_id or booking.appointment_type_id.booking_target != 'resources' or not booking.resource_ids:
+                continue
+            owners = AppType.search([
+                ('active', '=', True),
+                ('booking_target', '=', 'resources'),
+                ('resource_ids', 'in', booking.resource_ids.ids),
+            ])
+            for res in booking.resource_ids:
+                res_owners = owners.filtered(lambda at: res in at.resource_ids)
+                if res_owners and booking.appointment_type_id not in res_owners:
+                    raise ValidationError(_(
+                        "Table/Resource %(res)s is reserved exclusively for %(owner)s and cannot be booked under %(selected)s.",
+                        res=res.name,
+                        owner=', '.join(res_owners.mapped('name')),
+                        selected=booking.appointment_type_id.name,
+                    ))
 
     @api.depends('resource_ids')
     def _compute_table_ids(self):
@@ -378,10 +398,14 @@ class AppointmentBooking(models.Model):
         resources = config._get_table_appointment_resources()
         tables = config.floor_ids.table_ids
 
-        today = fields.Date.today()
-        # Active POS window: today 00:00 to tomorrow 23:59:59 (avoids 44-day N+1 overhead and preserves PII privacy)
-        start_dt = datetime.combine(today, datetime.min.time())
-        end_dt = datetime.combine(today + timedelta(days=1), datetime.max.time())
+        tz = config._get_booking_timezone()
+        now_local = datetime.now(tz)
+        # Load yesterday..+31 days in restaurant timezone so multi-day calendar/list views and
+        # late-night IST/local bookings are always visible in POS without loading stale years.
+        start_local = (now_local - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        end_local = (now_local + timedelta(days=31)).replace(hour=23, minute=59, second=59, microsecond=999999)
+        start_dt = start_local.astimezone(pytz.UTC).replace(tzinfo=None)
+        end_dt = end_local.astimezone(pytz.UTC).replace(tzinfo=None)
 
         table_cond = []
         if resources:
@@ -408,6 +432,11 @@ class AppointmentBooking(models.Model):
         return [
             'name',
             'company_id',
+            'appointment_type_id',
+            'event_category',
+            'celebrant_name',
+            'occasion_title',
+            'occasion_date',
             'customer_name',
             'customer_phone',
             'customer_email',
@@ -433,14 +462,32 @@ class AppointmentBooking(models.Model):
             'sale_order_id',
         ]
 
+    def _get_booking_timezone(self, config=None):
+        """Resolve timezone for POS booking formatting, never falling back to UTC while appointment_tz is set."""
+        self.ensure_one()
+        tz_name = (
+            (config and config.company_id.partner_id.tz)
+            or (config and config.booking_appointment_type_id.appointment_tz)
+            or self.appointment_type_id.appointment_tz
+            or (self.company_id and self.company_id.partner_id.tz)
+            or self.env.user.tz
+            or self.env.context.get('tz')
+            or 'UTC'
+        )
+        try:
+            return pytz.timezone(tz_name)
+        except Exception:
+            return pytz.UTC
+
     def _get_pos_booking_data(self, config=None):
         """Format booking record into a dictionary suited for the POS OWL frontend."""
         self.ensure_one()
-        tz_name = (config and config.company_id.partner_id.tz) or self.env.user.tz or 'UTC'
-        tz = pytz.timezone(tz_name)
+        tz = self._get_booking_timezone(config=config)
 
-        start_local = self.start_datetime.replace(tzinfo=pytz.UTC).astimezone(tz)
-        end_local = self.end_datetime.replace(tzinfo=pytz.UTC).astimezone(tz)
+        start_utc = pytz.UTC.localize(self.start_datetime) if not self.start_datetime.tzinfo else self.start_datetime.astimezone(pytz.UTC)
+        end_utc = pytz.UTC.localize(self.end_datetime) if not self.end_datetime.tzinfo else self.end_datetime.astimezone(pytz.UTC)
+        start_local = start_utc.astimezone(tz)
+        end_local = end_utc.astimezone(tz)
 
         disp_name = (
             self.customer_name
@@ -455,6 +502,13 @@ class AppointmentBooking(models.Model):
             'id': self.id,
             'name': self.name or '',
             'company_id': self.company_id.id if self.company_id else False,
+            'appointment_type_id': self.appointment_type_id.id if self.appointment_type_id else False,
+            'appointment_type_name': self.appointment_type_id.name if self.appointment_type_id else '',
+            'event_emoji': self.appointment_type_id.event_emoji if self.appointment_type_id else '',
+            'event_category': self.event_category or '',
+            'celebrant_name': self.celebrant_name or '',
+            'occasion_title': self.occasion_title or '',
+            'occasion_date': fields.Date.to_string(self.occasion_date) if self.occasion_date else '',
             'customer_name': disp_name,
             'customer_phone': disp_phone,
             'customer_email': disp_email,
@@ -467,9 +521,13 @@ class AppointmentBooking(models.Model):
             'end_time_str': end_local.strftime('%H:%M'),
             'start_date_str': start_local.strftime('%Y-%m-%d'),
             'state': self.state,
+            'resource_ids': self.resource_ids.ids,
             'table_ids': self.table_ids.ids,
             'table_names': ', '.join(self.table_ids.mapped('display_name')),
+            'pos_config_id': self.pos_config_id.id if self.pos_config_id else False,
+            'guest_details': self.guest_details or '',
             'notes': self.guest_details or '',
+            'write_date': fields.Datetime.to_string(self.write_date) if self.write_date else False,
             'pos_order_ids': self.pos_order_ids.ids,
             'sale_order_id': self.sale_order_id.id if self.sale_order_id else False,
             'has_food_order': self.has_food_order,
@@ -493,6 +551,7 @@ class AppointmentBooking(models.Model):
         floor_trigger_fields = {
             'state', 'table_ids', 'resource_ids', 'start_datetime', 'end_datetime',
             'party_size', 'customer_name', 'customer_phone', 'customer_email',
+            'appointment_type_id', 'celebrant_name', 'occasion_title', 'occasion_date',
             'guest_details', 'pos_order_ids', 'sale_order_id'
         }
         if set(vals.keys()) & floor_trigger_fields:
@@ -501,14 +560,34 @@ class AppointmentBooking(models.Model):
         return res
 
     def _notify_pos_floor(self):
-        """Notify POS configs whose floor tables match this booking."""
+        """Notify active restaurant POS configs whose floor tables match this booking."""
+        PosConfig = self.env['pos.config'].sudo()
         for booking in self:
-            if not booking.table_ids:
+            tables = booking.table_ids
+            if not tables and booking.resource_ids:
+                tables = self.env['restaurant.table'].sudo().with_context(active_test=False).search([
+                    ('appointment_resource_id', 'in', booking.resource_ids.ids)
+                ])
+            if not tables and not booking.resource_ids and not booking.pos_config_id:
                 continue
-            configs = self.env['pos.config'].search([
+
+            sub_domains = []
+            if tables:
+                sub_domains.append([('floor_ids.table_ids', 'in', tables.ids)])
+            if booking.resource_ids:
+                sub_domains.append([('floor_ids.table_ids.appointment_resource_id', 'in', booking.resource_ids.ids)])
+            if booking.pos_config_id:
+                sub_domains.append([('id', '=', booking.pos_config_id.id)])
+
+            or_domain = sub_domains[0]
+            for sd in sub_domains[1:]:
+                or_domain = ['|'] + or_domain + sd
+
+            configs = PosConfig.search([
+                ('active', '=', True),
+                ('module_pos_restaurant', '=', True),
                 ('use_booking', '=', True),
-                ('floor_ids.table_ids', 'in', booking.table_ids.ids),
-            ])
+            ] + or_domain)
             for config in configs:
                 config.notify_booking_update(booking, action="UPDATE")
 

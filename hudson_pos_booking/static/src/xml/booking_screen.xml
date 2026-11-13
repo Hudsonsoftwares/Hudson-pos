@@ -81,7 +81,7 @@
                             <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
                                t-att-class="{'fw-bold bg-light text-primary': this.state.filterStatus === 'checked_out'}"
                                t-on-click="() => this.setFilterStatus('checked_out')">
-                                <span><i class="fa fa-check-circle-o text-purple me-2"/>Released / Checked Out</span>
+                                <span><i class="fa fa-check-circle-o text-purple me-2"/>Completed / Checked Out</span>
                                 <i t-if="this.state.filterStatus === 'checked_out'" class="fa fa-check text-primary"/>
                             </a>
                             <a class="dropdown-item d-flex align-items-center justify-content-between py-1 cursor-pointer"
@@ -270,9 +270,9 @@
                                      t-on-dragstart="(ev) => this.onGanttPillDragStart(ev, b)"
                                      t-att-style="this.getBookingStyle(b)"
                                      t-on-click.stop="() => this.openEditModal(b)"
-                                     t-attf-title="{{ b.customerDisplayName }} | 📞 {{ b.customerDisplayPhone || 'No phone' }} | ✉️ {{ b.customerDisplayEmail || 'No email' }} | 🪑 {{ b.party_size }}p ({{ b.startTimeStr }}-{{ b.endTimeStr }})">
+                                     t-attf-title="{{ b.eventEmoji ? b.eventEmoji + ' ' : '' }}{{ b.eventTypeName ? b.eventTypeName + ' | ' : '' }}{{ b.customerDisplayName }}{{ b.celebrant_name ? ' (Celebrant: ' + b.celebrant_name + ')' : '' }} | 📞 {{ b.customerDisplayPhone || 'No phone' }} | ✉️ {{ b.customerDisplayEmail || 'No email' }} | 🪑 {{ b.party_size }}p ({{ b.startTimeStr }}-{{ b.endTimeStr }})">
                                     <span class="text-truncate flex-grow-1">
-                                        <t t-out="b.customerDisplayName"/> <t t-out="b.party_size"/>p
+                                        <t t-if="b.eventEmoji"><t t-out="b.eventEmoji"/> </t><t t-out="b.customerDisplayName"/> <t t-out="b.party_size"/>p
                                     </span>
                                     <div class="pos-gantt-resize-handle"
                                          t-on-mousedown.stop="(ev) => this.onResizeStart(ev, b)"
@@ -307,8 +307,9 @@
                                          t-on-dragstart="(ev) => this.onGanttPillDragStart(ev, b)"
                                          t-att-style="this.getBookingStyle(b)"
                                          t-on-click.stop="() => this.openEditModal(b)"
-                                         t-attf-title="{{ b.customerDisplayName }} | 📞 {{ b.customerDisplayPhone || 'No phone' }} | ✉️ {{ b.customerDisplayEmail || 'No email' }} | 🪑 {{ b.party_size }}p ({{ b.startTimeStr }}-{{ b.endTimeStr }}){{ b.has_food_order ? ' | Food: ' + b.food_order_summary : '' }}">
+                                         t-attf-title="{{ b.eventEmoji ? b.eventEmoji + ' ' : '' }}{{ b.eventTypeName ? b.eventTypeName + ' | ' : '' }}{{ b.customerDisplayName }}{{ b.celebrant_name ? ' (Celebrant: ' + b.celebrant_name + ')' : '' }} | 📞 {{ b.customerDisplayPhone || 'No phone' }} | ✉️ {{ b.customerDisplayEmail || 'No email' }} | 🪑 {{ b.party_size }}p ({{ b.startTimeStr }}-{{ b.endTimeStr }}){{ b.has_food_order ? ' | Food: ' + b.food_order_summary : '' }}">
                                         <div class="d-flex align-items-center gap-1 text-truncate flex-grow-1" style="min-width: 0;">
+                                            <span t-if="b.eventEmoji" t-att-title="b.eventTypeName || 'Celebration'" style="font-size: 11px;"><t t-out="b.eventEmoji"/></span>
                                             <span t-if="b.has_food_order" class="badge rounded-pill bg-warning text-dark px-1 py-0 shadow-xs" title="Pre-ordered Food" style="font-size: 9.5px; font-weight: 700;">🍽️ Food</span>
                                             <span class="text-truncate fw-bold">
                                                 <t t-out="b.customerDisplayName"/>
@@ -370,7 +371,12 @@
                                             <t t-out="(b.customerDisplayName || 'G')[0].toUpperCase()"/>
                                         </div>
                                         <div>
-                                            <span class="pos-guest-name"><t t-out="b.customerDisplayName"/></span>
+                                            <div class="d-flex align-items-center gap-1 flex-wrap">
+                                                <span class="pos-guest-name"><t t-out="b.customerDisplayName"/></span>
+                                                <span t-if="b.eventEmoji || b.eventTypeName" class="badge bg-light text-dark border" style="font-size: 0.68rem;">
+                                                    <t t-if="b.eventEmoji"><t t-out="b.eventEmoji"/> </t><t t-out="b.eventTypeName"/>
+                                                </span>
+                                            </div>
                                             <span t-if="b.customerDisplayEmail" class="pos-guest-email d-block text-truncate" style="max-width: 160px;" t-att-title="b.customerDisplayEmail">
                                                 <t t-out="b.customerDisplayEmail"/>
                                             </span>
@@ -412,6 +418,12 @@
                                 <!-- Pre-Order / Notes -->
                                 <td>
                                     <div class="d-flex flex-column gap-1">
+                                        <span t-if="b.celebrant_name || b.occasion_title || b.occasion_date" class="small text-dark">
+                                            <i class="fa fa-gift text-primary me-1"/>
+                                            <strong t-if="b.celebrant_name"><t t-out="b.celebrant_name"/></strong>
+                                            <t t-if="b.occasion_title"> (<t t-out="b.occasion_title"/>)</t>
+                                            <t t-if="b.occasion_date"> • <t t-out="b.occasion_date"/></t>
+                                        </span>
                                         <span t-if="b.has_food_order" class="pos-food-badge" title="Pre-ordered Food">
                                             🍽️ <t t-out="b.food_order_summary || 'Food'"/> (<t t-out="this.pos.formatCurrency(b.food_order_total)"/>)
                                         </span>
@@ -426,7 +438,7 @@
                                         <i class="fa fa-sign-in me-1"/>Checked In
                                     </span>
                                     <span t-elif="b.state === 'checked_out'" class="pos-status-pill status-released">
-                                        <i class="fa fa-check-circle me-1"/>Released
+                                        <i class="fa fa-check-circle me-1"/>Completed
                                     </span>
                                     <span t-elif="b.state === 'no_show'" class="pos-status-pill status-no-show">
                                         <i class="fa fa-times-circle me-1"/>No Show
@@ -441,16 +453,9 @@
                                 <!-- Actions -->
                                 <td class="text-end pe-3" t-on-click.stop="() => {}">
                                     <t t-if="b.state === 'checked_out'">
-                                        <span class="pos-released-tag">
-                                            <i class="fa fa-check text-success me-1"/>Table Released
-                                        </span>
+                                        <span class="text-muted small">—</span>
                                     </t>
                                     <t t-elif="b.state === 'checked_in'">
-                                        <button class="btn btn-sm btn-outline-danger py-1 px-2 fw-semibold me-1 shadow-xs"
-                                                t-on-click.stop="() => this.releaseBookingTable(b)"
-                                                title="Release Table">
-                                            <i class="fa fa-sign-out me-1"/>Release
-                                        </button>
                                         <button class="btn btn-sm btn-primary py-1 px-2 fw-bold shadow-xs text-white"
                                                 t-on-click.stop="() => this.openBookingOrder(b)"
                                                 title="Open Table Order &amp; Billing in POS">
@@ -520,6 +525,7 @@
                                                 <div class="pos-calendar-event-pill mb-1 p-1 rounded shadow-xs cursor-pointer d-flex align-items-center gap-1 text-truncate"
                                                      t-att-class="b.state === 'checked_in' ? 'bg-success text-white' : (b.state === 'no_show' ? 'bg-secondary text-white' : 'bg-primary-subtle text-primary border border-primary-subtle')"
                                                      t-on-click.stop="() => this.openEditModal(b)">
+                                                    <span t-if="b.eventEmoji" class="small"><t t-out="b.eventEmoji"/></span>
                                                     <span class="fw-bold small"><t t-out="b.startTimeStr"/></span>
                                                     <span class="text-truncate flex-grow-1 small"><t t-out="b.customerDisplayName"/></span>
                                                 </div>
@@ -644,7 +650,7 @@
                                             t-att-value="this.state.newBooking.table_id"
                                             t-on-change="(ev) => this.state.newBooking.table_id = ev.target.value">
                                         <option value="">Select a table...</option>
-                                        <t t-foreach="this.activeTables" t-as="tbl" t-key="tbl.id">
+                                        <t t-foreach="this.availableModalTables" t-as="tbl" t-key="tbl.id">
                                             <option t-att-value="tbl.id">
                                                 Table <t t-out="tbl.table_number || tbl.name"/> (🪑 <t t-out="tbl.seats"/> seats)
                                                 <t t-if="tbl.parent_id"> [Merged with Table <t t-out="tbl.parent_id.table_number || tbl.parent_id.name"/>]</t>
@@ -654,11 +660,47 @@
                                 </div>
                             </div>
 
-                            <!-- Calendar Row -->
+                            <!-- Event / Appointment Type Row -->
                             <div class="d-flex align-items-center mb-3 text-secondary">
                                 <i class="fa fa-calendar fs-5 me-3 text-muted" style="width: 20px;"/>
-                                <div class="text-muted small">
-                                    <t t-out="this.pos.config.booking_appointment_type_id ? (this.pos.config.booking_appointment_type_id[1] || 'Table Booking') : 'No calendar'"/>
+                                <div class="flex-grow-1 d-flex align-items-center gap-2 flex-wrap">
+                                    <select class="form-select form-select-sm" style="max-width: 280px;"
+                                            t-att-value="this.state.newBooking.appointment_type_id"
+                                            t-on-change="(ev) => this.onModalEventTypeChange(ev.target.value)">
+                                        <t t-if="!this.availableAppointmentTypes.length">
+                                            <option value="">
+                                                <t t-out="this.pos.config.booking_appointment_type_id ? (this.pos.config.booking_appointment_type_id.name || this.pos.config.booking_appointment_type_id[1] || 'Other Celebrations') : 'Other Celebrations'"/>
+                                            </option>
+                                        </t>
+                                        <t t-foreach="this.availableAppointmentTypes" t-as="atype" t-key="atype.id">
+                                            <option t-att-value="atype.id" t-att-selected="String(atype.id) === String(this.state.newBooking.appointment_type_id)">
+                                                <t t-if="atype.event_emoji"><t t-out="atype.event_emoji"/> </t><t t-out="atype.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Celebration Details Row (Celebrant, Special Day, Occasion) -->
+                            <div class="d-flex align-items-start mb-3 text-secondary">
+                                <i class="fa fa-gift fs-5 me-3 text-muted pt-1" style="width: 20px;"/>
+                                <div class="flex-grow-1 d-flex flex-column gap-2">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <input type="text" class="form-control form-control-sm flex-grow-1"
+                                               style="min-width: 170px;"
+                                               placeholder="Celebrant / Honoree Name"
+                                               t-att-value="this.state.newBooking.celebrant_name"
+                                               t-on-input="(ev) => this.state.newBooking.celebrant_name = ev.target.value"/>
+                                        <input type="date" class="form-control form-control-sm"
+                                               style="width: 145px;"
+                                               title="Special Day / Birthdate (for next-year wishes)"
+                                               t-att-value="this.state.newBooking.occasion_date"
+                                               t-on-change="(ev) => this.state.newBooking.occasion_date = ev.target.value"/>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm"
+                                           placeholder="Occasion / Celebration Details (e.g. 25th Birthday, Anniversary...)"
+                                           t-att-value="this.state.newBooking.occasion_title"
+                                           t-on-input="(ev) => this.state.newBooking.occasion_title = ev.target.value"/>
                                 </div>
                             </div>
 
@@ -719,7 +761,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 <t t-if="this.state.newBooking.state === 'checked_out'">
                                     <span class="badge py-2 px-3 fw-bold d-flex align-items-center gap-1 shadow-xs" style="font-size: 0.85rem; background-color: #f5f3ff; color: #6d28d9; border: 1.5px solid #ddd6fe;">
-                                        <i class="fa fa-check-circle text-success"/> Table Released (Completed)
+                                        <i class="fa fa-check-circle text-success"/> Completed
                                     </span>
                                 </t>
                                 <t t-else="">
@@ -740,13 +782,6 @@
                                             t-att-class="this.state.newBooking.state === 'no_show' ? 'btn-danger text-white shadow-sm' : 'btn-outline-secondary text-muted'"
                                             t-on-click="() => this.setModalBookingState('no_show')">
                                         No Show
-                                    </button>
-                                    <button t-if="this.state.editingBookingId and this.state.newBooking.state === 'checked_in'"
-                                            type="button"
-                                            class="btn btn-sm btn-outline-danger px-3 py-1 fw-bold"
-                                            t-on-click="() => this.releaseModalTable()"
-                                            title="Release Table">
-                                        Release Table
                                     </button>
                                     <button t-if="this.state.editingBookingId"
                                             type="button" class="btn btn-sm btn-primary ms-2 px-3 fw-bold shadow-sm d-flex align-items-center gap-1"

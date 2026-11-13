@@ -50,13 +50,21 @@ def _post_init_hook(env):
         if preset and preset not in cfg.available_preset_ids:
             cfg.write({'available_preset_ids': [(4, preset.id)]})
 
-    # 4. Sync restaurant tables & configure Table Booking appointment type for website customer choice
-    app_types = env['appointment.type'].sudo().search([('name', 'ilike', 'Table Booking')])
+    # 4. Provision Celebration / Event appointment types, reusable event questions & sync floor tables
+    env['appointment.type'].sudo()._ensure_default_event_booking_setup()
+    app_types = env['appointment.type'].sudo().search([
+        ('booking_target', '=', 'resources'),
+        '|', ('is_event_booking', '=', True), ('name', 'ilike', 'Table Booking'),
+    ])
     for at in app_types:
         if at.assign_method != 'customer':
             at.write({'assign_method': 'customer'})
-    tables = env['restaurant.table'].sudo().search([])
+    tables = env['restaurant.table'].sudo().with_context(active_test=False).search([])
     tables._sync_appointment_resource()
+    env['restaurant.table'].sudo()._cleanup_orphaned_tables_and_rescue_bookings()
 
     # 5. Ensure Online Prepaid POS payment method is configured for restaurant configs
     pos_configs._ensure_online_prepaid_payment_method()
+
+    # 6. Sync product.group_product_pricelist if any POS config has use_pricelist enabled
+    env['pos.config'].sudo().search([('use_pricelist', '=', True)])._ensure_pricelist_group()

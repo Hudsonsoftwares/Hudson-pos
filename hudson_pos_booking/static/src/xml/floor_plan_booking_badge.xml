@@ -10,10 +10,13 @@
                      t-attf-class="{{ booking.state === 'checked_in' ? 'bg-primary text-white' : 'bg-warning text-dark' }}"
                      style="font-size: 0.68rem; line-height: 1.15; pointer-events: auto; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.18); box-shadow: 0 2px 4px rgba(0,0,0,0.12);"
                      t-on-click.stop="() => this.pos.loadBookingIntoTable(booking, table)"
-                     t-attf-title="Click to load order: {{ booking.customerDisplayName }} | {{ booking.startTimeStr }} ({{ booking.party_size }}p){{ booking.has_food_order ? ' | Prepaid: $' + booking.food_order_total : '' }}">
+                     t-attf-title="Click to load order: {{ booking.eventEmoji ? booking.eventEmoji + ' ' : '' }}{{ booking.eventTypeName ? booking.eventTypeName + ' | ' : '' }}{{ booking.customerDisplayName }} | {{ booking.startTimeStr }} ({{ booking.party_size }}p){{ booking.has_food_order ? ' | Prepaid: $' + booking.food_order_total : '' }}">
                     <!-- Row 1: Guest Name & Prepaid Pill -->
                     <div class="d-flex align-items-center justify-content-between w-100 overflow-hidden">
-                        <span class="fw-bold text-truncate text-start flex-grow-1" style="font-size: 0.68rem; max-width: calc(100% - 32px);" t-out="booking.customerDisplayName || 'Guest'"/>
+                        <span class="fw-bold text-truncate text-start flex-grow-1" style="font-size: 0.68rem; max-width: calc(100% - 32px);">
+                            <span t-if="booking.eventEmoji" class="me-1" t-out="booking.eventEmoji"/>
+                            <t t-out="booking.customerDisplayName || 'Guest'"/>
+                        </span>
                         <span t-if="booking.has_food_order" class="badge rounded-pill bg-success text-white px-1 py-0 ms-1 flex-shrink-0" style="font-size: 0.52rem; letter-spacing: 0.5px;">PAID</span>
                     </div>
                     <!-- Row 2: Time, Party size & Quick Action Button -->
@@ -27,7 +30,7 @@
                                 title="Check In &amp; Load Order">
                             ✓ In
                         </button>
-                        <!-- Checked-in state indicator (Release Table is done from the order/navbar) -->
+                        <!-- Checked-in state indicator (Table is automatically released on payment validation) -->
                         <span t-elif="booking.state === 'checked_in'"
                               class="badge bg-white text-primary fw-bold px-1 py-0 shadow-xs"
                               style="font-size: 0.56rem; line-height: 1.1;">
@@ -48,18 +51,8 @@
         </xpath>
     </t>
 
-    <!-- Booking Tab & Release Table Button in POS Top Navbar -->
+    <!-- Booking Tab in POS Top Navbar -->
     <t t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
-        <!-- Release Table button only when inside an active table order (Strictly NEVER on FloorScreen / Floor Plan) -->
-        <xpath expr="//button[hasclass('orders-button')]" position="before">
-            <button t-if="this.pos.config.module_pos_restaurant and this.pos.getOrder() and this.pos.getOrder().table_id and this.pos.router.currentScreen() !== 'FloorScreen'"
-                    class="btn btn-outline-danger btn-lg lh-lg me-1 shadow-xs"
-                    t-on-click="() => this.pos.releaseTable(this.pos.getOrder().table_id, this.pos.getOrder().booking_id)"
-                    title="Release Table and Free Floor Plan">
-                <i class="fa fa-sign-out me-1"/>
-                <span t-if="!this.ui.isSmall">Release Table</span>
-            </button>
-        </xpath>
         <xpath expr="//button[hasclass('orders-button')]" position="after">
             <button t-if="this.pos.config.use_booking"
                     class="booking-button btn btn-outline-secondary btn-lg lh-lg"

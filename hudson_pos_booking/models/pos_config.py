@@ -10,18 +10,82 @@ class PosConfig(models.Model):
     _inherit = 'pos.config'
 
     def _default_booking_appointment_type_id(self):
-        """Pure side-effect-free search for default Table Booking appointment type."""
+        """Pure side-effect-free search for default celebration/table booking appointment type."""
         company = (self.company_id if self and len(self) == 1 and self.company_id else False) or self.env.company
-        app_type = self.env.ref('appointment.appointment_type_table_booking', raise_if_not_found=False)
-        if app_type and app_type.exists():
-            return app_type.id
-        domain = [
+        other_type = self.env.ref('hudson_pos_booking.appointment_type_event_other', raise_if_not_found=False)
+        if other_type and other_type.exists() and (not other_type.company_id or other_type.company_id == company):
+            return other_type.id
+        AppType = self.env['appointment.type']
+        comp_domain = ['|', ('company_id', '=', False), ('company_id', '=', company.id)]
+        found = AppType.search([
             ('booking_target', '=', 'resources'),
-            ('name', 'ilike', 'Table Booking'),
-            '|', ('company_id', '=', False), ('company_id', '=', company.id)
-        ]
-        found = self.env['appointment.type'].search(domain, limit=1)
+            ('is_event_booking', '=', True),
+            ('event_category', '=', 'other'),
+        ] + comp_domain, limit=1)
+        if not found:
+            found = AppType.search([
+                ('booking_target', '=', 'resources'),
+                ('is_event_booking', '=', True),
+                ('is_published', '=', True),
+            ] + comp_domain, limit=1)
+        if not found:
+            app_type = self.env.ref('appointment.appointment_type_table_booking', raise_if_not_found=False)
+            if app_type and app_type.exists():
+                return app_type.id
+            found = AppType.search([
+                ('booking_target', '=', 'resources'),
+                ('name', 'ilike', 'Table Booking'),
+            ] + comp_domain, limit=1)
         return found.id if found else False
+
+    def _get_or_create_default_table_booking_type(self):
+        """Return default booking appointment type ID, creating 'Other Celebrations' only if missing."""
+        at_id = self._default_booking_appointment_type_id()
+        if at_id:
+            return at_id
+        company = (self.company_id if self and len(self) == 1 and self.company_id else False) or self.env.company
+        tz_name = company.partner_id.tz or self.env.user.tz or self.env.context.get('tz') or 'Asia/Calcutta'
+        app_type = self.env['appointment.type'].sudo().create({
+            'name': 'Other Celebrations',
+            'is_event_booking': True,
+            'event_category': 'other',
+            'event_emoji': '🎉',
+            'booking_target': 'resources',
+            'assign_method': 'customer',
+            'schedule_based_on': 'website',
+            'is_published': True,
+            'company_id': company.id,
+            'appointment_tz': tz_name,
+        })
+        return app_type.id
+
+    def _get_booking_timezone_name(self):
+        """Resolve timezone name for POS bookings, checking company partner TZ, appointment type TZ, and user TZ."""
+        if self and len(self) == 1:
+            tz_name = (
+                self.company_id.partner_id.tz
+                or self.booking_appointment_type_id.appointment_tz
+                or self.env.user.tz
+                or self.env.context.get('tz')
+            )
+            company = self.company_id or self.env.company
+        else:
+            tz_name = self.env.company.partner_id.tz or self.env.user.tz or self.env.context.get('tz')
+            company = self.env.company
+        if not tz_name:
+            app_type = self.env['appointment.type'].sudo().search([
+                ('booking_target', '=', 'resources'),
+                '|', ('company_id', '=', False), ('company_id', '=', company.id),
+            ], limit=1)
+            tz_name = (app_type.appointment_tz if app_type else False) or 'UTC'
+        return tz_name
+
+    def _get_booking_timezone(self):
+        tz_name = self._get_booking_timezone_name()
+        try:
+            return pytz.timezone(tz_name)
+        except Exception:
+            return pytz.UTC
 
     def _ensure_online_prepaid_payment_method(self):
         """Ensure a dedicated 'Online Prepaid' payment method is attached to this POS config."""
@@ -47,6 +111,18 @@ class PosConfig(models.Model):
             if pm and pm not in cfg.payment_method_ids:
                 cfg.sudo().write({'payment_method_ids': [(4, pm.id)]})
 
+    def _ensure_pricelist_group(self):
+        """Ensure product.group_product_pricelist is implied whenever any POS config uses pricelists."""
+        if self.env.context.get('skip_pricelist_group_sync'):
+            return
+        if not any(cfg.use_pricelist for cfg in self):
+            return
+        group_pricelist = self.env.ref('product.group_product_pricelist', raise_if_not_found=False)
+        group_user = self.env.ref('base.group_user', raise_if_not_found=False)
+        if group_pricelist and group_user and group_pricelist not in group_user.sudo().all_implied_ids:
+            group_user.sudo()._apply_group(group_pricelist)
+            self.env['res.company'].sudo()._activate_or_create_pricelists()
+
     @api.model_create_multi
     def create(self, vals_list):
         configs = super().create(vals_list)
@@ -58,12 +134,27 @@ class PosConfig(models.Model):
                 if preorder_preset not in cfg.available_preset_ids:
                     cfg.available_preset_ids = [(4, preorder_preset.id)]
         configs._ensure_online_prepaid_payment_method()
+        configs._ensure_pricelist_group()
+        if not self.env.context.get('skip_table_sync'):
+            floors_to_sync = configs.filtered(lambda c: c.module_pos_restaurant and c.use_booking).mapped('floor_ids')
+            if floors_to_sync:
+                floors_to_sync.with_context(active_test=False).mapped('table_ids')._sync_appointment_resource()
         return configs
 
     def write(self, vals):
+        sync_trigger_fields = {'floor_ids', 'module_pos_restaurant', 'use_booking', 'booking_appointment_type_id', 'active'}
+        need_table_sync = bool(sync_trigger_fields.intersection(vals.keys())) and not self.env.context.get('skip_table_sync')
+        old_floors = self.mapped('floor_ids') if need_table_sync else self.env['restaurant.floor']
+
         res = super().write(vals)
         if 'use_booking' in vals or 'payment_method_ids' in vals:
             self._ensure_online_prepaid_payment_method()
+        if vals.get('use_pricelist'):
+            self._ensure_pricelist_group()
+        if need_table_sync:
+            all_floors = old_floors | self.mapped('floor_ids')
+            if all_floors:
+                all_floors.with_context(active_test=False).mapped('table_ids')._sync_appointment_resource()
         return res
 
     def open_ui(self):
@@ -122,12 +213,8 @@ class PosConfig(models.Model):
         if not resources:
             return []
 
-        # Time range: today 00:00 to tomorrow 23:59:59 in company timezone
-        tz_name = self.company_id.partner_id.tz or self.env.user.tz or 'Asia/Calcutta'
-        try:
-            tz = pytz.timezone(tz_name)
-        except Exception:
-            tz = pytz.timezone('Asia/Calcutta')
+        # Time range: today 00:00 to tomorrow 23:59:59 in restaurant timezone
+        tz = self._get_booking_timezone()
         now_local = datetime.now(tz)
         start_local = now_local.replace(hour=0, minute=0, second=0, microsecond=0)
         end_local = (now_local + timedelta(days=1)).replace(hour=23, minute=59, second=59, microsecond=999999)
@@ -154,11 +241,7 @@ class PosConfig(models.Model):
                 return dt_val.astimezone(pytz.UTC).replace(tzinfo=None)
             return dt_val
 
-        tz_name = (self.company_id.partner_id.tz) or self.env.user.tz or 'Asia/Calcutta'
-        try:
-            tz = pytz.timezone(tz_name)
-        except Exception:
-            tz = pytz.timezone('Asia/Calcutta')
+        tz = self._get_booking_timezone()
 
         dt_str = str(dt_val).strip()
         if dt_str.endswith('Z'):
@@ -189,20 +272,42 @@ class PosConfig(models.Model):
     @api.model
     def pos_create_booking(self, config_id, vals):
         """
-        Create a booking directly from POS. Allows phone-only walk-ins (no email required).
-        Reuses appointment.type availability & assignment methods.
+        Create a booking directly from POS. Allows phone-only walk-ins (no email required)
+        and supports choosing any resource-based Event / Celebration Appointment Type.
         """
         config = self.browse(config_id)
         if not config.exists() or not config.use_booking:
             raise UserError(_("Table booking is not enabled for this Point of Sale."))
 
-        appointment_type = config.booking_appointment_type_id
-        if not appointment_type:
-            raise UserError(_("No booking appointment type configured for this Point of Sale."))
+        raw_type_id = vals.get('appointment_type_id')
+        if raw_type_id:
+            try:
+                type_id = int(raw_type_id)
+            except (ValueError, TypeError):
+                raise UserError(_("Invalid booking event type selected."))
+            appointment_type = self.env['appointment.type'].sudo().browse(type_id)
+            if (
+                not appointment_type.exists()
+                or appointment_type.booking_target != 'resources'
+                or (appointment_type.company_id and appointment_type.company_id != config.company_id)
+            ):
+                raise UserError(_("Selected booking event type is not valid for this Point of Sale."))
+        else:
+            appointment_type = config.booking_appointment_type_id
+            if not appointment_type:
+                raise UserError(_("No booking appointment type configured for this Point of Sale."))
 
-        customer_name = vals.get('customer_name') or _("Walk-in Guest")
-        customer_phone = vals.get('customer_phone') or ''
-        customer_email = vals.get('customer_email') or False
+        customer_name = (vals.get('customer_name') or '').strip() or _("Walk-in Guest")
+        customer_phone = (vals.get('customer_phone') or '').strip()
+        customer_email = (vals.get('customer_email') or '').strip() or False
+        celebrant_name = (vals.get('celebrant_name') or '').strip() or False
+        occasion_title = (vals.get('occasion_title') or '').strip() or False
+        occasion_date = False
+        if vals.get('occasion_date'):
+            occasion_date = self.env['appointment.answer']._parse_date_value(vals.get('occasion_date'))
+            if not occasion_date:
+                raise UserError(_("Invalid Special Day date format: '%s'. Please use YYYY-MM-DD.") % vals.get('occasion_date'))
+
         party_size = max(1, int(vals.get('party_size', 1)))
         table_id = vals.get('table_id')
         if not table_id:
@@ -213,16 +318,41 @@ class PosConfig(models.Model):
         duration = max(0.25, float(vals.get('duration') or vals.get('duration_hours') or appointment_type.appointment_duration or 1.5))
         end_dt_utc = start_dt_utc + timedelta(hours=duration)
 
-        # Partner: find by phone or email, or create
+        # Safe Partner matching (phone first for walk-ins, then email), never matching id=1 or company partner
         Partner = self.env['res.partner'].sudo()
-        partner = False
+        BookingModel = self.env['appointment.booking'].sudo()
+        excluded_ids = [1]
+        if config.company_id and config.company_id.partner_id:
+            excluded_ids.append(config.company_id.partner_id.id)
+        comp_scope = [('company_id', 'in', [False, config.company_id.id])]
+
+        partner = Partner.browse()
         if customer_phone:
-            domain = [('phone', '=', customer_phone)]
+            phone_domain = [('phone', '=', customer_phone)]
             if 'mobile' in Partner._fields:
-                domain = ['|', ('phone', '=', customer_phone), ('mobile', '=', customer_phone)]
-            partner = Partner.search(domain, limit=1)
+                phone_domain = ['|', ('phone', '=', customer_phone), ('mobile', '=', customer_phone)]
+            partner = Partner.search([('id', 'not in', excluded_ids)] + comp_scope + phone_domain, limit=1)
+            if not partner:
+                target_digits = BookingModel._normalize_phone_digits(customer_phone)
+                if len(target_digits) >= 7:
+                    candidates = Partner.search([
+                        ('id', 'not in', excluded_ids),
+                        ('phone', '!=', False),
+                    ] + comp_scope, order='id desc', limit=200)
+                    for cand in candidates:
+                        c_digits = BookingModel._normalize_phone_digits(cand.phone)
+                        if c_digits and (
+                            c_digits == target_digits
+                            or c_digits.endswith(target_digits[-10:])
+                            or target_digits.endswith(c_digits[-10:])
+                        ):
+                            partner = cand
+                            break
         if not partner and customer_email:
-            partner = Partner.search([('email', '=', customer_email)], limit=1)
+            partner = Partner.search([
+                ('id', 'not in', excluded_ids),
+                ('email', '=ilike', customer_email),
+            ] + comp_scope, limit=1)
         if not partner:
             partner = Partner.create({
                 'name': customer_name,
@@ -241,6 +371,17 @@ class PosConfig(models.Model):
 
         if not table.appointment_resource_id:
             table._sync_appointment_resource()
+
+        if table.appointment_resource_id and appointment_type.booking_target == 'resources':
+            owner_types = self.env['appointment.type'].sudo().search([
+                ('active', '=', True),
+                ('booking_target', '=', 'resources'),
+                ('resource_ids', 'in', [table.appointment_resource_id.id]),
+            ])
+            if owner_types and appointment_type not in owner_types:
+                raise UserError(_(
+                    "Table %s is reserved exclusively for %s and cannot be booked under %s."
+                ) % (table.display_name, ', '.join(owner_types.mapped('name')), appointment_type.name))
 
         all_resources = all_related.mapped('appointment_resource_id')
         if all_resources:
@@ -261,8 +402,7 @@ class PosConfig(models.Model):
             conflict = self.env['appointment.booking'].sudo().search(conflict_domain, limit=1)
             if conflict:
                 rel_names = ', '.join(all_related.mapped('display_name'))
-                tz_name = (config.company_id.partner_id.tz) or self.env.user.tz or 'UTC'
-                tz = pytz.timezone(tz_name)
+                tz = config._get_booking_timezone()
                 c_start = conflict.start_datetime.replace(tzinfo=pytz.UTC).astimezone(tz).strftime('%Y-%m-%d %H:%M')
                 c_end = conflict.end_datetime.replace(tzinfo=pytz.UTC).astimezone(tz).strftime('%H:%M')
                 raise UserError(_(
@@ -277,7 +417,10 @@ class PosConfig(models.Model):
             'partner_id': partner.id,
             'customer_name': customer_name,
             'customer_phone': customer_phone,
-            'customer_email': customer_email or '',
+            'customer_email': customer_email,
+            'celebrant_name': celebrant_name,
+            'occasion_title': occasion_title,
+            'occasion_date': occasion_date,
             'party_size': party_size,
             'start_datetime': start_dt_utc,
             'end_datetime': end_dt_utc,
@@ -293,7 +436,7 @@ class PosConfig(models.Model):
 
     @api.model
     def pos_update_booking(self, config_id, booking_id, vals):
-        """Update booking status, time, duration, table or customer details from POS."""
+        """Update booking status, event type, celebration fields, time, duration, table or customer details from POS."""
         config = self.browse(config_id)
         booking = self.env['appointment.booking'].browse(booking_id)
         if not booking.exists():
@@ -313,6 +456,20 @@ class PosConfig(models.Model):
                 booking.state = 'confirmed'
 
         write_vals = {}
+
+        if 'appointment_type_id' in vals and vals['appointment_type_id']:
+            try:
+                type_id = int(vals['appointment_type_id'])
+            except (ValueError, TypeError):
+                raise UserError(_("Invalid booking event type selected."))
+            new_type = self.env['appointment.type'].sudo().browse(type_id)
+            if (
+                not new_type.exists()
+                or new_type.booking_target != 'resources'
+                or (new_type.company_id and new_type.company_id != config.company_id)
+            ):
+                raise UserError(_("Selected booking event type is not valid for this Point of Sale."))
+            write_vals['appointment_type_id'] = new_type.id
 
         # 1. Start datetime and duration
         start_changed = 'start_datetime' in vals and vals['start_datetime']
@@ -348,6 +505,18 @@ class PosConfig(models.Model):
             if booking.table_ids:
                 table = booking.table_ids[0]
 
+        effective_type = self.env['appointment.type'].sudo().browse(write_vals['appointment_type_id']) if 'appointment_type_id' in write_vals else booking.appointment_type_id
+        if table and table.exists() and table.appointment_resource_id and effective_type and effective_type.booking_target == 'resources':
+            owner_types = self.env['appointment.type'].sudo().search([
+                ('active', '=', True),
+                ('booking_target', '=', 'resources'),
+                ('resource_ids', 'in', [table.appointment_resource_id.id]),
+            ])
+            if owner_types and effective_type not in owner_types:
+                raise UserError(_(
+                    "Table %s is reserved exclusively for %s and cannot be booked under %s."
+                ) % (table.display_name, ', '.join(owner_types.mapped('name')), effective_type.name))
+
         # 3. Double Booking Validation
         if table and table.exists() and (start_changed or duration_changed or 'table_id' in vals):
             all_related = table.get_merged_and_linked_tables()
@@ -371,8 +540,7 @@ class PosConfig(models.Model):
                 conflict = self.env['appointment.booking'].sudo().search(conflict_domain, limit=1)
                 if conflict:
                     rel_names = ', '.join(all_related.mapped('display_name'))
-                    tz_name = (config.company_id.partner_id.tz) or self.env.user.tz or 'UTC'
-                    tz = pytz.timezone(tz_name)
+                    tz = config._get_booking_timezone()
                     c_start = conflict.start_datetime.replace(tzinfo=pytz.UTC).astimezone(tz).strftime('%Y-%m-%d %H:%M')
                     c_end = conflict.end_datetime.replace(tzinfo=pytz.UTC).astimezone(tz).strftime('%H:%M')
                     raise UserError(_(
@@ -383,22 +551,35 @@ class PosConfig(models.Model):
             write_vals['party_size'] = int(vals['party_size'])
         if 'notes' in vals:
             write_vals['guest_details'] = vals['notes']
+        if 'celebrant_name' in vals:
+            write_vals['celebrant_name'] = (vals['celebrant_name'] or '').strip() or False
+        if 'occasion_title' in vals:
+            write_vals['occasion_title'] = (vals['occasion_title'] or '').strip() or False
+        if 'occasion_date' in vals:
+            raw_occ = vals['occasion_date']
+            if raw_occ:
+                parsed_occ = self.env['appointment.answer']._parse_date_value(raw_occ)
+                if not parsed_occ:
+                    raise UserError(_("Invalid Special Day date format: '%s'. Please use YYYY-MM-DD.") % raw_occ)
+                write_vals['occasion_date'] = parsed_occ
+            else:
+                write_vals['occasion_date'] = False
 
         # 4. Customer update (update stored booking fields; protect shared partner records)
         if ('customer_name' in vals and vals['customer_name']) or ('customer_phone' in vals) or ('customer_email' in vals):
             c_name = vals.get('customer_name') or booking.customer_name
             c_phone = vals.get('customer_phone') if 'customer_phone' in vals else booking.customer_phone
-            c_email = vals.get('customer_email') if 'customer_email' in vals else booking.customer_email
+            c_email = ((vals.get('customer_email') or '').strip() or False) if 'customer_email' in vals else booking.customer_email
 
             if 'customer_name' in vals and vals['customer_name']:
                 write_vals['customer_name'] = vals['customer_name']
             if 'customer_phone' in vals:
                 write_vals['customer_phone'] = vals['customer_phone']
             if 'customer_email' in vals:
-                write_vals['customer_email'] = vals['customer_email']
+                write_vals['customer_email'] = c_email
 
-            # Only write to partner if unshared partner (not company partner, not shared across other sales/bookings)
-            if booking.partner_id and booking.partner_id.id != config.company_id.partner_id.id:
+            # Only write to partner if unshared partner (not system/company partner, not shared across other sales/bookings)
+            if booking.partner_id and booking.partner_id.id not in (1, config.company_id.partner_id.id):
                 other_bookings = self.env['appointment.booking'].search([('partner_id', '=', booking.partner_id.id), ('id', '!=', booking.id)], limit=1)
                 other_sales = self.env['sale.order'].search([('partner_id', '=', booking.partner_id.id)], limit=1)
                 if not other_bookings and not other_sales:
@@ -408,13 +589,13 @@ class PosConfig(models.Model):
                     if 'customer_phone' in vals:
                         p_vals['phone'] = vals['customer_phone']
                     if 'customer_email' in vals:
-                        p_vals['email'] = vals['customer_email']
+                        p_vals['email'] = c_email
                     booking.partner_id.sudo().write(p_vals)
             elif not booking.partner_id and c_name:
                 partner = self.env['res.partner'].sudo().create({
                     'name': c_name,
                     'phone': c_phone or '',
-                    'email': c_email or '',
+                    'email': c_email,
                 })
                 write_vals['partner_id'] = partner.id
 
@@ -437,10 +618,11 @@ class PosConfig(models.Model):
                 if table.id not in booking.table_ids.ids and (not table.appointment_resource_id or table.appointment_resource_id not in booking.resource_ids):
                     booking = False
         if not booking and table.exists():
-            # If no booking passed, automatically find the checked_in or confirmed booking on this table
+            # If no booking passed, only look for an actively checked_in booking on this table
+            # (never auto-checkout an unrelated future confirmed booking).
             domain = [
                 ('company_id', 'in', (config.company_id.id, False)),
-                ('state', 'in', ('checked_in', 'confirmed')),
+                ('state', '=', 'checked_in'),
             ]
             if table.appointment_resource_id:
                 domain.append('|')
@@ -450,11 +632,11 @@ class PosConfig(models.Model):
                 domain.append(('table_ids', 'in', table.id))
             booking = self.env['appointment.booking'].search(domain, order='start_datetime desc', limit=1)
 
-        if booking and booking.exists() and booking.state in ('confirmed', 'checked_in'):
+        if booking and booking.exists() and (booking.state == 'checked_in' or (booking_id and booking.state == 'confirmed')):
             booking.action_check_out()
             config.notify_booking_update(booking, action="UPDATE")
 
-        # Cancel draft pos.orders on this table in current session so table is immediately freed
+        # Cancel empty draft pos.orders on this table in current session so table is immediately freed
         session = config.current_session_id
         if session and table.exists():
             draft_orders = self.env['pos.order'].search([
@@ -463,10 +645,11 @@ class PosConfig(models.Model):
                 ('state', '=', 'draft'),
             ])
             for d_order in draft_orders:
-                try:
-                    d_order.write({'state': 'cancel'})
-                except Exception:
-                    pass
+                if not d_order.lines:
+                    try:
+                        d_order.write({'state': 'cancel'})
+                    except Exception:
+                        pass
 
         return {
             'success': True,

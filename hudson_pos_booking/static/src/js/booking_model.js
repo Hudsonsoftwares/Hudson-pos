@@ -9,11 +9,54 @@ export class AppointmentBooking extends Base {
         super.setup(vals);
     }
 
+    get appointmentTypeId() {
+        const raw = this.appointment_type_id;
+        if (!raw) return null;
+        if (typeof raw === "object") {
+            return Array.isArray(raw) ? raw[0] : (raw.id || null);
+        }
+        return raw;
+    }
+
+    get appointmentTypeObj() {
+        const raw = this.appointment_type_id;
+        if (raw && typeof raw === "object" && !Array.isArray(raw) && raw.name !== undefined) {
+            return raw;
+        }
+        const id = this.appointmentTypeId;
+        const store = this.models ? this.models["appointment.type"] : null;
+        if (id && store) {
+            return (typeof store.get === "function" ? store.get(id) : null)
+                || (typeof store.getAll === "function" ? store.getAll().find(t => t && t.id === id) : null)
+                || null;
+        }
+        return null;
+    }
+
+    get eventEmoji() {
+        return this.appointmentTypeObj?.event_emoji || this.event_emoji || "";
+    }
+
+    get eventTypeName() {
+        return this.appointmentTypeObj?.name || this.appointment_type_name || "";
+    }
+
     get customerDisplayName() {
-        if (this.customer_name && !this.customer_name.startsWith("Table Booking") && this.customer_name !== "False") {
+        const typeName = this.eventTypeName;
+        if (
+            this.customer_name &&
+            !this.customer_name.startsWith("Table Booking") &&
+            (!typeName || !this.customer_name.startsWith(typeName + " - ")) &&
+            this.customer_name !== "False"
+        ) {
             return this.customer_name;
         }
-        if (this.partner_id?.name && !this.partner_id.name.startsWith("Table Booking") && this.partner_id.name !== "Resto Cafe" && this.partner_id.name !== "False") {
+        if (
+            this.partner_id?.name &&
+            !this.partner_id.name.startsWith("Table Booking") &&
+            this.partner_id.name !== "Resto Cafe" &&
+            this.partner_id.name !== "False"
+        ) {
             return this.partner_id.name;
         }
         return (this.customer_name && this.customer_name !== "False") ? this.customer_name : (_t("Guest"));
@@ -55,9 +98,9 @@ export class AppointmentBooking extends Base {
     }
 
     get startTimeStr() {
-        if (this.start_time_str) return this.start_time_str;
         const dt = this._parseDt(this.start_datetime);
         if (dt) return dt.toFormat("HH:mm");
+        if (this.start_time_str) return this.start_time_str;
         if (typeof this.start_datetime === "string" && this.start_datetime.length >= 16) {
             return this.start_datetime.substring(11, 16);
         }
@@ -65,9 +108,9 @@ export class AppointmentBooking extends Base {
     }
 
     get endTimeStr() {
-        if (this.end_time_str) return this.end_time_str;
         const dt = this._parseDt(this.end_datetime);
         if (dt) return dt.toFormat("HH:mm");
+        if (this.end_time_str) return this.end_time_str;
         if (typeof this.end_datetime === "string" && this.end_datetime.length >= 16) {
             return this.end_datetime.substring(11, 16);
         }
@@ -75,9 +118,9 @@ export class AppointmentBooking extends Base {
     }
 
     get startDateStr() {
-        if (this.start_date_str) return this.start_date_str;
         const dt = this._parseDt(this.start_datetime);
         if (dt) return dt.toFormat("yyyy-MM-dd");
+        if (this.start_date_str) return this.start_date_str;
         if (typeof this.start_datetime === "string" && this.start_datetime.length >= 10) {
             return this.start_datetime.substring(0, 10);
         }
@@ -109,7 +152,7 @@ export class AppointmentBooking extends Base {
         const raw = this.table_ids;
         if (!raw) return [];
         const tablesStore = this.models ? this.models["restaurant.table"] : null;
-        
+
         let list = [];
         if (Array.isArray(raw)) {
             list = raw;

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="appointment_type_view_form_inherit_pos_booking" model="ir.ui.view">
+        <field name="name">appointment.type.view.form.inherit.pos.booking</field>
+        <field name="model">appointment.type</field>
+        <field name="inherit_id" ref="appointment.appointment_type_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resource_ids']" position="before">
+                <field name="allowed_resource_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='resource_ids']" position="attributes">
+                <attribute name="domain">[('id', 'in', allowed_resource_ids)]</attribute>
+                <attribute name="context">{'appointment_booking_target': booking_target, 'default_company_id': company_id, 'active_appointment_type_id': id}</attribute>
+                <attribute name="options">{'no_create': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

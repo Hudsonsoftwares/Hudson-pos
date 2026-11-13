@@ -1,5 +1,6 @@
 import { patch } from "@web/core/utils/patch";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
+import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_validation";
 import { getOnNotified } from "@point_of_sale/utils";
 import { _t } from "@web/core/l10n/translation";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
@@ -11,18 +12,14 @@ function upsertBooking(posStore, data) {
         : data;
     if (!bookingData || !bookingData.id) return;
     try {
-        const bookingModel = posStore.models?.["appointment.booking"];
-        if (bookingModel) {
-            const existing = typeof bookingModel.get === "function" ? bookingModel.get(bookingData.id) : null;
-            if (existing) {
-                if (typeof existing.update === "function") {
-                    existing.update(bookingData);
-                }
-                Object.assign(existing, bookingData);
-            }
-        }
         if (posStore.models && typeof posStore.models.connectNewData === "function") {
             posStore.models.connectNewData({ "appointment.booking": [bookingData] });
+            return;
+        }
+        const bookingModel = posStore.models?.["appointment.booking"];
+        const existing = typeof bookingModel?.get === "function" ? bookingModel.get(bookingData.id) : null;
+        if (existing && typeof existing.update === "function") {
+            existing.update(bookingData, { omitUnknownField: true });
         }
     } catch (err) {
         console.warn("Could not upsert booking into pos model:", err);
@@ -32,17 +29,23 @@ function upsertBooking(posStore, data) {
 patch(PosStore.prototype, {
     async setup() {
         await super.setup(...arguments);
-        if (this.config.use_booking && this.bus) {
+        if (this.config.use_booking && (this.data || this.bus)) {
             this._setupBookingBusListener();
         }
     },
 
     _setupBookingBusListener() {
-        if (!this.config.access_token) return;
-        const onNotified = getOnNotified(this.bus, this.config.access_token);
-        onNotified("BOOKING_UPDATE", (payload) => {
-            this._onRemoteBookingUpdate(payload);
-        });
+        if (!this.config?.access_token) return;
+        if (this.data && typeof this.data.connectWebSocket === "function") {
+            this.data.connectWebSocket("BOOKING_UPDATE", (payload) => {
+                this._onRemoteBookingUpdate(payload);
+            });
+        } else if (this.bus) {
+            const onNotified = getOnNotified(this.bus, this.config.access_token);
+            onNotified("BOOKING_UPDATE", (payload) => {
+                this._onRemoteBookingUpdate(payload);
+            });
+        }
     },
 
     _onRemoteBookingUpdate(payload) {
@@ -61,8 +64,11 @@ patch(PosStore.prototype, {
         if (!booking && order.table_id) {
             const table = typeof order.table_id === "object" ? order.table_id : this.models["restaurant.table"]?.get?.(order.table_id);
             if (table && table.getUpcomingBooking) {
-                booking = table.getUpcomingBooking();
-                if (booking) order.booking_id = booking;
+                const upcoming = table.getUpcomingBooking();
+                if (upcoming && upcoming.state === "checked_in") {
+                    booking = upcoming;
+                    order.booking_id = booking;
+                }
             }
         }
         if (!booking) return;
@@ -276,114 +282,153 @@ patch(PosStore.prototype, {
         this.navigate("ProductScreen", { orderUuid: order.uuid });
     },
 
-    async releaseTable(table, booking = null) {
-        if (!table) return;
-        const tableObj = (typeof table === "object" && table) ? table : (this.models["restaurant.table"]?.get?.(table) || { id: table });
-        const tableId = tableObj.id || table;
+    async autoReleaseTableAfterPayment(order, { suggestToSync = true, extraTableIds = [] } = {}) {
+        if (!order || order.is_refund) return;
 
-        // 1. Resolve booking ID accurately
-        let bId = booking ? (typeof booking === "object" ? booking.id : booking) : false;
-        const currentOrder = this.getOrder();
-        if (!bId && currentOrder) {
-            const curTblId = typeof currentOrder.table_id === "object" ? currentOrder.table_id?.id : currentOrder.table_id;
-            if (curTblId === tableId && currentOrder.booking_id) {
-                bId = typeof currentOrder.booking_id === "object" ? currentOrder.booking_id.id : currentOrder.booking_id;
+        const rawTable = order.table_id;
+        const primaryTableId = typeof rawTable === "object" && rawTable ? rawTable.id : rawTable;
+        const tableModel = this.models?.["restaurant.table"];
+        const tableObj = (typeof rawTable === "object" && rawTable)
+            ? rawTable
+            : (primaryTableId && tableModel?.get ? tableModel.get(primaryTableId) : null);
+
+        // Collect the physical table and any merged parent/child tables involved
+        const orderTableIds = new Set();
+        const addTableId = (tbl) => {
+            const tid = typeof tbl === "object" && tbl ? tbl.id : tbl;
+            if (typeof tid === "number" && tid > 0) {
+                orderTableIds.add(tid);
             }
+        };
+        addTableId(primaryTableId);
+        if (tableObj?.parent_id) addTableId(tableObj.parent_id);
+        if (tableObj?.rootTable) addTableId(tableObj.rootTable);
+        if (Array.isArray(tableObj?.children)) {
+            for (const ch of tableObj.children) addTableId(ch);
         }
-        if (!bId && tableObj.getUpcomingBooking) {
-            const upB = tableObj.getUpcomingBooking();
-            if (upB && (upB.state === "checked_in" || upB.state === "confirmed")) {
-                bId = upB.id;
-            }
+        if (Array.isArray(extraTableIds)) {
+            for (const eid of extraTableIds) addTableId(eid);
         }
 
-        try {
-            const orm = this.data?.orm || this.env?.services?.orm;
-            if (orm) {
-                await orm.call("pos.config", "pos_release_table", [this.config.id, tableId, bId]);
-            } else if (this.data?.call) {
-                await this.data.call("pos.config", "pos_release_table", [this.config.id, tableId, bId]);
-            }
+        // Resolve linked booking on the order
+        let linkedBooking = order.booking_id || null;
+        if (typeof linkedBooking === "number") {
+            linkedBooking = this.models?.["appointment.booking"]?.get?.(linkedBooking) || null;
+        }
+        const linkedBookingId = linkedBooking?.id || (typeof order.booking_id === "number" ? order.booking_id : null);
 
-            // 2. Remove all unfinalized orders on this table locally so the table is completely released and freed!
-            const ordersToRemove = [];
-            if (this.models["pos.order"]) {
-                const tableOrders = this.models["pos.order"].filter(o => {
-                    const oTblId = typeof o.table_id === "object" ? o.table_id?.id : o.table_id;
-                    return oTblId === tableId && !o.finalized && o.state !== "cancel";
-                });
-                ordersToRemove.push(...tableOrders);
-            }
-            if (currentOrder) {
-                const curTblId = typeof currentOrder.table_id === "object" ? currentOrder.table_id?.id : currentOrder.table_id;
-                if (curTblId === tableId && !ordersToRemove.includes(currentOrder)) {
-                    ordersToRemove.push(currentOrder);
-                }
-            }
-            for (const o of ordersToRemove) {
-                try {
-                    o.state = "cancel";
-                    this.removeOrder(o, false);
-                    this.removePendingOrder(o);
-                } catch (err) {
-                    console.warn("Could not remove order on table release:", err);
-                }
-            }
+        const posOrderModel = this.models?.["pos.order"];
+        const allPosOrders = posOrderModel?.getAll
+            ? posOrderModel.getAll()
+            : (Array.isArray(posOrderModel) ? posOrderModel : []);
 
-            // 3. Update local booking state to checked_out for all bookings on this table
-            if (bId && this.models["appointment.booking"]?.get) {
-                const b = this.models["appointment.booking"].get(bId);
-                if (b) {
-                    b.state = "checked_out";
-                }
-            }
-            if (this.models["appointment.booking"]?.getAll) {
-                const allB = this.models["appointment.booking"].getAll();
-                for (const b of allB) {
-                    const bTblIds = Array.isArray(b.table_ids)
-                        ? b.table_ids.map(t => (typeof t === "object" && t ? t.id : t))
-                        : [];
-                    if (bTblIds.includes(tableId) && ["confirmed", "checked_in"].includes(b.state)) {
-                        b.state = "checked_out";
-                    }
-                }
-            }
-            if (tableObj.getUpcomingBooking) {
-                const upB = tableObj.getUpcomingBooking();
-                if (upB) {
-                    upB.state = "checked_out";
-                }
-            }
-
-            // 4. Reset table ui state so floor plan immediately renders table as free
-            if (tableObj.uiState) {
-                tableObj.uiState.orderCount = 0;
-                tableObj.uiState.changeCount = 0;
-            }
+        // 1. Guard against open split bills on the same table(s) or booking
+        const otherDraftsOnTable = orderTableIds.size
+            ? allPosOrders.filter(o => {
+                if (!o || o.uuid === order.uuid || o.finalized || o.state === "cancel") return false;
+                const oTblId = typeof o.table_id === "object" && o.table_id ? o.table_id.id : o.table_id;
+                return Boolean(oTblId && orderTableIds.has(oTblId));
+            })
+            : [];
+        const otherOpenWithLines = otherDraftsOnTable.filter(o => o.lines && o.lines.length > 0);
+        if (otherOpenWithLines.length > 0) {
             if (typeof this.computeTableCount === "function") {
                 this.computeTableCount();
             }
+            return;
+        }
 
-            // 5. Unset active order if it belonged to this table and navigate to FloorScreen
-            if (this.getOrder() && ordersToRemove.includes(this.getOrder())) {
-                this.setOrder(this.getOpenOrders().find(o => !ordersToRemove.includes(o)) || null);
+        if (linkedBookingId) {
+            const otherBookingOpen = allPosOrders.some(o => {
+                if (!o || o.uuid === order.uuid || o.finalized || o.state === "cancel") return false;
+                const oBookingId = typeof o.booking_id === "object" && o.booking_id ? o.booking_id.id : o.booking_id;
+                return oBookingId === linkedBookingId && o.lines && o.lines.length > 0;
+            });
+            if (otherBookingOpen) {
+                if (typeof this.computeTableCount === "function") {
+                    this.computeTableCount();
+                }
+                return;
             }
-            this.navigate("FloorScreen");
-        } catch (err) {
-            console.error("Error releasing table:", err);
-            if (tableObj.uiState) {
-                tableObj.uiState.orderCount = 0;
+        }
+
+        // 2. Clear any lingering empty orphan draft orders on these tables (preserve paid `order` itself!)
+        for (const orphan of otherDraftsOnTable) {
+            try {
+                if (orphan.isSynced) {
+                    orphan.state = "cancel";
+                    this.removeOrder?.(orphan, false);
+                } else {
+                    // Delete local unsynced draft before marking cancel so removeOrder cascades cleanly
+                    this.removeOrder?.(orphan, false);
+                    orphan.state = "cancel";
+                }
+                this.removePendingOrder?.(orphan);
+            } catch (err) {
+                console.warn("Could not clear empty draft order on table auto-release:", err);
             }
-            if (typeof this.computeTableCount === "function") {
-                this.computeTableCount();
+        }
+
+        // 3. Check out linked booking and any actively checked_in bookings on the freed table(s)
+        let hadServerCheckOutNeeded = false;
+        if (linkedBooking && ["confirmed", "checked_in"].includes(linkedBooking.state)) {
+            linkedBooking.state = "checked_out";
+            hadServerCheckOutNeeded = true;
+        }
+
+        const bookingModel = this.models?.["appointment.booking"];
+        const allBookings = bookingModel?.getAll
+            ? bookingModel.getAll()
+            : (Array.isArray(bookingModel) ? bookingModel : []);
+        for (const b of allBookings) {
+            if (!b || b.state !== "checked_in") continue;
+            const rawTables = Array.isArray(b.tableRecords) && b.tableRecords.length
+                ? b.tableRecords
+                : (Array.isArray(b.table_ids)
+                    ? b.table_ids
+                    : (b.table_ids && typeof b.table_ids[Symbol.iterator] === "function"
+                        ? Array.from(b.table_ids)
+                        : []));
+            const bTblIds = rawTables.map(t => (typeof t === "object" && t ? t.id : t));
+            if (bTblIds.some(tid => orderTableIds.has(tid))) {
+                b.state = "checked_out";
+                hadServerCheckOutNeeded = true;
             }
-            this.navigate("FloorScreen");
+        }
+
+        // 4. Reset table UI counters so FloorScreen shows the table completely free immediately
+        for (const tid of orderTableIds) {
+            const tbl = tableModel?.get ? tableModel.get(tid) : (tid === primaryTableId ? tableObj : null);
+            if (tbl?.uiState) {
+                tbl.uiState.orderCount = 0;
+                tbl.uiState.changeCount = 0;
+            }
+        }
+        if (typeof this.computeTableCount === "function") {
+            this.computeTableCount();
+        }
+
+        // 5. Fallback server release only if online sync_from_ui didn't run on validation (e.g. post_validate redirect)
+        if (!suggestToSync && hadServerCheckOutNeeded && primaryTableId && typeof navigator !== "undefined" && navigator.onLine && !this.data?.network?.offline) {
+            try {
+                const orm = this.data?.orm || this.env?.services?.orm;
+                if (orm) {
+                    await orm.call("pos.config", "pos_release_table", [this.config.id, primaryTableId, linkedBookingId || false]);
+                } else if (this.data?.call) {
+                    await this.data.call("pos.config", "pos_release_table", [this.config.id, primaryTableId, linkedBookingId || false]);
+                }
+            } catch (err) {
+                console.warn("Could not sync fallback table release on payment validation:", err);
+            }
         }
     },
 
-    async orderDone(order) {
+    orderDone(order) {
         super.orderDone(...arguments);
         if (this.config.module_pos_restaurant && order?.table_id) {
+            if (typeof this.computeTableCount === "function") {
+                this.computeTableCount();
+            }
             this.navigate("FloorScreen");
         }
     },
@@ -484,4 +529,25 @@ patch(PosStore.prototype, {
             return null;
         }
     }
+});
+
+patch(OrderPaymentValidation.prototype, {
+    async afterOrderValidation(suggestToSync = true) {
+        const mergedChildIds = (this.order?.table_id?.children || []).map(
+            (table) => (typeof table === "object" && table ? table.id : table)
+        ).filter(Boolean);
+        const res = await super.afterOrderValidation(...arguments);
+        if (this.pos?.config?.use_booking && this.order) {
+            await this.pos.autoReleaseTableAfterPayment(this.order, {
+                suggestToSync,
+                extraTableIds: mergedChildIds,
+            });
+        } else if (
+            this.pos?.config?.module_pos_restaurant &&
+            typeof this.pos?.computeTableCount === "function"
+        ) {
+            this.pos.computeTableCount();
+        }
+        return res;
+    },
 });

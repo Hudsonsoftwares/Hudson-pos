@@ -199,7 +199,7 @@ class AppointmentBooking(models.Model):
                 'default_res_model': 'appointment.booking',
                 'default_res_id': self.id,
                 'default_composition_mode': 'comment',
-                'default_recipient_single_number_itf': self.partner_id.phone or self.partner_id.mobile if self.partner_id else False,
+                'default_recipient_single_number_itf': self.partner_id.phone or (getattr(self.partner_id, 'mobile', False)) if self.partner_id else False,
             },
         }
 

@@ -34,9 +34,13 @@ export class BookingScreen extends Component {
             draggedBookingId: null,
             currentTimeHourFraction: this._getCurrentHourFraction(),
             newBooking: {
+                appointment_type_id: "",
                 customer_name: "",
                 customer_phone: "",
                 customer_email: "",
+                celebrant_name: "",
+                occasion_title: "",
+                occasion_date: "",
                 party_size: 2,
                 table_id: "",
                 date_str: initialDate.toFormat("yyyy-MM-dd"),
@@ -141,7 +145,7 @@ export class BookingScreen extends Component {
         if (s === "confirmed" || s === "booked") return _t("Booked");
         if (s === "checked_in") return _t("Checked In");
         if (s === "prepaid") return _t("Prepaid Food");
-        if (s === "checked_out") return _t("Released");
+        if (s === "checked_out") return _t("Completed");
         if (s === "no_show") return _t("No Show");
         return _t("All");
     }
@@ -226,6 +230,108 @@ export class BookingScreen extends Component {
         return Math.max(0, this.totalRestaurantSeats - occupied);
     }
 
+    _toDateInputStr(val) {
+        if (!val) return "";
+        if (typeof val === "object" && typeof val.toFormat === "function") {
+            return val.isValid ? val.toFormat("yyyy-MM-dd") : "";
+        }
+        if (val instanceof Date) {
+            return luxon.DateTime.fromJSDate(val).toFormat("yyyy-MM-dd");
+        }
+        const s = String(val).trim();
+        return /^\d{4}-\d{2}-\d{2}/.test(s) ? s.substring(0, 10) : "";
+    }
+
+    _extractRecId(val) {
+        if (!val) return null;
+        if (typeof val === "object") {
+            return Array.isArray(val) ? (val[0] || null) : (val.id || null);
+        }
+        const n = parseInt(val);
+        return Number.isNaN(n) ? null : n;
+    }
+
+    getTableOwnerAppointmentTypeId(tableOrId) {
+        const tbl = typeof tableOrId === "object"
+            ? tableOrId
+            : this.activeTables.find(t => t.id === parseInt(tableOrId));
+        if (!tbl) return null;
+        const resId = this._extractRecId(tbl.appointment_resource_id);
+        if (!resId) return null;
+        for (const at of this.allAppointmentTypes) {
+            const resList = Array.isArray(at.resource_ids) ? at.resource_ids : [];
+            if (resList.some(r => this._extractRecId(r) === resId)) {
+                return at.id;
+            }
+        }
+        return null;
+    }
+
+    get availableModalTables() {
+        const selectedTypeId = parseInt(this.state.newBooking.appointment_type_id) || parseInt(this.defaultAppointmentTypeId) || null;
+        return this.activeTables.filter(tbl => {
+            const ownerTypeId = this.getTableOwnerAppointmentTypeId(tbl);
+            return !ownerTypeId || !selectedTypeId || ownerTypeId === selectedTypeId;
+        });
+    }
+
+    onModalEventTypeChange(newTypeId) {
+        this.state.newBooking.appointment_type_id = newTypeId;
+        const curTableId = parseInt(this.state.newBooking.table_id);
+        if (curTableId) {
+            const ownerTypeId = this.getTableOwnerAppointmentTypeId(curTableId);
+            const selectedTypeId = parseInt(newTypeId) || null;
+            if (ownerTypeId && selectedTypeId && ownerTypeId !== selectedTypeId) {
+                const compatible = this.availableModalTables;
+                this.state.newBooking.table_id = compatible.length ? compatible[0].id : "";
+            }
+        }
+    }
+
+    get allAppointmentTypes() {
+        const typeModel = this.pos.models["appointment.type"];
+        if (!typeModel) return [];
+        const list = typeof typeModel.getAll === "function" ? typeModel.getAll() : (Array.isArray(typeModel) ? typeModel : []);
+        return list.filter(t => Boolean(t));
+    }
+
+    get availableAppointmentTypes() {
+        const rawEditing = this.state.newBooking?.appointment_type_id;
+        const editingTypeId = rawEditing ? parseInt(rawEditing) : null;
+        const rawCfg = this.pos.config.booking_appointment_type_id;
+        const cfgId = typeof rawCfg === "object" && rawCfg
+            ? (Array.isArray(rawCfg) ? rawCfg[0] : rawCfg.id)
+            : rawCfg;
+        const allTypes = this.allAppointmentTypes;
+        const hasAnyPublished = allTypes.some(t => t.is_published);
+        const categoryOrder = { other: 0, birthday: 1, anniversary: 2, win: 3 };
+        return allTypes
+            .filter(t =>
+                t.is_published ||
+                (editingTypeId && t.id === editingTypeId) ||
+                (!hasAnyPublished && cfgId && t.id === cfgId)
+            )
+            .slice()
+            .sort((a, b) => {
+                const oa = categoryOrder[a.event_category] ?? 9;
+                const ob = categoryOrder[b.event_category] ?? 9;
+                if (oa !== ob) return oa - ob;
+                return (a.id || 0) - (b.id || 0);
+            });
+    }
+
+    get defaultAppointmentTypeId() {
+        const types = this.availableAppointmentTypes;
+        const otherType = types.find(t => t.event_category === "other");
+        if (otherType) return otherType.id;
+        const rawCfg = this.pos.config.booking_appointment_type_id;
+        const cfgId = typeof rawCfg === "object" && rawCfg
+            ? (Array.isArray(rawCfg) ? rawCfg[0] : rawCfg.id)
+            : rawCfg;
+        if (cfgId && types.some(t => t.id === cfgId)) return cfgId;
+        return types[0]?.id || "";
+    }
+
     get allBookings() {
         const bookingModel = this.pos.models["appointment.booking"];
         if (!bookingModel) return [];
@@ -254,7 +360,10 @@ export class BookingScreen extends Component {
                     const tables = (b.tableDisplayNames || "").toLowerCase();
                     const notes = (b.guest_details || "").toLowerCase();
                     const ref = (b.name || "").toLowerCase();
-                    return name.includes(query) || phone.includes(query) || tables.includes(query) || notes.includes(query) || ref.includes(query);
+                    const celebrant = (b.celebrant_name || "").toLowerCase();
+                    const occasion = (b.occasion_title || "").toLowerCase();
+                    const evt = (b.eventTypeName || "").toLowerCase();
+                    return name.includes(query) || phone.includes(query) || tables.includes(query) || notes.includes(query) || ref.includes(query) || celebrant.includes(query) || occasion.includes(query) || evt.includes(query);
                 });
             }
         }
@@ -316,7 +425,10 @@ export class BookingScreen extends Component {
                 const phone = (b.customerDisplayPhone || "").toLowerCase();
                 const tables = (b.tableDisplayNames || "").toLowerCase();
                 const ref = (b.name || "").toLowerCase();
-                if (!name.includes(query) && !phone.includes(query) && !tables.includes(query) && !ref.includes(query)) {
+                const celebrant = (b.celebrant_name || "").toLowerCase();
+                const occasion = (b.occasion_title || "").toLowerCase();
+                const evt = (b.eventTypeName || "").toLowerCase();
+                if (!name.includes(query) && !phone.includes(query) && !tables.includes(query) && !ref.includes(query) && !celebrant.includes(query) && !occasion.includes(query) && !evt.includes(query)) {
                     return false;
                 }
             }
@@ -463,7 +575,9 @@ export class BookingScreen extends Component {
                             const name = (b.customerDisplayName || "").toLowerCase();
                             const phone = (b.customerDisplayPhone || "").toLowerCase();
                             const tables = (b.tableDisplayNames || "").toLowerCase();
-                            if (!name.includes(query) && !phone.includes(query) && !tables.includes(query)) {
+                            const celebrant = (b.celebrant_name || "").toLowerCase();
+                            const evt = (b.eventTypeName || "").toLowerCase();
+                            if (!name.includes(query) && !phone.includes(query) && !tables.includes(query) && !celebrant.includes(query) && !evt.includes(query)) {
                                 return false;
                             }
                         }
@@ -761,12 +875,32 @@ export class BookingScreen extends Component {
         const dateStr = prefillDateStr || this.state.currentDate.toFormat("yyyy-MM-dd");
         const defaultHour = "16:00";
         this.state.editingBookingId = null;
+        let initialTypeId = this.defaultAppointmentTypeId || "";
+        if (prefillTableId) {
+            const ownerTypeId = this.getTableOwnerAppointmentTypeId(prefillTableId);
+            if (ownerTypeId) {
+                initialTypeId = ownerTypeId;
+            }
+        }
+        let initialTableId = prefillTableId || "";
+        if (!initialTableId) {
+            const parsedTypeId = parseInt(initialTypeId) || null;
+            const compatible = this.activeTables.find(tbl => {
+                const ownerTypeId = this.getTableOwnerAppointmentTypeId(tbl);
+                return !ownerTypeId || !parsedTypeId || ownerTypeId === parsedTypeId;
+            });
+            initialTableId = compatible ? compatible.id : (this.activeTables[0]?.id || "");
+        }
         this.state.newBooking = {
+            appointment_type_id: initialTypeId,
             customer_name: "",
             customer_phone: "",
             customer_email: "",
+            celebrant_name: "",
+            occasion_title: "",
+            occasion_date: "",
             party_size: 2,
-            table_id: prefillTableId || (this.activeTables[0]?.id || ""),
+            table_id: initialTableId,
             date_str: dateStr,
             start_time: defaultHour,
             duration_hours: "2.0",
@@ -789,9 +923,13 @@ export class BookingScreen extends Component {
         }
 
         this.state.newBooking = {
+            appointment_type_id: booking.appointmentTypeId || this.defaultAppointmentTypeId || "",
             customer_name: guestName,
             customer_phone: booking.customerDisplayPhone || "",
             customer_email: booking.customerDisplayEmail || "",
+            celebrant_name: booking.celebrant_name || "",
+            occasion_title: booking.occasion_title || "",
+            occasion_date: this._toDateInputStr(booking.occasion_date),
             party_size: booking.party_size || 2,
             table_id: tableId,
             date_str: booking.startDateStr || this.state.currentDate.toFormat("yyyy-MM-dd"),
@@ -851,9 +989,13 @@ export class BookingScreen extends Component {
         const b = this.state.newBooking;
         const duration = parseFloat(b.duration_hours || 2.0);
         const vals = {
+            appointment_type_id: parseInt(b.appointment_type_id) || parseInt(this.defaultAppointmentTypeId) || false,
             customer_name: b.customer_name || _t("Walk-in Guest"),
             customer_phone: b.customer_phone || "",
             customer_email: b.customer_email || "",
+            celebrant_name: (b.celebrant_name || "").trim(),
+            occasion_title: (b.occasion_title || "").trim(),
+            occasion_date: b.occasion_date || false,
             party_size: parseInt(b.party_size) || 1,
             table_id: parseInt(b.table_id) || false,
             notes: b.notes || "",
@@ -885,43 +1027,6 @@ export class BookingScreen extends Component {
     async checkInBooking(booking) {
         if (!booking) return;
         await this.pos.updateBookingFromPos(booking.id, { state: "checked_in" });
-    }
-
-    async releaseBookingTable(booking) {
-        if (!booking) return;
-
-        if (this.dialog) {
-            const confirmed = await new Promise(resolve => {
-                this.dialog.add(ConfirmationDialog, {
-                    title: _t("Release Table"),
-                    body: _t("Are you sure you want to release this table and check out the booking?"),
-                    confirm: () => resolve(true),
-                    cancel: () => resolve(false),
-                });
-            });
-            if (!confirmed) return;
-        }
-
-        const tableRecord = (booking.tableRecords && booking.tableRecords.length > 0)
-            ? booking.tableRecords[0]
-            : this.activeTables.find(t => {
-                const tableIds = Array.isArray(booking.table_ids)
-                    ? booking.table_ids.map(x => (typeof x === "object" && x ? x.id : x))
-                    : [booking.table_ids];
-                return tableIds.includes(t.id);
-            });
-        if (tableRecord) {
-            await this.pos.releaseTable(tableRecord, booking);
-        } else {
-            await this.pos.updateBookingFromPos(booking.id, { state: "checked_out" });
-        }
-    }
-
-    async releaseModalTable() {
-        if (this.currentModalBooking) {
-            await this.releaseBookingTable(this.currentModalBooking);
-        }
-        this.closeBookingModal();
     }
 
     async openBookingOrder(booking) {
