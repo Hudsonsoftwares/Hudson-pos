@@ -70,4 +70,18 @@
             </t>
         </xpath>
     </template>
+
+    <template id="pos_order_receipt_inherit_survey_qr" inherit_id="point_of_sale.pos_order_receipt">
+        <xpath expr="//div[@name='before-footer']" position="before">
+            <t t-if="conditions['show_survey_qr'] and image['survey_qr_code']">
+                <div class="w-100 text-center mt-3 mb-2" style="border-top: 1px dashed #444; padding-top: 8px;">
+                    <div class="text-small mb-1 text-center" style="font-size: 11px; line-height: 1.3;" t-out="extra_data['survey_message']"/>
+                    <div class="w-100 text-center">
+                        <img t-att-src="image['survey_qr_code']"
+                             t-attf-style="width: #{extra_data['survey_qr_size'] or 32}mm; height: #{extra_data['survey_qr_size'] or 32}mm; object-fit: contain; margin: 0 auto; display: inline-block;"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
 </odoo>

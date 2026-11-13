@@ -3,7 +3,7 @@
 
 {
     'name': 'POS Table Booking Bridge',
-    'version': '20.0.1.0.6',
+    'version': '20.0.1.0.8',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
     'summary': 'Connects Appointment booking engine to Odoo Restaurant POS',
@@ -39,6 +39,7 @@
             'hudson_pos_booking/static/src/js/booking_model.js',
             'hudson_pos_booking/static/src/js/restaurant_table_patch.js',
             'hudson_pos_booking/static/src/js/pos_store_patch.js',
+            'hudson_pos_booking/static/src/js/pos_receipt_survey_qr.js',
             'hudson_pos_booking/static/src/js/booking_screen.js',
             'hudson_pos_booking/static/src/xml/floor_plan_booking_badge.xml',
             'hudson_pos_booking/static/src/xml/booking_screen.xml',

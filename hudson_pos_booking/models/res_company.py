@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Hudson. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResCompany(models.Model):
@@ -24,3 +24,12 @@ class ResCompany(models.Model):
         default=35,
         help="Size of the Survey QR Code on invoices in millimeters (default: 35 mm).",
     )
+
+    @api.model
+    def _load_pos_data_fields(self, config):
+        params = super()._load_pos_data_fields(config)
+        for f in ('show_survey_qr', 'survey_url', 'survey_message', 'survey_qr_size'):
+            if f not in params:
+                params.append(f)
+        return params
+

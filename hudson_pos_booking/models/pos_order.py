@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Hudson. See LICENSE file for full copyright and licensing details.
 
+import base64
+import io
+import logging
+import qrcode
 from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 class PosOrder(models.Model):
     _inherit = 'pos.order'
@@ -215,4 +221,49 @@ class PosOrder(models.Model):
                 else:
                     vals['narration'] = note_line
         return vals
+
+    def _get_survey_qr_code(self):
+        """Generate base64 data URI PNG QR code for the company's configured survey URL."""
+        self.ensure_one()
+        company = self.company_id or self.env.company
+        if not getattr(company, 'show_survey_qr', False) or not getattr(company, 'survey_url', False):
+            return False
+        url = (company.survey_url or '').strip()
+        if not url:
+            return False
+        try:
+            qr = qrcode.QRCode(
+                version=None,
+                error_correction=qrcode.constants.ERROR_CORRECT_M,
+                box_size=10,
+                border=1,
+            )
+            qr.add_data(url)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color="black", back_color="white")
+            buffer = io.BytesIO()
+            img.save(buffer, format="PNG")
+            qr_b64 = base64.b64encode(buffer.getvalue()).decode()
+            return f"data:image/png;base64,{qr_b64}"
+        except Exception as e:
+            _logger.warning("Failed to generate survey QR code for POS order %s: %s", self.name or self.id, e)
+            return False
+
+    def order_receipt_generate_data(self, basic_receipt=False):
+        data = super().order_receipt_generate_data(basic_receipt=basic_receipt)
+        data.setdefault('conditions', {})['show_survey_qr'] = False
+        data.setdefault('image', {})['survey_qr_code'] = False
+        data.setdefault('extra_data', {})['survey_message'] = ""
+        data.setdefault('extra_data', {})['survey_qr_size'] = 32
+
+        company = self.company_id or self.env.company
+        if getattr(company, 'show_survey_qr', False) and getattr(company, 'survey_url', False):
+            qr_code = self._get_survey_qr_code()
+            if qr_code:
+                data['image']['survey_qr_code'] = qr_code
+                data['conditions']['show_survey_qr'] = True
+                data['extra_data']['survey_message'] = company.survey_message or "Thank you for coming! Scan the QR code below to fill the survey and share your suggestions."
+                data['extra_data']['survey_qr_size'] = company.survey_qr_size or 32
+        return data
+
 
