@@ -52,4 +52,22 @@
             </t>
         </xpath>
     </template>
+
+    <template id="report_invoice_document_inherit_survey_qr" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@id='total']" position="after">
+            <t t-if="o.company_id.show_survey_qr and o.company_id.survey_url">
+                <t t-set="survey_qr" t-value="o._get_survey_qr_code()"/>
+                <div t-if="survey_qr" class="survey_qr_section mt-3 mb-3 avoid-page-break-inside" style="clear: both;">
+                    <p class="mb-2 fw-semibold text-dark" style="font-size: 13px; line-height: 1.4;">
+                        <t t-out="o.company_id.survey_message or 'Thank you for coming! Scan the QR code below to fill the survey and share your suggestions.'"/>
+                    </p>
+                    <div class="survey_qr_image">
+                        <img t-att-src="survey_qr"
+                             t-attf-style="width: #{o.company_id.survey_qr_size or 35}mm; height: #{o.company_id.survey_qr_size or 35}mm; object-fit: contain; display: block;"
+                             alt="Survey QR Code"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
 </odoo>

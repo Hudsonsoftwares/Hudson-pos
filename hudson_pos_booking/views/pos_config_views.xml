@@ -12,7 +12,7 @@
                     <div class="content-group mt16" invisible="not use_booking">
                         <div class="row mb-2">
                             <label for="booking_appointment_type_id" string="Booking Type" class="col-lg-4 o_light_label"/>
-                            <field name="booking_appointment_type_id" class="col-lg-8" required="use_booking" placeholder="Select Table Booking type..."/>
+                            <field name="booking_appointment_type_id" class="col-lg-8" required="use_booking" placeholder="Select Booking / Event type..."/>
                         </div>
                         <div class="row mb-2">
                             <label for="booking_no_show_grace_minutes" string="Grace Period (Min)" class="col-lg-4 o_light_label"/>
@@ -36,7 +36,7 @@
                     <div class="content-group mt16" invisible="not pos_use_booking">
                         <div class="row mb-2">
                             <label for="pos_booking_appointment_type_id" string="Booking Type" class="col-lg-4 o_light_label"/>
-                            <field name="pos_booking_appointment_type_id" class="col-lg-8" required="pos_use_booking" placeholder="Select Table Booking type..."/>
+                            <field name="pos_booking_appointment_type_id" class="col-lg-8" required="pos_use_booking" placeholder="Select Booking / Event type..."/>
                         </div>
                         <div class="row mb-2">
                             <label for="pos_booking_no_show_grace_minutes" string="Grace Period (Min)" class="col-lg-4 o_light_label"/>
@@ -45,6 +45,34 @@
                     </div>
                 </setting>
             </block>
+        </field>
+    </record>
+
+    <!-- Invoicing Survey QR Settings Form View -->
+    <record id="res_config_settings_view_form_inherit_survey_qr" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.survey.qr</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='invoicing_settings']" position="inside">
+                <setting id="survey_qr_code_setting" string="Show Survey QR Code on Invoice" help="Generate and display Survey QR Code on customer invoices">
+                    <field name="show_survey_qr"/>
+                    <div class="content-group mt16" invisible="not show_survey_qr">
+                        <div class="row mb-2">
+                            <label for="survey_url" string="Survey URL" class="col-lg-3 o_light_label"/>
+                            <field name="survey_url" class="col-lg-9" placeholder="https://example.com/survey/feedback" required="show_survey_qr"/>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="survey_message" string="Survey Message" class="col-lg-3 o_light_label"/>
+                            <field name="survey_message" class="col-lg-9" placeholder="Thank you for coming! Scan the QR code below to fill the survey and share your suggestions."/>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="survey_qr_size" string="QR Code Size (mm)" class="col-lg-3 o_light_label"/>
+                            <field name="survey_qr_size" class="col-lg-3"/>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
         </field>
     </record>
 </odoo>
