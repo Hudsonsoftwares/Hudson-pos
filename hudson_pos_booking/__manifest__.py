@@ -3,7 +3,7 @@
 
 {
     'name': 'POS Table Booking Bridge',
-    'version': '20.0.1.0.4',
+    'version': '20.0.1.0.5',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
     'summary': 'Connects Appointment booking engine to Odoo Restaurant POS',
