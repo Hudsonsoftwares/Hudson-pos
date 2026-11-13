@@ -2,6 +2,7 @@
 
 import { patch } from "@web/core/utils/patch";
 import { GeneratePrinterData } from "@point_of_sale/app/utils/printer/generate_printer_data";
+import { generateQRCodeDataUrl } from "@point_of_sale/utils";
 
 patch(GeneratePrinterData.prototype, {
     generateReceiptData() {
@@ -23,7 +24,10 @@ patch(GeneratePrinterData.prototype, {
         if (company && company.show_survey_qr && company.survey_url) {
             const url = (company.survey_url || "").trim();
             if (url) {
-                const qrCode = this.generateQrCode(url);
+                const qrCode =
+                    typeof generateQRCodeDataUrl === "function"
+                        ? generateQRCodeDataUrl(url)
+                        : this.generateQrCode(url);
                 if (qrCode) {
                     res.image.survey_qr_code = qrCode;
                     res.conditions.show_survey_qr = true;

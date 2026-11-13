@@ -72,16 +72,22 @@
     </template>
 
     <template id="pos_order_receipt_inherit_survey_qr" inherit_id="point_of_sale.pos_order_receipt">
-        <xpath expr="//div[@name='before-footer']" position="before">
-            <t t-if="conditions['show_survey_qr'] and image['survey_qr_code']">
-                <div class="w-100 text-center mt-3 mb-2" style="border-top: 1px dashed #444; padding-top: 8px;">
-                    <div class="text-small mb-1 text-center" style="font-size: 11px; line-height: 1.3;" t-out="extra_data['survey_message']"/>
-                    <div class="w-100 text-center">
-                        <img t-att-src="image['survey_qr_code']"
-                             t-attf-style="width: #{extra_data['survey_qr_size'] or 32}mm; height: #{extra_data['survey_qr_size'] or 32}mm; object-fit: contain; margin: 0 auto; display: inline-block;"/>
-                    </div>
-                </div>
-            </t>
+        <xpath expr="//div[hasclass('w-100') and @t-if[contains(., 'use_self_invoicing')]]" position="after">
+            <div class="w-100 mt-2" t-if="conditions['show_survey_qr'] and image['survey_qr_code'] and not conditions['basic_receipt']">
+                <table class="w-100">
+                    <tbody>
+                        <tr>
+                            <td class="w-25">
+                                <img class="survey-qr-code" t-att-src="image['survey_qr_code']" style="width: 100%; max-width: 28mm; height: auto; object-fit: contain; display: block;" alt="Survey QR Code"/>
+                            </td>
+                            <td class="text-start top w-75 ps-1">
+                                <div class="text-bold text-normal">Customer Survey</div>
+                                <div class="text-small" t-out="extra_data['survey_message']"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </xpath>
     </template>
 </odoo>
