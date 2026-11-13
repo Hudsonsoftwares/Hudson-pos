@@ -60,7 +60,7 @@
     </record>
 
     <!-- ============================================================
-         PROMOTIONS: 5 Sample Promotional Programs
+         PROMOTIONS: Sample Promotional Programs
     ============================================================ -->
 
     <!-- Promotion 1: Happy Hour - 15% off on all orders -->
@@ -109,7 +109,7 @@
         <field name="description">10% Off First Order</field>
     </record>
 
-    <!-- Promotion 3: Weekend Special - 20% off -->
+    <!-- Promotion 3: Weekend Special - 20% off beverages -->
     <record id="loyalty_program_weekend_special" model="loyalty.program">
         <field name="name">Weekend Special — 20% Off Beverages</field>
         <field name="program_type">promotion</field>
@@ -132,7 +132,31 @@
         <field name="description">20% Off Beverages</field>
     </record>
 
-    <!-- Promotion 4: Loyalty Points Program -->
+    <!-- Promotion 4: Family Combo Discount - 20% off orders above ₹500 -->
+    <record id="loyalty_program_family_combo" model="loyalty.program">
+        <field name="name">Family Combo — 20% Off Orders Above ₹500</field>
+        <field name="program_type">promotion</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">current</field>
+    </record>
+
+    <record id="loyalty_program_family_combo_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_family_combo"/>
+        <field name="minimum_amount">500</field>
+    </record>
+
+    <record id="loyalty_program_family_combo_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_family_combo"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">20</field>
+        <field name="discount_applicability">order</field>
+        <field name="description">20% Off Orders Above ₹500</field>
+    </record>
+
+    <!-- ============================================================
+         LOYALTY CARDS: RestoCafe VIP Club Points Program
+    ============================================================ -->
     <record id="loyalty_program_points" model="loyalty.program">
         <field name="name">RestoCafe Loyalty Points</field>
         <field name="program_type">loyalty</field>
@@ -158,26 +182,148 @@
         <field name="description">5% Discount for 50 Points</field>
     </record>
 
-    <!-- Promotion 5: Family Combo Discount - 20% off orders above ₹500 -->
-    <record id="loyalty_program_family_combo" model="loyalty.program">
-        <field name="name">Family Combo — 20% Off Orders Above ₹500</field>
-        <field name="program_type">promotion</field>
-        <field name="trigger">auto</field>
+    <record id="loyalty_program_points_reward_tier2" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_points"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">10</field>
+        <field name="required_points">100</field>
+        <field name="discount_applicability">order</field>
+        <field name="description">10% Discount for 100 Points</field>
+    </record>
+
+    <!-- ============================================================
+         COUPONS: Seasonal Discount Coupons Program
+    ============================================================ -->
+    <record id="loyalty_program_coupons" model="loyalty.program">
+        <field name="name">Seasonal Discount Coupons — 15% Off</field>
+        <field name="program_type">coupons</field>
+        <field name="trigger">with_code</field>
         <field name="applies_on">current</field>
+        <field name="portal_point_name">Coupon point(s)</field>
     </record>
 
-    <record id="loyalty_program_family_combo_rule" model="loyalty.rule">
-        <field name="program_id" ref="loyalty_program_family_combo"/>
-        <field name="minimum_amount">500</field>
+    <record id="loyalty_program_coupons_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_coupons"/>
+        <field name="reward_point_mode">order</field>
+        <field name="reward_point_amount">1</field>
+        <field name="minimum_qty">1</field>
     </record>
 
-    <record id="loyalty_program_family_combo_reward" model="loyalty.reward">
-        <field name="program_id" ref="loyalty_program_family_combo"/>
+    <record id="loyalty_program_coupons_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_coupons"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">15</field>
+        <field name="discount_applicability">order</field>
+        <field name="required_points">1</field>
+        <field name="description">15% Off with Coupon</field>
+    </record>
+
+    <!-- ============================================================
+         DISCOUNT CODE: Promo Codes (order-wide & specific category)
+    ============================================================ -->
+    <record id="loyalty_program_promo_discount10" model="loyalty.program">
+        <field name="name">Discount Code: DISCOUNT10 — 10% Off Order</field>
+        <field name="program_type">promo_code</field>
+        <field name="trigger">with_code</field>
+        <field name="applies_on">current</field>
+        <field name="portal_point_name">Discount point(s)</field>
+    </record>
+
+    <record id="loyalty_program_promo_discount10_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_promo_discount10"/>
+        <field name="mode">with_code</field>
+        <field name="code">DISCOUNT10</field>
+        <field name="reward_point_mode">order</field>
+        <field name="reward_point_amount">1</field>
+        <field name="minimum_qty">1</field>
+    </record>
+
+    <record id="loyalty_program_promo_discount10_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_promo_discount10"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">10</field>
+        <field name="discount_applicability">order</field>
+        <field name="required_points">1</field>
+        <field name="description">10% Discount with DISCOUNT10</field>
+    </record>
+
+    <record id="loyalty_program_promo_burger20" model="loyalty.program">
+        <field name="name">Discount Code: BURGER20 — 20% Off Burgers</field>
+        <field name="program_type">promo_code</field>
+        <field name="trigger">with_code</field>
+        <field name="applies_on">current</field>
+        <field name="portal_point_name">Discount point(s)</field>
+    </record>
+
+    <record id="loyalty_program_promo_burger20_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_promo_burger20"/>
+        <field name="mode">with_code</field>
+        <field name="code">BURGER20</field>
+        <field name="reward_point_mode">unit</field>
+        <field name="reward_point_amount">1</field>
+        <field name="minimum_qty">1</field>
+    </record>
+
+    <record id="loyalty_program_promo_burger20_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_promo_burger20"/>
         <field name="reward_type">discount</field>
         <field name="discount_mode">percent</field>
         <field name="discount">20</field>
         <field name="discount_applicability">order</field>
-        <field name="description">20% Off Orders Above ₹500</field>
+        <field name="required_points">1</field>
+        <field name="description">20% Off Burgers with BURGER20</field>
+    </record>
+
+    <!-- ============================================================
+         BUY X GET Y: Free Soft Drink with Burgers & Free Cookie with Drinks
+    ============================================================ -->
+    <record id="loyalty_program_buy_x_get_y_burger" model="loyalty.program">
+        <field name="name">Buy 2 Burgers, Get 1 Soft Drink Free</field>
+        <field name="program_type">buy_x_get_y</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">current</field>
+        <field name="portal_point_name">Credit(s)</field>
+    </record>
+
+    <record id="loyalty_program_buy_x_get_y_coffee" model="loyalty.program">
+        <field name="name">Buy 2 Hot Drinks, Get 1 Cookie Free</field>
+        <field name="program_type">buy_x_get_y</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">current</field>
+        <field name="portal_point_name">Credit(s)</field>
+    </record>
+
+    <!-- ============================================================
+         NEXT ORDER COUPONS: Next Visit Coupon on Qualifying Spend
+    ============================================================ -->
+    <record id="loyalty_program_next_order_coupons" model="loyalty.program">
+        <field name="name">Spend ₹500, Get 15% Off Next Order</field>
+        <field name="program_type">next_order_coupons</field>
+        <field name="trigger">auto</field>
+        <field name="applies_on">future</field>
+        <field name="portal_visible">True</field>
+        <field name="portal_point_name">Coupon point(s)</field>
+    </record>
+
+    <record id="loyalty_program_next_order_coupons_rule" model="loyalty.rule">
+        <field name="program_id" ref="loyalty_program_next_order_coupons"/>
+        <field name="reward_point_mode">order</field>
+        <field name="reward_point_amount">1</field>
+        <field name="minimum_amount">500</field>
+        <field name="minimum_qty">0</field>
+    </record>
+
+    <record id="loyalty_program_next_order_coupons_reward" model="loyalty.reward">
+        <field name="program_id" ref="loyalty_program_next_order_coupons"/>
+        <field name="reward_type">discount</field>
+        <field name="discount_mode">percent</field>
+        <field name="discount">15</field>
+        <field name="discount_applicability">order</field>
+        <field name="required_points">1</field>
+        <field name="description">15% Off Your Next Order</field>
     </record>
 
 </odoo>

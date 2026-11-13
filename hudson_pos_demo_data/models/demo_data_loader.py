@@ -2,6 +2,7 @@
 # Part of Hudson. See LICENSE file for full copyright and licensing details.
 
 import base64
+import hashlib
 import logging
 import os
 from odoo.tools import convert_file
@@ -23,6 +24,7 @@ DEMO_XML_FILES = [
 ]
 
 IMAGE_SEARCH_PATHS = [
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'static', 'src', 'img')),
     r'C:\Program Files\Odoo 20.0.20260928\server\odoo\addons\pos_restaurant\static\img',
     r'C:\Program Files\Odoo 20.0.20260928\server\odoo\addons\point_of_sale\static\img',
 ]
@@ -55,22 +57,34 @@ PRODUCT_IMAGE_MAP = {
     'Espresso': 'th-espresso.png',
     'Green Tea': 'th-green_tea.png',
     'Ice Tea': 'th-ice_tea.png',
-    'Signature Hot Chocolate': 'soft-drink-icon.png',
+    'Signature Hot Chocolate': 'product_hot_chocolate.png',
     'Warm Apple Pie': 'product_apple_pie.png',
     'Artisan Chocolate Croissant': 'product_pain_au_chocolat.png',
-    'Double Chocolate Chip Cookie': 'product_blueberry_muffin.png',
-    'New York Cheesecake': 'product_pecan_pie.png',
-    'Chocolate Lava Cake': 'pastries-icon.png',
-    'Crème Brûlée': 'pastries-icon.png',
-    'Tiramisu': 'pastries-icon.png',
+    'Double Chocolate Chip Cookie': 'product_chocolate_chip_cookie.png',
+    'New York Cheesecake': 'product_new_york_cheesecake.png',
+    'Chocolate Lava Cake': 'product_chocolate_lava_cake.png',
+    'Crème Brûlée': 'product_creme_brulee.png',
+    'Tiramisu': 'product_tiramisu.png',
     'Fresh Strawberry Tart': 'product_cherry_pie.png',
+    'Vanilla Bean Ice Cream Sundae': 'product_ice_cream_sundae.png',
+    'French Macarons Box (6 pcs)': 'product_french_macarons.png',
+    'Belgian Milk Chocolate Truffles': 'product_belgian_truffles.png',
+    'Dark Chocolate Bar 70%': 'product_dark_chocolate_bar.png',
+    'White Chocolate Raspberry Bar': 'product_white_chocolate_bar.png',
+    'Luxury Chocolate Gift Box': 'product_luxury_chocolate_box.png',
+    'Dessert & Hot Drink Combo': 'product_dessert_combo.png',
+    'Fudge Brownie & Ice Cream': 'product_fudge_brownie.png',
+}
+
+LEGACY_PLACEHOLDER_IMAGES = (
+    'pastries-icon.png',
+    'soft-drink-icon.png',
+)
+
+LEGACY_REUSED_IMAGES = {
+    'Double Chocolate Chip Cookie': 'product_blueberry_muffin.png',
     'Vanilla Bean Ice Cream Sundae': 'th-milkshake_banana.png',
-    'French Macarons Box (6 pcs)': 'pastries-icon.png',
-    'Belgian Milk Chocolate Truffles': 'pastries-icon.png',
-    'Dark Chocolate Bar 70%': 'pastries-icon.png',
-    'White Chocolate Raspberry Bar': 'pastries-icon.png',
-    'Luxury Chocolate Gift Box': 'pastries-icon.png',
-    'Dessert & Hot Drink Combo': 'pastries-icon.png',
+    'New York Cheesecake': 'product_pecan_pie.png',
 }
 
 
@@ -87,72 +101,138 @@ def load_pos_demo_data(env, pos_config_ids=None):
     _logger.info("Hudson POS: Starting Restaurant & Cafe Demo Data loader...")
 
     # 1. Clean up duplicate / orphan floors created previously
-    _cleanup_duplicate_floors(env)
+    with env.cr.savepoint():
+        _cleanup_duplicate_floors(env)
 
     # 2. Pre-bind existing records to ir.model.data
-    _pre_bind_existing_records(env)
+    with env.cr.savepoint():
+        _pre_bind_existing_records(env)
 
-    # 3. Execute all standard XML demo files
+    # 3. Execute all standard XML demo files safely inside savepoints
     for xml_file in DEMO_XML_FILES:
+        if xml_file == 'demo/recruitment_demo.xml' and (
+            'hr.job' not in env or 'is_published' not in env['hr.job']._fields
+        ):
+            _logger.info("Skipping %s because website_hr_recruitment is not installed.", xml_file)
+            continue
+        if xml_file == 'demo/elearning_demo.xml' and 'slide.channel' not in env:
+            _logger.info("Skipping %s because website_slides is not installed.", xml_file)
+            continue
         try:
-            _logger.info("Loading demo XML: %s", xml_file)
-            convert_file(
-                env,
-                'hudson_pos_demo_data',
-                xml_file,
-                idref={},
-                mode='init',
-                noupdate=True,
-            )
+            with env.cr.savepoint():
+                _logger.info("Loading demo XML: %s", xml_file)
+                convert_file(
+                    env,
+                    'hudson_pos_demo_data',
+                    xml_file,
+                    idref={},
+                    mode='init',
+                    noupdate=True,
+                )
         except Exception as e:
             _logger.error("Failed to load demo file %s: %s", xml_file, e)
 
     # 4. Clean up any 'My Company' duplicate floor created by Odoo during POS init
-    _cleanup_duplicate_floors(env)
+    with env.cr.savepoint():
+        _cleanup_duplicate_floors(env)
 
     # 5. Configure graphical floor layouts and table positions
-    _configure_floors_and_tables(env)
+    try:
+        with env.cr.savepoint():
+            _configure_floors_and_tables(env)
+    except Exception as e:
+        _logger.warning("Could not configure floors and tables: %s", e)
 
     # 6. Ensure Restaurant and Cafe POS configurations exist
-    _ensure_default_shops(env)
+    try:
+        with env.cr.savepoint():
+            _ensure_default_shops(env)
+    except Exception as e:
+        _logger.warning("Could not ensure default POS shops: %s", e)
 
     # 7. Configure true POS Combos (product.combo & type='combo')
-    _configure_combos(env)
+    try:
+        with env.cr.savepoint():
+            _configure_combos(env)
+    except Exception as e:
+        _logger.warning("Could not configure POS combos: %s", e)
 
     # 8. Attach images to products
-    _load_product_images(env)
+    try:
+        with env.cr.savepoint():
+            _load_product_images(env)
+    except Exception as e:
+        _logger.warning("Could not load product images: %s", e)
+
+    # 8b. Configure advanced loyalty programs, product rules/rewards, and sample cards
+    try:
+        with env.cr.savepoint():
+            _configure_loyalty_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not configure loyalty demo data: %s", e)
 
     # 9. Link floors, screens, pricelists, and loyalty programs to POS configs
-    _post_process_pos_configs(env, pos_config_ids)
+    try:
+        with env.cr.savepoint():
+            _post_process_pos_configs(env, pos_config_ids)
+    except Exception as e:
+        _logger.warning("Could not post-process POS configs: %s", e)
+
+    # Remove any dummy company floor auto-created by pos_restaurant during shop creation
+    with env.cr.savepoint():
+        _cleanup_duplicate_floors(env)
 
     # 10. Initialize stock inventory
-    _load_stock_inventory(env)
+    try:
+        with env.cr.savepoint():
+            _load_stock_inventory(env)
+    except Exception as e:
+        _logger.warning("Could not load stock inventory: %s", e)
 
     # 11. Configure & publish recruitment job openings & sample applicants
-    _load_recruitment_demo_data(env)
+    try:
+        with env.cr.savepoint():
+            _load_recruitment_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load recruitment demo data: %s", e)
 
     # 12. Configure & publish eLearning courses to website
-    _load_elearning_demo_data(env)
-
-    # 13. Create Kitchen Display (KDS) sample configurations
-    _load_kitchen_display_demo_data(env)
-
-    # 14. Create sample POS orders for demonstration
-    _load_sample_pos_orders(env)
-
-    # 15. Create full connected HR Suite demo data (Employees, Attendance, Time Off, Fleet, Lunch, Expenses, Payroll)
     try:
-        from .demo_hr_suite import load_hr_suite_demo_data
-        load_hr_suite_demo_data(env)
+        with env.cr.savepoint():
+            _load_elearning_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load eLearning demo data: %s", e)
+
+    # 13. Create sample POS orders for demonstration
+    try:
+        with env.cr.savepoint():
+            _load_sample_pos_orders(env)
+    except Exception as e:
+        _logger.warning("Could not load sample POS orders: %s", e)
+
+    # 14. Create full connected HR Suite demo data (Employees, Attendance, Time Off, Fleet, Lunch, Expenses, Payroll)
+    try:
+        with env.cr.savepoint():
+            from .demo_hr_suite import load_hr_suite_demo_data
+            load_hr_suite_demo_data(env)
     except Exception as e:
         _logger.warning("Could not load HR suite demo data: %s", e)
 
-    # 16. Create full connected Business Suite demo data (CRM, Sales, Inventory, Purchase, MRP, Maintenance, Events, Survey)
+    # 15. Create full connected Business Suite demo data (CRM, Sales, Inventory, Purchase, MRP, Maintenance, Events, Survey)
     try:
-        from .demo_business_suite import load_business_suite_demo_data
-        load_business_suite_demo_data(env)
+        with env.cr.savepoint():
+            from .demo_business_suite import load_business_suite_demo_data
+            load_business_suite_demo_data(env)
     except Exception as e:
         _logger.warning("Could not load Business suite demo data: %s", e)
+
+    # 16. Create Restaurant & Cafe Inventory Suite demo data (Ingredients, Packaging, Vendors, Locations, Rules, BoMs, Moves)
+    try:
+        with env.cr.savepoint():
+            from .demo_inventory_suite import load_inventory_suite_demo_data
+            load_inventory_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Inventory suite demo data: %s", e)
 
     _logger.info("Hudson POS: Restaurant & Cafe demo data loaded successfully.")
     return True
@@ -160,14 +240,19 @@ def load_pos_demo_data(env, pos_config_ids=None):
 
 def _cleanup_duplicate_floors(env):
     """
-    Removes auto-generated dummy floors named 'My Company' and orphan floors without POS configs.
+    Removes auto-generated dummy floors named after the company ('My Company') when orphaned without POS configs.
     """
     RestaurantFloor = env['restaurant.floor'].sudo()
-    dummy_floors = RestaurantFloor.search([('name', '=', 'My Company')])
+    dummy_names = list({n for n in ['My Company', env.company.name] if n})
+    dummy_floors = RestaurantFloor.search([
+        ('name', 'in', dummy_names),
+        ('pos_config_ids', '=', False),
+    ])
     for flr in dummy_floors:
         try:
-            flr.table_ids.unlink()
-            flr.unlink()
+            with env.cr.savepoint():
+                flr.table_ids.unlink()
+                flr.unlink()
         except Exception as e:
             _logger.warning("Could not unlink dummy floor %s: %s", flr.id, e)
 
@@ -330,32 +415,88 @@ def _configure_combos(env):
                 _logger.warning("Could not configure combo product %s: %s", prod_name, e)
 
 
-def _load_product_images(env):
+def _load_product_images(env, replace_placeholders=False):
     """
     Attaches high-resolution product images to food, drink, and dessert products.
+    Replaces missing images and outline placeholder icons, and optionally upgrades
+    legacy reused product photos during migrations without overwriting custom images.
     """
     ProductTemplate = env['product.template'].sudo()
+    IrAttachment = env['ir.attachment'].sudo()
 
-    def get_image_base64(filename):
+    def get_image_bytes(filename):
         for base_dir in IMAGE_SEARCH_PATHS:
             full_path = os.path.join(base_dir, filename)
             if os.path.exists(full_path):
                 try:
                     with open(full_path, 'rb') as f:
-                        return base64.b64encode(f.read()).decode('utf-8')
+                        return f.read()
                 except Exception:
                     pass
         return None
 
+    def get_file_sha1(filename):
+        data = get_image_bytes(filename)
+        return hashlib.sha1(data).hexdigest() if data else None
+
+    placeholder_hashes = {
+        h for fname in LEGACY_PLACEHOLDER_IMAGES
+        if (h := get_file_sha1(fname))
+    }
+    placeholder_hashes.update({
+        'ed345d90cf7a5246fec80d9656351666e6a3f6a4',  # pastries-icon.png
+        'c2232be8ab8840c29a0a144ab7fdd459abe4320f',  # soft-drink-icon.png
+    })
+
+    legacy_reused_known_hashes = {
+        'Double Chocolate Chip Cookie': '82100d0a73780e6ba3e45712763108b48a61b658',  # product_blueberry_muffin.png
+        'Vanilla Bean Ice Cream Sundae': '3bbd34cf004ebeeeacbb9da67c4d9b444d300183',  # th-milkshake_banana.png
+        'New York Cheesecake': 'f66573e2f158a333c2871a5b8f18e7940e140a0f',  # product_pecan_pie.png
+    }
+
     for prod_name, img_filename in PRODUCT_IMAGE_MAP.items():
         tmpl = ProductTemplate.search([('name', '=', prod_name)], limit=1)
-        if tmpl and not tmpl.image_1920:
-            img_b64 = get_image_base64(img_filename)
-            if img_b64:
-                try:
-                    tmpl.write({'image_1920': img_b64})
-                except Exception as e:
-                    _logger.warning("Could not set image on %s: %s", prod_name, e)
+        if not tmpl:
+            continue
+
+        img_bytes = get_image_bytes(img_filename)
+        if not img_bytes:
+            continue
+
+        target_sha1 = hashlib.sha1(img_bytes).hexdigest()
+        should_write = False
+
+        att = IrAttachment.search([
+            ('res_model', '=', 'product.template'),
+            ('res_id', '=', tmpl.id),
+            ('res_field', '=', 'image_1920'),
+        ], limit=1)
+
+        current_sha1 = att.checksum if (att and att.checksum) else None
+        if not current_sha1 and tmpl.image_1920:
+            try:
+                current_sha1 = hashlib.sha1(base64.b64decode(tmpl.image_1920)).hexdigest()
+            except Exception:
+                current_sha1 = None
+
+        if not current_sha1:
+            should_write = True
+        elif current_sha1 != target_sha1:
+            if current_sha1 in placeholder_hashes:
+                should_write = True
+            elif replace_placeholders and prod_name in LEGACY_REUSED_IMAGES:
+                legacy_hashes = {legacy_reused_known_hashes.get(prod_name)}
+                legacy_sha1 = get_file_sha1(LEGACY_REUSED_IMAGES[prod_name])
+                if legacy_sha1:
+                    legacy_hashes.add(legacy_sha1)
+                if current_sha1 in legacy_hashes:
+                    should_write = True
+
+        if should_write:
+            try:
+                tmpl.write({'image_1920': base64.b64encode(img_bytes).decode('utf-8')})
+            except Exception as e:
+                _logger.warning("Could not set image on %s: %s", prod_name, e)
 
 
 def _pre_bind_existing_records(env):
@@ -364,6 +505,8 @@ def _pre_bind_existing_records(env):
     convert_file performs updates instead of duplicate inserts.
     """
     def bind_xml(model, xml_name, domain):
+        if model not in env:
+            return
         rec = env[model].sudo().search(domain, limit=1)
         if rec:
             xdata = env['ir.model.data'].sudo().search([
@@ -431,9 +574,15 @@ def _pre_bind_existing_records(env):
         ('loyalty_program_ewallet', 'eWallet'),
         ('loyalty_program_happy_hour', 'Happy Hour — 15% Off All Orders'),
         ('loyalty_program_welcome_discount', 'Welcome Discount — 10% Off First Order'),
-        ('loyalty_program_weekend_special', 'Weekend Special — Buy 2 Get 1 Free (Drinks)'),
+        ('loyalty_program_weekend_special', 'Weekend Special — 20% Off Beverages'),
         ('loyalty_program_points', 'RestoCafe Loyalty Points'),
         ('loyalty_program_family_combo', 'Family Combo — 20% Off Orders Above ₹500'),
+        ('loyalty_program_coupons', 'Seasonal Discount Coupons — 15% Off'),
+        ('loyalty_program_promo_discount10', 'Discount Code: DISCOUNT10 — 10% Off Order'),
+        ('loyalty_program_promo_burger20', 'Discount Code: BURGER20 — 20% Off Burgers'),
+        ('loyalty_program_buy_x_get_y_burger', 'Buy 2 Burgers, Get 1 Soft Drink Free'),
+        ('loyalty_program_buy_x_get_y_coffee', 'Buy 2 Hot Drinks, Get 1 Cookie Free'),
+        ('loyalty_program_next_order_coupons', 'Spend ₹500, Get 15% Off Next Order'),
     ]
     for xname, pname in programs:
         bind_xml('loyalty.program', xname, [('name', '=', pname)])
@@ -458,8 +607,15 @@ def _post_process_pos_configs(env, pos_config_ids=None):
     # Table Booking appointment type
     app_type = env['appointment.type'].sudo().search([('name', '=', 'Table Booking')], limit=1) if 'appointment.type' in env else False
 
-    # Tip Product
-    tip_prod = env['product.product'].sudo().search([('name', '=', 'Tips')], limit=1)
+    # Tip Product (reuse core Odoo POS Tips product first to avoid duplicates)
+    tip_prod = env.ref('point_of_sale.product_product_tip', raise_if_not_found=False)
+    if tip_prod:
+        if not tip_prod.active:
+            tip_prod.sudo().write({'active': True})
+    else:
+        tip_prod = env['product.product'].sudo().with_context(active_test=False).search([('name', '=', 'Tips')], limit=1)
+        if tip_prod and not tip_prod.active:
+            tip_prod.sudo().write({'active': True})
     if not tip_prod and 'product.product' in env:
         try:
             tip_prod = env['product.product'].sudo().create({
@@ -491,13 +647,27 @@ def _post_process_pos_configs(env, pos_config_ids=None):
         if pricelists:
             valid_pricelists = pricelists.filtered(lambda p: not p.currency_id or p.currency_id == config.currency_id)
             if valid_pricelists:
+                group_pricelist = env.ref('product.group_product_pricelist', raise_if_not_found=False)
+                group_user = env.ref('base.group_user', raise_if_not_found=False)
+                if group_pricelist and group_user and group_pricelist not in group_user.sudo().all_implied_ids:
+                    group_user.sudo()._apply_group(group_pricelist)
+                env['res.company'].sudo()._activate_or_create_pricelists()
+
                 vals['use_pricelist'] = True
                 vals['available_pricelist_ids'] = [Command.link(p.id) for p in valid_pricelists]
-                if not config.pricelist_id:
-                    default_pl = env['product.pricelist'].sudo().search([('name', '=', 'Default')], limit=1) or valid_pricelists[:1]
-                    if default_pl:
+                default_pl = env['product.pricelist'].sudo().search([
+                    ('company_id', 'in', [config.company_id.id, False]),
+                    ('currency_id', '=', config.currency_id.id),
+                    ('item_ids', '=', False),
+                ], order='sequence asc, id asc', limit=1) or env['product.pricelist'].sudo().search([
+                    ('name', '=', 'Default'),
+                    ('company_id', 'in', [config.company_id.id, False]),
+                    ('currency_id', '=', config.currency_id.id),
+                ], limit=1) or valid_pricelists[:1]
+                if default_pl:
+                    vals['available_pricelist_ids'].append(Command.link(default_pl.id))
+                    if not config.pricelist_id:
                         vals['pricelist_id'] = default_pl.id
-                        vals['available_pricelist_ids'].append(Command.link(default_pl.id))
 
         # 1. Take out / Delivery / Presets
         if hasattr(config, 'use_presets') and presets:
@@ -562,6 +732,215 @@ def _post_process_pos_configs(env, pos_config_ids=None):
                     prog.write({'pos_config_ids': [Command.clear()]})
             except Exception:
                 pass
+
+
+def _configure_loyalty_demo_data(env):
+    """
+    Sets up complete, rich demo data for all 6 loyalty program types (+ Gift Card & eWallet):
+    1. Coupons (coupons): Seasonal coupons with pre-generated codes COUPON15, BURGER50, FESTIVE20
+    2. Loyalty Cards (loyalty): RestoCafe VIP Club with 3 reward tiers (5%, 10%, Free Lava Cake) and demo card VIP-CLUB-1001 with 150 points
+    3. Promotions (promotion): Happy Hour, Welcome, Weekend, Family Combo
+    4. Discount Code (promo_code): DISCOUNT10 (10% off order) and BURGER20 (20% off burgers)
+    5. Buy X Get Y (buy_x_get_y): Buy 2 Burgers Get 1 Soft Drink Free, Buy 2 Hot Drinks Get 1 Cookie Free
+    6. Next Order Coupons (next_order_coupons): Spend ₹500 Get 15% Off Next Order with demo card NEXTVISIT15
+    7. Gift Cards (gift_card): Demo card GIFTCARD-100 (₹100 balance)
+    8. eWallet (ewallet): Demo card EWALLET-500 (₹500 balance)
+    """
+    if 'loyalty.program' not in env:
+        return
+
+    LoyaltyProgram = env['loyalty.program'].sudo()
+    LoyaltyCard = env['loyalty.card'].sudo()
+    LoyaltyHistory = env['loyalty.history'].sudo() if 'loyalty.history' in env else False
+    Product = env['product.product'].sudo()
+
+    # Find products for rules and rewards
+    bacon_burger = Product.search([('name', '=', 'Bacon Burger')], limit=1)
+    cheese_burger = Product.search([('name', '=', 'Cheese Burger')], limit=1)
+    coke = Product.search([('name', '=', 'Coca-Cola')], limit=1)
+    espresso = Product.search([('name', '=', 'Espresso')], limit=1)
+    green_tea = Product.search([('name', '=', 'Green Tea')], limit=1)
+    ice_tea = Product.search([('name', '=', 'Ice Tea')], limit=1)
+    cookie = Product.search([('name', '=', 'Double Chocolate Chip Cookie')], limit=1)
+    cake = Product.search([('name', '=', 'Chocolate Lava Cake')], limit=1)
+
+    burger_ids = [p.id for p in [bacon_burger, cheese_burger] if p]
+    hot_drink_ids = [p.id for p in [espresso, green_tea, ice_tea] if p]
+
+    def ensure_card(program, code, points, description='Demo Card', partner=False):
+        if not program or not code:
+            return
+        card = False
+        if partner and program.program_type == 'loyalty':
+            card = LoyaltyCard.search([('program_id', '=', program.id), ('partner_id', '=', partner.id)], limit=1)
+        if not card:
+            card = LoyaltyCard.search([('code', '=', code)], limit=1)
+        if not card:
+            card = LoyaltyCard.create({
+                'program_id': program.id,
+                'code': code,
+                'partner_id': partner.id if partner else False,
+            })
+        if card and points > card.points and 'loyalty.history' in env:
+            diff = points - card.points
+            env['loyalty.history'].sudo().create({
+                'card_id': card.id,
+                'description': description,
+                'issued': diff,
+            })
+        return card
+
+    # 1. Buy X Get Y: Burgers -> Soft Drink Free
+    p_bxy_burger = LoyaltyProgram.search([('name', '=', 'Buy 2 Burgers, Get 1 Soft Drink Free')], limit=1)
+    if not p_bxy_burger:
+        p_bxy_burger = LoyaltyProgram.create({
+            'name': 'Buy 2 Burgers, Get 1 Soft Drink Free',
+            'program_type': 'buy_x_get_y',
+            'trigger': 'auto',
+            'applies_on': 'current',
+            'portal_point_name': 'Credit(s)',
+        })
+    if p_bxy_burger:
+        if not p_bxy_burger.rule_ids and burger_ids:
+            p_bxy_burger.write({
+                'rule_ids': [Command.create({
+                    'reward_point_mode': 'unit',
+                    'reward_point_amount': 1,
+                    'minimum_qty': 2,
+                    'product_ids': [Command.set(burger_ids)],
+                })]
+            })
+        elif p_bxy_burger.rule_ids and burger_ids:
+            p_bxy_burger.rule_ids[0].write({
+                'reward_point_mode': 'unit',
+                'reward_point_amount': 1,
+                'minimum_qty': 2,
+                'product_ids': [Command.set(burger_ids)],
+            })
+        if not p_bxy_burger.reward_ids and coke:
+            p_bxy_burger.write({
+                'reward_ids': [Command.create({
+                    'reward_type': 'product',
+                    'reward_product_id': coke.id,
+                    'reward_product_qty': 1,
+                    'required_points': 2,
+                    'description': 'Free Coca-Cola with 2 Burgers',
+                })]
+            })
+        elif p_bxy_burger.reward_ids and coke:
+            p_bxy_burger.reward_ids[0].write({
+                'reward_type': 'product',
+                'reward_product_id': coke.id,
+                'reward_product_qty': 1,
+                'required_points': 2,
+                'description': 'Free Coca-Cola with 2 Burgers',
+            })
+
+    # 2. Buy X Get Y: Hot Drinks -> Cookie Free
+    p_bxy_coffee = LoyaltyProgram.search([('name', '=', 'Buy 2 Hot Drinks, Get 1 Cookie Free')], limit=1)
+    if not p_bxy_coffee:
+        p_bxy_coffee = LoyaltyProgram.create({
+            'name': 'Buy 2 Hot Drinks, Get 1 Cookie Free',
+            'program_type': 'buy_x_get_y',
+            'trigger': 'auto',
+            'applies_on': 'current',
+            'portal_point_name': 'Credit(s)',
+        })
+    if p_bxy_coffee:
+        if not p_bxy_coffee.rule_ids and hot_drink_ids:
+            p_bxy_coffee.write({
+                'rule_ids': [Command.create({
+                    'reward_point_mode': 'unit',
+                    'reward_point_amount': 1,
+                    'minimum_qty': 2,
+                    'product_ids': [Command.set(hot_drink_ids)],
+                })]
+            })
+        elif p_bxy_coffee.rule_ids and hot_drink_ids:
+            p_bxy_coffee.rule_ids[0].write({
+                'reward_point_mode': 'unit',
+                'reward_point_amount': 1,
+                'minimum_qty': 2,
+                'product_ids': [Command.set(hot_drink_ids)],
+            })
+        if not p_bxy_coffee.reward_ids and cookie:
+            p_bxy_coffee.write({
+                'reward_ids': [Command.create({
+                    'reward_type': 'product',
+                    'reward_product_id': cookie.id,
+                    'reward_product_qty': 1,
+                    'required_points': 2,
+                    'description': 'Free Cookie with 2 Hot Drinks',
+                })]
+            })
+        elif p_bxy_coffee.reward_ids and cookie:
+            p_bxy_coffee.reward_ids[0].write({
+                'reward_type': 'product',
+                'reward_product_id': cookie.id,
+                'reward_product_qty': 1,
+                'required_points': 2,
+                'description': 'Free Cookie with 2 Hot Drinks',
+            })
+
+    # 3. Discount Code: BURGER20 - link to burger products
+    p_burger20 = LoyaltyProgram.search([('name', '=', 'Discount Code: BURGER20 — 20% Off Burgers')], limit=1)
+    if p_burger20 and burger_ids:
+        if p_burger20.rule_ids:
+            p_burger20.rule_ids[0].write({'product_ids': [Command.set(burger_ids)]})
+        if p_burger20.reward_ids:
+            p_burger20.reward_ids[0].write({
+                'discount_applicability': 'specific',
+                'discount_product_ids': [Command.set(burger_ids)],
+            })
+
+    # 4. Loyalty Points: Add Tier 3 free dessert reward
+    p_loyalty = LoyaltyProgram.search([('program_type', '=', 'loyalty')], limit=1)
+    if p_loyalty and cake:
+        free_cake_reward = p_loyalty.reward_ids.filtered(lambda r: r.reward_type == 'product')
+        if not free_cake_reward:
+            p_loyalty.write({
+                'reward_ids': [Command.create({
+                    'reward_type': 'product',
+                    'reward_product_id': cake.id,
+                    'reward_product_qty': 1,
+                    'required_points': 150,
+                    'description': 'Free Chocolate Lava Cake for 150 Points',
+                })]
+            })
+
+    # 5. Pre-generate active demo cards for all programs
+    p_coupon = LoyaltyProgram.search([('name', '=', 'Seasonal Discount Coupons — 15% Off')], limit=1)
+    if p_coupon:
+        ensure_card(p_coupon, 'COUPON15', 1, 'Seasonal 15% Off Coupon')
+        ensure_card(p_coupon, 'BURGER50', 1, 'Burger Season Coupon')
+        ensure_card(p_coupon, 'FESTIVE20', 1, 'Festive Celebration Coupon')
+
+    p_next = LoyaltyProgram.search([('name', '=', 'Spend ₹500, Get 15% Off Next Order')], limit=1)
+    if p_next:
+        ensure_card(p_next, 'NEXTVISIT15', 1, 'Next Visit 15% Off Coupon')
+
+    # Dedicated demo VIP partner for loyalty card testing
+    vip_partner = env['res.partner'].sudo().search([('name', '=', 'VIP Customer (Demo)')], limit=1)
+    if not vip_partner:
+        vip_partner = env['res.partner'].sudo().create({
+            'name': 'VIP Customer (Demo)',
+            'email': 'vip.demo@example.com',
+            'phone': '+91 98470 99999',
+            'customer_rank': 1,
+        })
+
+    if p_loyalty:
+        ensure_card(p_loyalty, 'VIP-CLUB-1001', 150, 'RestoCafe VIP Demo Card', partner=vip_partner)
+
+    p_gc = LoyaltyProgram.search([('program_type', '=', 'gift_card')], limit=1)
+    if p_gc:
+        ensure_card(p_gc, 'GIFTCARD-100', 100, 'Demo Gift Card ₹100')
+
+    p_ew = LoyaltyProgram.search([('program_type', '=', 'ewallet')], limit=1)
+    if p_ew:
+        ensure_card(p_ew, 'EWALLET-500', 500, 'Demo eWallet ₹500', partner=vip_partner)
+
+    _logger.info("Hudson POS: Successfully configured rich demo data for all 6 Loyalty & Discount program types.")
 
 
 def _load_stock_inventory(env):
@@ -714,130 +1093,12 @@ def _load_elearning_demo_data(env):
 
 def _load_kitchen_display_demo_data(env):
     """
-    Creates sample Kitchen Display (KDS) configurations linked to the Restaurant POS.
-    Uses the hudson_kitchen_display module's pos.prep.display model.
+    Deprecated no-op: Kitchen Display demo configurations were removed from
+    hudson_pos_demo_data. A single editable default Kitchen Display is now
+    created on install by hudson_kitchen_display.
     """
-    _logger.info("Hudson POS: Setting up Kitchen Display demo data...")
-
-    if 'pos.prep.display' not in env:
-        _logger.warning("Hudson POS: pos.prep.display model not available. Skipping KDS setup.")
-        return
-
-    PrepDisplay = env['pos.prep.display'].sudo()
-    PosConfig = env['pos.config'].sudo()
-    PosCategory = env['pos.category'].sudo()
-
-    # Find Restaurant POS config
-    resto_config = PosConfig.search([('name', '=', 'Restaurant')], limit=1)
-
-    # Find Food and Drinks categories for category filtering
-    food_cat = PosCategory.search([('name', '=', 'Food')], limit=1)
-    drinks_cat = PosCategory.search([('name', '=', 'Drinks')], limit=1)
-
-    kds_configs = [
-        {
-            'name': 'Main Kitchen Display',
-            'xml_id': 'kds_main_kitchen',
-            'category_ids': food_cat.ids if food_cat else [],
-            'auto_clear': False,
-            'stages': [
-                {'name': 'New Order', 'sequence': 1, 'color': '#E74C3C', 'alert_timer': 15},
-                {'name': 'Cooking', 'sequence': 2, 'color': '#F39C12', 'alert_timer': 10},
-                {'name': 'Ready to Serve', 'sequence': 3, 'color': '#27AE60', 'alert_timer': 5},
-                {'name': 'Served', 'sequence': 4, 'color': '#95A5A6', 'alert_timer': 0},
-            ],
-        },
-        {
-            'name': 'Bar & Drinks Display',
-            'xml_id': 'kds_bar_drinks',
-            'category_ids': drinks_cat.ids if drinks_cat else [],
-            'auto_clear': True,
-            'stages': [
-                {'name': 'Preparing', 'sequence': 1, 'color': '#3498DB', 'alert_timer': 8},
-                {'name': 'Ready', 'sequence': 2, 'color': '#1ABC9C', 'alert_timer': 3},
-                {'name': 'Collected', 'sequence': 3, 'color': '#BDC3C7', 'alert_timer': 0},
-            ],
-        },
-        {
-            'name': 'Expediter / Pass Display',
-            'xml_id': 'kds_expediter',
-            'category_ids': [],
-            'auto_clear': False,
-            'stages': [
-                {'name': 'Waiting', 'sequence': 1, 'color': '#9B59B6', 'alert_timer': 20},
-                {'name': 'Plating', 'sequence': 2, 'color': '#E67E22', 'alert_timer': 5},
-                {'name': 'Pass Ready', 'sequence': 3, 'color': '#2ECC71', 'alert_timer': 2},
-                {'name': 'Dispatched', 'sequence': 4, 'color': '#95A5A6', 'alert_timer': 0},
-            ],
-        },
-    ]
-
-    for kds_def in kds_configs:
-        # Check if already exists via ir.model.data
-        existing = env.ref(
-            f"hudson_pos_demo_data.{kds_def['xml_id']}",
-            raise_if_not_found=False
-        )
-        if existing and existing.exists():
-            _logger.info("Hudson POS: KDS '%s' already exists, skipping.", kds_def['name'])
-            continue
-
-        # Check by name
-        existing_by_name = PrepDisplay.search([('name', '=', kds_def['name'])], limit=1)
-        if existing_by_name:
-            # Bind to ir.model.data
-            imd = env['ir.model.data'].sudo().search([
-                ('module', '=', 'hudson_pos_demo_data'),
-                ('name', '=', kds_def['xml_id']),
-            ], limit=1)
-            if not imd:
-                env['ir.model.data'].sudo().create({
-                    'module': 'hudson_pos_demo_data',
-                    'name': kds_def['xml_id'],
-                    'model': 'pos.prep.display',
-                    'res_id': existing_by_name.id,
-                    'noupdate': True,
-                })
-            continue
-
-        try:
-            # Build stage data
-            stage_vals = [(0, 0, {
-                'name': s['name'],
-                'sequence': s['sequence'],
-                'color': s['color'],
-                'alert_timer': s['alert_timer'],
-            }) for s in kds_def['stages']]
-
-            create_vals = {
-                'name': kds_def['name'],
-                'auto_clear': kds_def['auto_clear'],
-                'stage_ids': stage_vals,
-            }
-
-            if kds_def['category_ids']:
-                create_vals['category_ids'] = [(6, 0, kds_def['category_ids'])]
-
-            if resto_config:
-                create_vals['pos_config_ids'] = [(6, 0, [resto_config.id])]
-
-            display = PrepDisplay.create(create_vals)
-
-            # Register in ir.model.data for cleanup tracking
-            env['ir.model.data'].sudo().create({
-                'module': 'hudson_pos_demo_data',
-                'name': kds_def['xml_id'],
-                'model': 'pos.prep.display',
-                'res_id': display.id,
-                'noupdate': True,
-            })
-
-            _logger.info("Hudson POS: Created KDS '%s' (id=%d)", display.name, display.id)
-
-        except Exception as e:
-            _logger.error("Hudson POS: Failed to create KDS '%s': %s", kds_def['name'], e)
-
-    _logger.info("Hudson POS: Kitchen Display demo data setup complete.")
+    _logger.info("Hudson POS: Kitchen Display demo data disabled (handled by hudson_kitchen_display).")
+    return []
 
 
 def _load_sample_pos_orders(env):
@@ -1025,7 +1286,15 @@ def clear_pos_demo_data(env):
     """
     _logger.info("Hudson POS: Starting safe demo data cleanup...")
 
-    # 1. First, clear Business Suite (Sales, Purchase, MRP, Events, Maintenance, Survey)
+    # 0. First, clear HINV- Inventory Suite (BoMs, Reordering Rules, POs, Transfers, Ingredients, Packaging, Locations, Vendors)
+    # Existing Restaurant & Cafe POS products are preserved cleanly by clear_inventory_suite_demo_data.
+    try:
+        from .demo_inventory_suite import clear_inventory_suite_demo_data
+        clear_inventory_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not clear Inventory suite demo data: %s", e)
+
+    # 1. Next, clear Business Suite (Sales, Purchase, MRP, Events, Maintenance, Survey)
     # This cleanly removes orders/BOMs referencing demo products before product deletion.
     try:
         from .demo_business_suite import clear_business_suite_demo_data
@@ -1033,7 +1302,27 @@ def clear_pos_demo_data(env):
     except Exception as e:
         _logger.warning("Could not clear Business suite demo data: %s", e)
 
-    # 2. Clear sample POS orders and order lines referencing demo products
+    # 2. Clear sample POS orders and combo items referencing demo products
+    try:
+        with env.cr.savepoint():
+            demo_imd_orders = env['ir.model.data'].sudo().search([
+                ('module', '=', 'hudson_pos_demo_data'),
+                ('model', '=', 'pos.order'),
+            ])
+            order_ids = [d.res_id for d in demo_imd_orders]
+            demo_orders = env['pos.order'].sudo().browse(order_ids).exists() if order_ids else env['pos.order'].sudo()
+            sample_orders = demo_orders | env['pos.order'].sudo().search([
+                ('pos_reference', 'like', 'Order 00001-')
+            ])
+            if sample_orders:
+                non_cancelled = sample_orders.filtered(lambda o: o.state not in ('draft', 'cancel'))
+                if non_cancelled:
+                    non_cancelled.write({'state': 'cancel'})
+                sample_orders.mapped('lines').unlink()
+                sample_orders.unlink()
+    except Exception as e:
+        _logger.warning("Could not unlink sample POS orders: %s", e)
+
     try:
         with env.cr.savepoint():
             demo_imd_tmpls = env['ir.model.data'].sudo().search([
@@ -1041,23 +1330,21 @@ def clear_pos_demo_data(env):
                 ('model', '=', 'product.template')
             ])
             tmpl_ids = [d.res_id for d in demo_imd_tmpls]
-            if tmpl_ids:
+            if tmpl_ids and 'product.combo.item' in env:
                 variants = env['product.product'].sudo().search([('product_tmpl_id', 'in', tmpl_ids)])
                 if variants:
-                    pos_lines = env['pos.order.line'].sudo().search([('product_id', 'in', variants.ids)])
-                    if pos_lines:
-                        orders = pos_lines.mapped('order_id')
-                        pos_lines.unlink()
-                        if orders:
-                            orders.unlink()
-            sample_orders = env['pos.order'].sudo().search([
-                ('pos_reference', 'like', 'Order 00001-')
-            ])
-            if sample_orders:
-                sample_orders.lines.unlink()
-                sample_orders.unlink()
+                    combo_items = env['product.combo.item'].sudo().search([('product_id', 'in', variants.ids)])
+                    combos = combo_items.mapped('combo_id')
+                    combo_items.unlink()
+                    empty_demo_combos = combos.filtered(
+                        lambda c: not c.combo_item_ids and c.name in [
+                            'Burgers', 'Drinks', 'Sushi Choices', 'Pasta Choices', 'Dessert Choices'
+                        ]
+                    )
+                    if empty_demo_combos:
+                        empty_demo_combos.unlink()
     except Exception as e:
-        _logger.warning("Could not unlink sample POS orders: %s", e)
+        _logger.warning("Could not unlink demo combo items: %s", e)
 
     # 3. Clear HR Suite (Payroll, Leaves, Attendance, Fleet, Lunch, Expenses, Employees)
     try:
@@ -1082,6 +1369,15 @@ def clear_pos_demo_data(env):
                         quants.unlink()
     except Exception as e:
         _logger.warning("Could not unlink quants: %s", e)
+
+    # 4b. Cleanup demo loyalty cards
+    if 'loyalty.card' in env:
+        try:
+            with env.cr.savepoint():
+                demo_codes = ['COUPON15', 'BURGER50', 'FESTIVE20', 'NEXTVISIT15', 'VIP-CLUB-1001', 'GIFTCARD-100', 'EWALLET-500']
+                env['loyalty.card'].sudo().search([('code', 'in', demo_codes)]).unlink()
+        except Exception:
+            pass
 
     # 5. Ordered removal of XML demo records
     models_order = [
@@ -1131,6 +1427,25 @@ def clear_pos_demo_data(env):
                 data_records.unlink()
         except Exception:
             pass
+
+    # 6. Ensure remaining POS configs do not retain missing/empty pricelist state
+    try:
+        with env.cr.savepoint():
+            for cfg in env['pos.config'].sudo().search([('use_pricelist', '=', True)]):
+                if not cfg.pricelist_id or not cfg.pricelist_id.active:
+                    fallback_pl = env['product.pricelist'].sudo().search([
+                        ('company_id', 'in', [cfg.company_id.id, False]),
+                        ('currency_id', '=', cfg.currency_id.id),
+                    ], order='sequence asc, id asc', limit=1)
+                    if fallback_pl:
+                        write_pl = {'pricelist_id': fallback_pl.id}
+                        if fallback_pl not in cfg.available_pricelist_ids:
+                            write_pl['available_pricelist_ids'] = [Command.link(fallback_pl.id)]
+                        cfg.write(write_pl)
+                    else:
+                        cfg.write({'use_pricelist': False, 'pricelist_id': False})
+    except Exception as e:
+        _logger.warning("Could not sanitize POS pricelists after demo cleanup: %s", e)
 
     _logger.info("Hudson POS: Demo data cleared safely.")
     return True
