@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Signer page (dms_enterprise_features): signer name, Options > Decline to sign,
+         and the name/email step of documents shared by link -->
+    <template id="portal_signature_page_hudson_sign" inherit_id="dms_enterprise_features.portal_signature_page">
+        <xpath expr="//head" position="inside">
+            <style>
+                #sign-topbar .hs-signer { text-align: right; line-height: 1.2; font-size: 14px; color: #333; }
+                #sign-topbar .hs-signer small { color: #017e84; font-size: 13px; }
+                .hs-options { position: relative; }
+                .hs-options-toggle {
+                    background: #714B67; color: #fff; border: none; border-radius: 5px;
+                    padding: 8px 14px; font-size: 14px; cursor: pointer;
+                }
+                .hs-options-toggle::after {
+                    content: ''; display: inline-block; margin-left: 6px; vertical-align: 2px;
+                    border-top: 5px solid; border-left: 4px solid transparent; border-right: 4px solid transparent;
+                }
+                .hs-options-menu {
+                    display: none; position: absolute; right: 0; top: calc(100% + 4px); min-width: 170px;
+                    background: #fff; border: 1px solid #dee2e6; border-radius: 4px; padding: 4px 0;
+                    box-shadow: 0 6px 16px rgba(0,0,0,.12); z-index: 200;
+                }
+                .hs-options.open .hs-options-menu { display: block; }
+                .hs-options-menu button {
+                    display: block; width: 100%; text-align: left; background: none; border: none;
+                    padding: 8px 16px; font-size: 15px; color: #333; cursor: pointer;
+                }
+                .hs-options-menu button:hover { background: #f0f1f5; }
+
+                .hs-modal-overlay {
+                    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+                    z-index: 1000; align-items: center; justify-content: center;
+                }
+                .hs-modal-overlay.show { display: flex; }
+                .hs-modal-box {
+                    background: #fff; border-radius: 8px; width: 760px; max-width: 95vw;
+                    box-shadow: 0 20px 60px rgba(0,0,0,.3); padding: 28px 30px 24px;
+                }
+                .hs-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+                .hs-modal-header h5 { margin: 0; font-size: 22px; font-weight: 500; color: #222; }
+                .hs-modal-close { background: none; border: none; font-size: 28px; line-height: 1; color: #555; cursor: pointer; }
+                .hs-modal-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+                .hs-modal-row label { width: 70px; flex-shrink: 0; padding-top: 7px; font-size: 15px; color: #222; }
+                .hs-modal-row input, .hs-modal-row textarea {
+                    flex: 1; border: none; border-bottom: 1px solid transparent; padding: 6px 4px;
+                    font-size: 15px; outline: none; background: transparent;
+                }
+                .hs-modal-row input:focus, .hs-modal-row textarea:focus { border-bottom-color: #714B67; }
+                .hs-modal-row input:hover, .hs-modal-row textarea:hover { border-bottom-color: #ccc; }
+                .hs-modal-row textarea { min-height: 80px; resize: vertical; }
+                .hs-modal-error { color: #dc3545; font-size: 14px; min-height: 20px; margin-bottom: 6px; }
+                .hs-modal-footer { display: flex; gap: 8px; margin-top: 10px; }
+                .hs-btn-primary { background: #714B67; color: #fff; border: none; border-radius: 5px; padding: 8px 18px; font-size: 15px; }
+                .hs-btn-primary:hover { background: #5a3a52; }
+                .hs-btn-primary:disabled { opacity: .6; }
+                .hs-btn-secondary { background: #f2e3d0; color: #333; border: none; border-radius: 5px; padding: 8px 18px; font-size: 15px; }
+                .hs-btn-secondary:hover { background: #ead2b5; }
+                .hs-final-box { width: 780px; padding: 22px 26px 26px; }
+                .hs-signed-box { width: 640px; padding: 22px 26px 30px; }
+                .hs-final-title { font-size: 32px !important; font-weight: 400 !important; color: #222; }
+                .hs-final-row { align-items: center; margin-bottom: 18px; }
+                .hs-final-row label { width: 190px; padding-top: 0; font-size: 18px; }
+                .hs-final-row input {
+                    font-size: 18px; padding: 8px 16px; border: 3px solid transparent; border-radius: 8px;
+                }
+                .hs-final-row input:hover { border-bottom-color: transparent; border-color: #e4dce3; }
+                .hs-final-row input:focus { border-color: #e4dce3; border-bottom-color: #e4dce3; }
+                .hs-final-box .hs-modal-footer { margin-top: 26px; gap: 14px; }
+                .hs-final-box .hs-btn-primary { font-size: 18px; padding: 10px 20px; }
+                .hs-btn-link { background: none; border: none; color: #714B67; font-size: 18px; padding: 10px 14px; }
+                .hs-btn-link:hover { color: #5a3a52; text-decoration: underline; }
+                .hs-otp-info { font-size: 16px; color: #333; margin: 4px 0 18px; }
+                .hs-otp-input { letter-spacing: 6px; font-size: 22px !important; max-width: 220px; border-color: #e4dce3 !important; }
+                .hs-check { color: #28a745; font-size: 26px; margin-left: 8px; }
+                .hs-signed-text { text-align: center; font-size: 16px; color: #333; margin: 18px 0 28px; }
+                .hs-download { display: inline-block; text-decoration: none; font-size: 16px; }
+                .hs-download:hover { color: #fff; }
+                .hs-result { text-align: center; padding: 60px 20px; }
+                .hs-result h2 { font-weight: 500; margin-bottom: 12px; }
+            </style>
+            <style t-if="hs_waiting_for">
+                #btn-complete, #progress-label, #nav-arrow-container { display: none !important; }
+                .sign-field { pointer-events: none; opacity: .75; }
+                .hs-waiting { text-align: right; line-height: 1.25; font-size: 14px; color: #333; }
+                .hs-waiting small { color: #9a6b00; font-size: 13px; }
+            </style>
+        </xpath>
+
+        <!-- Signing order: a signer whose turn has not come sees the areas of the earlier
+             signers, empty and read-only (see HudsonSignPortal._render_waiting_page) -->
+        <xpath expr="//script/t[@t-foreach='signature_req.item_ids']/t[@t-out=&quot;item.value_text or ''&quot;]" position="attributes">
+            <attribute name="t-out">'' if hs_waiting_for else (item.value_text or '')</attribute>
+        </xpath>
+        <xpath expr="//script/t[@t-foreach='signature_req.item_ids']/t[@t-out=&quot;1 if item.readonly else 0&quot;]" position="attributes">
+            <attribute name="t-out">1 if (item.readonly or hs_waiting_for) else 0</attribute>
+        </xpath>
+        <xpath expr="//script/t[@t-foreach='signature_req.item_ids']" position="attributes">
+            <attribute name="t-foreach">signature_req.item_ids if hs_display_items is None else hs_display_items</attribute>
+        </xpath>
+
+        <!-- Visitors of a share link have no document in the backend to go back to -->
+        <xpath expr="//div[@id='sign-topbar']//a[hasclass('btn-outline-secondary')]/.." position="attributes">
+            <attribute name="t-if">signature_req.revision_id and signature_req.revision_id.file_id and not signature_req.hudson_request_id.is_shared</attribute>
+        </xpath>
+
+        <xpath expr="//div[@id='sign-topbar']//div[hasclass('actions')]" position="inside">
+            <t t-set="hs_sign_request" t-value="signature_req.hudson_request_id"/>
+            <t t-set="hs_is_shared" t-value="hs_sign_request.is_shared"/>
+            <div t-if="hs_waiting_for" class="hs-waiting">
+                <div t-out="signature_req.recipient_id.name"/>
+                <small>Waiting for <t t-out="', '.join(hs_waiting_for.recipient_id.mapped('name'))"/> to sign first</small>
+            </div>
+            <t t-elif="not is_expired and signature_req.state != 'signed'">
+                <div class="hs-signer">
+                    <div t-out="request.env.user.name if hs_is_shared else signature_req.recipient_id.name"/>
+                    <small>✎ Signing</small>
+                </div>
+                <div class="hs-options" id="hs-options">
+                    <button type="button" class="hs-options-toggle" onclick="hsToggleOptions(event)">Options</button>
+                    <div class="hs-options-menu">
+                        <button type="button" onclick="hsOpenModal('hs-decline-overlay')">Decline to sign</button>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+
+        <xpath expr="//body" position="inside">
+            <t t-if="not is_expired and signature_req.state != 'signed' and not hs_waiting_for">
+                <t t-set="hs_otp_required" t-value="signature_req.hudson_email_otp and (signature_req.hudson_request_id.is_shared or signature_req.recipient_id.id != request.session.uid)"/>
+                <t t-set="hs_user" t-value="request.env.user if request.session.uid else False"/>
+                <t t-set="hs_default_name" t-value="hs_user.name if hs_user else ''"/>
+                <t t-set="hs_default_email" t-value="(hs_user.email or '') if hs_user else ''"/>
+
+                <!-- Decline Signature -->
+                <div class="hs-modal-overlay" id="hs-decline-overlay">
+                    <div class="hs-modal-box">
+                        <div class="hs-modal-header">
+                            <h5>Decline Signature</h5>
+                            <button type="button" class="hs-modal-close" aria-label="Close" onclick="hsCloseModal('hs-decline-overlay')">×</button>
+                        </div>
+                        <p style="font-size: 15px; color: #333;">We'll notify the sender, signer and copied contacts of the signature refusal. Your refusal reason will be included.</p>
+                        <t t-if="hs_is_shared">
+                            <div class="hs-modal-row">
+                                <label for="hs-decline-name">Name</label>
+                                <input type="text" id="hs-decline-name" placeholder="Your name" t-att-value="hs_default_name"/>
+                            </div>
+                            <div class="hs-modal-row">
+                                <label for="hs-decline-email">Email</label>
+                                <input type="email" id="hs-decline-email" placeholder="Your email" t-att-value="hs_default_email"/>
+                            </div>
+                        </t>
+                        <div class="hs-modal-row">
+                            <label for="hs-decline-reason">Reason</label>
+                            <textarea id="hs-decline-reason" placeholder="Please provide a reason for refusal"></textarea>
+                        </div>
+                        <div class="hs-modal-error" id="hs-decline-error"></div>
+                        <div class="hs-modal-footer">
+                            <button type="button" class="hs-btn-primary" id="hs-decline-confirm" onclick="hsDecline()">Decline</button>
+                            <button type="button" class="hs-btn-secondary" onclick="hsCloseModal('hs-decline-overlay')">Discard</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Share link: who is signing -->
+                <div t-if="hs_is_shared" class="hs-modal-overlay" id="hs-signer-overlay">
+                    <div class="hs-modal-box hs-final-box">
+                        <div class="hs-modal-header">
+                            <h5 class="hs-final-title">Final Validation</h5>
+                            <button type="button" class="hs-modal-close" aria-label="Close" onclick="hsResolveSigner()">×</button>
+                        </div>
+                        <div class="hs-modal-row hs-final-row">
+                            <label for="hs-signer-name">Your name</label>
+                            <input type="text" id="hs-signer-name" placeholder="Your name" t-att-value="hs_default_name"/>
+                        </div>
+                        <div class="hs-modal-row hs-final-row">
+                            <label for="hs-signer-email">Your email</label>
+                            <input type="email" id="hs-signer-email" placeholder="Your email" t-att-value="hs_default_email"/>
+                        </div>
+                        <div class="hs-modal-error" id="hs-signer-error"></div>
+                        <div class="hs-modal-footer">
+                            <button type="button" class="hs-btn-primary" id="hs-signer-confirm" onclick="hsConfirmSigner()">Validate &amp; Send</button>
+                            <button type="button" class="hs-btn-link" onclick="hsResolveSigner()">Discard</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extra authentication "By Email" -->
+                <div t-if="hs_otp_required" class="hs-modal-overlay" id="hs-otp-overlay">
+                    <div class="hs-modal-box hs-final-box">
+                        <div class="hs-modal-header">
+                            <h5 class="hs-final-title">Verify your identity</h5>
+                            <button type="button" class="hs-modal-close" aria-label="Close" onclick="hsCloseModal('hs-otp-overlay')">×</button>
+                        </div>
+                        <p class="hs-otp-info" id="hs-otp-info"></p>
+                        <div class="hs-modal-row hs-final-row">
+                            <label for="hs-otp-code">Code</label>
+                            <input type="text" id="hs-otp-code" class="hs-otp-input" placeholder="123456" maxlength="7"
+                                   inputmode="numeric" autocomplete="one-time-code"
+                                   onkeydown="if (event.key === 'Enter') hsVerifyOtp()"/>
+                        </div>
+                        <div class="hs-modal-error" id="hs-otp-error"></div>
+                        <div class="hs-modal-footer">
+                            <button type="button" class="hs-btn-primary" id="hs-otp-confirm" onclick="hsVerifyOtp()">Verify &amp; Sign</button>
+                            <button type="button" class="hs-btn-link" onclick="hsSendOtp()">Send a new code</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- "Sign Now" with several signers: hand over to the next one -->
+                <div class="hs-modal-overlay" id="hs-next-overlay">
+                    <div class="hs-modal-box hs-signed-box">
+                        <div class="hs-modal-header">
+                            <h5 class="hs-final-title">Thank You! <span class="hs-check">✓</span></h5>
+                        </div>
+                        <p class="hs-signed-text">Your signature has been saved. Next signatory is <strong id="hs-next-name"></strong>.<br/>
+                            We will send you this document by email once everyone has signed.</p>
+                        <div class="text-center">
+                            <a class="hs-btn-primary hs-download" id="hs-next-link" href="#">Next signatory (<span id="hs-next-btn-name"></span>)</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- After signing -->
+                <div class="hs-modal-overlay" id="hs-signed-overlay">
+                    <div class="hs-modal-box hs-signed-box">
+                        <div class="hs-modal-header">
+                            <h5 class="hs-final-title">It's signed! <span class="hs-check">✓</span></h5>
+                            <button type="button" class="hs-modal-close" aria-label="Close" onclick="hsCloseSigned()">×</button>
+                        </div>
+                        <p class="hs-signed-text" id="hs-signed-text">You will get the signed document by email.</p>
+                        <div class="text-center">
+                            <a class="hs-btn-primary hs-download" id="hs-signed-download" href="#" download="">Download</a>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    const hsIsShared = <t t-out="'true' if hs_is_shared else 'false'"/>;
+                    const hsEmailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                    function hsToggleOptions(ev) {
+                        ev.stopPropagation();
+                        document.getElementById('hs-options').classList.toggle('open');
+                    }
+                    document.addEventListener('click', function () {
+                        const options = document.getElementById('hs-options');
+                        options &amp;&amp; options.classList.remove('open');
+                    });
+
+                    function hsOpenModal(id) {
+                        document.getElementById('hs-options').classList.remove('open');
+                        document.getElementById(id).classList.add('show');
+                    }
+                    function hsCloseModal(id) {
+                        document.getElementById(id).classList.remove('show');
+                    }
+
+                    function hsCheckIdentity(nameId, emailId, errorId) {
+                        const name = document.getElementById(nameId).value.trim();
+                        const email = document.getElementById(emailId).value.trim();
+                        const error = document.getElementById(errorId);
+                        if (!name) {
+                            error.textContent = 'Please enter your name.';
+                            return null;
+                        }
+                        if (!hsEmailRe.test(email)) {
+                            error.textContent = 'Please enter a valid email address.';
+                            return null;
+                        }
+                        error.textContent = '';
+                        return { name: name, email: email };
+                    }
+
+                    function hsShowResult(title, message) {
+                        document.querySelectorAll('.hs-modal-overlay').forEach(el => el.classList.remove('show'));
+                        const actions = document.querySelector('#sign-topbar .actions');
+                        if (actions) actions.innerHTML = '';
+                        const body = document.getElementById('sign-body');
+                        if (body) {
+                            body.innerHTML = '';
+                            const result = document.createElement('div');
+                            result.className = 'hs-result w-100';
+                            const h2 = document.createElement('h2');
+                            h2.textContent = title;
+                            const p = document.createElement('p');
+                            p.textContent = message;
+                            result.append(h2, p);
+                            body.appendChild(result);
+                        }
+                    }
+
+                    async function hsDecline() {
+                        const error = document.getElementById('hs-decline-error');
+                        const reason = document.getElementById('hs-decline-reason').value.trim();
+                        const params = { access_token: accessToken || null, reason: reason };
+                        if (hsIsShared) {
+                            const identity = hsCheckIdentity('hs-decline-name', 'hs-decline-email', 'hs-decline-error');
+                            if (!identity) return;
+                            params.signer_name = identity.name;
+                            params.signer_email = identity.email;
+                        }
+                        if (!reason) {
+                            error.textContent = 'Please provide a reason for refusal.';
+                            return;
+                        }
+                        const button = document.getElementById('hs-decline-confirm');
+                        button.disabled = true;
+                        try {
+                            const response = await fetch('/hudson_sign/decline/' + reqId, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: params }),
+                            });
+                            const data = await response.json();
+                            const result = data.result || {};
+                            if (data.error || result.error) {
+                                error.textContent = result.error || (data.error.data &amp;&amp; data.error.data.message) || 'An error occurred. Please try again.';
+                                return;
+                            }
+                            hsShowResult('You have declined to sign this document.', 'The sender has been notified. You can close this page.');
+                        } catch (e) {
+                            error.textContent = 'An error occurred. Please try again.';
+                        } finally {
+                            button.disabled = false;
+                        }
+                    }
+
+                    // Share link: the visitor tells who they are before the document is signed.
+                    // The identity is kept in the visitor's session, so the page's own
+                    // "Complete &amp; Sign" request needs no change.
+                    let hsIdentityConfirmed = false;
+                    function hsResolveSigner() {
+                        hsCloseModal('hs-signer-overlay');
+                    }
+                    async function hsConfirmSigner() {
+                        const identity = hsCheckIdentity('hs-signer-name', 'hs-signer-email', 'hs-signer-error');
+                        if (!identity) return;
+                        const error = document.getElementById('hs-signer-error');
+                        try {
+                            const response = await fetch('/hudson_sign/identify/' + reqId, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {
+                                    access_token: accessToken || null,
+                                    signer_name: identity.name,
+                                    signer_email: identity.email,
+                                } }),
+                            });
+                            const data = await response.json();
+                            const result = data.result || {};
+                            if (data.error || result.error) {
+                                error.textContent = result.error || (data.error.data &amp;&amp; data.error.data.message) || 'An error occurred. Please try again.';
+                                return;
+                            }
+                        } catch (e) {
+                            error.textContent = 'An error occurred. Please try again.';
+                            return;
+                        }
+                        hsIdentityConfirmed = true;
+                        hsCloseModal('hs-signer-overlay');
+                        document.getElementById('btn-complete').click();
+                    }
+                    // Extra authentication "By Email": a one-time code sent to the signer
+                    const hsOtpRequired = <t t-out="'true' if hs_otp_required else 'false'"/>;
+                    let hsOtpVerified = false;
+                    async function hsCall(url, params) {
+                        try {
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: Object.assign({ access_token: accessToken || null }, params) }),
+                            });
+                            const data = await response.json();
+                            if (data.error) {
+                                return { error: (data.error.data &amp;&amp; data.error.data.message) || 'An error occurred. Please try again.' };
+                            }
+                            return data.result || {};
+                        } catch (e) {
+                            return { error: 'An error occurred. Please try again.' };
+                        }
+                    }
+                    function hsOtpPassed() {
+                        hsOtpVerified = true;
+                        hsCloseModal('hs-otp-overlay');
+                        document.getElementById('btn-complete').click();
+                    }
+                    async function hsSendOtp() {
+                        const error = document.getElementById('hs-otp-error');
+                        const info = document.getElementById('hs-otp-info');
+                        error.textContent = '';
+                        info.textContent = 'Sending a verification code…';
+                        const result = await hsCall('/hudson_sign/otp/send/' + reqId, {});
+                        if (result.verified) {
+                            hsOtpPassed();
+                            return;
+                        }
+                        if (result.error) {
+                            info.textContent = '';
+                            error.textContent = result.error;
+                            return;
+                        }
+                        info.textContent = 'We sent a 6-digit code to ' + result.email + '. Enter it below to sign the document.';
+                        document.getElementById('hs-otp-code').focus();
+                    }
+                    async function hsVerifyOtp() {
+                        const error = document.getElementById('hs-otp-error');
+                        const code = document.getElementById('hs-otp-code').value.replace(/\s/g, '');
+                        if (!/^\d{6}$/.test(code)) {
+                            error.textContent = 'Please enter the 6-digit code.';
+                            return;
+                        }
+                        const button = document.getElementById('hs-otp-confirm');
+                        button.disabled = true;
+                        const result = await hsCall('/hudson_sign/otp/verify/' + reqId, { code: code });
+                        button.disabled = false;
+                        if (result.error) {
+                            error.textContent = result.error;
+                            return;
+                        }
+                        hsOtpPassed();
+                    }
+                    function hsOpenOtp() {
+                        document.getElementById('hs-otp-code').value = '';
+                        document.getElementById('hs-otp-overlay').classList.add('show');
+                        hsSendOtp();
+                    }
+
+                    // Before the page's own "Complete &amp; Sign" handler (capture phase):
+                    // who is signing (share link), then the email code
+                    document.addEventListener('click', function (ev) {
+                        const button = ev.target.closest &amp;&amp; ev.target.closest('#btn-complete');
+                        if (!button || button.disabled) return;
+                        const needIdentity = hsIsShared &amp;&amp; !hsIdentityConfirmed;
+                        const needOtp = hsOtpRequired &amp;&amp; !hsOtpVerified;
+                        if (!needIdentity &amp;&amp; !needOtp) return;
+                        const progress = (document.getElementById('progress-label') || {}).textContent || '';
+                        const counts = progress.match(/(\d+)\s*\/\s*(\d+)/);
+                        if (counts &amp;&amp; Number(counts[1]) &lt; Number(counts[2])) {
+                            return;  // the page itself points to the fields left
+                        }
+                        ev.stopImmediatePropagation();
+                        ev.preventDefault();
+                        if (needIdentity) {
+                            document.getElementById('hs-signer-error').textContent = '';
+                            document.getElementById('hs-signer-overlay').classList.add('show');
+                            document.getElementById('hs-signer-name').focus();
+                        } else {
+                            hsOpenOtp();
+                        }
+                    }, true);
+
+                    // Once signed: "It's signed!" with the download, instead of leaving the page at once
+                    let hsRedirectUrl = null;
+                    function hsCloseSigned() {
+                        hsCloseModal('hs-signed-overlay');
+                        if (hsRedirectUrl) {
+                            window.location.replace(hsRedirectUrl);
+                        }
+                    }
+                    const hsFetch = window.fetch.bind(window);
+                    window.fetch = async function (resource, options) {
+                        const response = await hsFetch(resource, options);
+                        const url = typeof resource === 'string' ? resource : (resource &amp;&amp; resource.url) || '';
+                        if (!/\/my\/dms\/signature\/\d+\/accept/.test(url)) {
+                            return response;
+                        }
+                        let result;
+                        try {
+                            result = (await response.clone().json()).result;
+                        } catch (e) {
+                            return response;
+                        }
+                        if (!result || result.error) {
+                            return response;
+                        }
+                        if (result.next_signer_url) {
+                            const actions = document.querySelector('#sign-topbar .actions');
+                            if (actions) actions.innerHTML = '<span class="signed-badge">✓ Signed Successfully</span>';
+                            document.getElementById('hs-next-name').textContent = result.next_signer_name || '';
+                            document.getElementById('hs-next-btn-name').textContent = result.next_signer_name || '';
+                            document.getElementById('hs-next-link').href = result.next_signer_url;
+                            document.getElementById('hs-next-overlay').classList.add('show');
+                            return new Promise(() => {});
+                        }
+                        hsRedirectUrl = result.redirect_url || null;
+                        const actions = document.querySelector('#sign-topbar .actions');
+                        if (actions) actions.innerHTML = '<span class="signed-badge">✓ Signed Successfully</span>';
+                        const progress = document.getElementById('progress-bar');
+                        if (progress) progress.style.width = '100%';
+                        document.getElementById('hs-signed-text').textContent = result.hs_all_signed
+                            ? 'You will get the signed document by email.'
+                            : 'You will get the signed document by email once everyone has signed.';
+                        const download = document.getElementById('hs-signed-download');
+                        if (result.hs_download_url) {
+                            download.href = result.hs_download_url;
+                            download.style.display = '';
+                        } else {
+                            download.style.display = 'none';
+                        }
+                        document.getElementById('hs-signed-overlay').classList.add('show');
+                        // The page's own handler would leave the page: it never gets this answer
+                        return new Promise(() => {});
+                    };
+                </script>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Link of a canceled request, a declined one or a share link that was stopped -->
+    <template id="sign_request_unavailable" name="Signature Request Unavailable">
+        <html>
+        <head>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <title>Document unavailable</title>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+        </head>
+        <body style="background: #f0f1f5; font-family: 'Segoe UI', Arial, sans-serif;">
+            <div class="container text-center" style="padding-top: 15vh;">
+                <h2 class="fw-normal mb-3">
+                    <t t-if="is_shared">This link is no longer available</t>
+                    <t t-else="">This signature request is no longer available</t>
+                </h2>
+                <p class="text-muted">
+                    <t t-if="is_shared">The document <strong t-out="signature_req.revision_id.file_id.name"/> is not shared anymore.</t>
+                    <t t-else="">The document <strong t-out="signature_req.revision_id.file_id.name"/> has been canceled or declined.</t>
+                    Please contact the sender if you think this is a mistake.
+                </p>
+            </div>
+        </body>
+        </html>
+    </template>
+
+    <!-- Sign settings: "Terms as Web Page" -->
+    <template id="sign_terms_page" name="Sign Terms &amp; Conditions">
+        <html>
+        <head>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <title>Terms &amp; Conditions</title>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+        </head>
+        <body style="background: #f0f1f5; font-family: 'Segoe UI', Arial, sans-serif;">
+            <div class="container bg-white my-5 p-5 rounded shadow-sm" style="max-width: 900px;">
+                <div class="text-muted small mb-3" t-out="company.name"/>
+                <div t-out="company.hudson_sign_terms"/>
+            </div>
+        </body>
+        </html>
+    </template>
+
+</odoo>

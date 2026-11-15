@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ============================================================ -->
+        <!--  Survey Invitation Email                                      -->
+        <!--  Sent automatically when a FS order is marked Done           -->
+        <!--  (only if Customer Ratings feature is enabled in settings)   -->
+        <!-- ============================================================ -->
+
+        <record id="mail_template_fs_rating" model="mail.template">
+            <field name="name">Field Service: Shift Rating Request</field>
+            <field name="model_id" ref="hudson_field_service.model_field_service_order"/>
+            <field name="subject">How was your field service experience? — {{ object.name }}</field>
+            <field name="email_from">{{ (object.employee_id.work_email or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="description">Automatically sent when a Field Service order is marked as Done. Invites the customer to complete the satisfaction survey.</field>
+            <field name="body_html" type="html">
+<div style="margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', sans-serif; background-color: #f4f4f7; min-height: 100vh;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f7; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #017e84 0%, #014d52 100%); padding: 36px 40px; text-align: center;">
+                            <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.75); letter-spacing: 2px; text-transform: uppercase; font-weight: 600;">Customer Satisfaction</p>
+                            <h1 style="margin: 10px 0 0; font-size: 28px; color: #ffffff; font-weight: 700;">How did we do?</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 36px 40px;">
+                            <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.6;">
+                                Hello <strong><t t-out="object.partner_id.name or 'Valued Customer'">Customer</t></strong>,
+                            </p>
+                            <p style="margin: 0 0 20px; font-size: 15px; color: #555555; line-height: 1.7;">
+                                Our technician <strong><t t-out="object.employee_id.name or ''">Technician</t></strong> has completed
+                                the field service intervention
+                                <strong><t t-out="object.name or ''">FSO/00001</t></strong>
+                                — <em><t t-out="object.title or ''">Service Title</t></em>.
+                            </p>
+                            <p style="margin: 0 0 28px; font-size: 15px; color: #555555; line-height: 1.7;">
+                                Your feedback means the world to us and helps us continue delivering excellent service.
+                                It takes less than 2 minutes!
+                            </p>
+
+                            <!-- Star emoji row -->
+                            <div style="text-align: center; margin-bottom: 28px; font-size: 32px; letter-spacing: 6px;">
+                                ⭐⭐⭐⭐⭐
+                            </div>
+
+                            <!-- CTA Button -->
+                            <t t-if="object.survey_input_id">
+                                <div style="text-align: center; margin-bottom: 28px;">
+                                    <a t-att-href="object.survey_input_id.get_start_url()"
+                                       style="display: inline-block; padding: 14px 36px; background-color: #017e84; color: #ffffff; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(1,126,132,0.35);">
+                                        Share Your Feedback →
+                                    </a>
+                                </div>
+                            </t>
+
+                            <!-- Divider -->
+                            <hr style="border: none; border-top: 1px solid #eeeeee; margin: 28px 0;"/>
+
+                            <!-- Order summary -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; border-radius: 8px; padding: 20px;">
+                                <tr>
+                                    <td style="font-size: 13px; color: #888888; padding-bottom: 8px;">ORDER REFERENCE</td>
+                                    <td style="font-size: 13px; color: #333333; font-weight: 600; text-align: right; padding-bottom: 8px;">
+                                        <t t-out="object.name or ''">FSO/00001</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 13px; color: #888888; padding-bottom: 8px;">TECHNICIAN</td>
+                                    <td style="font-size: 13px; color: #333333; font-weight: 600; text-align: right; padding-bottom: 8px;">
+                                        <t t-out="object.employee_id.name or 'N/A'">Tech Name</t>
+                                    </td>
+                                </tr>
+                                <tr t-if="object.date_end">
+                                    <td style="font-size: 13px; color: #888888;">COMPLETED ON</td>
+                                    <td style="font-size: 13px; color: #333333; font-weight: 600; text-align: right;">
+                                        <t t-out="object.date_end">2026-07-24</t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8f9fa; padding: 24px 40px; text-align: center; border-top: 1px solid #eeeeee;">
+                            <p style="margin: 0; font-size: 13px; color: #aaaaaa;">
+                                This email was sent by
+                                <strong><t t-out="object.company_id.name or 'Your Company'">Company</t></strong>.<br/>
+                                If you have any questions, please reply to this email.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

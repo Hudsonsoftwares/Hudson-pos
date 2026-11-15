@@ -72,8 +72,24 @@
     </template>
 
     <template id="pos_order_receipt_inherit_survey_qr" inherit_id="point_of_sale.pos_order_receipt">
+        <!-- Survey QR side by side with the "Need an invoice?" QR -->
+        <xpath expr="//div[hasclass('w-100') and @t-if[contains(., 'use_self_invoicing')]]//td[@t-if=&quot;conditions['display_url']&quot;]" position="attributes">
+            <attribute name="class">text-start top ps-1</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('w-100') and @t-if[contains(., 'use_self_invoicing')]]//td[@t-if=&quot;conditions['display_url']&quot;]" position="after">
+            <td class="text-center top ps-1" style="width: 28%;" t-if="conditions['show_survey_qr'] and image['survey_qr_code']">
+                <img class="survey-qr-code" t-att-src="image['survey_qr_code']" style="width: 100%; height: auto; display: block;" alt="Survey QR Code"/>
+                <div class="text-bold text-small">Customer Survey</div>
+            </td>
+        </xpath>
+        <xpath expr="//div[hasclass('w-100') and @t-if[contains(., 'use_self_invoicing')]]//tbody" position="inside">
+            <tr t-if="conditions['show_survey_qr'] and image['survey_qr_code']">
+                <td colspan="3" class="text-small text-center pt-1" t-out="extra_data['survey_message']"/>
+            </tr>
+        </xpath>
+        <!-- Fallback when "Need an invoice?" is not printed: survey QR on its own -->
         <xpath expr="//div[hasclass('w-100') and @t-if[contains(., 'use_self_invoicing')]]" position="after">
-            <div class="w-100 mt-2" t-if="conditions['show_survey_qr'] and image['survey_qr_code'] and not conditions['basic_receipt']">
+            <div class="w-100 mt-2" t-if="conditions['show_survey_qr'] and image['survey_qr_code'] and not conditions['basic_receipt'] and not (conditions['use_self_invoicing'] and order['state'] != 'draft')">
                 <table class="w-100">
                     <tbody>
                         <tr>

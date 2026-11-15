@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_blog_kitchen" model="blog.blog">
+            <field name="name">From Our Kitchen</field>
+            <field name="subtitle">Recipes, chef stories and Kerala food traditions</field>
+        </record>
+        <record id="rc_blog_cafe" model="blog.blog">
+            <field name="name">Café Culture &amp; News</field>
+            <field name="subtitle">Coffee, events and what's new at Resto Cafe Solutions</field>
+        </record>
+        <record id="rc_blog_tag_category" model="blog.tag.category">
+            <field name="name">Topics</field>
+        </record>
+        <record id="rc_blog_tag_recipes" model="blog.tag">
+            <field name="name">Recipes</field>
+            <field name="category_id" ref="rc_blog_tag_category"/>
+            <field name="color" eval="1"/>
+        </record>
+        <record id="rc_blog_tag_coffee" model="blog.tag">
+            <field name="name">Coffee</field>
+            <field name="category_id" ref="rc_blog_tag_category"/>
+            <field name="color" eval="2"/>
+        </record>
+        <record id="rc_blog_tag_kerala" model="blog.tag">
+            <field name="name">Kerala Cuisine</field>
+            <field name="category_id" ref="rc_blog_tag_category"/>
+            <field name="color" eval="3"/>
+        </record>
+        <record id="rc_blog_tag_events" model="blog.tag">
+            <field name="name">Events</field>
+            <field name="category_id" ref="rc_blog_tag_category"/>
+            <field name="color" eval="4"/>
+        </record>
+        <record id="rc_blog_tag_bts" model="blog.tag">
+            <field name="name">Behind the Scenes</field>
+            <field name="category_id" ref="rc_blog_tag_category"/>
+            <field name="color" eval="5"/>
+        </record>
+        <record id="rc_blog_tag_healthy" model="blog.tag">
+            <field name="name">Healthy Eating</field>
+            <field name="category_id" ref="rc_blog_tag_category"/>
+            <field name="color" eval="6"/>
+        </record>
+        <record id="rc_blog_tag_festivals" model="blog.tag">
+            <field name="name">Festivals</field>
+            <field name="category_id" ref="rc_blog_tag_category"/>
+            <field name="color" eval="7"/>
+        </record>
+        <record id="rc_post_sadya" model="blog.post">
+            <field name="name">The Art of the Onam Sadya: 26 Dishes on a Banana Leaf</field>
+            <field name="subtitle">Our head chef walks you through the order, the flavours and the etiquette of Kerala's grand feast</field>
+            <field name="blog_id" ref="rc_blog_kitchen"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_blog_tag_kerala'), ref('rc_blog_tag_festivals')])]"/>
+            <field name="author_id" ref="base.partner_admin"/>
+            <field name="content">&lt;p&gt;Every Onam our kitchen starts at 4 a.m. to prepare a full Sadya: avial, olan, kaalan, thoran, sambar, rasam, three kinds of payasam and much more, served in a precise order on a fresh banana leaf.&lt;/p&gt;&lt;p&gt;The secret is balance. Sweet, sour, salty, bitter, pungent and astringent flavours all appear on the leaf so that every bite feels new. Start with parippu and ghee, finish with payasam and a banana.&lt;/p&gt;&lt;p&gt;Want to learn it yourself? Join our Kerala Sadya Cooking Masterclass, seats are limited.&lt;/p&gt;</field>
+            <field name="is_published" eval="True"/>
+            <field name="visits" eval="842"/>
+            <field name="published_date" eval="(DateTime.today() + relativedelta(days=-30, minutes=210)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_post_filter_coffee" model="blog.post">
+            <field name="name">From Bean to Cup: How We Brew Our Filter Coffee</field>
+            <field name="subtitle">Single-origin Chikmagalur beans, a slow brass filter and a little chicory</field>
+            <field name="blog_id" ref="rc_blog_cafe"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_blog_tag_coffee'), ref('rc_blog_tag_bts')])]"/>
+            <field name="author_id" ref="base.partner_admin"/>
+            <field name="content">&lt;p&gt;Our café sources Arabica and Robusta beans from two family estates in Chikmagalur and roasts them in small batches every Monday.&lt;/p&gt;&lt;p&gt;The decoction drips slowly through a traditional brass filter for 15 minutes before we blend it with frothy hot milk, poured from a height to get that perfect foam.&lt;/p&gt;&lt;p&gt;Try it with our crisp ghee roast dosa, the combination our regulars swear by.&lt;/p&gt;</field>
+            <field name="is_published" eval="True"/>
+            <field name="visits" eval="615"/>
+            <field name="published_date" eval="(DateTime.today() + relativedelta(days=-21, minutes=210)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_post_appam" model="blog.post">
+            <field name="name">Soft Appam &amp; Chicken Stew: A Family Recipe</field>
+            <field name="subtitle">The Sunday breakfast that made our restaurant famous, now in your kitchen</field>
+            <field name="blog_id" ref="rc_blog_kitchen"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_blog_tag_recipes'), ref('rc_blog_tag_kerala')])]"/>
+            <field name="author_id" ref="base.partner_admin"/>
+            <field name="content">&lt;p&gt;Soak 2 cups of raw rice for 5 hours, grind with grated coconut and cooked rice, add yeast and sugar and let the batter ferment overnight.&lt;/p&gt;&lt;p&gt;For the stew, simmer chicken with ginger, green chillies, whole spices and potatoes in thin coconut milk, then finish with thick coconut milk and a few curry leaves.&lt;/p&gt;&lt;p&gt;Swirl the batter in a hot appachatti so the edges turn lacy and the centre stays soft.&lt;/p&gt;</field>
+            <field name="is_published" eval="True"/>
+            <field name="visits" eval="1290"/>
+            <field name="published_date" eval="(DateTime.today() + relativedelta(days=-14, minutes=210)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_post_healthy_bowls" model="blog.post">
+            <field name="name">5 Healthy Lunch Bowls Under 500 Calories</field>
+            <field name="subtitle">Millet, sprouts and grilled fish: new on our corporate lunch menu</field>
+            <field name="blog_id" ref="rc_blog_kitchen"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_blog_tag_healthy'), ref('rc_blog_tag_recipes')])]"/>
+            <field name="author_id" ref="base.partner_admin"/>
+            <field name="content">&lt;p&gt;Our office customers asked for lighter lunches, so the kitchen built five bowls around millets, sprouts, grilled fish and seasonal vegetables.&lt;/p&gt;&lt;p&gt;Every bowl is under 500 calories and packed in compostable boxes for our corporate lunch subscriptions.&lt;/p&gt;</field>
+            <field name="is_published" eval="True"/>
+            <field name="visits" eval="388"/>
+            <field name="published_date" eval="(DateTime.today() + relativedelta(days=-7, minutes=210)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_post_latte_art" model="blog.post">
+            <field name="name">Latte Art for Beginners: The Heart, Tulip and Rosetta</field>
+            <field name="subtitle">Our baristas share the three pours every café lover should learn</field>
+            <field name="blog_id" ref="rc_blog_cafe"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_blog_tag_coffee'), ref('rc_blog_tag_events')])]"/>
+            <field name="author_id" ref="base.partner_admin"/>
+            <field name="content">&lt;p&gt;Great latte art starts with silky micro-foam: steam whole milk to 60°C and keep the wand just below the surface.&lt;/p&gt;&lt;p&gt;Pour from high to mix, then bring the jug close and wiggle for a rosetta. Join our next Latte Art Workshop to practise with our baristas.&lt;/p&gt;</field>
+            <field name="is_published" eval="True"/>
+            <field name="visits" eval="156"/>
+            <field name="published_date" eval="(DateTime.today() + relativedelta(days=-3, minutes=210)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_post_christmas" model="blog.post">
+            <field name="name">Christmas Plum Cake Mixing Ceremony: You're Invited</field>
+            <field name="subtitle">Dried fruits, rum and a lot of fun: help us mix 200 kg of cake mix</field>
+            <field name="blog_id" ref="rc_blog_cafe"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_blog_tag_festivals'), ref('rc_blog_tag_events')])]"/>
+            <field name="author_id" ref="base.partner_admin"/>
+            <field name="content">&lt;p&gt;This year's cake mixing ceremony kicks off our Christmas Food &amp;amp; Wine Festival.&lt;/p&gt;&lt;p&gt;Bring your family, put on an apron and mix with us. Every guest takes home a slice in December.&lt;/p&gt;</field>
+            <field name="is_published" eval="False"/>
+            <field name="visits" eval="0"/>
+            <field name="publish_on" eval="(DateTime.today() + relativedelta(days=5, minutes=210)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_post_draft_menu" model="blog.post">
+            <field name="name">Sneak Peek: Our New Monsoon Menu (Draft)</field>
+            <field name="subtitle">Seafood, warm soups and pepper-spiced snacks</field>
+            <field name="blog_id" ref="rc_blog_kitchen"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_blog_tag_bts')])]"/>
+            <field name="author_id" ref="base.partner_admin"/>
+            <field name="content">&lt;p&gt;Draft: chef is still testing the karimeen pollichathu and the pepper crab recipes.&lt;/p&gt;</field>
+            <field name="is_published" eval="False"/>
+            <field name="visits" eval="0"/>
+        </record>
+    </data>
+</odoo>

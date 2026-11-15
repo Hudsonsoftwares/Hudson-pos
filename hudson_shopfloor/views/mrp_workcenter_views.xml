@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Work Centers Overview: standard card, plus the desktop button that opens
+         the Shop Floor on that work center (as in Enterprise) -->
+    <record id="mrp_workcenter_kanban_hudson_shopfloor" model="ir.ui.view">
+        <field name="name">mrp.workcenter.kanban.hudson.shopfloor</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='o_wo']" position="inside">
+                <button class="btn btn-secondary" name="action_open_shopfloor" type="object" title="Shop Floor">
+                    <i class="oi" data-icon="desktop_windows"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

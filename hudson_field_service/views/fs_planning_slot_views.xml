@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- A shift with a customer is a field service job: the job tools appear
+         on the shift as soon as a customer is set. -->
+    <record id="fs_planning_slot_view_form_inherit_field_service" model="ir.ui.view">
+        <field name="name">fs.planning.slot.form.inherit.field.service</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="inherit_id" ref="hudson_planning.fs_planning_slot_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- On a job, the chatter is the job's (status, GPS, rating, report...) -->
+            <xpath expr="//chatter" position="attributes">
+                <attribute name="thread_field">field_service_order_id</attribute>
+                <attribute name="thread_model">field.service.order</attribute>
+            </xpath>
+
+            <!-- Job workflow buttons: the job tools appear once the job is started -->
+            <xpath expr="//header" position="inside">
+                <field name="is_field_service" invisible="1"/>
+                <field name="field_service_order_id" invisible="1"/>
+                <field name="field_service_state" invisible="1"/>
+                <field name="fs_is_timer_running" invisible="1"/>
+                <field name="fs_can_start_work" invisible="1"/>
+                <field name="fs_invoice_status" invisible="1"/>
+                <field name="fs_invoice_id" invisible="1"/>
+                <field name="fs_customer_signature" invisible="1"/>
+                <field name="fs_worksheets_enabled" invisible="1"/>
+                <field name="fs_customer_report_enabled" invisible="1"/>
+                <field name="fs_billing_enabled" invisible="1"/>
+                <field name="fs_products_enabled" invisible="1"/>
+                <field name="fs_geolocation_enabled" invisible="1"/>
+                <field name="fs_equipment_enabled" invisible="1"/>
+                <field name="fs_maintenance_enabled" invisible="1"/>
+                <field name="fs_under_warranty" invisible="1"/>
+                <field name="fs_photo_count" invisible="1"/>
+                <!-- Opens the device's file picker / camera directly -->
+                <widget name="fs_photo_upload"
+                        groups="hudson_field_service.group_field_service_user"
+                        invisible="not field_service_order_id or field_service_state not in ('in_progress', 'paused', 'done')"/>
+                <button name="action_fsm_view_products"
+                        groups="hudson_field_service.group_field_service_user"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="not field_service_order_id or field_service_state not in ('in_progress', 'paused', 'done') or not fs_products_enabled">
+                    <field name="fs_product_count" class="me-1"/>Products
+                </button>
+                <!-- Once the work is completed, the report is emailed to the customer, who reviews and signs it online -->
+                <button name="action_send_report"
+                        groups="hudson_field_service.group_field_service_user"
+                        string="Send Report"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="not field_service_order_id or field_service_state != 'done' or not fs_customer_report_enabled"/>
+                <widget name="field_service_timer" invisible="not field_service_order_id or field_service_state in ('done', 'cancelled')" groups="hudson_field_service.group_field_service_user"/>
+                <button name="action_mark_done"
+                        groups="hudson_field_service.group_field_service_user"
+                        string="Mark as Done"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not field_service_order_id or field_service_state not in ('paused', 'in_progress') or fs_is_timer_running"/>
+                <button name="action_view_invoice"
+                        groups="hudson_field_service.group_field_service_user"
+                        string="View Invoice"
+                        type="object"
+                        invisible="not field_service_order_id or not fs_invoice_id or not fs_billing_enabled"/>
+                <button name="action_get_directions"
+                        groups="hudson_field_service.group_field_service_user"
+                        string="Get Directions"
+                        type="object"
+                        icon="location_on"
+                        invisible="not field_service_order_id or field_service_state in ('done', 'cancelled')"/>
+            </xpath>
+
+            <!-- Smart buttons -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_sale_order"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="attach_money"
+                        invisible="not field_service_order_id or not fs_sale_order_confirmed"
+                        groups="hudson_field_service.group_field_service_user">
+                    <span class="o_stat_text">Sales Order</span>
+                </button>
+                <button name="action_customer_preview"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="public"
+                        invisible="not field_service_order_id"
+                        groups="hudson_field_service.group_field_service_user">
+                    <span class="o_stat_text">Customer Preview</span>
+                </button>
+                <button name="action_view_quotations"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="attach_money"
+                        invisible="not field_service_order_id or not fs_billing_enabled"
+                        groups="hudson_field_service.group_field_service_user">
+                    <field name="fs_quotation_count" string="Quotations" widget="statinfo"/>
+                </button>
+                <button name="action_view_timesheets"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="schedule"
+                        invisible="not field_service_order_id"
+                        groups="hudson_field_service.group_field_service_user">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Recorded</span>
+                        <span class="o_stat_value"><field name="fs_total_time_spent" widget="float_time"/></span>
+                    </div>
+                </button>
+                <button name="action_view_pickings"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="local_shipping"
+                        invisible="not field_service_order_id or not fs_delivery_count"
+                        groups="hudson_field_service.group_field_service_user">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text"><field name="fs_delivery_count"/> Deliveries</span>
+                        <span class="o_stat_text"><field name="fs_delivery_done_count"/> Done</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- A saved job is only planned: it can be started once published -->
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info mb-0 text-center" role="status"
+                     invisible="not field_service_order_id or state == 'published' or field_service_state not in ('new', 'scheduled')">
+                    This job is not published yet: the technician can start it once it is published.
+                </div>
+            </xpath>
+
+            <!-- Once the job is started, its shift can no longer be unpublished or handed over -->
+            <button name="action_unpublish" position="attributes">
+                <attribute name="invisible">state == 'draft' or field_service_state in ('in_progress', 'paused', 'done')</attribute>
+            </button>
+            <button name="action_request_switch" position="attributes">
+                <attribute name="invisible">not can_request_switch or field_service_state in ('in_progress', 'paused', 'done')</attribute>
+            </button>
+            <button name="action_self_unassign" position="attributes">
+                <attribute name="invisible">not can_self_unassign or field_service_state in ('in_progress', 'paused', 'done')</attribute>
+            </button>
+
+            <field name="shift_status" position="attributes">
+                <attribute name="statusbar_visible">draft,scheduled,in_progress,done</attribute>
+            </field>
+            <xpath expr="//sheet/widget[@name='web_ribbon']" position="after">
+                <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="field_service_state != 'done'"/>
+                <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger" invisible="field_service_state != 'cancelled'"/>
+            </xpath>
+
+            <!-- Resources: technicians and materials of the job -->
+            <xpath expr="//div[@name='resources']" position="inside">
+                <field name="fs_is_extra_shift" invisible="1"/>
+                <!-- The technician of the shift is not also an extra technician -->
+                <field name="fs_extra_employee_ids"
+                       widget="many2many_avatar_employee"
+                       readonly="not is_planning_manager"
+                       options="{'no_create': True}"
+                       domain="[('id', '!=', resource_id)]"
+                       placeholder="Extra technicians"
+                       invisible="not is_field_service or fs_is_extra_shift"
+                       groups="hudson_field_service.group_field_service_user"/>
+                <div class="text-muted small" invisible="not fs_is_extra_shift" groups="hudson_field_service.group_field_service_user">
+                    Extra technician of the job of
+                    <field name="fs_primary_employee_id" class="oe_inline" widget="many2one_avatar_employee" readonly="1"/>
+                </div>
+                <field name="fs_material_ids"
+                       widget="many2many_tags"
+                       options="{'color_field': 'color', 'no_create': True}"
+                       placeholder="Materials"
+                       invisible="not is_field_service"
+                       groups="hudson_field_service.group_field_service_user"/>
+            </xpath>
+            <!-- Settings > Project Planning -->
+            <field name="project_id" position="before">
+                <field name="fs_project_planning" invisible="1"/>
+            </field>
+            <field name="project_id" position="attributes">
+                <attribute name="invisible">not fs_project_planning</attribute>
+            </field>
+            <field name="task_id" position="attributes">
+                <attribute name="invisible">not fs_project_planning</attribute>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="fs_partner_phone"
+                       string="Phone Number"
+                       widget="phone"
+                       invisible="not is_field_service"
+                       groups="hudson_field_service.group_field_service_user"/>
+                <field name="fs_worksheet_template_id"
+                       string="Worksheet"
+                       options="{'no_create': True}"
+                       invisible="not is_field_service or not fs_worksheets_enabled"
+                       groups="hudson_field_service.group_field_service_user"/>
+            </field>
+            <field name="sale_order_id" position="after">
+                <field name="fs_under_warranty" string="Under Warranty"
+                       invisible="not is_field_service or not fs_maintenance_enabled"
+                       groups="hudson_field_service.group_field_service_user"/>
+            </field>
+            <field name="role_id" position="after">
+                <field name="fs_priority" string="Priority" widget="priority"
+                       invisible="not is_field_service"
+                       groups="hudson_field_service.group_field_service_user"/>
+            </field>
+
+            <!-- Job pages -->
+            <xpath expr="//notebook[@name='shift_notebook']/page[@name='note']" position="after">
+                <page string="Equipment" name="fs_equipment" invisible="not is_field_service or not fs_equipment_enabled"
+                      groups="hudson_field_service.group_field_service_user">
+                    <field name="fs_equipment_ids" context="{'default_partner_id': partner_id}">
+                        <list>
+                            <field name="name"/>
+                            <field name="manufacturer_id" optional="show"/>
+                            <field name="model" optional="show"/>
+                            <field name="serial_number"/>
+                            <field name="contract_end_date" optional="show"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//notebook[@name='shift_notebook']/page[@name='note']" position="before">
+                <page string="Worksheet" name="fs_worksheet" invisible="not is_field_service" groups="hudson_field_service.group_field_service_user">
+                    <field name="fs_worksheet_properties" nolabel="1" columns="2"
+                           invisible="not fs_worksheet_template_id or not fs_worksheets_enabled"/>
+                    <group string="Work Performed">
+                        <field name="fs_worksheet_notes" nolabel="1" colspan="2" placeholder="Document the work performed, observations, and results..."/>
+                    </group>
+                    <group string="Customer Sign-off" invisible="not fs_customer_report_enabled">
+                        <div colspan="2" class="text-muted" invisible="fs_customer_signature">
+                            Not signed yet. Once the job is completed, use "Send Report" to email the customer a link to review and sign the report.
+                        </div>
+                        <field name="fs_customer_signed_by" invisible="not fs_customer_signature"/>
+                        <field name="fs_customer_signature" widget="signature" readonly="1" invisible="not fs_customer_signature"/>
+                        <field name="fs_customer_signed_date" invisible="not fs_customer_signature"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="fs_planning_slot_view_tree_inherit_field_service" model="ir.ui.view">
+        <field name="name">fs.planning.slot.tree.inherit.field.service</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="inherit_id" ref="hudson_planning.fs_planning_slot_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="field_service_order_id" optional="show"/>
+                <field name="field_service_state" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="fs_planning_slot_view_search_inherit_field_service" model="ir.ui.view">
+        <field name="name">fs.planning.slot.search.inherit.field.service</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="inherit_id" ref="hudson_planning.fs_planning_slot_view_search"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="field_service_order_id"/>
+            </field>
+            <filter name="employees" position="after">
+                <filter string="Materials" name="materials" domain="[('field_service_order_id.material_ids', '!=', False)]"/>
+                <separator/>
+                <filter string="Shifts" name="shifts" domain="[('field_service_order_id', '=', False)]"/>
+                <filter string="Field Service Jobs" name="field_service_jobs" domain="[('field_service_order_id', '!=', False)]"/>
+                <separator/>
+                <filter string="Urgent" name="priority_urgent" domain="[('fs_priority', '=', '3')]"/>
+                <filter string="High Priority" name="priority_high" domain="[('fs_priority', '=', '2')]"/>
+                <filter string="Low Priority" name="priority_low" domain="[('fs_priority', '=', '1')]"/>
+            </filter>
+            <filter name="group_role" position="after">
+                <filter string="Worksheet" name="group_worksheet" context="{'group_by': 'fs_worksheet_template_id'}"/>
+            </filter>
+            <filter name="group_project" position="after">
+                <filter string="City" name="group_city" context="{'group_by': 'fs_partner_city'}"/>
+            </filter>
+            <filter name="group_state" position="after">
+                <filter string="Priority" name="group_priority" context="{'group_by': 'fs_priority'}"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="field_service_create_invoice_wizard_form_view" model="ir.ui.view">
+        <field name="name">field.service.create.invoice.wizard.form</field>
+        <field name="model">field.service.create.invoice.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Invoice">
+                <group>
+                    <group string="Order Details">
+                        <field name="order_id" readonly="1"/>
+                        <field name="partner_id"/>
+                    </group>
+                    <group string="Invoice Options">
+                        <field name="include_time"/>
+                        <field name="hourly_rate" invisible="not include_time"/>
+                        <field name="include_products"/>
+                    </group>
+                </group>
+                <separator string="Invoice Preview"/>
+                <group>
+                    <group>
+                        <field name="time_amount" string="Time Charges"/>
+                        <field name="products_amount" string="Products Cost"/>
+                    </group>
+                    <group>
+                        <field name="total_amount" string="Total Amount" class="oe_subtotal_footer_separator"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_create_invoice"
+                            string="Create Invoice"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

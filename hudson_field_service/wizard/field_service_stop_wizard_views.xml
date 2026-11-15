@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="field_service_stop_wizard_form_view" model="ir.ui.view">
+        <field name="name">field.service.stop.wizard.form</field>
+        <field name="model">field.service.stop.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Stop Timer">
+                <group>
+                    <field name="order_id" readonly="1"/>
+                    <field name="start_time"/>
+                    <field name="end_time"/>
+                    <field name="duration" widget="float_time"/>
+                    <field name="description" placeholder="Describe the work performed..."/>
+                    <field name="action_type" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm"
+                            string="Save &amp; Pause"
+                            type="object"
+                            class="btn-warning"
+                            invisible="action_type != 'pause'"/>
+                    <button name="action_confirm"
+                            string="Save &amp; Complete"
+                            type="object"
+                            class="btn-success"
+                            invisible="action_type != 'stop'"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

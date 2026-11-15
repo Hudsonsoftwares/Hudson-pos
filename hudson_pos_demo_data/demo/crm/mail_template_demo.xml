@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_mail_template_crm_welcome" model="mail.template">
+            <field name="name">Resto Cafe: Event Enquiry Welcome</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">Your enquiry with {{ object.company_id.name }}</field>
+            <field name="use_default_to" eval="True"/>
+            <field name="body_html" type="html"><div>
+Hi <t t-out="object.contact_name or object.partner_id.name or ''">Guest</t>,<br/><br/>
+Thank you for contacting <t t-out="object.company_id.name or ''">Resto Cafe Solutions</t> about <b><t t-out="object.name or ''">your event</t></b>.<br/>
+Our catering &amp; events team will share menu options and a quotation shortly. You are also welcome to visit us for a complimentary tasting.<br/><br/>
+Warm regards,<br/>
+<t t-if="object.user_id"><b><t t-out="object.user_id.name or ''">Arjun Nair</t></b><br/>
+Phone: <t t-out="object.user_id.phone or ''">+91 98470 55660</t></t>
+</div></field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

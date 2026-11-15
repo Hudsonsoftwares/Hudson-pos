@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hudson_sign.GreenSavings" owl="1">
+        <div class="hudson_sign_green_savings p-4 bg-light h-100">
+            <div class="container-fluid">
+                <div class="row g-4">
+                    <!-- Paper Savings -->
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm d-flex flex-row align-items-center p-3">
+                            <div class="gs-icon text-secondary me-3">
+                                <SignIcon name="'leaf'" size="48" cls="'o_gs_icon'"/>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1">Paper Savings</h5>
+                                <div class="text-muted"><t t-out="this.state.paperSaved"/> sheets of paper saved</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Water -->
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm d-flex flex-row align-items-center p-3">
+                            <div class="gs-icon text-secondary me-3">
+                                <SignIcon name="'tint'" size="48" cls="'o_gs_icon'"/>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1">Water</h5>
+                                <div class="text-muted"><t t-out="this.state.waterSaved"/> L of water saved</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Wood -->
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm d-flex flex-row align-items-center p-3">
+                            <div class="gs-icon text-secondary me-3">
+                                <SignIcon name="'tree'" size="48" cls="'o_gs_icon'"/>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1">Wood</h5>
+                                <div class="text-muted"><t t-out="this.state.woodSaved"/> kg of wood saved</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Carbon Emissions -->
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm d-flex flex-row align-items-center p-3">
+                            <div class="gs-icon text-secondary me-3">
+                                <SignIcon name="'cloud'" size="48" cls="'o_gs_icon'"/>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1">Carbon Emissions</h5>
+                                <div class="text-muted"><t t-out="this.state.carbonReduced"/> kg of reduced carbon emissions</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Waste -->
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm d-flex flex-row align-items-center p-3">
+                            <div class="gs-icon text-secondary me-3">
+                                <SignIcon name="'trash'" size="48" cls="'o_gs_icon'"/>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1">Waste</h5>
+                                <div class="text-muted"><t t-out="this.state.wastePrevented"/> kg of waste prevented</div>
+                                <div class="text-muted small mt-1">that's <t t-out="this.state.cansPrevented"/> cans</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Energy -->
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm d-flex flex-row align-items-center p-3">
+                            <div class="gs-icon text-secondary me-3">
+                                <SignIcon name="'bolt'" size="48" cls="'o_gs_icon'"/>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1">Energy</h5>
+                                <div class="text-muted"><t t-out="this.state.energySaved"/> kWh of energy saved</div>
+                                <div class="text-muted small mt-1">that's <t t-out="this.state.computerHours"/> hour of computer use</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="#" class="text-info text-decoration-none" t-on-click="() => this.toggleModal()">How are these results calculated?</a>
+                </div>
+                
+                <!-- Modal -->
+                <div t-if="this.state.showModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title fw-bold">How do we calculate?</h5>
+                                <button type="button" class="btn-close" t-on-click="() => this.toggleModal()"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="small">The computation is based on the website <a href="https://c.environmentalpaper.org/" target="_blank">https://c.environmentalpaper.org/</a></p>
+                                <p class="small">The total of sheets you saved is based on: the number of sent sign requests x number of sheets in the document x (number of contacts who need to sign + number of contacts in copy if the sign request is signed) = total of pages. We assume that one page weighs 0.005 kilograms.</p>
+                                
+                                <h5 class="fw-bold mt-4">I've got a total weight, and now?</h5>
+                                <ol class="small">
+                                    <li>Water: 1 kg of paper needs 79.67 L of water.</li>
+                                    <li>Wood: 1 kg of paper needs 3.32 kg of wood.</li>
+                                    <li>Carbon: 1 kg of paper emits 7.57 kg of CO2 equivalent.</li>
+                                    <li>Waste: 1 kg of paper results in 0.49 kg of solid waste.</li>
+                                    <li>Energy: 1 kg of paper needs 7.07 kWh of energy.</li>
+                                </ol>
+                                
+                                <h5 class="fw-bold mt-4">What does it mean?</h5>
+                                <p class="small">To give you a better idea of what these numbers represent, we made some conversions:</p>
+                                <ul class="small">
+                                    <li>Cans: 1 can weighs 0.013 kg. So you prevented <t t-out="this.state.cansPrevented"/> cans from being thrown away.</li>
+                                    <li>Computer: A standard computer uses 0.5 kWh per hour. So you saved <t t-out="this.state.computerHours"/> hour of computer use.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

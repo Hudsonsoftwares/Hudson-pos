@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hudson_sign.SignEditor" owl="1">
+        <div t-attf-class="o_action o_dms_sign_action o_hudson_sign_editor h-100 w-100 d-flex flex-column {{ this.state.previewMode ? 'o_sign_preview' : '' }}">
+            <!-- Control panel -->
+            <div class="o_sign_cp d-flex align-items-center flex-shrink-0">
+                <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-primary" t-on-click="() => this.openSendModal(false)">Send</button>
+                    <button type="button" class="btn btn-primary" t-on-click="() => this.openSendModal(true)">Sign Now</button>
+                </div>
+                <div class="o_sign_breadcrumb d-flex flex-column justify-content-center ms-2 min-w-0" t-if="this.state.template">
+                    <a href="#" class="o_sign_bc_parent" t-on-click.prevent="() => this.onBack()" t-out="this.backLabel"/>
+                    <div class="d-flex align-items-center gap-2 min-w-0">
+                        <span class="o_sign_bc_current text-truncate" t-out="this.state.template.name"/>
+                        <div class="position-relative o_sign_gear_menu">
+                            <button type="button" class="btn btn-link p-0 o_sign_cp_icon" title="Actions" t-on-click="() => this.toggleGearMenu()">
+                                <SignIcon name="'cog'"/>
+                            </button>
+                            <div t-if="this.state.gearMenuOpen" class="dropdown-menu show o_sign_menu o_sign_gear_dropdown">
+                                <button t-if="this.canSaveAsTemplate and !this.fromTemplates" type="button" class="dropdown-item d-flex align-items-center gap-2" t-on-click="() => this.saveAsTemplate()">
+                                    <SignIcon name="'save'" size="14"/>Save as Template
+                                </button>
+                                <button type="button" class="dropdown-item d-flex align-items-center gap-2" t-on-click="() => this.openTemplateProperties()">
+                                    <SignIcon name="'cog'" size="14"/>Configuration
+                                </button>
+                                <button type="button" class="dropdown-item d-flex align-items-center gap-2" t-on-click="() => this.togglePreview()">
+                                    <SignIcon name="'eye'" size="14"/><t t-out="this.state.previewMode ? 'Exit Preview' : 'Preview'"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="o_sign_cp_divider"/>
+                <!-- Same buttons as the save/discard indicator of form views -->
+                <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="o_form_button_save btn btn-light p-1"
+                            data-tooltip="Save manually" aria-label="Save manually"
+                            t-att-disabled="!this.state.template or this.state.saving"
+                            t-on-click="() => this.onSaveClick()">
+                        <i class="oi oi-fw" data-icon="cloud_upload"/>
+                    </button>
+                    <button type="button" class="o_form_button_cancel btn btn-light p-1"
+                            data-tooltip="Close" aria-label="Close"
+                            t-on-click="() => this.onBack()">
+                        <i class="oi oi-fw" data-icon="close"/>
+                    </button>
+                </div>
+
+                <!-- Tags -->
+                <t t-call="hudson_sign.SignTagsField"/>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="d-flex flex-grow-1 overflow-hidden">
+                <!-- Left Sidebar -->
+                <div t-if="!this.state.previewMode" class="o_dms_sign_sidebar o_sign_sidebar d-flex flex-column overflow-auto flex-shrink-0">
+                    <!-- Documents -->
+                    <div class="o_sign_section">
+                        <div class="o_sign_section_header">
+                            <span>Documents</span>
+                        </div>
+                        <div class="o_sign_card o_active" t-if="this.state.template">
+                            <div class="o_sign_card_header">
+                                <input t-if="this.state.renamingDocument" type="text" class="form-control form-control-sm o_sign_doc_rename"
+                                       t-model.proxy="this.state.documentNameDraft"
+                                       t-on-keydown="(ev) => this.onDocumentNameKeydown(ev)"
+                                       t-on-blur="() => this.confirmRenameDocument()"/>
+                                <span t-else="" class="text-truncate" t-out="this.state.template.document_name"/>
+                                <div class="position-relative o_sign_doc_menu ms-auto">
+                                    <button type="button" class="btn btn-link o_sign_kebab" title="Document Options" t-on-click.stop="() => this.toggleDocMenu()">
+                                        <SignIcon name="'ellipsis-v'"/>
+                                    </button>
+                                    <div t-if="this.state.docMenuOpen" class="dropdown-menu show end-0 o_sign_menu">
+                                        <button type="button" class="dropdown-item" t-on-click="() => this.startRenameDocument()">Rename</button>
+                                        <button type="button" class="dropdown-item" t-on-click="() => this.downloadDocument()">Download</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signers -->
+                    <div class="o_sign_section">
+                        <div class="o_sign_section_header">
+                            <span>Signers</span>
+                            <a href="#" class="o_sign_section_add" t-on-click.prevent="() => this.onAddRole()">Add</a>
+                        </div>
+                        <t t-foreach="this.state.roles" t-as="role" t-key="role.id">
+                            <t t-set="isActiveRole" t-value="this.state.currentRoleIndex === role_index"/>
+                            <div t-attf-class="o_sign_card {{ isActiveRole ? 'o_active' : '' }}">
+                                <div class="o_sign_card_header cursor-pointer" t-on-click="() => this.selectRole(role_index)">
+                                    <span class="text-truncate" t-out="role.name"/>
+                                    <span class="o_sign_role_count ms-auto" t-attf-style="background-color: {{ role.color }}; color: {{ role.textColor }};">
+                                        <t t-out="this.getRoleBoxCount(role.id)"/>
+                                    </span>
+                                    <div class="position-relative" t-on-click.stop="">
+                                        <button type="button" class="btn btn-link o_sign_kebab o_signer_menu_toggle" title="Signer Options"
+                                                t-on-click.stop="() => this.toggleRoleDropdown(role.id)">
+                                            <SignIcon name="'ellipsis-v'"/>
+                                        </button>
+                                        <div t-if="this.state.openDropdownRoleId === role.id" class="dropdown-menu show end-0 o_sign_menu o_signer_dropdown_menu">
+                                            <button type="button" class="dropdown-item" t-on-click.stop="() => this.editRoleAndClose(role.id)">Edit</button>
+                                            <button t-if="this.state.roles.length > 1" type="button" class="dropdown-item text-danger"
+                                                    t-on-click.stop="() => this.deleteRoleAndClose(role.id)">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Field palette of the active signer -->
+                                <div t-if="isActiveRole" class="o_sign_tools">
+                                    <t t-foreach="this.state.tools" t-as="tool" t-key="tool.key || tool.type">
+                                        <div class="o_sign_tool"
+                                             t-att-title="tool.tip"
+                                             t-attf-style="background-color: {{ role.color }}; color: {{ role.textColor }};"
+                                             t-on-mousedown="(e) => this.startDrag(e, tool)">
+                                            <SignIcon name="tool.icon" size="16"/>
+                                            <span class="text-truncate"><t t-out="tool.label"/></span>
+                                        </div>
+                                    </t>
+                                    <div class="o_sign_tool o_sign_tool_add"
+                                         t-attf-style="background-color: {{ role.color }}; color: {{ role.textColor }};"
+                                         t-on-click="() => this.openAddFieldDialog()">
+                                        <SignIcon name="'plus'" size="16"/>
+                                        <span>Add Field</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- PDF Viewer -->
+                <div class="o_sign_viewer d-flex flex-column flex-grow-1 overflow-hidden">
+                    <div t-if="this.state.previewMode" class="o_sign_preview_banner d-flex align-items-center justify-content-center gap-3 flex-shrink-0">
+                        <SignIcon name="'eye'" size="16"/>
+                        <span>Preview: fields are shown as the signers will see them.</span>
+                        <button type="button" class="btn btn-sm btn-secondary" t-on-click="() => this.togglePreview()">Exit Preview</button>
+                    </div>
+                    <t t-call="hudson_sign.SignPdfToolbar"/>
+
+                    <div class="d-flex flex-grow-1 overflow-hidden">
+                        <div class="o_dms_sign_viewport o_sign_pdf_scroll flex-grow-1 position-relative overflow-auto" t-on-scroll="(ev) => this.onViewerScroll(ev)">
+                            <!-- Loading state -->
+                            <div t-if="this.state.isLoading" class="d-flex flex-column align-items-center justify-content-center h-100 p-5">
+                                <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                                <h6 class="text-muted fw-normal">Loading PDF preview...</h6>
+                            </div>
+
+                            <!-- Error state -->
+                            <div t-elif="this.state.errorMessage" class="d-flex flex-column align-items-center justify-content-center mx-auto h-100 p-5 text-center" style="max-width: 480px;">
+                                <SignIcon name="'exclamation-triangle'" size="48" cls="'text-warning mb-3'"/>
+                                <h5 class="fw-bold mb-2">Unable to Preview PDF</h5>
+                                <p class="text-muted small mb-3"><t t-out="this.state.errorMessage"/></p>
+                                <button class="btn btn-sm btn-primary" t-on-click="() => this.retryLoad()">
+                                    <SignIcon name="'refresh'" size="14" cls="'me-1'"/>Retry Loading
+                                </button>
+                            </div>
+
+                            <!-- Pages -->
+                            <div t-else="" class="o_sign_pages d-flex flex-column align-items-center">
+                                <t t-foreach="this.state.pages" t-as="page" t-key="page.num">
+                                    <div class="pdf-page o_dms_pdf_page position-relative"
+                                         t-att-data-page-num="page.num"
+                                         t-attf-style="width: {{ page.width }}px; height: {{ page.height }}px;">
+
+                                        <canvas t-att-id="'hudson-sign-canvas-' + page.num" style="display: block; width: 100%; height: 100%;"></canvas>
+
+                                        <!-- Search hits -->
+                                        <t t-foreach="this.getMatchesForPage(page.num)" t-as="match" t-key="match.index">
+                                            <div t-attf-class="o_sign_search_hit {{ match.index === this.state.searchIndex ? 'o_current' : '' }}"
+                                                 t-attf-style="left: {{ match.x * page.width }}px; top: {{ match.y * page.height }}px; width: {{ match.w * page.width }}px; height: {{ match.h * page.height }}px;"/>
+                                        </t>
+
+                                        <!-- Connectors between the options of a radio group -->
+                                        <svg class="o_sign_radio_links" t-att-width="page.width" t-att-height="page.height">
+                                            <t t-foreach="this.getRadioLinks(page.num)" t-as="link" t-key="link.key">
+                                                <path t-att-d="link.path"/>
+                                            </t>
+                                        </svg>
+
+                                        <!-- Alignment guides of the selected field -->
+                                        <t t-foreach="this.getGuidesForPage(page.num)" t-as="guide" t-key="guide.key">
+                                            <div t-if="guide.vertical" class="o_sign_guide o_sign_guide_v" t-attf-style="left: {{ guide.pos }}px;"/>
+                                            <div t-else="" class="o_sign_guide o_sign_guide_h" t-attf-style="top: {{ guide.pos }}px;"/>
+                                        </t>
+
+                                        <!-- Fields -->
+                                        <t t-foreach="this.getItemsForPage(page.num)" t-as="box" t-key="box.id">
+                                            <div t-attf-class="signature-box o_sign_field o_sign_field_{{ box.type }} {{ this.state.editingBoxId === box.id ? 'o_selected' : '' }} {{ this.state.boxDragId === box.id ? 'o_dragging' : '' }} {{ this.state.boxDragId === box.id and this.state.dropInvalid ? 'o_drop_invalid' : '' }}"
+                                                 t-attf-style="left: {{ box.x }}px; top: {{ box.y }}px; width: {{ box.width }}px; height: {{ box.height }}px; background-color: {{ this.getRoleColor(box.roleId) }}; border-color: {{ this.getRoleBorderColor(box.roleId) }}; color: {{ this.getRoleTextColor(box.roleId) }}; font-size: {{ this.fieldFontSize }}px;"
+                                                 t-att-title="this.state.roles.length > 1 ? this.getRole(box.roleId).name : ''"
+                                                 t-on-mousedown="(e) => this.startBoxDrag(e, box)">
+
+                                                <t t-if="box.type === 'checkbox'">
+                                                    <SignIcon name="'check-square-o'" size="this.getChoiceIconSize(box)" cls="'o_sign_field_icon'"/>
+                                                </t>
+                                                <t t-elif="box.type === 'radio'">
+                                                    <SignIcon name="'dot-circle-o'" size="this.getChoiceIconSize(box)" cls="'o_sign_field_icon'"/>
+                                                </t>
+                                                <t t-elif="box.type === 'selection'">
+                                                    <span class="o_sign_field_text text-truncate" t-attf-style="text-align: {{ box.alignment || 'left' }};"><t t-out="box.placeholder || this.getBoxLabel(box)"/></span>
+                                                    <SignIcon name="'angle-down'" size="this.fieldFontSize + 2" cls="'o_sign_field_caret'"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-attf-class="o_sign_field_text {{ this.isMultilineBox(box) ? 'o_multiline' : 'text-truncate' }}"
+                                                          t-attf-style="text-align: {{ box.alignment || 'left' }};"><t t-out="box.placeholder || this.getBoxLabel(box)"/></span>
+                                                </t>
+
+                                                <!-- Resize: sides and corners (the bottom right corner shows a handle) -->
+                                                <t t-foreach="['n', 's', 'e', 'w', 'nw', 'ne', 'sw']" t-as="dir" t-key="dir">
+                                                    <span t-attf-class="o_sign_resize o_sign_resize_{{ dir }}"
+                                                          t-on-mousedown.stop="(e) => this.startBoxResize(e, box, dir)"/>
+                                                </t>
+                                                <span class="resize-box-handle o_sign_resize" t-attf-style="border-color: {{ this.getRoleBorderColor(box.roleId) }};"
+                                                      t-on-mousedown.stop="(e) => this.startBoxResize(e, box, 'se')"/>
+
+                                                <!-- Properties Popover -->
+                                                <div t-if="this.state.editingBoxId === box.id" class="o_dms_box_popover o_sign_popover"
+                                                     t-on-mousedown.stop="(e) => {}" t-on-pointerdown.stop="(e) => {}" t-on-click.stop="(e) => {}">
+                                                    <div class="o_sign_popover_header">
+                                                        <span><t t-out="this.getBoxLabel(box)"/></span>
+                                                        <button type="button" class="o_sign_popover_close" title="Close" t-on-click.stop="() => this.closePopover()">
+                                                            <SignIcon name="'times'"/>
+                                                        </button>
+                                                    </div>
+                                                    <div class="o_sign_popover_body">
+                                                        <div t-if="this.hasPlaceholder(box)" class="mb-3">
+                                                            <label class="o_sign_popover_label">Placeholder</label>
+                                                            <textarea class="o_sign_underline_input" t-att-rows="this.isMultilineBox(box) ? 2 : 1" t-model.proxy="box.placeholder"/>
+                                                        </div>
+
+                                                        <div t-if="box.type === 'radio' and box.radioGroupName" class="mb-3">
+                                                            <label class="o_sign_popover_label" t-att-for="'radio_count_' + box.id">Options</label>
+                                                            <input type="number" min="2" max="30" class="o_sign_underline_input" t-att-id="'radio_count_' + box.id"
+                                                                   t-att-value="this.getRadioGroupCount(box)"
+                                                                   t-on-change="(ev) => this.setRadioGroupCount(box, ev.target.value)"/>
+                                                        </div>
+
+                                                        <div t-if="box.type === 'selection'" class="mb-3">
+                                                            <label class="o_sign_popover_label">Options</label>
+                                                            <textarea class="form-control o_sign_options_input" rows="4"
+                                                                      placeholder="Enter options separated by Enter."
+                                                                      t-model.proxy="box.options"/>
+                                                        </div>
+
+                                                        <div t-if="this.canAlign(box)" class="mb-3">
+                                                            <label class="o_sign_popover_label">Alignment</label>
+                                                            <div class="btn-group btn-group-sm w-100 o_sign_align_group" role="group">
+                                                                <button type="button" t-attf-class="btn btn-outline-secondary {{ box.alignment === 'left' ? 'active' : '' }}" title="Align Left" t-on-click="() => this.setAlignment(box, 'left')"><SignIcon name="'align-left'"/></button>
+                                                                <button type="button" t-attf-class="btn btn-outline-secondary {{ box.alignment === 'center' ? 'active' : '' }}" title="Align Center" t-on-click="() => this.setAlignment(box, 'center')"><SignIcon name="'align-center'"/></button>
+                                                                <button type="button" t-attf-class="btn btn-outline-secondary {{ box.alignment === 'right' ? 'active' : '' }}" title="Align Right" t-on-click="() => this.setAlignment(box, 'right')"><SignIcon name="'align-right'"/></button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-check mb-3">
+                                                            <input class="form-check-input" type="checkbox" t-model.proxy="box.mandatory" t-att-id="'mand_' + box.id"
+                                                                   t-on-change="(e) => this.onMandatoryChange(box, e.target.checked)"/>
+                                                            <label class="form-check-label" t-att-for="'mand_' + box.id">Mandatory field</label>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <button type="button" class="btn btn-primary" t-on-click.stop="() => this.closePopover()">Save</button>
+                                                            <div class="o_sign_popover_actions">
+                                                                <button type="button" class="btn" t-on-click.stop="() => this.duplicateBox(box.id)"
+                                                                        t-att-title="box.type === 'radio' ? 'Add Option' : 'Duplicate'">
+                                                                    <SignIcon name="'clone'"/>
+                                                                </button>
+                                                                <button type="button" class="btn o_sign_delete" title="Delete" t-on-click.stop="() => this.deleteBox(box.id)">
+                                                                    <SignIcon name="'trash'"/>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Page thumbnails -->
+                        <t t-call="hudson_sign.SignPdfThumbs"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Field preview following the cursor while dragging from the palette -->
+            <t t-if="this.state.dragType">
+                <t t-set="ghostSize" t-value="this.getDefaultSize(this.state.dragType)"/>
+                <div class="o_sign_field o_sign_drag_ghost position-fixed"
+                     t-attf-style="left: {{ this.state.mouseX }}px; top: {{ this.state.mouseY }}px; width: {{ ghostSize.width }}px; height: {{ ghostSize.height }}px; background-color: {{ this.currentRole.color }}; border-color: {{ this.currentRole.borderColor }}; color: {{ this.currentRole.textColor }}; font-size: {{ this.fieldFontSize }}px;">
+                    <span class="o_sign_field_text text-truncate"><t t-out="this.state.dragTool ? this.state.dragTool.label : this.getToolLabel(this.state.dragType)"/></span>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="hudson_sign.SignIcon" owl="1">
+        <t t-set="n" t-value="this.name"/>
+        <svg t-att-width="this.props.size" t-att-height="this.props.size" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             t-attf-class="o_sign_icon {{ this.props.cls }}" aria-hidden="true">
+            <t t-if="n === 'times'">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </t>
+            <t t-elif="n === 'clone'">
+                <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </t>
+            <t t-elif="n === 'trash'">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </t>
+            <t t-elif="n === 'cog'">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </t>
+            <t t-elif="n === 'cloud-upload'">
+                <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+            </t>
+            <t t-elif="n === 'save'">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            </t>
+            <t t-elif="n === 'eye'">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </t>
+            <t t-elif="n === 'clock'">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </t>
+            <t t-elif="n === 'check'">
+                <polyline points="20 6 9 17 4 12"/>
+            </t>
+            <t t-elif="n === 'send'">
+                <polygon points="5 3 21 12 5 21 8 12"/>
+            </t>
+            <t t-elif="n === 'spinner'">
+                <path d="M21 12a9 9 0 1 1-6.22-8.56"/>
+            </t>
+            <t t-elif="n === 'ellipsis-v'">
+                <circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/>
+            </t>
+            <t t-elif="n === 'plus'">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </t>
+            <t t-elif="n === 'minus'">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </t>
+            <t t-elif="n === 'chevron-up'">
+                <polyline points="18 15 12 9 6 15"/>
+            </t>
+            <t t-elif="n === 'chevron-down' or n === 'angle-down' or n === 'caret-down'">
+                <polyline points="6 9 12 15 18 9"/>
+            </t>
+            <t t-elif="n === 'search'">
+                <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </t>
+            <t t-elif="n === 'columns'">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/>
+            </t>
+            <t t-elif="n === 'check-square-o'">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 12.5 10.5 16 17 8.5"/>
+            </t>
+            <t t-elif="n === 'dot-circle-o'">
+                <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>
+            </t>
+            <t t-elif="n === 'align-left'">
+                <line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/>
+            </t>
+            <t t-elif="n === 'align-center'">
+                <line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/>
+            </t>
+            <t t-elif="n === 'align-right'">
+                <line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/>
+            </t>
+            <t t-elif="n === 'exclamation-triangle'">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </t>
+            <t t-elif="n === 'refresh'">
+                <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </t>
+            <t t-elif="n === 'question-circle'">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </t>
+            <t t-elif="n === 'user-o' or n === 'user'">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </t>
+            <t t-elif="n === 'envelope-o' or n === 'envelope'">
+                <rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/>
+            </t>
+            <t t-elif="n === 'phone'">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </t>
+            <t t-elif="n === 'building-o' or n === 'building'">
+                <rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>
+            </t>
+            <t t-elif="n === 'text-height' or n === 'font'">
+                <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+            </t>
+            <t t-elif="n === 'bars' or n === 'align-justify'">
+                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </t>
+            <t t-elif="n === 'calendar'">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </t>
+            <t t-elif="n === 'strikethrough'">
+                <path d="M16 4H9a3 3 0 0 0-2.83 4"/><path d="M14 12a4 4 0 0 1 0 8H6"/><line x1="4" y1="12" x2="20" y2="12"/>
+            </t>
+            <t t-elif="n === 'leaf'">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+            </t>
+            <t t-elif="n === 'tint'">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            </t>
+            <t t-elif="n === 'tree'">
+                <path d="M12 2 5 11h4l-4 6h14l-4-6h4z"/><line x1="12" y1="17" x2="12" y2="22"/>
+            </t>
+            <t t-elif="n === 'cloud'">
+                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+            </t>
+            <t t-elif="n === 'bolt'">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </t>
+            <t t-else="">
+                <!-- pencil-square-o and any unknown name -->
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </t>
+        </svg>
+    </t>
+
+    <t t-name="hudson_sign.SignerSettingsDialog" owl="1">
+        <Dialog title="'Signer Settings'">
+            <div class="d-flex flex-column">
+                <div class="mb-3 row align-items-center">
+                    <label class="col-sm-4 col-form-label fw-bold">Name</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" t-model.proxy="this.state.name" />
+                    </div>
+                </div>
+                <div class="mb-3 row align-items-center">
+                    <label class="col-sm-4 col-form-label fw-bold">Color Theme</label>
+                    <div class="col-sm-8 d-flex gap-2 align-items-center flex-wrap">
+                        <t t-foreach="this.palette" t-as="p" t-key="p.color">
+                            <span class="rounded-circle"
+                                  t-attf-style="width: 24px; height: 24px; background-color: {{ p.color }}; border: 2px solid {{ p.borderColor }}; box-shadow: {{ this.state.color === p.color ? '0 0 0 2px #000' : 'none' }}; cursor: pointer;"
+                                  t-on-click="() => this.selectPalette(p)"></span>
+                        </t>
+                    </div>
+                </div>
+                <div class="mb-3 row align-items-center">
+                    <label class="col-sm-4 col-form-label fw-bold">Can delegate <SignIcon name="'question-circle'" size="14" cls="'text-info'"/></label>
+                    <div class="col-sm-8">
+                        <input type="checkbox" class="form-check-input" t-model.proxy="this.state.canDelegate" />
+                    </div>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary px-4" t-on-click="this.onConfirm">Save</button>
+                <button class="btn btn-secondary px-4" t-on-click="this.props.close">Discard</button>
+            </t>
+        </Dialog>
+    </t>
+
+
+    <!-- Sent document: read-only view of the document and of its signers -->
+    <t t-name="hudson_sign.SignDocumentViewer" owl="1">
+        <div class="o_action o_hudson_sign_editor o_hudson_sign_viewer h-100 w-100 d-flex flex-column">
+            <div class="o_sign_cp d-flex align-items-center flex-shrink-0">
+                <div class="d-flex align-items-center gap-1">
+                    <button t-if="this.myPendingSigner" type="button" class="btn btn-primary" t-on-click="() => this.signNow()">Sign Now</button>
+                    <button type="button" t-attf-class="btn {{ this.myPendingSigner ? 'btn-secondary' : 'btn-primary' }}" t-on-click="() => this.downloadDocument()">Download</button>
+                </div>
+                <div class="o_sign_breadcrumb d-flex flex-column justify-content-center ms-2 min-w-0" t-if="this.state.request">
+                    <a href="#" class="o_sign_bc_parent" t-on-click.prevent="() => this.onBack()" t-out="this.backLabel"/>
+                    <div class="d-flex align-items-center gap-2 min-w-0">
+                        <span class="o_sign_bc_current text-truncate" t-out="this.state.request.name"/>
+                        <div class="position-relative o_sign_doc_menu">
+                            <button type="button" class="btn btn-link p-0 o_sign_cp_icon" title="Actions" t-on-click="() => this.toggleDocMenu()">
+                                <SignIcon name="'cog'"/>
+                            </button>
+                            <div t-if="this.state.docMenuOpen" class="dropdown-menu show o_sign_menu o_sign_viewer_menu">
+                                <button t-if="this.state.request.canCancel" type="button" class="dropdown-item" t-on-click="() => this.cancelRequest()">Cancel request</button>
+                                <button type="button" class="dropdown-item" t-on-click="() => this.runMenuAction('action_open_details')">Details</button>
+                                <button type="button" class="dropdown-item" t-on-click="() => this.runMenuAction('action_send_to')">Send to</button>
+                                <button type="button" class="dropdown-item" t-on-click="() => this.runMenuAction('action_save_as_template')">Save as template</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-call="hudson_sign.SignTagsField"/>
+
+                <div class="o_sign_viewer_signers d-flex flex-column gap-1 ms-4">
+                    <t t-foreach="this.state.signers" t-as="signer" t-key="signer.id">
+                        <div class="o_sign_viewer_signer">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="o_sign_viewer_signer_dot" t-attf-style="background-color: {{ signer.color }}; border-color: {{ signer.borderColor }};"/>
+                                <span class="text-truncate" t-out="signer.name"/>
+                                <button t-if="signer.state === 'sent' and this.state.request.state === 'sent'" type="button"
+                                        class="btn btn-link p-0 o_sign_cp_icon" title="Send a reminder" t-on-click="() => this.sendReminder()">
+                                    <SignIcon name="'send'" size="13"/>
+                                </button>
+                            </div>
+                            <div t-attf-class="o_sign_viewer_signer_state o_state_{{ signer.state }} d-flex align-items-center gap-1">
+                                <SignIcon name="signer.state === 'signed' ? 'check' : 'clock'" size="13"/>
+                                <span t-out="this.getSignerStateLabel(signer)"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <div class="o_sign_viewer d-flex flex-column flex-grow-1 overflow-hidden">
+                <t t-call="hudson_sign.SignPdfToolbar"/>
+                <div class="d-flex flex-grow-1 overflow-hidden">
+                    <div class="o_dms_sign_viewport o_sign_pdf_scroll flex-grow-1 position-relative overflow-auto" t-on-scroll="(ev) => this.onViewerScroll(ev)">
+                        <div t-if="this.state.isLoading" class="d-flex flex-column align-items-center justify-content-center h-100 p-5">
+                            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                            <h6 class="text-muted fw-normal">Loading document...</h6>
+                        </div>
+                        <div t-elif="this.state.errorMessage" class="d-flex flex-column align-items-center justify-content-center mx-auto h-100 p-5 text-center" style="max-width: 480px;">
+                            <SignIcon name="'exclamation-triangle'" size="48" cls="'text-warning mb-3'"/>
+                            <h5 class="fw-bold mb-2">Unable to Preview PDF</h5>
+                            <p class="text-muted small mb-3"><t t-out="this.state.errorMessage"/></p>
+                            <button class="btn btn-sm btn-primary" t-on-click="() => this.retryLoad()">
+                                <SignIcon name="'refresh'" size="14" cls="'me-1'"/>Retry Loading
+                            </button>
+                        </div>
+                        <div t-else="" class="o_sign_pages d-flex flex-column align-items-center">
+                            <t t-foreach="this.state.pages" t-as="page" t-key="page.num">
+                                <div class="pdf-page o_dms_pdf_page position-relative"
+                                     t-att-data-page-num="page.num"
+                                     t-attf-style="width: {{ page.width }}px; height: {{ page.height }}px;">
+                                    <canvas t-att-id="'hudson-sign-canvas-' + page.num" style="display: block; width: 100%; height: 100%;"></canvas>
+                                    <t t-foreach="this.getMatchesForPage(page.num)" t-as="match" t-key="match.index">
+                                        <div t-attf-class="o_sign_search_hit {{ match.index === this.state.searchIndex ? 'o_current' : '' }}"
+                                             t-attf-style="left: {{ match.x * page.width }}px; top: {{ match.y * page.height }}px; width: {{ match.w * page.width }}px; height: {{ match.h * page.height }}px;"/>
+                                    </t>
+                                    <!-- Fields still to be filled in -->
+                                    <t t-foreach="this.getItemsForPage(page.num)" t-as="box" t-key="box.id">
+                                        <div t-attf-class="o_sign_field o_sign_field_readonly o_sign_field_{{ box.type }}"
+                                             t-attf-style="left: {{ box.x }}px; top: {{ box.y }}px; width: {{ box.width }}px; height: {{ box.height }}px; background-color: {{ this.getRoleColor(box.roleId) }}; border-color: {{ this.getRoleBorderColor(box.roleId) }}; color: {{ this.getRoleTextColor(box.roleId) }}; font-size: {{ this.fieldFontSize }}px;"
+                                             t-att-title="this.getRole(box.roleId).name">
+                                            <t t-if="box.type === 'checkbox'">
+                                                <SignIcon name="'check-square-o'" size="this.getChoiceIconSize(box)" cls="'o_sign_field_icon'"/>
+                                            </t>
+                                            <t t-elif="box.type === 'radio'">
+                                                <SignIcon name="'dot-circle-o'" size="this.getChoiceIconSize(box)" cls="'o_sign_field_icon'"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-attf-class="o_sign_field_text {{ this.isMultilineBox(box) ? 'o_multiline' : 'text-truncate' }}"
+                                                      t-attf-style="text-align: {{ box.alignment || 'left' }};"><t t-out="box.placeholder"/></span>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <t t-call="hudson_sign.SignPdfThumbs"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Parts shared by the template editor and the document viewer -->
+    <t t-name="hudson_sign.SignTagsField">
+        <div class="ms-auto d-flex align-items-center gap-4 o_sign_tags">
+            <span class="o_sign_tags_label">Tags</span>
+            <div class="o_sign_tags_field position-relative d-flex align-items-center flex-wrap gap-1">
+                <t t-foreach="this.state.templateTags" t-as="tag" t-key="tag.id">
+                    <span t-attf-class="badge rounded-pill d-inline-flex align-items-center o_tag_color_{{ tag.color or 0 }}">
+                        <t t-out="tag.name"/>
+                        <span class="ms-1 o_sign_tag_remove d-inline-flex" title="Remove tag" t-on-click="() => this.removeTag(tag.id)"><SignIcon name="'times'" size="10"/></span>
+                    </span>
+                </t>
+                <input type="text" class="o_sign_tags_input flex-grow-1"
+                       t-att-value="this.state.tagQuery"
+                       t-on-input="(ev) => this.onTagInput(ev)"
+                       t-on-focus="() => this.state.tagDropdownOpen = true"
+                       t-on-blur="() => this.onTagBlur()"
+                       t-on-keydown="(ev) => this.onTagKeydown(ev)"/>
+                <SignIcon name="'caret-down'" size="14" cls="'o_sign_tags_caret'"/>
+                <div t-if="this.state.tagDropdownOpen and (this.availableTags.length or this.canCreateTag)" class="o_sign_tags_dropdown dropdown-menu show">
+                    <t t-foreach="this.availableTags.slice(0, 8)" t-as="tag" t-key="tag.id">
+                        <button type="button" class="dropdown-item" t-on-mousedown.prevent="() => this.addTag(tag.id)"><t t-out="tag.name"/></button>
+                    </t>
+                    <button t-if="this.canCreateTag" type="button" class="dropdown-item o_sign_tag_create" t-on-mousedown.prevent="() => this.createTag()">
+                        Create "<t t-out="this.state.tagQuery.trim()"/>"
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="hudson_sign.SignPdfToolbar">
+        <div class="o_sign_toolbar d-flex align-items-center flex-shrink-0">
+            <div class="d-flex align-items-center mx-auto gap-1">
+                <button type="button" class="o_sign_tb_btn" title="Previous Page"
+                        t-att-disabled="this.state.currentPage &lt;= 1"
+                        t-on-click="() => this.goToPage(this.state.currentPage - 1)">
+                    <SignIcon name="'chevron-up'"/>
+                </button>
+                <input type="text" class="o_sign_page_input" t-att-value="this.state.currentPage" t-on-change="(ev) => this.onPageInputChange(ev)"/>
+                <span class="o_sign_tb_text">of <t t-out="this.state.pages.length or 1"/></span>
+                <button type="button" class="o_sign_tb_btn" title="Next Page"
+                        t-att-disabled="this.state.currentPage &gt;= this.state.pages.length"
+                        t-on-click="() => this.goToPage(this.state.currentPage + 1)">
+                    <SignIcon name="'chevron-down'"/>
+                </button>
+                <span class="o_sign_tb_sep"/>
+                <button type="button" class="o_sign_tb_btn" title="Zoom Out" t-on-click="() => this.zoomOut()">
+                    <SignIcon name="'minus'"/>
+                </button>
+                <select class="o_sign_zoom_select" t-on-change="(ev) => this.onZoomSelect(ev)">
+                    <t t-foreach="this.zoomPresets" t-as="preset" t-key="preset.value">
+                        <option t-att-value="preset.value" t-att-selected="this.zoomSelectValue === preset.value"><t t-out="preset.label"/></option>
+                    </t>
+                    <option t-if="this.zoomSelectValue === 'custom'" value="custom" selected="selected"><t t-out="this.state.zoomLevel"/>%</option>
+                </select>
+                <button type="button" class="o_sign_tb_btn" title="Zoom In" t-on-click="() => this.zoomIn()">
+                    <SignIcon name="'plus'"/>
+                </button>
+                <span class="o_sign_tb_sep"/>
+                <div class="position-relative">
+                    <button type="button" t-attf-class="o_sign_tb_btn {{ this.state.searchOpen ? 'o_active' : '' }}" title="Find in Document" t-on-click="() => this.toggleSearch()">
+                        <SignIcon name="'search'"/>
+                    </button>
+                    <div t-if="this.state.searchOpen" class="o_sign_findbar d-flex align-items-center gap-1">
+                        <input type="text" class="o_sign_search_input" placeholder="Find in document…"
+                               t-model.proxy="this.state.searchQuery"
+                               t-on-keydown="(ev) => this.onSearchKeydown(ev)"/>
+                        <button type="button" class="o_sign_tb_btn" title="Previous match" t-on-click="() => this.nextMatch(-1)">
+                            <SignIcon name="'chevron-up'"/>
+                        </button>
+                        <button type="button" class="o_sign_tb_btn" title="Next match" t-on-click="() => this.state.searchMatches.length ? this.nextMatch(1) : this.runSearch()">
+                            <SignIcon name="'chevron-down'"/>
+                        </button>
+                        <span class="o_sign_tb_text text-nowrap" t-if="this.state.searchMatches.length">
+                            <t t-out="this.state.searchIndex + 1"/> of <t t-out="this.state.searchMatches.length"/>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="button" t-attf-class="o_sign_tb_btn {{ this.state.showThumbnails ? 'o_active' : '' }}" title="Toggle Sidebar" t-on-click="() => this.toggleThumbnails()">
+                <SignIcon name="'columns'"/>
+            </button>
+        </div>
+    </t>
+
+    <t t-name="hudson_sign.SignPdfThumbs">
+        <div t-if="this.state.showThumbnails and !this.state.isLoading" class="o_sign_thumbs overflow-auto flex-shrink-0">
+            <t t-foreach="this.state.pages" t-as="page" t-key="page.num">
+                <div t-attf-class="o_sign_thumb {{ this.state.currentPage === page.num ? 'o_active' : '' }}" t-on-click="() => this.goToPage(page.num)">
+                    <canvas t-att-id="'hudson-sign-thumb-' + page.num"/>
+                    <span><t t-out="page.num"/></span>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

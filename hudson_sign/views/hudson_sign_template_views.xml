@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hudson_sign_template_view_list" model="ir.ui.view">
+            <field name="name">hudson.sign.template.list</field>
+            <field name="model">hudson.sign.template</field>
+            <field name="arch" type="xml">
+                <list create="false" js_class="hudson_sign_template_list" default_order="create_date desc">
+                    <field name="name" string="Name"/>
+                    <field name="author_id" string="Author"/>
+                    <field name="count_in_progress" string="In Progress"/>
+                    <field name="count_signed" string="Signed"/>
+                    <button name="action_send" type="object" string="Send" class="btn btn-secondary"/>
+                    <button name="action_sign_now" type="object" string="Sign Now" class="btn btn-secondary"/>
+                    <button name="action_share" type="object" string="Share" class="btn btn-secondary"/>
+                    <button name="action_open_builder" type="object" string="Edit Fields" class="btn btn-secondary"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hudson_sign_template_view_search" model="ir.ui.view">
+            <field name="name">hudson.sign.template.search</field>
+            <field name="model">hudson.sign.template</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="tag_ids"/>
+                    <field name="author_id"/>
+                    <filter string="My Favorites" name="my_favorites" domain="[('is_favorite', '=', True)]"/>
+                    <filter string="My Templates" name="my_templates" domain="[('author_id', '=', uid)]"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <searchpanel>
+                        <field name="tag_ids" icon="label" icon_class="oi-filled" select="multi" enable_counters="1"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <record id="hudson_sign_template_view_kanban" model="ir.ui.view">
+            <field name="name">hudson.sign.template.kanban</field>
+            <field name="model">hudson.sign.template</field>
+            <field name="arch" type="xml">
+                <kanban create="false" js_class="hudson_sign_template_kanban" action="action_open_builder" type="object"
+                        class="o_sign_kanban_list_view" default_order="create_date desc">
+                    <field name="create_date"/>
+                    <field name="active"/>
+                    <templates>
+                        <t t-name="menu">
+                            <a role="menuitem" type="object" name="action_open_builder" class="dropdown-item">Edit</a>
+                            <a role="menuitem" type="open" class="dropdown-item">Configuration</a>
+                            <a t-if="record.active.raw_value" role="menuitem" type="archive" class="dropdown-item">Archive</a>
+                            <a t-else="" role="menuitem" type="unarchive" class="dropdown-item">Restore</a>
+                            <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                        </t>
+                        <t t-name="card">
+                            <div class="o_sign_template_row d-flex align-items-center w-100">
+                                <div class="o_sign_template_main d-flex align-items-start min-w-0">
+                                    <field name="is_favorite" widget="boolean_favorite" nolabel="1" class="o_sign_template_star"/>
+                                    <div class="d-flex flex-column min-w-0">
+                                        <field name="name" class="o_sign_template_name text-truncate"/>
+                                        <div class="o_sign_template_meta d-flex align-items-center gap-2">
+                                            <field name="author_id" widget="many2one_avatar_user"/>
+                                            <field name="author_id"/>
+                                            <em><t t-out="luxon.DateTime.fromISO(record.create_date.raw_value).toFormat('LLL yyyy')"/></em>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_sign_template_tags">
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                </div>
+                                <div class="o_sign_template_stat">
+                                    <field name="count_in_progress" class="o_sign_template_count"/>
+                                    <span>In Progress</span>
+                                </div>
+                                <div class="o_sign_template_stat">
+                                    <field name="count_signed" class="o_sign_template_count"/>
+                                    <span>Signed</span>
+                                </div>
+                                <div class="o_sign_template_buttons d-flex align-items-center justify-content-end gap-1">
+                                    <button name="action_send" type="object" class="btn btn-primary">Send</button>
+                                    <button name="action_sign_now" type="object" class="btn btn-primary">Sign Now</button>
+                                    <button name="action_share" type="object" class="btn o_sign_template_share">Share</button>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Template properties: "Configuration" of the Templates menu and of the editor gear -->
+        <record id="hudson_sign_template_view_form_properties" model="ir.ui.view">
+            <field name="name">hudson.sign.template.form.properties</field>
+            <field name="model">hudson.sign.template</field>
+            <field name="arch" type="xml">
+                <form string="Template" create="false">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_signed_documents" type="object" class="oe_stat_button" icon="edit_square">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Signed Document</span>
+                                    <field name="signed_request_count" class="o_stat_value"/>
+                                </div>
+                            </button>
+                        </div>
+                        <field name="active" invisible="1"/>
+                        <!-- Not in the editor: drafts uploaded in the Documents dashboard are inactive too -->
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                                invisible="active or context.get('hudson_sign_editor')"/>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="e.g. Employment Contract"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="authorized_ids" widget="many2many_tags_avatar" placeholder="Everyone"
+                                       groups="!hudson_sign.group_sign_template_access_open"/>
+                                <field name="author_id" widget="many2one_avatar_user"/>
+                                <field name="cc_partner_ids" widget="many2many_tags_avatar"/>
+                            </group>
+                            <group>
+                                <label for="signature_request_validity"/>
+                                <div class="o_row">
+                                    <field name="signature_request_validity" class="oe_inline" style="max-width: 4rem;"/>
+                                    <span>days</span>
+                                </div>
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Tags"/>
+                                <field name="directory_id" options="{'no_create': True}"/>
+                                <field name="dms_tag_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="redirect_url" widget="url" placeholder="Redirect signers to a page after signing"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Communication" name="communication">
+                                <field name="message" nolabel="1" placeholder="Default message sent to recipients."/>
+                            </page>
+                            <page string="Signers" name="signers">
+                                <field name="role_ids" nolabel="1">
+                                    <list editable="bottom" create="false" delete="false">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name" string="Role"/>
+                                        <field name="can_delegate"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Upload Wizard -->
+        <record id="hudson_sign_template_upload_wizard_form" model="ir.ui.view">
+            <field name="name">hudson.sign.template.upload.wizard.form</field>
+            <field name="model">hudson.sign.template.upload.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="file_name" invisible="1"/>
+                            <field name="file_content" filename="file_name" widget="binary"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Upload" name="action_upload" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Main Action uses standard views but we add an action for "Upload PDF" -->
+        <record id="action_hudson_sign_template" model="ir.actions.act_window">
+            <field name="name">Templates</field>
+            <field name="res_model">hudson.sign.template</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="hudson_sign_template_view_search"/>
+            <field name="context">{'search_default_my_favorites': 1, 'hudson_sign_from_templates': True}</field>
+        </record>
+
+        <!-- Action for Upload -->
+        <record id="action_hudson_sign_template_upload" model="ir.actions.act_window">
+            <field name="name">Upload PDF</field>
+            <field name="res_model">hudson.sign.template.upload.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <!-- Upload button integrated via list/kanban view js_class -->
+
+    </data>
+</odoo>

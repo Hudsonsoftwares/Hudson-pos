@@ -1,0 +1,14 @@
+id,name,model_id,group_id/id,operation,domain
+access_hudson_sign_template,hudson.sign.template,hudson.sign.template,base.group_user,crud,"['|', '|', '|', ('authorized_ids', '=', False), ('authorized_ids', 'in', user.id), ('author_id', '=', user.id), ('dms_file_id', '!=', False)]"
+access_hudson_sign_template_admin,hudson.sign.template all,hudson.sign.template,base.group_system,crud,
+access_hudson_sign_template_item,hudson.sign.template.item,hudson.sign.template.item,base.group_user,crud,
+access_hudson_sign_item_type,hudson.sign.item.type,hudson.sign.item.type,base.group_system,crud,
+access_hudson_sign_item_type_user,hudson.sign.item.type,hudson.sign.item.type,base.group_user,r,
+access_hudson_sign_item_type_user_own,Own hudson.sign.item.type,hudson.sign.item.type,base.group_user,cud,"[('create_uid', '=', user.id)]"
+access_hudson_sign_send_wizard,hudson.sign.send.wizard,hudson.sign.send.wizard,base.group_user,crud,
+access_hudson_sign_template_upload_wizard,hudson.sign.template.upload.wizard,hudson.sign.template.upload.wizard,base.group_user,crud,
+access_hudson_sign_template_role,hudson.sign.template.role,hudson.sign.template.role,base.group_user,crud,
+access_hudson_sign_template_tag,hudson.sign.template.tag,hudson.sign.template.tag,base.group_user,crud,
+access_hudson_sign_send_wizard_role,hudson.sign.send.wizard.role,hudson.sign.send.wizard.role,base.group_user,crud,
+access_hudson_sign_request,hudson.sign.request,hudson.sign.request,base.group_user,crud,
+access_hudson_sign_template_open,hudson.sign.template open,hudson.sign.template,hudson_sign.group_sign_template_access_open,crud,

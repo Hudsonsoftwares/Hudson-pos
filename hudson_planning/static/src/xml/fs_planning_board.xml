@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- ============================================================
+         Field Service Planning Board — OWL Template
+         ============================================================ -->
+    <t t-name="hudson_planning.FsPlanningBoard">
+        <div class="fs-planning-board">
+
+            <!-- ── TOOLBAR ──────────────────────────────────────── -->
+            <div class="fs-board-toolbar">
+                <div class="fs-board-toolbar-title">
+                    <i class="fa fa-calendar-check-o"/>
+                    Planning Board
+                </div>
+
+                <!-- Date navigation -->
+                <div class="fs-board-nav">
+                    <button class="fs-board-btn btn-icon" t-on-click="prevPeriod" title="Previous">
+                        <i class="oi" data-icon="chevron_backward"/>
+                    </button>
+
+                    <span class="fs-board-date-label">
+                        <t t-out="state.dateLabel"/>
+                    </span>
+
+                    <button class="fs-board-btn btn-icon" t-on-click="nextPeriod" title="Next">
+                        <i class="oi" data-icon="chevron_forward"/>
+                    </button>
+
+                    <button class="fs-board-btn" t-on-click="goToday">
+                        <i class="fa fa-dot-circle-o"/> Today
+                    </button>
+                </div>
+
+                <!-- Mode toggle: Day / Week -->
+                <div class="fs-board-mode-toggle">
+                    <button class="fs-board-btn"
+                            t-att-class="state.mode === 'day' ? 'active' : ''"
+                            t-on-click="() => setMode('day')">
+                        Day
+                    </button>
+                    <button class="fs-board-btn"
+                            t-att-class="state.mode === 'week' ? 'active' : ''"
+                            t-on-click="() => setMode('week')">
+                        Week
+                    </button>
+                </div>
+
+                <!-- Publish / New Order -->
+                <div class="fs-board-actions d-flex gap-2">
+                    <button class="fs-board-btn btn-warning" t-if="hasUnpublishedDrafts" t-on-click="publishDrafts">
+                        <i class="fa fa-send"/> Publish Drafts
+                    </button>
+                    <button class="fs-board-btn btn-primary-action" t-on-click="openNewOrder">
+                        <i class="fa fa-plus"/> New Order
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── LOADING STATE ────────────────────────────────── -->
+            <div t-if="state.loading" class="fs-board-loading">
+                <div class="spinner"/>
+                <span>Loading planning board...</span>
+            </div>
+
+            <!-- ── EMPTY STATE ──────────────────────────────────── -->
+            <div t-elif="state.employees.length === 0 and !state.loading" class="fs-board-empty">
+                <i class="fa fa-users"/>
+                <p>No employees found. Add employees in the HR module to use the planning board.</p>
+            </div>
+
+            <!-- ── MAIN GRID ─────────────────────────────────────── -->
+            <div t-else="" class="fs-board-grid-wrapper" t-ref="gridWrapper">
+                <div class="fs-board-grid"
+                     t-attf-style="grid-template-columns: {{gridTemplateColumns}}">
+
+                    <!-- HEADER ROW -->
+                    <div class="fs-board-header-corner">
+                        <i class="fa fa-users me-1"/> Technicians
+                    </div>
+
+                    <!-- Time / Day column headers -->
+                    <t t-foreach="state.slots" t-as="slot" t-key="slot.key">
+                        <div class="fs-board-time-header"
+                             t-att-class="slot.cssClass">
+                            <t t-out="slot.label"/>
+                        </div>
+                    </t>
+
+                    <!-- DATA ROWS — one per employee + unassigned -->
+                    <t t-foreach="state.employees" t-as="emp" t-key="emp.id">
+
+                        <!-- Employee label cell (sticky left) -->
+                        <div class="fs-board-employee-cell"
+                             t-att-class="emp.id === 0 ? 'unassigned' : ''">
+                            <t t-if="emp.avatar">
+                                <img class="fs-board-employee-avatar"
+                                     t-att-src="emp.avatar"
+                                     t-att-alt="emp.name"
+                                     loading="lazy"/>
+                            </t>
+                            <t t-else="">
+                                <div class="fs-board-employee-avatar-placeholder"
+                                     t-att-style="'background:' + emp.color">
+                                    <t t-out="emp.initials"/>
+                                </div>
+                            </t>
+                            <div class="fs-board-employee-info">
+                                <div class="fs-board-employee-name" t-out="emp.name"/>
+                                <t t-if="emp.employeeId">
+                                    <div class="fs-board-progress-container" t-att-title="Math.round(emp.allocatedHours) + 'h / ' + emp.hoursPerWeek + 'h'">
+                                        <div class="fs-board-progress-text">
+                                            <b><t t-out="Math.round(emp.allocatedHours)"/>h</b> / <t t-out="emp.hoursPerWeek"/>h
+                                        </div>
+                                        <div class="fs-board-progress-bar">
+                                            <div class="fs-board-progress-fill" t-att-style="'width: ' + Math.min((emp.allocatedHours / emp.hoursPerWeek) * 100, 100) + '%; background-color: ' + ((emp.allocatedHours > emp.hoursPerWeek) ? '#dc3545' : '#28a745')"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- One slot cell per time column -->
+                        <t t-foreach="state.slots" t-as="slot" t-key="slot.key">
+                            <div class="fs-board-slot-cell"
+                                 t-att-class="slot.cssClass + (isSlotSelected(emp, slot) ? ' fs-slot-selected' : '')"
+                                 t-on-mousedown="(ev) => onDragStart(ev, emp, slot)"
+                                 t-on-mouseenter="(ev) => onDragEnter(ev, emp, slot)"
+                                 t-on-mouseup="(ev) => onDragEnd(ev, emp, slot)"
+                                 t-on-click="(ev) => onClickSlot(ev, emp, slot)">
+
+                                <!-- Order cards that fall in this slot -->
+                                <t t-foreach="getOrdersForSlot(emp.employeeId, slot)" t-as="order" t-key="order.id">
+                                    <div class="fs-board-order-card"
+                                         t-att-class="'state-' + order.state + (order.isPublished ? ' is-published' : ' is-draft')"
+                                         t-att-style="getCardStyle(order, slot)"
+                                         t-on-click.stop="(ev) => openOrder(ev, order.id)"
+                                         t-att-title="order.title + (order.partner ? ' — ' + order.partner : '')">
+                                        <div class="card-title">
+                                            <i t-if="!order.isPublished" class="fa fa-eye-slash me-1" title="Draft (Unpublished)"/>
+                                            <t t-if="order.timeString">
+                                                <span class="fs-card-time me-1" t-out="order.timeString"/>
+                                            </t>
+                                            <strong t-if="order.name" t-out="order.name"/>
+                                        </div>
+                                        <div class="card-sub" t-if="order.title">
+                                            <t t-out="order.title"/>
+                                        </div>
+                                        <div t-if="order.partner" class="card-sub text-muted">
+                                            <i class="fa fa-map-marker me-1"/>
+                                            <t t-out="order.partner"/>
+                                        </div>
+                                    </div>
+                                </t>
+
+                            </div>
+                        </t>
+
+                    </t>
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

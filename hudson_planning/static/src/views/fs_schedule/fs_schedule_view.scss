@@ -1,0 +1,268 @@
+$fs-row-header-width: 300px;
+// Role colors (fs.planning.role.color), as the colors of Odoo's color picker.
+$fs-pill-colors: (
+    0: #a2c5f2, 1: #f3a4a4, 2: #f7c99c, 3: #f8e08e, 4: #a5d8f0, 5: #c9a5d9,
+    6: #f2b3c6, 7: #8fd3c9, 8: #8eb1e8, 9: #d6a0c6, 10: #a8d8a0, 11: #c6b2ef,
+);
+
+.o_fs_schedule_view {
+    .o_fs_schedule_layout .o_content {
+        overflow: hidden;
+    }
+}
+
+.o_fs_schedule {
+    background: var(--o-view-background-color, $o-view-background-color);
+
+    .o_fs_schedule_grid_wrapper {
+        border-top: 1px solid $border-color;
+    }
+
+    .o_fs_schedule_grid {
+        min-width: calc(#{$fs-row-header-width} + var(--fs-col-count) * var(--fs-col-min));
+        &.o_fs_loading {
+            opacity: 0.6;
+        }
+    }
+
+    .o_fs_row {
+        display: flex;
+        border-bottom: 1px solid $border-color;
+    }
+
+    .o_fs_row_header {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        flex: 0 0 $fs-row-header-width;
+        width: $fs-row-header-width;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 6px 12px;
+        background: var(--o-view-background-color, $o-view-background-color);
+        border-right: 1px solid $border-color;
+    }
+
+    .o_fs_avatar {
+        width: 26px;
+        height: 26px;
+        object-fit: cover;
+        flex: 0 0 auto;
+    }
+
+    .o_fs_progress {
+        height: 4px;
+    }
+
+    .o_fs_track {
+        position: relative;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .o_fs_cells {
+        display: grid;
+        grid-template-columns: repeat(var(--fs-col-count), minmax(var(--fs-col-min), 1fr));
+        height: 100%;
+    }
+
+    .o_fs_header_row {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background: var(--o-view-background-color, $o-view-background-color);
+        .o_fs_row_header {
+            z-index: 4;
+        }
+        .o_fs_header_title {
+            font-weight: $font-weight-bold;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        .o_fs_cells {
+            height: auto;
+        }
+    }
+
+    .o_fs_period_label {
+        padding: 2px 6px;
+        border-bottom: 1px solid $border-color;
+        white-space: nowrap;
+    }
+
+    .o_fs_header_cell {
+        padding: 4px 2px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-left: 1px solid $border-color;
+        &.o_fs_today {
+            background: rgba($warning, 0.15);
+            border: 1px solid rgba($warning, 0.6);
+        }
+    }
+
+    .o_fs_cell {
+        position: relative;
+        border-left: 1px solid $border-color;
+        cursor: pointer;
+        &.o_fs_today {
+            background: rgba($warning, 0.08);
+        }
+        &.o_fs_unavailable {
+            background: rgba($gray-500, 0.18);
+        }
+        &.o_fs_drag_over {
+            background: rgba($primary, 0.15);
+        }
+        &.o_fs_cell_selected {
+            background: rgba($primary, 0.22);
+            box-shadow: inset 0 0 0 1px rgba($primary, 0.5);
+        }
+        .o_fs_cell_add {
+            display: none;
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            opacity: 0.5;
+        }
+        &:hover .o_fs_cell_add {
+            display: block;
+        }
+    }
+
+    .o_fs_pill {
+        position: absolute;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 6px;
+        border-radius: 4px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        color: $gray-900;
+        z-index: 1;
+        margin-left: 2px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+        &:hover {
+            filter: brightness(0.95);
+        }
+        &.o_fs_pill_job {
+            background-color: #8fd3c9;
+        }
+        &.o_fs_pill_draft {
+            background-image: repeating-linear-gradient(
+                -45deg, transparent, transparent 6px, rgba(255, 255, 255, 0.45) 6px, rgba(255, 255, 255, 0.45) 12px
+            );
+        }
+        &.o_fs_pill_switch {
+            border-left: 3px solid $danger;
+        }
+    }
+    @each $index, $color in $fs-pill-colors {
+        .o_fs_pill_color_#{$index} {
+            background-color: $color;
+        }
+    }
+
+    .o_fs_side_panel {
+        flex: 0 0 300px;
+        padding: 16px;
+        border-left: 1px solid $border-color;
+        overflow-y: auto;
+    }
+
+    .o_fs_to_plan {
+        padding: 6px 4px;
+        cursor: grab;
+        border-radius: 4px;
+        &:hover {
+            background: rgba($gray-500, 0.12);
+        }
+    }
+}
+
+// Popover of a clicked shift
+.fs-slot-popover {
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    .fs-slot-popover-body {
+        padding: 16px 16px 8px;
+    }
+    .fs-slot-popover-text {
+        white-space: pre-line;
+        word-break: break-word;
+    }
+    .fs-slot-popover-avatar {
+        width: 28px;
+        height: 28px;
+        object-fit: cover;
+    }
+    .fs-slot-popover-footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 12px 16px;
+        border-top: 1px solid $border-color;
+    }
+}
+
+@media print {
+    .o_fs_schedule_view {
+        .o_control_panel {
+            display: none !important;
+        }
+        .o_fs_schedule_grid_wrapper {
+            overflow: visible !important;
+        }
+    }
+}
+
+// Two group bys (e.g. Role > Resources): group headers and their rows
+.o_fs_schedule {
+    .o_fs_group_row {
+        cursor: pointer;
+        min-height: 40px;
+        // Opaque: the row header is sticky over the scrolled cells
+        background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), var(--o-view-background-color, #fff);
+
+        .o_fs_row_header {
+            background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), var(--o-view-background-color, #fff);
+        }
+    }
+    .o_fs_group_cell {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 6px;
+        min-width: 0;
+        border-left: 1px solid transparent;
+    }
+    .o_fs_group_hours {
+        font-size: 0.85em;
+        white-space: nowrap;
+    }
+    .o_fs_group_line {
+        flex-grow: 1;
+        height: 2px;
+        background-color: var(--bs-primary, #714b67);
+        opacity: 0.7;
+        border-radius: 1px;
+    }
+    .o_fs_child_row .o_fs_row_header {
+        padding-left: 24px;
+    }
+}
+
+// Shift at the same time as another shift of its employee: red corner
+.o_fs_schedule .o_fs_pill.o_fs_pill_conflict {
+    background-image: linear-gradient(135deg, #d9534f 0, #d9534f 7px, transparent 7px);
+}
+.o_fs_schedule .o_fs_pill.o_fs_pill_conflict.o_fs_pill_draft {
+    background-image: linear-gradient(135deg, #d9534f 0, #d9534f 7px, transparent 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(255, 255, 255, 0.45) 6px, rgba(255, 255, 255, 0.45) 12px);
+}

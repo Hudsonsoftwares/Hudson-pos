@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Material Tree View -->
+    <record id="field_service_material_view_tree" model="ir.ui.view">
+        <field name="name">field.service.material.tree</field>
+        <field name="model">field.service.material</field>
+        <field name="arch" type="xml">
+            <list string="Materials" editable="bottom">
+                <field name="name"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="role_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <button name="action_open_material_form" type="object" string="View" class="btn btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Material Form View -->
+    <record id="field_service_material_view_form" model="ir.ui.view">
+        <field name="name">field.service.material.form</field>
+        <field name="model">field.service.material</field>
+        <field name="arch" type="xml">
+            <form string="Material">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Crane"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                            <field name="role_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="default_role_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="resource_calendar_id"/>
+                            <field name="tz"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Material Search View -->
+    <record id="field_service_material_view_search" model="ir.ui.view">
+        <field name="name">field.service.material.search</field>
+        <field name="model">field.service.material</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="role_ids"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_field_service_material" model="ir.actions.act_window">
+        <field name="name">Materials</field>
+        <field name="res_model">field.service.material</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="field_service_material_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Material
+            </p>
+            <p>
+                Manage your equipment, tools, and materials that can be assigned to field service tasks.
+            </p>
+        </field>
+    </record>
+
+</odoo>

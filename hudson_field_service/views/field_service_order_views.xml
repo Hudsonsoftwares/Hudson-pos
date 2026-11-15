@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- SEARCH VIEW                                                   -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_order_search_view" model="ir.ui.view">
+        <field name="name">field.service.order.search</field>
+        <field name="model">field.service.order</field>
+        <field name="arch" type="xml">
+            <search string="Search Field Service Orders">
+                <field name="name" string="Reference"/>
+                <field name="title"/>
+                <field name="partner_id"/>
+                <field name="employee_id"/>
+                <field name="project_id"/>
+                <field name="task_id"/>
+                <field name="tag_ids"/>
+                <field name="sale_order_id" string="Sale Order"/>
+                <separator/>
+                <filter string="My Orders" name="my_orders" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="Unassigned" name="unassigned" domain="[('employee_id', '=', False)]"/>
+                <separator/>
+                <filter string="New" name="state_new" domain="[('state', '=', 'new')]"/>
+                <filter string="Scheduled" name="state_scheduled" domain="[('state', '=', 'scheduled')]"/>
+                <filter string="In Progress" name="state_in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Done" name="state_done" domain="[('state', '=', 'done')]"/>
+                <filter string="Cancelled" name="state_cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Planned Date" name="date_planned_filter" date="date_planned"/>
+                <separator/>
+                <filter string="Not Invoiced" name="not_invoiced" domain="[('invoice_status', '=', 'not_invoiced')]"/>
+                <filter string="Invoiced" name="invoiced" domain="[('invoice_status', '=', 'invoiced')]"/>
+                <separator/>
+                <filter string="Linked to Project" name="has_project" domain="[('project_id', '!=', False)]"/>
+                <filter string="Linked to Sale Order" name="has_so" domain="[('sale_order_id', '!=', False)]"/>
+                <filter string="Standalone" name="no_project" domain="[('project_id', '=', False)]"/>
+                <separator/>
+                <filter string="Rated: Excellent" name="rated_excellent" domain="[('customer_rating', '=', '5')]"/>
+                <filter string="Rated: Poor" name="rated_poor" domain="[('customer_rating', 'in', ('1', '2'))]"/>
+                <group>
+                    <filter string="Technician" name="group_user" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Stage" name="group_stage" context="{'group_by': 'stage_id'}"/>
+                    <filter string="Project" name="group_project" context="{'group_by': 'project_id'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Rating" name="group_rating" context="{'group_by': 'customer_rating'}"/>
+                    <filter string="Planned Date" name="group_date_planned" context="{'group_by': 'date_planned:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- FORM VIEW                                                     -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_order_form_view" model="ir.ui.view">
+        <field name="name">field.service.order.form</field>
+        <field name="model">field.service.order</field>
+        <field name="arch" type="xml">
+            <form string="Field Service Order">
+                <header>
+                    <!-- Timer Widget: Start/Resume/Pause/Stop with auto-geolocation -->
+                    <field name="can_start_work" invisible="1"/>
+                    <widget name="field_service_timer"/>
+                    <button name="action_get_directions"
+                            string="Get Directions"
+                            type="object"
+                            class="btn-info"
+                            icon="location_on"/>
+                    <button name="action_mark_done"
+                            string="Mark Done"
+                            type="object"
+                            class="btn-success"
+                            icon="check"
+                            invisible="state not in ('paused', 'in_progress') or is_timer_running"/>
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_reset_to_new"
+                            string="Reset to New"
+                            type="object"
+                            invisible="state not in ('done', 'cancelled')"
+                            groups="hudson_field_service.group_field_service_manager"/>
+                    <separator/>
+                    <!-- Invoice Buttons -->
+                    <field name="fs_worksheets_enabled" invisible="1"/>
+                    <field name="fs_customer_report_enabled" invisible="1"/>
+                    <field name="fs_billing_enabled" invisible="1"/>
+                    <field name="fs_products_enabled" invisible="1"/>
+                    <field name="fs_geolocation_enabled" invisible="1"/>
+                    <field name="fs_equipment_enabled" invisible="1"/>
+                    <field name="fs_maintenance_enabled" invisible="1"/>
+                    <field name="fs_travel_fees_enabled" invisible="1"/>
+                    <button name="action_view_invoice"
+                            string="View Invoice"
+                            type="object"
+                            invisible="not invoice_id or not fs_billing_enabled"/>
+                    <!-- Report Button -->
+                    <button name="action_send_report"
+                            string="Send Report"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'done' or not fs_customer_report_enabled"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,scheduled,in_progress,done"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Delivery Orders stat button -->
+                        <button name="action_view_pickings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="local_shipping"
+                                invisible="picking_count == 0">
+                            <field name="picking_count" string="Deliveries" widget="statinfo"/>
+                        </button>
+                        <!-- Time Entries stat button -->
+                        <button name="action_view_timesheets"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="schedule">
+                            <field name="timesheet_count" string="Time Entries" widget="statinfo"/>
+                        </button>
+                        <!-- Project Task stat button -->
+                        <button name="action_view_project_task"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="task"
+                                invisible="not task_id">
+                            <span class="o_stat_text">Project Task</span>
+                        </button>
+                        <!-- Sale Order stat button -->
+                        <button name="action_view_sale_order"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="shopping_cart"
+                                invisible="not sale_order_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sale Order</span>
+                                <span class="o_stat_value">
+                                    <field name="sale_order_id"/>
+                                </span>
+                            </div>
+                        </button>
+                        <!-- Customer Rating stat button (shown after completion) -->
+                        <button type="object"
+                                name="action_view_rating"
+                                class="oe_stat_button"
+                                icon="star"
+                                invisible="not customer_rating">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Rating</span>
+                                <span class="o_stat_value">
+                                    <field name="customer_rating"/>
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert" invisible="not planning_warning">
+                        <strong>Planning: </strong>
+                        <field name="planning_warning" class="d-inline" style="white-space: pre-line;"/>
+                    </div>
+
+                    <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="state != 'done'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+
+                    <div class="oe_title">
+                        <h1 invisible="name == 'New'">
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="title" placeholder="e.g. AC Installation at Client Site"/>
+                        </h2>
+                    </div>
+
+                    <group>
+                        <group string="Service Details">
+                            <field name="partner_id"/>
+                            <field name="partner_phone" widget="phone"/>
+                            <field name="partner_email" widget="email"/>
+                            <field name="partner_address"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="equipment_ids" widget="many2many_tags" invisible="not fs_equipment_enabled"
+                                   context="{'default_partner_id': partner_id}"/>
+                            <field name="under_warranty" invisible="not fs_maintenance_enabled"/>
+                        </group>
+                            <group string="Scheduling">
+
+                                <field name="role_id" options="{'no_create': True}"/>
+                                <field name="employee_id" widget="many2one_avatar_employee"/>
+                                <field name="extra_employee_ids" widget="many2many_avatar_employee" options="{'no_create': True}"
+                                       domain="[('id', '!=', employee_id)]"/>
+                                <field name="team_leader_employee_id" widget="many2one_avatar_employee"/>
+                                <field name="material_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                <field name="date_planned"/>
+                                <field name="date_deadline"/>
+                                <field name="duration_planned" widget="float_time" string="Total Scheduled Time" readonly="1" force_save="1"/>
+                                <field name="rest_time_planned" widget="float_time"/>
+                                <field name="duration_working_planned" widget="float_time" readonly="1" force_save="1"/>
+                                <field name="available_employee_ids"
+                                       widget="many2many_avatar_employee"
+                                       readonly="1"
+                                       invisible="not date_planned or state in ('done', 'cancelled')"/>
+                            </group>
+                    </group>
+
+                    <group>
+                        <group string="Project Integration">
+                            <field name="project_id"/>
+                            <field name="task_id"/>
+                            <field name="sale_order_id"
+                                   options="{'no_create': True}"
+                                   help="Linked sale order. Products added to this order will be billed against it."/>
+                        </group>
+                        <group string="Time Tracking">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+
+                            <field name="is_timer_running" invisible="1"/>
+                            <field name="duration_actual" widget="float_time" string="Total Time Spent"/>
+                            <field name="rest_time_actual" widget="float_time"/>
+                            <field name="total_products_amount" string="Products Cost"/>
+                            <field name="total_amount" string="Total Amount"/>
+                            <field name="invoice_status"/>
+                            <field name="invoice_id" invisible="invoice_status != 'invoiced'"/>
+                            <field name="travel_distance" invisible="not fs_travel_fees_enabled"/>
+                            <field name="travel_duration" widget="float_time" invisible="not fs_travel_fees_enabled"/>
+                        </group>
+                    </group>
+
+                    <!-- Customer Rating section — shown only when Done and rated -->
+                    <group string="Customer Satisfaction"
+                           invisible="state != 'done'">
+                        <group>
+                            <field name="customer_rating" widget="selection"/>
+                            <field name="survey_input_id" readonly="1" invisible="not survey_input_id"/>
+                        </group>
+                        <group>
+                <field name="rating_note" placeholder="Customer's additional feedback..."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Describe the service to be performed..."/>
+                        </page>
+
+                        <page string="Time Entries" name="timesheets">
+                            <field name="timesheet_ids">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="employee_id" widget="many2one_avatar_employee"/>
+                                    <field name="description"/>
+                                    <field name="start_time" optional="hide"/>
+                                    <field name="end_time" optional="hide"/>
+                                    <field name="duration" widget="float_time" sum="Total"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_time_spent" widget="float_time" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+
+                        <page string="Images" name="images">
+                            <field name="service_image_ids" mode="kanban">
+                                <kanban class="o_kanban_mobile">
+                                    <field name="id"/>
+                                    <field name="image"/>
+                                    <field name="name"/>
+                                    <field name="include_in_report"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="oe_kanban_global_click d-flex flex-column justify-content-between p-2" style="width: 140px; height: 175px; border-radius: 8px; border: 1px solid #dee2e6; margin: 4px;">
+                                                <div class="d-flex justify-content-center align-items-center" style="height: 100px; overflow: hidden; background-color: #f8f9fa; border-radius: 4px;">
+                                                    <img t-if="record.image.raw_value" t-attf-src="/web/image/field.service.image/#{record.id.raw_value}/image" alt="Service Image" style="max-height: 100%; max-width: 100%; object-fit: contain;"/>
+                                                </div>
+                                                <div class="mt-2 text-center text-truncate small fw-bold">
+                                                    <field name="name" placeholder="Add description..."/>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-between mt-1 pt-1 border-top" style="font-size: 11px;">
+                                                    <span class="text-muted">In Report</span>
+                                                    <field name="include_in_report" widget="boolean_toggle"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <form string="Service Image">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="image" widget="image" options="{'size': [150, 150]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="name" string="Description"/>
+                                                <field name="include_in_report"/>
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+
+                        <page string="Signature" name="signature" invisible="not customer_signature or not fs_customer_report_enabled">
+                            <group>
+                                <group>
+                                    <field name="customer_signed_by" readonly="1"/>
+                                    <field name="customer_signed_date" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="customer_signature" widget="signature" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Products" name="products" invisible="not fs_products_enabled">
+                            <field name="product_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="description"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id" groups="uom.group_uom"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal" sum="Total"/>
+                                    <field name="sale_order_line_id" optional="hide" readonly="1"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_products_amount" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+
+                        <page string="Worksheet" name="worksheet">
+                            <group invisible="not fs_worksheets_enabled">
+                                <field name="worksheet_template_id" options="{'no_create': True}"/>
+                            </group>
+                            <field name="worksheet_properties" nolabel="1" columns="2"
+                                   invisible="not worksheet_template_id or not fs_worksheets_enabled"/>
+                            <group string="Work Performed">
+                                <field name="worksheet_notes" nolabel="1" placeholder="Document the work performed, observations, and results..."/>
+                            </group>
+                            <group string="Customer Sign-off" invisible="not fs_customer_report_enabled">
+                                <div colspan="2" class="text-muted" invisible="customer_signature">
+                                    Not signed yet. The customer signs the report from the link sent by email.
+                                </div>
+                                <field name="customer_signed_by" invisible="not customer_signature"/>
+                                <field name="customer_signature" widget="signature" readonly="1" invisible="not customer_signature"/>
+                                <field name="customer_signed_date" invisible="not customer_signature"/>
+                            </group>
+                        </page>
+
+                        <page string="Internal Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- LIST VIEW                                                     -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_order_tree_view" model="ir.ui.view">
+        <field name="name">field.service.order.list</field>
+        <field name="model">field.service.order</field>
+        <field name="arch" type="xml">
+            <list string="Field Service Orders"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'cancelled'"
+                  decoration-info="state == 'in_progress'"
+                  decoration-warning="state == 'paused'"
+                  multi_edit="1">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="partner_id"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="date_planned"/>
+                <field name="date_deadline"/>
+                <field name="duration_planned" widget="float_time" optional="show"/>
+                <field name="duration_actual" widget="float_time" string="Time Spent"/>
+                <field name="total_products_amount" string="Products" optional="hide"/>
+                <field name="total_amount" string="Total" optional="hide"/>
+                <field name="project_id" optional="hide"/>
+                <field name="sale_order_id" optional="hide"/>
+                <field name="customer_rating" optional="hide"/>
+                <field name="stage_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"
+                       decoration-info="state in ('in_progress', 'scheduled')"
+                       decoration-warning="state == 'paused'"/>
+                <field name="priority" widget="priority"/>
+                <field name="invoice_status" optional="hide"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KANBAN VIEW                                                   -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_order_kanban_view" model="ir.ui.view">
+        <field name="name">field.service.order.kanban</field>
+        <field name="model">field.service.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id"
+                    class="o_kanban_small_column"
+                    quick_create="false"
+                    records_draggable="true"
+                    sample="1">
+                <field name="color"/>
+                <field name="priority"/>
+                <field name="stage_id"/>
+                <field name="employee_id"/>
+                <field name="partner_id"/>
+                <field name="date_planned"/>
+                <field name="duration_planned"/>
+                <field name="duration_actual"/>
+                <field name="state"/>
+                <field name="is_timer_running"/>
+                <field name="tag_ids"/>
+                <field name="customer_rating"/>
+                <field name="sale_order_id"/>
+                <progressbar field="state"
+                             colors='{"new": "secondary", "scheduled": "info", "in_progress": "primary", "paused": "warning", "done": "success", "cancelled": "danger"}'/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="priority" widget="priority"/>
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                        </div>
+                        <div class="oe_kanban_details">
+                            <strong>
+                                <field name="name"/>
+                            </strong>
+                            <div>
+                                <field name="title"/>
+                            </div>
+                            <div t-if="record.partner_id.value" class="text-muted">
+                                <i class="fa fa-user me-1"/>
+                                <field name="partner_id"/>
+                            </div>
+                            <div t-if="record.date_planned.raw_value" class="text-muted">
+                                <i class="fa fa-calendar me-1"/>
+                                <field name="date_planned"/>
+                            </div>
+                            <div t-if="record.sale_order_id.value" class="text-muted">
+                                <i class="fa fa-shopping-cart me-1"/>
+                                <field name="sale_order_id"/>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <span t-if="record.duration_planned.raw_value" class="badge text-bg-light">
+                                    <i class="fa fa-clock-o me-1"/>
+                                    <field name="duration_planned" widget="float_time"/> planned
+                                </span>
+                                <span t-if="record.duration_actual.raw_value" class="badge text-bg-primary">
+                                    <i class="fa fa-clock-o me-1"/>
+                                    <field name="duration_actual" widget="float_time"/> spent
+                                </span>
+                            </div>
+                            <div class="mt-1">
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            </div>
+                            <div t-if="record.is_timer_running.raw_value" class="mt-1">
+                                <span class="badge text-bg-success">
+                                    <i class="fa fa-play me-1"/>Timer Running
+                                </span>
+                            </div>
+                            <div t-if="record.customer_rating.value" class="mt-1">
+                                <span class="badge text-bg-warning">
+                                    <i class="fa fa-star me-1"/>
+                                    <field name="customer_rating"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- CALENDAR VIEW                                                 -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_order_calendar_view" model="ir.ui.view">
+        <field name="name">field.service.order.calendar</field>
+        <field name="model">field.service.order</field>
+        <field name="arch" type="xml">
+            <calendar string="Field Service Calendar"
+                      date_start="date_planned"
+                      date_stop="date_deadline"
+                      color="employee_id"
+                      mode="week"
+                      event_open_popup="true"
+                      quick_create="false">
+                <field name="title"/>
+                <field name="partner_id"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="state"/>
+                <field name="partner_address"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- ACTIONS                                                       -->
+    <!-- ============================================================ -->
+
+    <!-- Client Action for Logging Location -->
+    <record id="action_field_service_log_location" model="ir.actions.client">
+        <field name="name">Log Location</field>
+        <field name="tag">field_service_log_location</field>
+    </record>
+
+    <!-- My Orders -->
+    <record id="action_field_service_my_orders" model="ir.actions.act_window">
+        <field name="name">My Orders</field>
+        <field name="res_model">field.service.order</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="search_view_id" ref="field_service_order_search_view"/>
+        <field name="context">{'search_default_my_orders': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No field service orders assigned to you yet!
+            </p>
+            <p>
+                Create a new field service order to get started.
+            </p>
+        </field>
+    </record>
+
+    <!-- All Orders -->
+    <record id="action_field_service_all_orders" model="ir.actions.act_window">
+        <field name="name">All Orders</field>
+        <field name="res_model">field.service.order</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="search_view_id" ref="field_service_order_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first field service order!
+            </p>
+            <p>
+                Plan, track, and invoice field service work with ease.
+            </p>
+        </field>
+    </record>
+
+</odoo>

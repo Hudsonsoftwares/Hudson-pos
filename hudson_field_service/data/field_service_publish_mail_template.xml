@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_field_service_publish" model="mail.template">
+            <field name="name">Field Service: Shift Published</field>
+            <field name="model_id" ref="hudson_field_service.model_field_service_order"/>
+            <field name="subject">New Shift Assigned: {{ object.name }}</field>
+            <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.employee_id.work_email or object.employee_id.user_id.email }}</field>
+            <field name="description">Sent to technicians when a new schedule is published</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Hi <t t-out="object.employee_id.name or 'Technician'"></t>,<br/><br/>
+        A new Field Service shift has been assigned and published to your schedule.<br/><br/>
+        <strong>Task:</strong> <t t-out="object.title or 'N/A'"></t><br/>
+        <strong>Customer:</strong> <t t-out="object.partner_id.name or 'N/A'"></t><br/>
+        <strong>Scheduled Start:</strong> <t t-out="object.date_planned or 'TBD'"></t><br/>
+        <strong>Duration:</strong> <t t-out="object.duration_planned or 1"></t> hour(s)<br/><br/>
+        Please check your Planning Board or My Calendar for more details.<br/>
+        <br/>
+        Thank you,<br/>
+        <t t-out="user.name or 'Management'"></t>
+    </p>
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

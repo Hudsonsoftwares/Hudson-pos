@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="mail_template_field_service_report" model="mail.template">
+            <field name="name">Field Service: Send Report</field>
+            <field name="model_id" ref="hudson_field_service.model_field_service_order"/>
+            <field name="subject">Your Field Service Report: {{ object.name }}</field>
+            <field name="email_from">{{ (object.employee_id.work_email or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="description">Used to send the Field Service Report to the customer for review and signature</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-family: 'Outfit', 'Inter', sans-serif;">
+    <p style="margin: 0px; padding: 0px; font-size: 14px; color: #333333;">
+        Hello <t t-out="object.partner_id.name or ''">Customer</t>,<br/><br/>
+        Our technician <strong t-out="object.employee_id.name or ''">Marc Demo</strong> has completed the work on your field service order <strong><t t-out="object.name or ''">FSO00001</t></strong> (<strong><t t-out="object.title or ''">Service Title</t></strong>).
+        <br/><br/>
+        Please click the button below to review the detailed report of the time spent, products/parts used, and digitally sign the report:
+        <br/><br/>
+        <div style="margin: 20px 0px; text-align: center;">
+            <a t-att-href="object.get_base_url() + object.get_portal_url()"
+                style="padding: 10px 20px; color: #FFFFFF; text-decoration: none; background-color: #017e84; border: 1px solid #017e84; border-radius: 4px; font-weight: bold; font-size: 14px; display: inline-block;">
+                View &amp; Sign Report
+            </a>
+        </div>
+        <br/><br/>
+        If you have any questions or feedback regarding this service, you can reply directly to this email or post a message in the report's chatter.
+        <br/><br/>
+        Thank you for choosing us!
+        <br/><br/>
+        Best regards,
+        <br/>
+        <t t-out="object.company_id.name or ''">Your Company</t>
+    </p>
+</div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- "Send Report" until signed: the customer signs the report from this link, never on the technician's device -->
+        <record id="mail_template_fs_signature_request" model="mail.template">
+            <field name="name">Field Service: Signature Request</field>
+            <field name="model_id" ref="hudson_field_service.model_field_service_order"/>
+            <field name="subject">Please sign the report of your intervention {{ object.name }}</field>
+            <field name="email_from">{{ (object.employee_id.work_email or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="description">Sent to the customer to review and sign the intervention report online</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 14px; color: #333333;">
+    <p style="margin: 0px; padding: 0px;">
+        Hello <t t-out="object.partner_id.name or ''">Customer</t>,<br/><br/>
+        Our technician <strong t-out="object.employee_id.name or ''">Marc Demo</strong> carried out the intervention
+        <strong t-out="object.name or ''">FSO00001</strong> (<t t-out="object.title or ''">Service Title</t>).
+        <br/><br/>
+        Please review the report (time spent, products used, work performed) and sign it online:
+    </p>
+    <div style="margin: 24px 0px; text-align: center;">
+        <a t-att-href="object._get_signature_url()"
+           style="padding: 10px 20px; color: #FFFFFF; text-decoration: none; background-color: #714B67; border: 1px solid #714B67; border-radius: 4px; font-weight: bold; font-size: 14px; display: inline-block;">
+            Sign Report
+        </a>
+    </div>
+    <p style="margin: 0px; padding: 0px;">
+        This link is personal: please do not share it.
+        <br/><br/>
+        Best regards,<br/>
+        <t t-out="object.company_id.name or ''">Your Company</t>
+    </p>
+</div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+    </data>
+</odoo>

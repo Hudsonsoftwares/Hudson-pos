@@ -1,0 +1,337 @@
+/* Retention Analysis Cohort Styling matching Odoo Enterprise */
+
+.o_retention_analysis_container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    overflow-y: auto;
+}
+
+/* Control Panel / Header */
+.o_retention_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #ffffff;
+}
+
+.o_retention_title_section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.o_retention_title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.o_retention_gear {
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.o_retention_search_box {
+    position: relative;
+    width: 320px;
+}
+
+.o_retention_search_input {
+    width: 100%;
+    padding: 6px 32px 6px 30px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.o_retention_search_input:focus {
+    border-color: #714B67;
+}
+
+.o_retention_search_icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.o_retention_search_caret {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 11px;
+    pointer-events: none;
+}
+
+/* Buttons Toolbar */
+.o_retention_toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #ffffff;
+}
+
+.btn-odoo-measure {
+    background-color: #714B67;
+    color: #ffffff;
+    border: 1px solid #714B67;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.btn-odoo-measure:hover {
+    background-color: #5c3b53;
+    color: #ffffff;
+}
+
+.btn-odoo-interval {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #ced4da;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.btn-odoo-interval:hover {
+    background-color: #f8f9fa;
+}
+
+.btn-odoo-download {
+    background-color: #ffffff;
+    color: #495057;
+    border: 1px solid #ced4da;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-odoo-download:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+/* Dropdown menus */
+.o_retention_dropdown_menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1050;
+    min-width: 180px;
+    padding: 5px 0;
+    margin-top: 2px;
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.o_retention_dropdown_item {
+    display: block;
+    width: 100%;
+    padding: 6px 16px;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.o_retention_dropdown_item:hover {
+    background-color: #f8f9fa;
+    color: #16181b;
+}
+
+.o_retention_dropdown_item.active {
+    background-color: #714B67;
+    color: #ffffff;
+}
+
+/* Table Area */
+.o_retention_content {
+    flex: 1;
+    padding: 10px 20px 30px 20px;
+    overflow-x: auto;
+}
+
+.o_retention_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    color: #212529;
+}
+
+.o_retention_table th,
+.o_retention_table td {
+    padding: 10px 14px;
+    text-align: center;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.o_retention_table thead th {
+    font-weight: 600;
+    color: #212529;
+    border-bottom: 1px solid #dee2e6;
+    border-top: none;
+    background-color: #ffffff;
+}
+
+.o_retention_table thead tr:first-child th {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.o_retention_col_header {
+    text-align: center;
+    font-weight: 600;
+}
+
+.o_retention_table .col_first_contract {
+    text-align: center;
+    width: 220px;
+    font-weight: 600;
+    border-right: 1px solid #dee2e6;
+}
+
+.o_retention_table .col_count {
+    text-align: center;
+    width: 110px;
+    font-weight: 600;
+    border-right: 1px solid #dee2e6;
+}
+
+/* Clickable counts */
+.o_retention_count_clickable {
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.o_retention_count_clickable:hover {
+    color: #008784;
+    text-decoration: underline;
+}
+
+/* Cells styling */
+.o_retention_cell_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_retention_badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    min-width: 62px;
+    text-align: center;
+    transition: transform 0.1s, box-shadow 0.1s;
+    user-select: none;
+}
+
+.o_retention_clickable {
+    cursor: pointer;
+}
+
+.o_retention_clickable:hover {
+    transform: scale(1.04);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Teal background tiers based on retention percentage */
+.retention-tier-100 {
+    background-color: #008784 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+.retention-tier-75 {
+    background-color: #20a39e !important;
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.retention-tier-50 {
+    background-color: #57c5bf !important;
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.retention-tier-25 {
+    background-color: #a0ded9 !important;
+    color: #17423f !important;
+    font-weight: 500;
+}
+
+.retention-tier-1 {
+    background-color: #d0f0ed !important;
+    color: #17423f !important;
+    font-weight: 500;
+}
+
+.retention-tier-0 {
+    background-color: #f1f3f5 !important;
+    color: #6c757d !important;
+    font-weight: 400;
+}
+
+/* Average row */
+.o_retention_average_row {
+    font-weight: 600;
+    background-color: #fcfcfc;
+    border-top: 2px solid #dee2e6;
+}
+
+.o_retention_average_row td {
+    font-weight: 600;
+    color: #212529;
+}
+
+.o_retention_average_badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: default !important;
+}
+
+.o_retention_empty_state {
+    padding: 40px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 15px;
+}

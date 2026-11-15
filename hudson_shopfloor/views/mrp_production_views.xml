@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_tree_hudson_shopfloor" model="ir.ui.view">
+        <field name="name">mrp.production.list.hudson.shopfloor</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <!-- Modernize the state badges to match Enterprise -->
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" widget="badge" optional="show"
+                       decoration-info="state == 'draft'"
+                       decoration-muted="state == 'confirmed'"
+                       decoration-warning="state == 'progress'"
+                       decoration-success="state in ('done', 'to_close')"
+                       decoration-danger="state == 'cancel'"/>
+            </xpath>
+            
+            <!-- Adjust Component Status for better visibility -->
+            <xpath expr="//field[@name='reservation_state']" position="replace">
+                <field name="reservation_state" widget="badge" optional="show"
+                       decoration-success="reservation_state == 'assigned'"
+                       decoration-danger="reservation_state == 'confirmed'"
+                       decoration-warning="reservation_state == 'waiting'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

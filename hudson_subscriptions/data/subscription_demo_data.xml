@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo Partners -->
+        <record id="partner_joel_willis" model="res.partner">
+            <field name="name">Joel Willis</field>
+            <field name="email">joel.willis@example.com</field>
+            <field name="phone">+1 555-0199</field>
+            <field name="is_company">False</field>
+        </record>
+
+        <record id="partner_acme_corp" model="res.partner">
+            <field name="name">Acme Corporation</field>
+            <field name="email">contact@acme-corp.com</field>
+            <field name="phone">+1 555-0144</field>
+            <field name="is_company">True</field>
+        </record>
+
+        <record id="partner_nandu_saji" model="res.partner">
+            <field name="name">Nandu Saji</field>
+            <field name="email">nandu.saji@example.com</field>
+            <field name="phone">+971 50 123 4567</field>
+            <field name="is_company">False</field>
+        </record>
+
+        <!-- Demo Subscription Products -->
+        <record id="product_saas_basic" model="product.product">
+            <field name="name">Cloud SaaS Basic Subscription</field>
+            <field name="type">service</field>
+            <field name="list_price">50.0</field>
+            <field name="recurring_invoice">True</field>
+            <field name="subscription_plan_id" ref="subscription_plan_monthly"/>
+        </record>
+
+        <record id="product_saas_pro" model="product.product">
+            <field name="name">Cloud SaaS Pro Subscription</field>
+            <field name="type">service</field>
+            <field name="list_price">60.0</field>
+            <field name="recurring_invoice">True</field>
+            <field name="subscription_plan_id" ref="subscription_plan_monthly"/>
+        </record>
+
+        <record id="product_saas_enterprise" model="product.product">
+            <field name="name">Enterprise Platform Subscription</field>
+            <field name="type">service</field>
+            <field name="list_price">945.0</field>
+            <field name="recurring_invoice">True</field>
+            <field name="subscription_plan_id" ref="subscription_plan_monthly"/>
+        </record>
+
+        <record id="product_saas_yearly" model="product.product">
+            <field name="name">Annual Support &amp; Maintenance</field>
+            <field name="type">service</field>
+            <field name="list_price">180.0</field>
+            <field name="recurring_invoice">True</field>
+            <field name="subscription_plan_id" ref="subscription_plan_yearly"/>
+        </record>
+
+        <!-- Demo Subscription Orders Matching Reference Screenshot -->
+
+        <!-- S00042 - Joel Willis - Monthly - 60.00 - Churned -->
+        <record id="demo_subscription_s00042" model="sale.order">
+            <field name="name">S00042</field>
+            <field name="partner_id" ref="partner_joel_willis"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_subscription">True</field>
+            <field name="plan_id" ref="subscription_plan_monthly"/>
+            <field name="subscription_state">6_churn</field>
+            <field name="close_reason_id" ref="close_reason_too_expensive"/>
+            <field name="start_date" eval="datetime.now() - relativedelta(months=6)"/>
+            <field name="close_date" eval="datetime.now() - relativedelta(months=1)"/>
+            <field name="order_line" eval="[(0, 0, {
+                'product_id': ref('product_saas_pro'),
+                'name': 'Cloud SaaS Pro Subscription',
+                'product_uom_qty': 1,
+                'price_unit': 60.0,
+            })]"/>
+        </record>
+
+        <!-- S00069 - Acme Corporation - Monthly - 945.00 - Churned -->
+        <record id="demo_subscription_s00069" model="sale.order">
+            <field name="name">S00069</field>
+            <field name="partner_id" ref="partner_acme_corp"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_subscription">True</field>
+            <field name="plan_id" ref="subscription_plan_monthly"/>
+            <field name="subscription_state">6_churn</field>
+            <field name="close_reason_id" ref="close_reason_not_using"/>
+            <field name="start_date" eval="datetime.now() - relativedelta(months=4)"/>
+            <field name="close_date" eval="datetime.now() - relativedelta(months=1)"/>
+            <field name="order_line" eval="[(0, 0, {
+                'product_id': ref('product_saas_enterprise'),
+                'name': 'Enterprise Platform Subscription',
+                'product_uom_qty': 1,
+                'price_unit': 945.0,
+            })]"/>
+        </record>
+
+        <!-- S00040 - Joel Willis - Monthly - 70.00 - Churned -->
+        <record id="demo_subscription_s00040" model="sale.order">
+            <field name="name">S00040</field>
+            <field name="partner_id" ref="partner_joel_willis"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_subscription">True</field>
+            <field name="plan_id" ref="subscription_plan_monthly"/>
+            <field name="subscription_state">6_churn</field>
+            <field name="close_reason_id" ref="close_reason_competitor"/>
+            <field name="start_date" eval="datetime.now() - relativedelta(months=8)"/>
+            <field name="close_date" eval="datetime.now() - relativedelta(months=2)"/>
+            <field name="order_line" eval="[(0, 0, {
+                'product_id': ref('product_saas_pro'),
+                'name': 'Cloud SaaS Pro Subscription (Custom Tier)',
+                'product_uom_qty': 1,
+                'price_unit': 70.0,
+            })]"/>
+        </record>
+
+        <!-- S00087 - Nandu Saji - Monthly - 50.00 - In Progress (Next Invoice: 1 Sept) -->
+        <record id="demo_subscription_s00087" model="sale.order">
+            <field name="name">S00087</field>
+            <field name="partner_id" ref="partner_nandu_saji"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_subscription">True</field>
+            <field name="plan_id" ref="subscription_plan_monthly"/>
+            <field name="subscription_state">3_progress</field>
+            <field name="start_date" eval="datetime.now() - relativedelta(months=2)"/>
+            <field name="next_invoice_date" eval="datetime(2026, 9, 1).date()"/>
+            <field name="order_line" eval="[(0, 0, {
+                'product_id': ref('product_saas_basic'),
+                'name': 'Cloud SaaS Basic Subscription',
+                'product_uom_qty': 1,
+                'price_unit': 50.0,
+            })]"/>
+        </record>
+
+        <!-- S00041 - Joel Willis - Yearly - 180.00 - Churned -->
+        <record id="demo_subscription_s00041" model="sale.order">
+            <field name="name">S00041</field>
+            <field name="partner_id" ref="partner_joel_willis"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_subscription">True</field>
+            <field name="plan_id" ref="subscription_plan_yearly"/>
+            <field name="subscription_state">6_churn</field>
+            <field name="close_reason_id" ref="close_reason_other"/>
+            <field name="start_date" eval="datetime.now() - relativedelta(years=1)"/>
+            <field name="close_date" eval="datetime.now() - relativedelta(months=3)"/>
+            <field name="order_line" eval="[(0, 0, {
+                'product_id': ref('product_saas_yearly'),
+                'name': 'Annual Support &amp; Maintenance',
+                'product_uom_qty': 1,
+                'price_unit': 180.0,
+            })]"/>
+        </record>
+
+        <!-- S00086 - Nandu Saji - Monthly - 0.00 - Quotation -->
+        <record id="demo_subscription_s00086" model="sale.order">
+            <field name="name">S00086</field>
+            <field name="partner_id" ref="partner_nandu_saji"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_subscription">True</field>
+            <field name="plan_id" ref="subscription_plan_monthly"/>
+            <field name="subscription_state">draft</field>
+            <field name="start_date" eval="datetime.now()"/>
+            <field name="order_line" eval="[(0, 0, {
+                'product_id': ref('product_saas_basic'),
+                'name': 'Cloud SaaS Basic Subscription (Trial Quote)',
+                'product_uom_qty': 1,
+                'price_unit': 0.0,
+            })]"/>
+        </record>
+    </data>
+</odoo>

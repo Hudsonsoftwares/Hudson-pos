@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_field_service.FieldServicePhotoUpload">
+        <button type="button" class="btn btn-secondary o_fs_photo_upload" t-on-click="() => this.onClick()"
+                t-att-disabled="this.state.uploading" title="Add photos from this device">
+            <t t-if="this.state.uploading"><i class="oi oi-spin me-1" data-icon="progress_activity"/>Uploading...</t>
+            <t t-else=""><t t-out="this.photoCount"/> Photos</t>
+        </button>
+        <input type="file" class="d-none" accept="image/*" multiple="multiple"
+               t-ref="this.fileInput" t-on-change="(ev) => this.onFilesSelected(ev)"/>
+    </t>
+
+</templates>

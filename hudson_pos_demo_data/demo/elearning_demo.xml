@@ -1,182 +1,575 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Hudson POS Demo Data: eLearning / Courses (website_slides) -->
-<odoo noupdate="1">
-
-    <!-- ============================================================
-         SLIDE CHANNELS (Courses) - Restaurant & Cafe eLearning
-    ============================================================ -->
-
-    <!-- Course 1: Kerala Cuisine Masterclass -->
-    <record id="slide_channel_kerala_cuisine" model="slide.channel">
-        <field name="name">Kerala Cuisine Masterclass</field>
-        <field name="channel_type">training</field>
-        <field name="visibility">public</field>
-        <field name="enroll">public</field>
-        <field name="is_published">True</field>
-        <field name="sequence">1</field>
-        <field name="description_html">&lt;p&gt;Master the authentic flavours of Kerala — from aromatic fish curry to crispy banana chips. Learn traditional recipes, spice blending, and presentation techniques used in Kerala's finest restaurants.&lt;/p&gt;</field>
-    </record>
-
-    <!-- Course 2: Barista & Coffee Craft -->
-    <record id="slide_channel_barista_coffee" model="slide.channel">
-        <field name="name">Barista &amp; Coffee Craft</field>
-        <field name="channel_type">training</field>
-        <field name="visibility">public</field>
-        <field name="enroll">public</field>
-        <field name="is_published">True</field>
-        <field name="sequence">2</field>
-        <field name="description_html">&lt;p&gt;From espresso extraction to latte art, this course covers everything a professional barista needs to know. Perfect for cafe staff and coffee enthusiasts who want to master specialty coffee.&lt;/p&gt;</field>
-    </record>
-
-    <!-- Course 3: Restaurant Operations & Service Excellence -->
-    <record id="slide_channel_restaurant_ops" model="slide.channel">
-        <field name="name">Restaurant Operations &amp; Service Excellence</field>
-        <field name="channel_type">training</field>
-        <field name="visibility">public</field>
-        <field name="enroll">public</field>
-        <field name="is_published">True</field>
-        <field name="sequence">3</field>
-        <field name="description_html">&lt;p&gt;Train your team on hospitality excellence — from table service etiquette to handling guest complaints professionally. This course equips every front-of-house team member with world-class service skills.&lt;/p&gt;</field>
-    </record>
-
-    <!-- Course 4: Food Safety & Hygiene Certification -->
-    <record id="slide_channel_food_safety" model="slide.channel">
-        <field name="name">Food Safety &amp; Hygiene Certification</field>
-        <field name="channel_type">training</field>
-        <field name="visibility">public</field>
-        <field name="enroll">public</field>
-        <field name="is_published">True</field>
-        <field name="sequence">4</field>
-        <field name="description_html">&lt;p&gt;An essential certification course for all kitchen and food handling staff. Covers FSSAI guidelines, proper storage temperatures, cross-contamination prevention, and workplace hygiene best practices.&lt;/p&gt;</field>
-    </record>
-
-    <!-- ============================================================
-         SLIDES (Lessons) for Kerala Cuisine Masterclass
-    ============================================================ -->
-
-    <record id="slide_kerala_intro" model="slide.slide">
-        <field name="name">Introduction to Kerala Cuisine</field>
-        <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="is_preview">True</field>
-        <field name="sequence">1</field>
-        <field name="html_content">&lt;h2&gt;Welcome to Kerala Cuisine Masterclass&lt;/h2&gt;&lt;p&gt;Kerala cuisine is known for its rich use of coconut, curry leaves, and aromatic spices. This course will take you through the essential techniques and recipes that define Kerala's culinary identity.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Understanding Kerala spice palette&lt;/li&gt;&lt;li&gt;Coconut in every form: milk, oil, and fresh grated&lt;/li&gt;&lt;li&gt;Essential kitchen tools&lt;/li&gt;&lt;/ul&gt;</field>
-    </record>
-
-    <record id="slide_kerala_fish_curry" model="slide.slide">
-        <field name="name">Classic Kerala Fish Curry (Meen Curry)</field>
-        <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">2</field>
-        <field name="html_content">&lt;h2&gt;Meen Curry — Kerala's Signature Dish&lt;/h2&gt;&lt;p&gt;Learn to prepare the authentic Kerala fish curry using kudampuli (Gamboge), fresh coconut milk, and aromatic spices. This dish is the heart of Kerala cuisine.&lt;/p&gt;&lt;h3&gt;Ingredients&lt;/h3&gt;&lt;p&gt;Fresh fish, kudampuli, coconut milk, turmeric, chilli powder, curry leaves, mustard seeds, coconut oil.&lt;/p&gt;</field>
-    </record>
-
-    <record id="slide_kerala_appam" model="slide.slide">
-        <field name="name">Appam &amp; Stew — The Perfect Pair</field>
-        <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">3</field>
-        <field name="html_content">&lt;h2&gt;Soft Lacy Appam with Kerala Stew&lt;/h2&gt;&lt;p&gt;Appam is a delicate fermented rice hopper with crispy edges and a soft center. Paired with a mild coconut milk vegetable or chicken stew, this combination is beloved across Kerala.&lt;/p&gt;</field>
-    </record>
-
-    <!-- ============================================================
-         SLIDES (Lessons) for Barista & Coffee Craft
-    ============================================================ -->
-
-    <record id="slide_barista_intro" model="slide.slide">
-        <field name="name">The Art of Espresso</field>
-        <field name="channel_id" ref="slide_channel_barista_coffee"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="is_preview">True</field>
-        <field name="sequence">1</field>
-        <field name="html_content">&lt;h2&gt;Mastering Espresso Extraction&lt;/h2&gt;&lt;p&gt;A perfect espresso is the foundation of every great coffee drink. Learn about grind size, dose, extraction time, and the golden ratio for a balanced, rich shot.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Grind size and its effect on flavour&lt;/li&gt;&lt;li&gt;Tamping pressure and consistency&lt;/li&gt;&lt;li&gt;Extraction time: 25-30 seconds for the perfect shot&lt;/li&gt;&lt;/ul&gt;</field>
-    </record>
-
-    <record id="slide_barista_milk" model="slide.slide">
-        <field name="name">Milk Steaming &amp; Latte Art Basics</field>
-        <field name="channel_id" ref="slide_channel_barista_coffee"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">2</field>
-        <field name="html_content">&lt;h2&gt;Steaming Silky Microfoam&lt;/h2&gt;&lt;p&gt;The secret to great latte art lies in perfectly steamed milk. Learn how to create velvety microfoam and pour a classic heart, rosette, and tulip pattern.&lt;/p&gt;</field>
-    </record>
-
-    <record id="slide_barista_menu" model="slide.slide">
-        <field name="name">Specialty Coffee Menu &amp; Pricing</field>
-        <field name="channel_id" ref="slide_channel_barista_coffee"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">3</field>
-        <field name="html_content">&lt;h2&gt;Building a Specialty Coffee Menu&lt;/h2&gt;&lt;p&gt;Cappuccino, Flat White, Cortado, Cold Brew — understand the differences and learn how to describe each drink to customers confidently. Includes upselling tips and seasonal specials.&lt;/p&gt;</field>
-    </record>
-
-    <!-- ============================================================
-         SLIDES (Lessons) for Restaurant Operations & Service Excellence
-    ============================================================ -->
-
-    <record id="slide_ops_welcome" model="slide.slide">
-        <field name="name">Service Excellence Fundamentals</field>
-        <field name="channel_id" ref="slide_channel_restaurant_ops"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="is_preview">True</field>
-        <field name="sequence">1</field>
-        <field name="html_content">&lt;h2&gt;The 5 Pillars of Great Restaurant Service&lt;/h2&gt;&lt;p&gt;Every great dining experience starts with the team's attitude and knowledge. Learn how to greet guests, present menus, take orders accurately, and ensure each guest feels valued.&lt;/p&gt;</field>
-    </record>
-
-    <record id="slide_ops_table" model="slide.slide">
-        <field name="name">Table Setting &amp; Etiquette</field>
-        <field name="channel_id" ref="slide_channel_restaurant_ops"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">2</field>
-        <field name="html_content">&lt;h2&gt;Professional Table Setting Guide&lt;/h2&gt;&lt;p&gt;Learn the correct placement of cutlery, glassware, and napkins for different dining styles — from casual cafe to fine dining. Presentation is the first impression.&lt;/p&gt;</field>
-    </record>
-
-    <record id="slide_ops_complaint" model="slide.slide">
-        <field name="name">Handling Guest Complaints Gracefully</field>
-        <field name="channel_id" ref="slide_channel_restaurant_ops"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">3</field>
-        <field name="html_content">&lt;h2&gt;Turn Complaints Into Compliments&lt;/h2&gt;&lt;p&gt;Every complaint is an opportunity. Learn the LAST method (Listen, Apologise, Solve, Thank) to handle difficult situations and retain guest loyalty.&lt;/p&gt;</field>
-    </record>
-
-    <!-- ============================================================
-         SLIDES (Lessons) for Food Safety & Hygiene
-    ============================================================ -->
-
-    <record id="slide_safety_intro" model="slide.slide">
-        <field name="name">Why Food Safety Matters</field>
-        <field name="channel_id" ref="slide_channel_food_safety"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="is_preview">True</field>
-        <field name="sequence">1</field>
-        <field name="html_content">&lt;h2&gt;Food Safety: The Foundation of Every Kitchen&lt;/h2&gt;&lt;p&gt;Food poisoning affects millions globally every year. As kitchen professionals, we have a duty to protect our guests. This module covers the basics of food safety and why it is non-negotiable.&lt;/p&gt;</field>
-    </record>
-
-    <record id="slide_safety_storage" model="slide.slide">
-        <field name="name">Proper Food Storage &amp; Temperature Control</field>
-        <field name="channel_id" ref="slide_channel_food_safety"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">2</field>
-        <field name="html_content">&lt;h2&gt;The Danger Zone: 4°C to 60°C&lt;/h2&gt;&lt;p&gt;Bacteria multiply rapidly between 4°C and 60°C. Learn correct refrigeration temperatures, FIFO (First In, First Out) stock rotation, and how to properly label stored food items.&lt;/p&gt;</field>
-    </record>
-
-    <record id="slide_safety_hygiene" model="slide.slide">
-        <field name="name">Personal Hygiene &amp; Cross-Contamination</field>
-        <field name="channel_id" ref="slide_channel_food_safety"/>
-        <field name="slide_type">article</field>
-        <field name="is_published">True</field>
-        <field name="sequence">3</field>
-        <field name="html_content">&lt;h2&gt;Preventing Cross-Contamination&lt;/h2&gt;&lt;p&gt;Use colour-coded chopping boards, wash hands for 20 seconds with soap, wear clean uniforms and gloves when required. Learn how small habits make a big difference in kitchen safety.&lt;/p&gt;</field>
-    </record>
-
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_tag_group_department" model="slide.channel.tag.group">
+            <field name="name">Department</field>
+            <field name="sequence" eval="5"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="rc_tag_kitchen" model="slide.channel.tag">
+            <field name="name">Kitchen</field>
+            <field name="group_id" ref="rc_tag_group_department"/>
+            <field name="sequence" eval="1"/>
+            <field name="color" eval="2"/>
+        </record>
+        <record id="rc_tag_cafe" model="slide.channel.tag">
+            <field name="name">Café &amp; Bar</field>
+            <field name="group_id" ref="rc_tag_group_department"/>
+            <field name="sequence" eval="2"/>
+            <field name="color" eval="3"/>
+        </record>
+        <record id="rc_tag_foh" model="slide.channel.tag">
+            <field name="name">Front of House</field>
+            <field name="group_id" ref="rc_tag_group_department"/>
+            <field name="sequence" eval="3"/>
+            <field name="color" eval="4"/>
+        </record>
+        <record id="rc_tag_mgmt" model="slide.channel.tag">
+            <field name="name">Management</field>
+            <field name="group_id" ref="rc_tag_group_department"/>
+            <field name="sequence" eval="4"/>
+            <field name="color" eval="5"/>
+        </record>
+        <record id="slide_channel_kerala_cuisine" model="slide.channel">
+            <field name="name">Kerala Cuisine Masterclass</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published" eval="True"/>
+            <field name="allow_comment" eval="True"/>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/kerala.webp"/>
+            <field name="description_short">&lt;p&gt;Authentic Kerala recipes from our head chef.&lt;/p&gt;</field>
+            <field name="description">&lt;p&gt;Master the flavours of Kerala, from aromatic fish curry to soft appam and stew.&lt;/p&gt;&lt;p&gt;Learn spice blending, coconut-based gravies and the order of a traditional Sadya, as cooked in our kitchen.&lt;/p&gt;</field>
+            <field name="description_html">&lt;p&gt;Master the flavours of Kerala, from aromatic fish curry to soft appam and stew.&lt;/p&gt;&lt;p&gt;Learn spice blending, coconut-based gravies and the order of a traditional Sadya, as cooked in our kitchen.&lt;/p&gt;</field>
+            <field name="tag_ids" eval="[Command.set([ref('website_slides.slide_channel_tag_level_intermediate'), ref('rc_tag_kitchen')])]"/>
+            <field name="karma_gen_channel_finish" eval="50"/>
+        </record>
+        <record id="slide_channel_barista_coffee" model="slide.channel">
+            <field name="name">Barista &amp; Coffee Craft</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published" eval="True"/>
+            <field name="allow_comment" eval="True"/>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/coffee.webp"/>
+            <field name="description_short">&lt;p&gt;Espresso, milk and latte art for café staff.&lt;/p&gt;</field>
+            <field name="description">&lt;p&gt;Everything a barista needs: dialling in espresso, steaming silky milk and pouring a heart, tulip and rosetta.&lt;/p&gt;&lt;p&gt;Ends with a quiz on extraction and milk temperatures.&lt;/p&gt;</field>
+            <field name="description_html">&lt;p&gt;Everything a barista needs: dialling in espresso, steaming silky milk and pouring a heart, tulip and rosetta.&lt;/p&gt;&lt;p&gt;Ends with a quiz on extraction and milk temperatures.&lt;/p&gt;</field>
+            <field name="tag_ids" eval="[Command.set([ref('website_slides.slide_channel_tag_level_basic'), ref('rc_tag_cafe')])]"/>
+            <field name="karma_gen_channel_finish" eval="30"/>
+        </record>
+        <record id="slide_channel_food_safety" model="slide.channel">
+            <field name="name">Food Safety &amp; Hygiene Certification</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published" eval="True"/>
+            <field name="allow_comment" eval="True"/>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/safety.webp"/>
+            <field name="description_short">&lt;p&gt;Mandatory certification for every food handler.&lt;/p&gt;</field>
+            <field name="description">&lt;p&gt;FSSAI-aligned training on storage temperatures, cross-contamination, personal hygiene and cleaning schedules.&lt;/p&gt;&lt;p&gt;Pass the certification exam (70%) to receive your Food Safety certificate.&lt;/p&gt;</field>
+            <field name="description_html">&lt;p&gt;FSSAI-aligned training on storage temperatures, cross-contamination, personal hygiene and cleaning schedules.&lt;/p&gt;&lt;p&gt;Pass the certification exam (70%) to receive your Food Safety certificate.&lt;/p&gt;</field>
+            <field name="tag_ids" eval="[Command.set([ref('website_slides.slide_channel_tag_level_basic'), ref('rc_tag_kitchen'), ref('rc_tag_mgmt')])]"/>
+            <field name="karma_gen_channel_finish" eval="60"/>
+        </record>
+        <record id="slide_channel_restaurant_ops" model="slide.channel">
+            <field name="name">Restaurant Operations &amp; Service Excellence</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">invite</field>
+            <field name="visibility">members</field>
+            <field name="is_published" eval="True"/>
+            <field name="allow_comment" eval="True"/>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/service.webp"/>
+            <field name="description_short">&lt;p&gt;Front-of-house training for our team (invite only).&lt;/p&gt;</field>
+            <field name="description">&lt;p&gt;Our internal service standard: greeting, table setting, order taking, upselling and handling complaints.&lt;/p&gt;&lt;p&gt;Invite-only course for Resto Cafe staff.&lt;/p&gt;</field>
+            <field name="description_html">&lt;p&gt;Our internal service standard: greeting, table setting, order taking, upselling and handling complaints.&lt;/p&gt;&lt;p&gt;Invite-only course for Resto Cafe staff.&lt;/p&gt;</field>
+            <field name="tag_ids" eval="[Command.set([ref('website_slides.slide_channel_tag_level_intermediate'), ref('rc_tag_foh'), ref('rc_tag_mgmt')])]"/>
+            <field name="karma_gen_channel_finish" eval="40"/>
+            <field name="enroll_msg">&lt;p&gt;This course is reserved for Resto Cafe staff. Ask your manager for an invitation.&lt;/p&gt;</field>
+            <field name="prerequisite_channel_ids" eval="[Command.set([ref('slide_channel_food_safety')])]"/>
+        </record>
+        <record id="slide_channel_cafe_recipes" model="slide.channel">
+            <field name="name">Café Recipe Library</field>
+            <field name="channel_type">documentation</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published" eval="True"/>
+            <field name="allow_comment" eval="True"/>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/recipes.webp"/>
+            <field name="description_short">&lt;p&gt;Standard recipes and plating guides used in our café.&lt;/p&gt;</field>
+            <field name="description">&lt;p&gt;Our documentation hub: standard recipes, plating photos and checklists every cook and barista can look up.&lt;/p&gt;</field>
+            <field name="description_html">&lt;p&gt;Our documentation hub: standard recipes, plating photos and checklists every cook and barista can look up.&lt;/p&gt;</field>
+            <field name="tag_ids" eval="[Command.set([ref('website_slides.slide_channel_tag_level_basic'), ref('rc_tag_cafe'), ref('rc_tag_kitchen')])]"/>
+            <field name="karma_gen_channel_finish" eval="0"/>
+        </record>
+        <record id="slide_channel_kerala_cuisine_section_1" model="slide.slide">
+            <field name="name">Foundations</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="1"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_kerala_intro" model="slide.slide">
+            <field name="name">Introduction to Kerala Cuisine</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="2"/>
+            <field name="completion_time" eval="0.17"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Kerala cooking is built on coconut, curry leaves, black pepper and slow-cooked gravies.&lt;/p&gt;&lt;p&gt;In this course you will cook five signature dishes exactly as they are made in our restaurant.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_kerala_spices" model="slide.slide">
+            <field name="name">The Kerala Spice Box (Infographic)</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="slide_category">infographic</field>
+            <field name="sequence" eval="3"/>
+            <field name="completion_time" eval="0.08"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="source_type">local_file</field>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/spices.webp"/>
+        </record>
+        <record id="slide_channel_kerala_cuisine_section_2" model="slide.slide">
+            <field name="name">Signature Dishes</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="4"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_kerala_fish_curry" model="slide.slide">
+            <field name="name">Classic Kerala Fish Curry (Meen Curry)</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="5"/>
+            <field name="completion_time" eval="0.42"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Use firm fish such as seer or pearl spot. Soak kudampuli (Malabar tamarind) for 15 minutes.&lt;/p&gt;&lt;p&gt;Temper mustard seeds, fenugreek and curry leaves in coconut oil, add shallots, ginger and chilli powder, then the kudampuli water. Simmer the fish for 10 minutes and rest the curry before serving.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_kerala_appam" model="slide.slide">
+            <field name="name">Appam &amp; Stew: The Perfect Pair</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="slide_category">video</field>
+            <field name="sequence" eval="6"/>
+            <field name="completion_time" eval="0.3"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="source_type">external</field>
+            <field name="url">https://www.youtube.com/watch?v=REPLACE_WITH_YOUR_VIDEO</field>
+        </record>
+        <record id="slide_kerala_sadya" model="slide.slide">
+            <field name="name">Serving a Sadya on Banana Leaf</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="7"/>
+            <field name="completion_time" eval="0.25"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;A Sadya is served in a fixed order: salt and banana chips on the left, curries in the middle, rice at the bottom centre.&lt;/p&gt;&lt;p&gt;Parippu and ghee come first, sambar next, then rasam and buttermilk, and payasam to finish.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_channel_kerala_cuisine_section_3" model="slide.slide">
+            <field name="name">Check your knowledge</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="8"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_kerala_quiz" model="slide.slide">
+            <field name="name">Kerala Cuisine Quiz</field>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="slide_category">quiz</field>
+            <field name="sequence" eval="9"/>
+            <field name="completion_time" eval="0.08"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="quiz_first_attempt_reward" eval="10"/>
+            <field name="quiz_second_attempt_reward" eval="7"/>
+            <field name="quiz_third_attempt_reward" eval="5"/>
+            <field name="quiz_fourth_attempt_reward" eval="2"/>
+        </record>
+        <record id="slide_kerala_quiz_q1" model="slide.question">
+            <field name="question">Which souring agent is used in a traditional Kerala fish curry?</field>
+            <field name="slide_id" ref="slide_kerala_quiz"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_kerala_quiz_q1_a1" model="slide.answer">
+            <field name="text_value">Kudampuli (Malabar tamarind)</field>
+            <field name="question_id" ref="slide_kerala_quiz_q1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_kerala_quiz_q1_a2" model="slide.answer">
+            <field name="text_value">Lemon juice</field>
+            <field name="question_id" ref="slide_kerala_quiz_q1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_kerala_quiz_q1_a3" model="slide.answer">
+            <field name="text_value">Vinegar</field>
+            <field name="question_id" ref="slide_kerala_quiz_q1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="3"/>
+        </record>
+        <record id="slide_kerala_quiz_q2" model="slide.question">
+            <field name="question">What is served first on a Sadya leaf, after the salt?</field>
+            <field name="slide_id" ref="slide_kerala_quiz"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_kerala_quiz_q2_a1" model="slide.answer">
+            <field name="text_value">Parippu with ghee</field>
+            <field name="question_id" ref="slide_kerala_quiz_q2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_kerala_quiz_q2_a2" model="slide.answer">
+            <field name="text_value">Payasam</field>
+            <field name="question_id" ref="slide_kerala_quiz_q2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_kerala_quiz_q2_a3" model="slide.answer">
+            <field name="text_value">Rasam</field>
+            <field name="question_id" ref="slide_kerala_quiz_q2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="3"/>
+        </record>
+        <record id="slide_channel_barista_coffee_section_1" model="slide.slide">
+            <field name="name">Espresso</field>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="1"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_espresso_art" model="slide.slide">
+            <field name="name">The Art of Espresso</field>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="2"/>
+            <field name="completion_time" eval="0.2"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Dose 18 g of coffee, aim for 36 g in the cup in 25 to 30 seconds.&lt;/p&gt;&lt;p&gt;Sour and fast means grind finer; bitter and slow means grind coarser. Purge the group head between shots.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_coffee_filter" model="slide.slide">
+            <field name="name">South Indian Filter Coffee</field>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="slide_category">video</field>
+            <field name="sequence" eval="3"/>
+            <field name="completion_time" eval="0.13"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="source_type">external</field>
+            <field name="url">https://www.youtube.com/watch?v=REPLACE_WITH_YOUR_VIDEO</field>
+        </record>
+        <record id="slide_channel_barista_coffee_section_2" model="slide.slide">
+            <field name="name">Milk &amp; Latte Art</field>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="4"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_latte_art" model="slide.slide">
+            <field name="name">Milk Steaming &amp; Latte Art Basics</field>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="slide_category">infographic</field>
+            <field name="sequence" eval="5"/>
+            <field name="completion_time" eval="0.1"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="source_type">local_file</field>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/latte.webp"/>
+        </record>
+        <record id="slide_coffee_menu" model="slide.slide">
+            <field name="name">Specialty Coffee Menu &amp; Pricing</field>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="6"/>
+            <field name="completion_time" eval="0.13"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Our menu: espresso, americano, cappuccino, flat white, latte, cardamom cold brew and filter coffee.&lt;/p&gt;&lt;p&gt;Always suggest a pastry with every coffee order: it is our highest-margin pairing.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_coffee_quiz" model="slide.slide">
+            <field name="name">Barista Quiz</field>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="slide_category">quiz</field>
+            <field name="sequence" eval="7"/>
+            <field name="completion_time" eval="0.07"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="quiz_first_attempt_reward" eval="10"/>
+            <field name="quiz_second_attempt_reward" eval="7"/>
+            <field name="quiz_third_attempt_reward" eval="5"/>
+            <field name="quiz_fourth_attempt_reward" eval="2"/>
+        </record>
+        <record id="slide_coffee_quiz_q1" model="slide.question">
+            <field name="question">What is the ideal milk temperature for a latte?</field>
+            <field name="slide_id" ref="slide_coffee_quiz"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_coffee_quiz_q1_a1" model="slide.answer">
+            <field name="text_value">55 to 65 °C</field>
+            <field name="question_id" ref="slide_coffee_quiz_q1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_coffee_quiz_q1_a2" model="slide.answer">
+            <field name="text_value">80 to 90 °C</field>
+            <field name="question_id" ref="slide_coffee_quiz_q1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_coffee_quiz_q1_a3" model="slide.answer">
+            <field name="text_value">30 to 40 °C</field>
+            <field name="question_id" ref="slide_coffee_quiz_q1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="3"/>
+        </record>
+        <record id="slide_coffee_quiz_q2" model="slide.question">
+            <field name="question">Your espresso tastes sour and runs fast. What do you change?</field>
+            <field name="slide_id" ref="slide_coffee_quiz"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_coffee_quiz_q2_a1" model="slide.answer">
+            <field name="text_value">Grind finer</field>
+            <field name="question_id" ref="slide_coffee_quiz_q2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_coffee_quiz_q2_a2" model="slide.answer">
+            <field name="text_value">Grind coarser</field>
+            <field name="question_id" ref="slide_coffee_quiz_q2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_coffee_quiz_q2_a3" model="slide.answer">
+            <field name="text_value">Use less coffee</field>
+            <field name="question_id" ref="slide_coffee_quiz_q2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="3"/>
+        </record>
+        <record id="slide_channel_restaurant_ops_section_1" model="slide.slide">
+            <field name="name">Guest Experience</field>
+            <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="1"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_service_basics" model="slide.slide">
+            <field name="name">Service Excellence Fundamentals</field>
+            <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="2"/>
+            <field name="completion_time" eval="0.25"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Greet every table within 60 seconds, introduce yourself and offer water.&lt;/p&gt;&lt;p&gt;Read the table: families, business lunches and couples need different pacing.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_table_setting" model="slide.slide">
+            <field name="name">Table Setting &amp; Etiquette</field>
+            <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="3"/>
+            <field name="completion_time" eval="0.17"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Forks on the left, knives and spoons on the right, glass above the knife, napkin on the plate.&lt;/p&gt;&lt;p&gt;Reset every table within 3 minutes of guests leaving.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_complaints" model="slide.slide">
+            <field name="name">Handling Complaints with LAST</field>
+            <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="4"/>
+            <field name="completion_time" eval="0.17"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Listen, Apologise, Solve, Thank. Never argue; involve the manager when a dish is returned twice.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_channel_food_safety_section_1" model="slide.slide">
+            <field name="name">Safe Food Handling</field>
+            <field name="channel_id" ref="slide_channel_food_safety"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="1"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_safety_temps" model="slide.slide">
+            <field name="name">Storage Temperatures</field>
+            <field name="channel_id" ref="slide_channel_food_safety"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="2"/>
+            <field name="completion_time" eval="0.2"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Chiller 0 to 5 °C, freezer at -18 °C or below, hot holding above 63 °C.&lt;/p&gt;&lt;p&gt;Label every container with the product, date and use-by date. First in, first out.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_safety_cross" model="slide.slide">
+            <field name="name">Preventing Cross-Contamination</field>
+            <field name="channel_id" ref="slide_channel_food_safety"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="3"/>
+            <field name="completion_time" eval="0.2"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Colour-coded boards: red for raw meat, blue for fish, green for vegetables, white for bakery.&lt;/p&gt;&lt;p&gt;Wash hands for 20 seconds after handling raw food, waste or your phone.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_safety_quiz" model="slide.slide">
+            <field name="name">Practice Quiz</field>
+            <field name="channel_id" ref="slide_channel_food_safety"/>
+            <field name="slide_category">quiz</field>
+            <field name="sequence" eval="4"/>
+            <field name="completion_time" eval="0.08"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="quiz_first_attempt_reward" eval="10"/>
+            <field name="quiz_second_attempt_reward" eval="7"/>
+            <field name="quiz_third_attempt_reward" eval="5"/>
+            <field name="quiz_fourth_attempt_reward" eval="2"/>
+        </record>
+        <record id="slide_safety_quiz_q1" model="slide.question">
+            <field name="question">At what temperature must a freezer be kept?</field>
+            <field name="slide_id" ref="slide_safety_quiz"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_safety_quiz_q1_a1" model="slide.answer">
+            <field name="text_value">-18 °C or below</field>
+            <field name="question_id" ref="slide_safety_quiz_q1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_safety_quiz_q1_a2" model="slide.answer">
+            <field name="text_value">0 °C</field>
+            <field name="question_id" ref="slide_safety_quiz_q1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_safety_quiz_q1_a3" model="slide.answer">
+            <field name="text_value">-5 °C</field>
+            <field name="question_id" ref="slide_safety_quiz_q1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="3"/>
+        </record>
+        <record id="slide_safety_quiz_q2" model="slide.question">
+            <field name="question">Which chopping board is used for raw fish?</field>
+            <field name="slide_id" ref="slide_safety_quiz"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_safety_quiz_q2_a1" model="slide.answer">
+            <field name="text_value">Blue</field>
+            <field name="question_id" ref="slide_safety_quiz_q2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="slide_safety_quiz_q2_a2" model="slide.answer">
+            <field name="text_value">Red</field>
+            <field name="question_id" ref="slide_safety_quiz_q2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="slide_safety_quiz_q2_a3" model="slide.answer">
+            <field name="text_value">Green</field>
+            <field name="question_id" ref="slide_safety_quiz_q2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence" eval="3"/>
+        </record>
+        <record id="slide_channel_cafe_recipes_section_1" model="slide.slide">
+            <field name="name">Bakery</field>
+            <field name="channel_id" ref="slide_channel_cafe_recipes"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="1"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_recipe_brownie" model="slide.slide">
+            <field name="name">Fudge Brownie (Standard Recipe)</field>
+            <field name="channel_id" ref="slide_channel_cafe_recipes"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="2"/>
+            <field name="completion_time" eval="0.08"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Yield 24 pieces: 400 g dark chocolate, 300 g butter, 6 eggs, 450 g sugar, 180 g flour. Bake 22 minutes at 170 °C.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_recipe_plum_cake" model="slide.slide">
+            <field name="name">Christmas Plum Cake</field>
+            <field name="channel_id" ref="slide_channel_cafe_recipes"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="3"/>
+            <field name="completion_time" eval="0.08"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Soak 1 kg dried fruit in rum for 4 weeks. Caramelise sugar for colour, bake at 150 °C for 2 hours.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_channel_cafe_recipes_section_2" model="slide.slide">
+            <field name="name">Beverages</field>
+            <field name="channel_id" ref="slide_channel_cafe_recipes"/>
+            <field name="is_category" eval="True"/>
+            <field name="slide_category">document</field>
+            <field name="sequence" eval="4"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="slide_recipe_cold_brew" model="slide.slide">
+            <field name="name">Cardamom Cold Brew</field>
+            <field name="channel_id" ref="slide_channel_cafe_recipes"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="5"/>
+            <field name="completion_time" eval="0.05"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;1:8 coffee to water, steep 18 hours in the chiller, add jaggery-cardamom syrup to order.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_learner_anu" model="res.partner">
+            <field name="name">Anu Joseph</field>
+            <field name="email">anu.joseph@example.com</field>
+        </record>
+        <record id="rc_learner_rahul" model="res.partner">
+            <field name="name">Rahul Menon</field>
+            <field name="email">rahul.menon@example.com</field>
+        </record>
+        <record id="rc_learner_sana" model="res.partner">
+            <field name="name">Sana Fathima</field>
+            <field name="email">sana.fathima@example.com</field>
+        </record>
+        <record id="rc_learner_vivek" model="res.partner">
+            <field name="name">Vivek Nair</field>
+            <field name="email">vivek.nair@example.com</field>
+        </record>
+        <record id="rc_enrol_1" model="slide.channel.partner">
+            <field name="partner_id" ref="rc_learner_anu"/>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="member_status">joined</field>
+        </record>
+        <record id="rc_enrol_2" model="slide.channel.partner">
+            <field name="partner_id" ref="rc_learner_rahul"/>
+            <field name="channel_id" ref="slide_channel_kerala_cuisine"/>
+            <field name="member_status">joined</field>
+        </record>
+        <record id="rc_enrol_3" model="slide.channel.partner">
+            <field name="partner_id" ref="rc_learner_sana"/>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="member_status">joined</field>
+        </record>
+        <record id="rc_enrol_4" model="slide.channel.partner">
+            <field name="partner_id" ref="rc_learner_vivek"/>
+            <field name="channel_id" ref="slide_channel_barista_coffee"/>
+            <field name="member_status">joined</field>
+        </record>
+        <record id="rc_enrol_5" model="slide.channel.partner">
+            <field name="partner_id" ref="rc_learner_anu"/>
+            <field name="channel_id" ref="slide_channel_food_safety"/>
+            <field name="member_status">joined</field>
+        </record>
+        <record id="rc_enrol_6" model="slide.channel.partner">
+            <field name="partner_id" ref="rc_learner_rahul"/>
+            <field name="channel_id" ref="slide_channel_restaurant_ops"/>
+            <field name="member_status">invited</field>
+        </record>
+    </data>
 </odoo>
-

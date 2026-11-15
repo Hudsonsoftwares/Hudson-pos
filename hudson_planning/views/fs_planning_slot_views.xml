@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- standard list view for fallback/reporting -->
+    <record id="fs_planning_slot_view_tree" model="ir.ui.view">
+        <field name="name">fs.planning.slot.tree</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <list string="Planning Slots" multi_edit="1">
+                <field name="resource_id" widget="many2one_avatar_employee"/>
+                <field name="role_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="allocated_hours" sum="Total Hours" widget="float_time"/>
+                <field name="sale_order_id" optional="hide"/>
+                <field name="project_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'published'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- pivot for reporting -->
+    <record id="fs_planning_slot_view_pivot" model="ir.ui.view">
+        <field name="name">fs.planning.slot.pivot</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <pivot string="Planning Analysis" display_quantity="1">
+                <field name="resource_id" type="row"/>
+                <field name="date_start" type="col" interval="month"/>
+                <field name="allocated_hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- form view for manual edits -->
+    <record id="fs_planning_slot_view_form" model="ir.ui.view">
+        <field name="name">fs.planning.slot.form</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <form string="Shift">
+                <header>
+                    <!-- In the "Add Shift" dialog, publishing is done from the footer -->
+                    <button name="action_publish" string="Publish" type="object" class="oe_highlight o_fs_header_publish" invisible="state == 'published'"
+                            groups="hudson_planning.group_planning_manager"/>
+                    <button name="action_unpublish" string="Unpublish" type="object" invisible="state == 'draft'"
+                            groups="hudson_planning.group_planning_manager"/>
+                    <!-- Employees see their planning; administrators make it -->
+                    <field name="is_planning_manager" invisible="1"/>
+                    <!-- Settings > Shift Changes -->
+                    <field name="request_to_switch" invisible="1"/>
+                    <field name="is_own_shift" invisible="1"/>
+                    <field name="can_request_switch" invisible="1"/>
+                    <field name="can_self_unassign" invisible="1"/>
+                    <field name="can_take_shift" invisible="1"/>
+                    <button name="action_request_switch" string="Ask for Replacement" type="object" invisible="not can_request_switch"/>
+                    <button name="action_cancel_switch" string="Cancel Replacement Request" type="object" invisible="not request_to_switch or not is_own_shift"/>
+                    <button name="action_self_unassign" string="Unassign Myself" type="object" invisible="not can_self_unassign"
+                            confirm="Remove yourself from this shift? It becomes an open shift."/>
+                    <button name="action_take_shift" string="Take Shift" type="object" class="btn-primary" invisible="not can_take_shift"/>
+                    <field name="state" invisible="1"/>
+                    <field name="shift_status" widget="statusbar" statusbar_visible="draft,scheduled"/>
+                </header>
+                <div class="alert alert-warning mb-0" role="status" invisible="not request_to_switch">
+                    <div class="text-center">
+                        <strong>A replacement was requested for this shift.</strong>
+                        <span class="ms-1" groups="hudson_planning.group_planning_manager">
+                            Give it to an employee below, or change its resource.
+                        </span>
+                    </div>
+                    <!-- Administrators: the employees of the role free to replace -->
+                    <div class="mt-2" groups="hudson_planning.group_planning_manager">
+                        <field name="replacement_suggestions" widget="shift_conflict_suggestions"
+                               options="{'replacement': True}" readonly="not is_planning_manager" nolabel="1"/>
+                    </div>
+                </div>
+                <!-- Conflicts: other shifts of the employee at the same time (not saved
+                     while they remain), with where the shift could go instead -->
+                <field name="conflict_count" invisible="1"/>
+                <div class="alert alert-warning mb-0" role="alert" invisible="not conflict_count">
+                    <div class="text-center">
+                        <strong><field name="conflict_count" class="d-inline" readonly="1"/> conflicts</strong>
+                        <span class="ms-2"><field name="conflict_warning" class="d-inline" readonly="1"/></span>
+                    </div>
+                    <div class="mt-2" groups="hudson_planning.group_planning_manager">
+                        <field name="conflict_suggestions" widget="shift_conflict_suggestions" readonly="not is_planning_manager" nolabel="1"/>
+                    </div>
+                </div>
+                <field name="is_to_plan" invisible="1"/>
+                <div class="alert alert-info mb-0 text-center" role="status" invisible="not is_to_plan or not date_start">
+                    Open shift of a sales order: assign it to an employee, or let Auto Plan assign its hours to the employees with this role.
+                </div>
+                <div class="alert alert-info mb-0 text-center" role="status" invisible="not is_to_plan or date_start">
+                    Shift of a sales order to schedule: set its dates, or drag it from the side panel of the schedule, or let Auto Plan assign its hours.
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <!-- Templates of the resource's roles, and those without role (for everyone) -->
+                    <div name="templates" class="mb-2" groups="hudson_planning.group_planning_manager">
+                        <field name="available_template_ids" invisible="1"/>
+                        <field name="shift_template_id"
+                               widget="shift_template_badges"
+                               options="{'no_create': True, 'badge_limit': 4}"
+                               domain="[('id', 'in', available_template_ids)]"
+                               nolabel="1"/>
+                    </div>
+                    <group name="shift">
+                        <group name="shift_left">
+                            <label for="resource_id" string="Resources"/>
+                            <div name="resources" class="d-flex flex-column gap-1">
+                                <field name="resource_id" widget="many2one_avatar_employee" nolabel="1" readonly="not is_planning_manager"/>
+                            </div>
+                            <field name="project_id" readonly="not is_planning_manager"/>
+                            <field name="task_id" readonly="not is_planning_manager"/>
+                            <field name="partner_id" context="{'res_partner_search_mode': 'customer', 'show_address': 1}" readonly="not is_planning_manager"/>
+                        </group>
+                        <group name="shift_right">
+                            <label for="date_start" string="Date"/>
+                            <div class="o_row">
+                                <field name="date_start" widget="daterange" options="{'end_date_field': 'date_end'}" nolabel="1" readonly="not is_planning_manager"
+                                       required="not sale_line_id" placeholder="To schedule"/>
+                                <field name="date_end" invisible="1" required="not sale_line_id"/>
+                            </div>
+                            <label for="allocated_hours"/>
+                            <div class="o_row">
+                                <field name="allocated_hours" widget="float_time" nolabel="1" class="oe_inline" readonly="not is_planning_manager"/>
+                                <span class="mx-2">+</span>
+                                <field name="break_hours" widget="float_time" nolabel="1" class="oe_inline" readonly="not is_planning_manager"/>
+                                <span>break</span>
+                            </div>
+                            <field name="role_id" options="{'no_create': True}" readonly="not is_planning_manager"/>
+                            <field name="sale_order_id" string="Sales Order" invisible="not partner_id and not sale_order_id" readonly="not is_planning_manager"/>
+                            <field name="sale_line_id" invisible="not sale_line_id" readonly="1" groups="sales_team.group_sale_salesman"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="not is_planning_manager"/>
+                            <field name="template_creation" invisible="shift_template_id" groups="hudson_planning.group_planning_manager"/>
+                        </group>
+                    </group>
+                    <notebook name="shift_notebook">
+                        <page string="Note" name="note">
+                            <field name="note" placeholder="Internal note..." readonly="not is_planning_manager"/>
+                            <group name="links">
+                                <field name="name" string="Description" readonly="not is_planning_manager"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+                <!-- Only shown when the form is opened as a dialog ("Add Shift") -->
+                <footer>
+                    <button string="Save" special="save" class="btn-primary" data-hotkey="s"/>
+                    <button name="action_publish" string="Publish" type="object" class="btn-primary" close="1" invisible="state == 'published'"/>
+                    <button string="Discard" special="cancel" class="btn-secondary" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view: filters and groupings of the schedule -->
+    <record id="fs_planning_slot_view_search" model="ir.ui.view">
+        <field name="name">fs.planning.slot.search</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <search string="Shifts">
+                <field name="resource_id"/>
+                <field name="role_id"/>
+                <field name="project_id"/>
+                <field name="task_id"/>
+                <field name="partner_id"/>
+                <field name="sale_order_id"/>
+                <field name="name"/>
+                <filter string="Open Shifts" name="open_shifts" domain="[('resource_id', '=', False)]"/>
+                <filter string="To Plan" name="to_plan" domain="[('is_to_plan', '=', True)]"
+                        help="Open shifts of the sales orders, still to assign"/>
+                <filter string="My Shifts" name="my_shifts" domain="[('resource_id.user_id', '=', uid)]"/>
+                <filter string="My Team" name="my_team" domain="['|', ('resource_id.parent_id.user_id', '=', uid), ('resource_id.coach_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="My Roles" name="my_roles" domain="[('role_id.resource_ids.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Needs Attention" name="needs_attention"
+                        domain="['|', ('request_to_switch', '=', True), '&amp;', ('resource_id', '=', False), ('date_start', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Employees" name="employees" domain="[('resource_id', '!=', False)]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Published" name="published" domain="[('state', '=', 'published')]"/>
+                <separator/>
+                <filter string="Start Date" name="start_date" date="date_start"/>
+                <filter string="End Date" name="end_date" date="date_end"/>
+                <separator/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <filter string="Resources" name="group_resource" context="{'group_by': 'resource_id'}"/>
+                <filter string="Role" name="group_role" context="{'group_by': 'role_id'}"/>
+                <filter string="Project" name="group_project" context="{'group_by': 'project_id'}"/>
+                <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                <filter string="Sales Order" name="group_sale_order" context="{'group_by': 'sale_order_id'}"/>
+                <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                <filter string="Start Date" name="group_date" context="{'group_by': 'date_start:week'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Schedule (Gantt-like) view -->
+    <record id="fs_planning_slot_view_schedule" model="ir.ui.view">
+        <field name="name">fs.planning.slot.schedule</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <fs_schedule string="Schedule" date_start="date_start" date_stop="date_end" default_scale="week"/>
+        </field>
+    </record>
+
+    <!-- Map view: the shifts at their customer's address, grouped like Online -->
+    <record id="fs_planning_slot_view_map" model="ir.ui.view">
+        <field name="name">fs.planning.slot.map</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <fs_map string="Map" default_group_by="resource_id" limit="80"/>
+        </field>
+    </record>
+
+    <record id="fs_planning_slot_view_calendar" model="ir.ui.view">
+        <field name="name">fs.planning.slot.calendar</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <calendar string="Shifts" date_start="date_start" date_stop="date_end" color="role_id" mode="week"
+                      event_open_popup="1" quick_create="0">
+                <field name="resource_id" filters="1" avatar_field="avatar_128"/>
+                <field name="role_id" filters="1"/>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <field name="allocated_hours" widget="float_time"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="fs_planning_slot_view_kanban" model="ir.ui.view">
+        <field name="name">fs.planning.slot.kanban</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_group_by="resource_id" quick_create="0">
+                <field name="color"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="role_id" class="fw-bold"/>
+                            <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'published'"/>
+                        </div>
+                        <div class="text-muted small">
+                            <field name="date_start"/> <span class="mx-1">-</span> <field name="date_end"/>
+                        </div>
+                        <field name="partner_id"/>
+                        <field name="project_id"/>
+                        <footer>
+                            <field name="allocated_hours" widget="float_time"/>
+                            <field name="resource_id" widget="many2one_avatar_employee" class="ms-auto"/>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="fs_planning_slot_view_graph" model="ir.ui.view">
+        <field name="name">fs.planning.slot.graph</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="arch" type="xml">
+            <graph string="Shifts" type="bar">
+                <field name="resource_id"/>
+                <field name="allocated_hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Schedule actions: Schedule > By Resource / Role / Project / Sales Order, Planning > My > Planning -->
+    <record id="action_fs_schedule_by_resource" model="ir.actions.act_window">
+        <field name="name">Schedule by Resource</field>
+        <field name="res_model">fs.planning.slot</field>
+        <field name="view_mode">fs_schedule,fs_map,calendar,list,kanban,pivot,graph,activity,form</field>
+        <field name="view_id" ref="fs_planning_slot_view_schedule"/>
+        <field name="search_view_id" ref="fs_planning_slot_view_search"/>
+        <field name="context">{'search_default_group_resource': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No shifts found. Let's create one!</p>
+            <p>Plan the shifts of your employees and the jobs of your customers.</p>
+        </field>
+    </record>
+
+    <record id="action_fs_schedule_by_role" model="ir.actions.act_window">
+        <field name="name">Schedule by Role</field>
+        <field name="res_model">fs.planning.slot</field>
+        <field name="view_mode">fs_schedule,fs_map,calendar,list,kanban,pivot,graph,activity,form</field>
+        <field name="view_id" ref="fs_planning_slot_view_schedule"/>
+        <field name="search_view_id" ref="fs_planning_slot_view_search"/>
+        <!-- Role > Resources: the employees of each role under it -->
+        <field name="context">{'search_default_group_role': 1, 'search_default_group_resource': 2}</field>
+    </record>
+
+    <record id="action_fs_schedule_by_project" model="ir.actions.act_window">
+        <field name="name">Schedule by Project</field>
+        <field name="res_model">fs.planning.slot</field>
+        <field name="view_mode">fs_schedule,fs_map,calendar,list,kanban,pivot,graph,activity,form</field>
+        <field name="view_id" ref="fs_planning_slot_view_schedule"/>
+        <field name="search_view_id" ref="fs_planning_slot_view_search"/>
+        <!-- Project > Resources: the employees planned on each project under it -->
+        <field name="context">{'search_default_group_project': 1, 'search_default_group_resource': 2}</field>
+    </record>
+
+    <record id="action_fs_schedule_by_sale_order" model="ir.actions.act_window">
+        <field name="name">Schedule by Sales Order</field>
+        <field name="res_model">fs.planning.slot</field>
+        <field name="view_mode">fs_schedule,fs_map,calendar,list,kanban,pivot,graph,activity,form</field>
+        <field name="view_id" ref="fs_planning_slot_view_schedule"/>
+        <field name="search_view_id" ref="fs_planning_slot_view_search"/>
+        <field name="context">{'search_default_group_sale_order': 1}</field>
+    </record>
+
+    <record id="action_fs_schedule_my" model="ir.actions.act_window">
+        <field name="name">My Planning</field>
+        <field name="res_model">fs.planning.slot</field>
+        <field name="view_mode">fs_schedule,fs_map,calendar,list,kanban,form</field>
+        <field name="view_id" ref="fs_planning_slot_view_schedule"/>
+        <field name="search_view_id" ref="fs_planning_slot_view_search"/>
+        <field name="context">{'search_default_my_shifts': 1, 'search_default_group_resource': 1}</field>
+    </record>
+
+    <!-- Fallback action for reporting -->
+    <record id="action_fs_planning_slot_reporting" model="ir.actions.act_window">
+        <field name="name">Planning Analysis</field>
+        <field name="res_model">fs.planning.slot</field>
+        <field name="view_mode">pivot,list,form</field>
+        <field name="search_view_id" ref="fs_planning_slot_view_search"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Settings > Website Form: /field-service/request -->
+    <template id="fs_request_form" name="Field Service: Request an Intervention">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-5" style="max-width: 720px;">
+                <h1 class="mb-2">Request an Intervention</h1>
+                <p class="text-muted mb-4">Tell us what you need and we will plan a technician visit.</p>
+                <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+                <form action="/field-service/request" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="fs_name">Your Name *</label>
+                            <input id="fs_name" name="name" type="text" class="form-control" required="required" t-att-value="values.get('name')"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="fs_email">Email *</label>
+                            <input id="fs_email" name="email" type="email" class="form-control" required="required" t-att-value="values.get('email')"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="fs_phone">Phone Number</label>
+                            <input id="fs_phone" name="phone" type="tel" class="form-control" t-att-value="values.get('phone')"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="fs_title">Service Needed *</label>
+                            <input id="fs_title" name="title" type="text" class="form-control" required="required" placeholder="e.g. AC repair" t-att-value="values.get('title')"/>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="fs_address">Address *</label>
+                            <input id="fs_address" name="address" type="text" class="form-control" required="required" t-att-value="values.get('address')"/>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="fs_description">Description</label>
+                            <textarea id="fs_description" name="description" rows="4" class="form-control"><t t-out="values.get('description')"/></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-4">Send Request</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="fs_request_form_thanks" name="Field Service: Request Received">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-5 text-center" style="max-width: 720px;">
+                <i class="fa fa-check-circle fa-4x text-success mb-3"/>
+                <h1>Thank you!</h1>
+                <p>Your request <strong t-out="order.name"/> was received. We will contact you to schedule the intervention.</p>
+            </div>
+        </t>
+    </template>
+
+</odoo>

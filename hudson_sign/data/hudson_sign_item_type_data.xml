@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="sign_item_type_signature" model="hudson.sign.item.type">
+            <field name="sequence">1</field>
+            <field name="name">Signature</field>
+            <field name="item_type">signature</field>
+            <field name="placeholder">Signature</field>
+            <field name="tip">Sign it</field>
+        </record>
+        <record id="sign_item_type_initial" model="hudson.sign.item.type">
+            <field name="sequence">2</field>
+            <field name="name">Initials</field>
+            <field name="item_type">initial</field>
+            <field name="placeholder">Initials</field>
+            <field name="tip">Fill in your initials</field>
+        </record>
+        <record id="sign_item_type_name" model="hudson.sign.item.type">
+            <field name="sequence">3</field>
+            <field name="name">Name</field>
+            <field name="item_type">text</field>
+            <field name="placeholder">Name</field>
+            <field name="tip">Fill in</field>
+            <field name="linked_to" ref="base.model_res_partner"/>
+            <field name="linked_field" ref="base.field_res_partner__name"/>
+        </record>
+        <record id="sign_item_type_email" model="hudson.sign.item.type">
+            <field name="sequence">4</field>
+            <field name="name">Email</field>
+            <field name="item_type">text</field>
+            <field name="placeholder">Email</field>
+            <field name="tip">Fill in</field>
+            <field name="linked_to" ref="base.model_res_partner"/>
+            <field name="linked_field" ref="base.field_res_partner__email"/>
+        </record>
+        <record id="sign_item_type_phone" model="hudson.sign.item.type">
+            <field name="sequence">5</field>
+            <field name="name">Phone</field>
+            <field name="item_type">text</field>
+            <field name="placeholder">Phone</field>
+            <field name="tip">Fill in</field>
+            <field name="linked_to" ref="base.model_res_partner"/>
+            <field name="linked_field" ref="base.field_res_partner__phone"/>
+        </record>
+        <record id="sign_item_type_company" model="hudson.sign.item.type">
+            <field name="sequence">6</field>
+            <field name="name">Company</field>
+            <field name="item_type">text</field>
+            <field name="placeholder">Company</field>
+            <field name="tip">Fill in</field>
+        </record>
+        <record id="sign_item_type_text" model="hudson.sign.item.type">
+            <field name="sequence">7</field>
+            <field name="name">Text</field>
+            <field name="item_type">text</field>
+            <field name="placeholder">Text</field>
+            <field name="tip">Fill in</field>
+        </record>
+        <record id="sign_item_type_multiline" model="hudson.sign.item.type">
+            <field name="sequence">8</field>
+            <field name="name">Multiline</field>
+            <field name="item_type">multiline</field>
+            <field name="placeholder">Multiline Text</field>
+            <field name="tip">Fill in</field>
+        </record>
+        <record id="sign_item_type_checkbox" model="hudson.sign.item.type">
+            <field name="sequence">9</field>
+            <field name="name">Checkbox</field>
+            <field name="item_type">checkbox</field>
+            <field name="tip">Check</field>
+            <field name="mandatory" eval="False"/>
+        </record>
+        <record id="sign_item_type_radio" model="hudson.sign.item.type">
+            <field name="sequence">10</field>
+            <field name="name">Radio</field>
+            <field name="item_type">radio</field>
+            <field name="tip">Select an option</field>
+        </record>
+        <record id="sign_item_type_selection" model="hudson.sign.item.type">
+            <field name="sequence">11</field>
+            <field name="name">Selection</field>
+            <field name="item_type">selection</field>
+            <field name="placeholder">Selection</field>
+            <field name="tip">Select</field>
+            <field name="options">Option 1, Option 2, Option 3</field>
+        </record>
+        <record id="sign_item_type_date" model="hudson.sign.item.type">
+            <field name="sequence">12</field>
+            <field name="name">Date</field>
+            <field name="item_type">date</field>
+            <field name="placeholder">Date</field>
+            <field name="tip">Fill in</field>
+        </record>
+        <record id="sign_item_type_strikethrough" model="hudson.sign.item.type">
+            <field name="sequence">13</field>
+            <field name="name">Strikethrough</field>
+            <field name="item_type">strikethrough</field>
+            <field name="tip">Strike</field>
+            <field name="mandatory" eval="False"/>
+        </record>
+        <record id="sign_item_type_stamp" model="hudson.sign.item.type">
+            <field name="sequence">14</field>
+            <field name="name">Stamp</field>
+            <field name="item_type">stamp</field>
+            <field name="placeholder">Company Name
+Company Address
+Company Phone</field>
+            <field name="tip">Stamp it</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- PDF REPORT ACTION                                             -->
+    <!-- ============================================================ -->
+
+    <record id="action_report_field_service_order" model="ir.actions.report">
+        <field name="name">Field Service Report</field>
+        <field name="model">field.service.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_field_service.report_field_service_order_document</field>
+        <field name="print_report_name">'Field Service - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_field_service_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PDF REPORT TEMPLATE                                           -->
+    <!-- ============================================================ -->
+
+    <template id="report_field_service_order_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- Header -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h2>
+                                    <strong>Field Service Report</strong>
+                                </h2>
+                                <h3>
+                                    <span t-field="doc.name"/> — <span t-field="doc.title"/>
+                                </h3>
+                            </div>
+                            <div class="col-6 text-end">
+                                <div>
+                                    <strong>Status:</strong>
+                                    <span t-field="doc.state"/>
+                                </div>
+                                <div t-if="doc.priority != '0'">
+                                    <strong>Priority:</strong>
+                                    <span t-field="doc.priority"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <!-- Customer Details -->
+                            <div class="col-6">
+                                <h5>Customer</h5>
+                                <div t-if="doc.partner_id">
+                                    <strong t-field="doc.partner_id"/>
+                                    <div t-if="doc.partner_address" t-field="doc.partner_address"/>
+                                    <div t-if="doc.partner_phone">
+                                        Phone: <span t-field="doc.partner_phone"/>
+                                    </div>
+                                    <div t-if="doc.partner_email">
+                                        Email: <span t-field="doc.partner_email"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Service Details -->
+                            <div class="col-6">
+                                <h5>Service Details</h5>
+                                <div t-if="doc.employee_id">
+                                    <strong>Technician:</strong>
+                                    <span t-field="doc.employee_id"/>
+                                </div>
+                                <div t-if="doc.date_planned">
+                                    <strong>Planned Date:</strong>
+                                    <span t-field="doc.date_planned" t-options="{'widget': 'datetime'}"/>
+                                </div>
+                                <div t-if="doc.date_start">
+                                    <strong>Started:</strong>
+                                    <span t-field="doc.date_start" t-options="{'widget': 'datetime'}"/>
+                                </div>
+                                <div t-if="doc.date_end">
+                                    <strong>Completed:</strong>
+                                    <span t-field="doc.date_end" t-options="{'widget': 'datetime'}"/>
+                                </div>
+                                <div t-if="doc.project_id">
+                                    <strong>Project:</strong>
+                                    <span t-field="doc.project_id"/>
+                                </div>
+                                <div t-if="doc.task_id">
+                                    <strong>Task:</strong>
+                                    <span t-field="doc.task_id"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div t-if="doc.description" class="mb-4">
+                            <h5>Description</h5>
+                            <div t-field="doc.description"/>
+                        </div>
+
+                        <!-- Time Entries -->
+                        <div t-if="doc.timesheet_ids" class="mb-4">
+                            <h5>Time Entries</h5>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Technician</th>
+                                        <th>Description</th>
+                                        <th class="text-end">Duration (h)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.timesheet_ids" t-as="ts">
+                                        <td><span t-field="ts.date"/></td>
+                                        <td><span t-field="ts.user_id"/></td>
+                                        <td><span t-field="ts.description"/></td>
+                                        <td class="text-end">
+                                            <span t-field="ts.duration" t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Total Time</strong></td>
+                                        <td class="text-end">
+                                            <strong>
+                                                <span t-field="doc.total_time_spent" t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Products Used -->
+                        <div t-if="doc.product_line_ids" class="mb-4">
+                            <h5>Products Used</h5>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Description</th>
+                                        <th class="text-end">Qty</th>
+                                        <t t-if="not doc.fs_hide_prices_enabled">
+                                            <th class="text-end">Unit Price</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </t>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.product_line_ids" t-as="pl">
+                                        <td><span t-field="pl.product_id"/></td>
+                                        <td><span t-field="pl.description"/></td>
+                                        <td class="text-end"><span t-field="pl.quantity"/></td>
+                                        <t t-if="not doc.fs_hide_prices_enabled">
+                                            <td class="text-end"><span t-field="pl.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                            <td class="text-end"><span t-field="pl.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/></td>
+                                        </t>
+                                    </tr>
+                                </tbody>
+                                <tfoot t-if="not doc.fs_hide_prices_enabled">
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>Products Total</strong></td>
+                                        <td class="text-end">
+                                            <strong>
+                                                <span t-field="doc.total_products_amount" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Worksheet -->
+                        <t t-if="doc.worksheet_template_id and doc.fs_worksheets_enabled">
+                            <t t-set="ws_sections" t-value="doc._get_worksheet_report_sections()"/>
+                            <div t-if="ws_sections" class="mb-4">
+                                <h5 t-field="doc.worksheet_template_id.name"/>
+                                <t t-foreach="ws_sections" t-as="section">
+                                    <h6 t-if="section[0]" class="mt-3 text-uppercase" t-out="section[0]"/>
+                                    <table class="table table-sm">
+                                        <tr t-foreach="section[1]" t-as="line">
+                                            <td class="w-25"><strong t-out="line[0]"/></td>
+                                            <td>
+                                                <img t-if="line[1] == 'signature'" t-att-src="line[2]" style="max-height: 4rem;" alt="Signature"/>
+                                                <div t-elif="line[1] == 'html'" t-out="line[2]"/>
+                                                <span t-else="" t-out="line[2]"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- Work Performed -->
+                        <div t-if="doc.worksheet_notes" class="mb-4">
+                            <h5>Work Performed</h5>
+                            <div t-field="doc.worksheet_notes"/>
+                        </div>
+
+                        <!-- Summary -->
+                        <div class="row mb-4">
+                            <div class="col-6"/>
+                            <div class="col-6">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Total Time Spent</strong></td>
+                                        <td class="text-end">
+                                            <span t-field="doc.total_time_spent" t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                         <td><strong>Products Cost</strong></td>
+                                         <td class="text-end">
+                                             <span t-field="doc.total_products_amount" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/>
+                                         </td>
+                                     </tr>
+                                     <tr style="border-top: 2px solid #000;">
+                                         <td><strong>Total Amount</strong></td>
+                                         <td class="text-end">
+                                             <strong>
+                                                 <span t-field="doc.total_amount" t-options="{'widget': 'monetary', 'display_currency': doc.company_id.currency_id}"/>
+                                             </strong>
+                                         </td>
+                                     </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Service Photos -->
+                        <div t-if="doc.service_image_ids and any(img.include_in_report for img in doc.service_image_ids)" class="mb-4" style="page-break-inside: avoid;">
+                            <h5>Service Photos</h5>
+                            <div style="width: 100%; display: block; overflow: hidden;">
+                                <t t-foreach="doc.service_image_ids" t-as="img">
+                                    <t t-if="img.include_in_report">
+                                        <div style="display: inline-block; width: 30%; margin-right: 2%; margin-bottom: 15px; vertical-align: top; border: 1px solid #dee2e6; border-radius: 4px; padding: 6px; background-color: #f8f9fa; page-break-inside: avoid;">
+                                            <div style="height: 140px; text-align: center; line-height: 140px; background-color: #ffffff; border-radius: 2px;">
+                                                <img t-att-src="image_data_uri(img.image)" style="max-height: 140px; max-width: 100%; object-fit: contain; vertical-align: middle;"/>
+                                            </div>
+                                            <div t-if="img.name" style="font-size: 11px; color: #555; text-align: center; margin-top: 6px; height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                <span t-field="img.name"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Customer Signature -->
+                        <div t-if="doc.customer_signature" class="row mt-5">
+                            <div class="col-6"/>
+                            <div class="col-6 text-center">
+                                <h5>Customer Signature</h5>
+                                <img t-att-src="image_data_uri(doc.customer_signature)"
+                                     style="max-height: 100px;"/>
+                                <div t-if="doc.customer_signed_by" class="mt-2">
+                                    <strong><span t-field="doc.customer_signed_by"/></strong>
+                                </div>
+                                <div t-if="doc.customer_signed_date" class="text-muted">
+                                    <span t-field="doc.customer_signed_date" t-options="{'widget': 'datetime'}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="fs_shift_template_view_tree" model="ir.ui.view">
+        <field name="name">fs.shift.template.tree</field>
+        <field name="model">fs.shift.template</field>
+        <field name="arch" type="xml">
+            <list string="Shift Templates">
+                <field name="sequence" widget="handle"/>
+                <field name="hours_display" string="Hours"/>
+                <field name="duration_days" string="Span (Working Days)" optional="hide"/>
+                <field name="role_id"/>
+                <field name="project_id" optional="show"/>
+                <field name="task_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="fs_shift_template_view_kanban" model="ir.ui.view">
+        <field name="name">fs.shift.template.kanban</field>
+        <field name="model">fs.shift.template</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_order="sequence, start_time">
+                <field name="sequence"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="hours_display" class="fw-bold fs-5"/>
+                        <field name="role_id"/>
+                        <field name="project_id" class="text-muted"/>
+                        <field name="task_id" class="text-muted"/>
+                        <footer>
+                            <span class="text-muted"><field name="duration_days"/> working day(s)</span>
+                            <field name="company_id" groups="base.group_multi_company" class="ms-auto"/>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="fs_shift_template_view_form" model="ir.ui.view">
+        <field name="name">fs.shift.template.form</field>
+        <field name="model">fs.shift.template</field>
+        <field name="arch" type="xml">
+            <form string="Shift Template">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <group>
+                        <group name="hours">
+                            <label for="start_time" string="Start &amp; End Hours"/>
+                            <div class="o_row">
+                                <field name="start_time" widget="float_time" nolabel="1" class="oe_inline"/>
+                                <i class="oi mx-2" data-icon="arrow_forward" aria-label="Arrow icon" title="Arrow"/>
+                                <field name="end_time" widget="float_time" nolabel="1" class="oe_inline"/>
+                            </div>
+                            <label for="duration_days" string="Span"/>
+                            <div class="o_row">
+                                <field name="duration_days" nolabel="1" class="oe_inline"/>
+                                <span>Working Days</span>
+                            </div>
+                            <field name="company_id" placeholder="Visible to all" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="assignment">
+                            <field name="role_id" options="{'no_create': True}"/>
+                            <field name="project_id"/>
+                            <field name="task_id" invisible="not project_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="fs_shift_template_view_search" model="ir.ui.view">
+        <field name="name">fs.shift.template.search</field>
+        <field name="model">fs.shift.template</field>
+        <field name="arch" type="xml">
+            <search string="Shift Templates">
+                <field name="role_id"/>
+                <field name="project_id"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Role" name="group_role" context="{'group_by': 'role_id'}"/>
+                    <filter string="Project" name="group_project" context="{'group_by': 'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fs_shift_template" model="ir.actions.act_window">
+        <field name="name">Shift Templates</field>
+        <field name="res_model">fs.shift.template</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="fs_shift_template_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Shift Template
+            </p>
+            <p>
+                Shift templates allow you to quickly assign common shifts to employees in the planning view.
+            </p>
+        </field>
+    </record>
+
+</odoo>

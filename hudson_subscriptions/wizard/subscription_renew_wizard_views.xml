@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_subscription_renew_wizard_form" model="ir.ui.view">
+        <field name="name">sale.subscription.renew.wizard.form</field>
+        <field name="model">sale.subscription.renew.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Renew Subscription">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="subscription_id" readonly="1"/>
+                            <field name="renewal_type" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="plan_id" options="{'no_create': True}"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Apply Renewal" name="action_apply_renewal" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_subscription_renew_wizard" model="ir.actions.act_window">
+        <field name="name">Renew Subscription</field>
+        <field name="res_model">sale.subscription.renew.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

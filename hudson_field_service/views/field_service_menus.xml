@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Field Service is part of the Planning app: a shift with a customer is
+         a field service job. Its menus live in the Planning menu. -->
+
+    <!-- Field Service Board (Owl Schedule) -->
+    <record id="action_fs_board" model="ir.actions.client">
+        <field name="name">Field Service Board</field>
+        <field name="tag">hudson_field_service.fs_board</field>
+        <field name="target">main</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- MAPS                                                          -->
+    <!-- ============================================================ -->
+
+    <menuitem
+        name="Maps"
+        id="menu_field_service_root"
+        parent="hudson_planning.menu_planning_root"
+        groups="hudson_field_service.group_field_service_manager"
+        sequence="10"
+    >
+        <menuitem
+            name="By Resource"
+            id="menu_fs_map_by_resource"
+            action="action_fs_job_map_by_resource"
+            sequence="1"
+        />
+        <menuitem
+            name="Live Map"
+            id="menu_field_service_live_map"
+            action="action_fs_live_map"
+            sequence="2"
+        />
+        <menuitem
+            name="Timeline"
+            id="menu_fs_map_timeline"
+            action="action_fs_job_map_timeline"
+            sequence="3"
+        />
+    </menuitem>
+
+    <!-- Planning > My > Map -->
+    <menuitem
+        name="Map"
+        id="menu_fs_my_map"
+        parent="hudson_planning.menu_planning_my"
+        action="action_fs_job_map_my"
+        groups="hudson_field_service.group_field_service_user"
+        sequence="2"
+    />
+
+    <!-- ============================================================ -->
+    <!-- REPORTING                                                     -->
+    <!-- ============================================================ -->
+
+    <menuitem
+        name="Service Analysis"
+        id="menu_field_service_report_analysis"
+        parent="hudson_planning.menu_planning_reporting"
+        action="action_field_service_report"
+        groups="hudson_field_service.group_field_service_user"
+        sequence="10"
+    />
+
+    <!-- ============================================================ -->
+    <!-- CONFIGURATION                                                 -->
+    <!-- ============================================================ -->
+
+    <menuitem
+        name="Materials"
+        id="menu_field_service_materials"
+        parent="hudson_planning.menu_planning_config"
+        action="action_field_service_material"
+        groups="hudson_field_service.group_field_service_manager"
+        sequence="20"
+    />
+    <menuitem
+        name="Worksheet Templates"
+        id="menu_fs_worksheet_templates"
+        parent="hudson_planning.menu_planning_config"
+        action="action_fs_worksheet_template"
+        groups="hudson_field_service.group_field_service_manager"
+        sequence="50"
+    />
+
+</odoo>

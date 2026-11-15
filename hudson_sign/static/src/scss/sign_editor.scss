@@ -1,0 +1,776 @@
+/* Sign template editor (also used for "Setup Signatures" in Documents) */
+$sign-teal: #017e84;
+$sign-radio-link: #f5a623;
+
+.o_hudson_sign_editor {
+    --sign-bg: var(--bs-body-bg, #fff);
+    --sign-text: var(--bs-body-color, #374151);
+    --sign-muted: var(--bs-secondary-color, #6b7280);
+    --sign-border: var(--bs-border-color, #dee2e6);
+    --sign-card-bg: var(--bs-tertiary-bg, #eef0f3);
+    --sign-viewer-bg: #e8eaed;
+    --sign-toolbar-bg: #f9f9fa;
+
+    background-color: var(--sign-bg);
+    color: var(--sign-text);
+
+    .o_sign_icon {
+        display: inline-block;
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+
+    .o_sign_spin {
+        animation: o_sign_spin 0.9s linear infinite;
+    }
+
+    // ---- Control panel -------------------------------------------------
+    .o_sign_cp {
+        min-height: 64px;
+        padding: 8px 16px;
+        background-color: var(--sign-bg);
+        border-bottom: 1px solid var(--sign-border);
+        gap: 4px;
+
+        .btn-primary {
+            padding: 5px 12px;
+            font-weight: 500;
+        }
+    }
+
+    .o_sign_breadcrumb {
+        line-height: 1.25;
+
+        .o_sign_bc_parent {
+            color: $sign-teal;
+            font-size: 0.8rem;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        .o_sign_bc_current {
+            font-size: 1rem;
+            max-width: 320px;
+        }
+    }
+
+    .o_sign_cp_icon {
+        color: var(--sign-text);
+        text-decoration: none;
+        font-size: 1rem;
+
+        &:hover {
+            color: $sign-teal;
+        }
+    }
+
+    .o_sign_gear_dropdown {
+        left: 0;
+        min-width: 180px;
+        padding: 6px;
+        border-radius: 8px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+
+        .dropdown-item {
+            border-radius: 4px;
+            padding: 5px 12px;
+        }
+    }
+
+    .o_sign_preview_banner {
+        padding: 6px 12px;
+        background-color: #e2dcf3;
+        color: #2e2252;
+        font-size: 0.9rem;
+    }
+
+    &.o_sign_preview .o_sign_field {
+        cursor: default;
+
+        .resize-box-handle,
+        .o_sign_resize {
+            display: none;
+        }
+    }
+
+    .o_sign_cp_divider {
+        width: 1px;
+        align-self: stretch;
+        margin: 4px 6px;
+        background-color: var(--sign-border);
+    }
+
+    .o_sign_tags {
+        min-width: 340px;
+
+        .o_sign_tags_label {
+            font-weight: 500;
+        }
+
+        .o_sign_tags_field {
+            width: 250px;
+            min-height: 28px;
+            padding-right: 16px;
+            border-bottom: 1px solid var(--sign-border);
+
+            &:focus-within {
+                border-bottom-color: $sign-teal;
+            }
+        }
+
+        .o_sign_tags_input {
+            min-width: 40px;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: inherit;
+        }
+
+        .o_sign_tags_caret {
+            position: absolute;
+            right: 2px;
+            pointer-events: none;
+        }
+
+        .o_sign_tag_remove {
+            cursor: pointer;
+        }
+
+        .o_sign_tags_dropdown {
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 260px;
+            overflow: auto;
+        }
+
+        .o_sign_tag_create {
+            color: $sign-teal;
+        }
+    }
+
+    // ---- Sidebar ------------------------------------------------------------
+    .o_sign_sidebar {
+        width: 330px;
+        padding: 12px 8px;
+        background-color: var(--sign-bg);
+        border-right: 1px solid var(--sign-border);
+    }
+
+    .o_sign_section {
+        margin-bottom: 18px;
+    }
+
+    .o_sign_section_header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2px 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        color: var(--sign-muted);
+
+        .o_sign_section_add {
+            color: $sign-teal;
+            font-weight: 600;
+            text-transform: none;
+            text-decoration: none;
+        }
+    }
+
+    .o_sign_card {
+        margin-bottom: 6px;
+        border-radius: 4px;
+        border-left: 3px solid transparent;
+        background-color: var(--sign-card-bg);
+
+        &.o_active {
+            border-left-color: $sign-teal;
+        }
+    }
+
+    .o_sign_card_header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 6px 4px 6px 8px;
+    }
+
+    .o_sign_doc_rename {
+        min-width: 0;
+    }
+
+    .o_sign_kebab {
+        padding: 2px 8px;
+        color: var(--sign-text);
+        text-decoration: none;
+    }
+
+    .o_sign_menu {
+        top: 100%;
+        min-width: 140px;
+        z-index: 1060;
+    }
+
+    .o_sign_role_count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        height: 30px;
+        padding: 0 6px;
+        border-radius: 50%;
+        font-size: 0.9rem;
+    }
+
+    .o_sign_tools {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        padding: 0 8px 10px;
+    }
+
+    .o_sign_tool {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 31px;
+        padding: 0 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: grab;
+        user-select: none;
+        transition: filter 0.12s ease;
+
+        &:hover {
+            filter: brightness(0.95);
+        }
+
+        &.o_sign_tool_add {
+            cursor: pointer;
+        }
+    }
+
+    // ---- PDF toolbar --------------------------------------------------------
+    .o_sign_viewer {
+        background-color: var(--sign-viewer-bg);
+    }
+
+    .o_sign_toolbar {
+        height: 34px;
+        padding: 0 8px;
+        background-color: var(--sign-toolbar-bg);
+        border-bottom: 1px solid var(--sign-border);
+        font-size: 0.8rem;
+        color: #3b3b3b;
+    }
+
+    .o_sign_tb_btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 26px;
+        border: 0;
+        border-radius: 2px;
+        background: transparent;
+        color: #5a5a5a;
+
+        &:hover:not(:disabled),
+        &.o_active {
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+
+        &:disabled {
+            opacity: 0.35;
+        }
+    }
+
+    .o_sign_page_input {
+        width: 46px;
+        height: 24px;
+        border: 1px solid transparent;
+        border-radius: 2px;
+        background-color: rgba(0, 0, 0, 0.06);
+        text-align: right;
+        padding: 0 6px;
+
+        &:focus {
+            outline: 0;
+            border-color: $sign-teal;
+        }
+    }
+
+    .o_sign_tb_text {
+        padding: 0 4px;
+        white-space: nowrap;
+    }
+
+    .o_sign_tb_sep {
+        width: 1px;
+        height: 18px;
+        margin: 0 8px;
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .o_sign_zoom_select {
+        height: 24px;
+        min-width: 140px;
+        border: 0;
+        border-radius: 2px;
+        background-color: rgba(0, 0, 0, 0.06);
+        font-size: 0.8rem;
+        padding: 0 6px;
+    }
+
+    .o_sign_findbar {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: -8px;
+        z-index: 30;
+        padding: 6px;
+        border: 1px solid var(--sign-border);
+        border-radius: 3px;
+        background-color: var(--sign-toolbar-bg);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+        .o_sign_search_input {
+            width: 190px;
+            height: 24px;
+            padding: 0 6px;
+            border: 1px solid var(--sign-border);
+            border-radius: 2px;
+
+            &:focus {
+                outline: 0;
+                border-color: $sign-teal;
+            }
+        }
+    }
+
+    // ---- Pages --------------------------------------------------------------
+    .o_sign_pdf_scroll {
+        background-color: var(--sign-viewer-bg);
+    }
+
+    .o_sign_pages {
+        padding: 12px 0;
+        gap: 12px;
+        min-width: min-content;
+    }
+
+    .o_dms_pdf_page {
+        flex-shrink: 0;
+        background-color: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    }
+
+    .o_sign_thumbs {
+        width: 150px;
+        padding: 12px 0;
+        background-color: var(--sign-toolbar-bg);
+        border-left: 1px solid var(--sign-border);
+
+        .o_sign_thumb {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 0.75rem;
+
+            canvas {
+                width: 110px;
+                background-color: #fff;
+                border: 2px solid transparent;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            &.o_active canvas {
+                border-color: $sign-teal;
+            }
+        }
+    }
+
+    .o_sign_search_hit {
+        position: absolute;
+        z-index: 1;
+        background-color: rgba(255, 213, 0, 0.35);
+        pointer-events: none;
+
+        &.o_current {
+            background-color: rgba(0, 170, 80, 0.4);
+        }
+    }
+
+    .o_sign_radio_links {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        overflow: visible;
+        pointer-events: none;
+
+        path {
+            fill: none;
+            stroke: $sign-radio-link;
+            stroke-width: 3;
+            stroke-dasharray: 8 5;
+        }
+    }
+
+    .o_sign_guide {
+        position: absolute;
+        z-index: 3;
+        pointer-events: none;
+
+        &.o_sign_guide_v {
+            top: 0;
+            bottom: 0;
+            border-left: 1px dashed rgba(0, 0, 0, 0.25);
+        }
+
+        &.o_sign_guide_h {
+            left: 0;
+            right: 0;
+            border-top: 1px dashed rgba(0, 0, 0, 0.25);
+        }
+    }
+
+    // ---- Fields -------------------------------------------------------------
+    .o_sign_field {
+        position: absolute;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        border: 1px solid;
+        border-radius: 2px;
+        line-height: 1.2;
+        cursor: move;
+        user-select: none;
+
+        &.o_selected {
+            z-index: 6;
+            box-shadow: 0 0 0 1px currentColor;
+        }
+
+        // Moved over the other pages: above them
+        &.o_dragging {
+            z-index: 1100;
+            opacity: 0.9;
+        }
+
+        // Dropped here, it would go back where it was
+        &.o_drop_invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.45);
+            opacity: 0.6;
+        }
+
+        // Invisible grips along the sides and on the corners
+        .o_sign_resize {
+            position: absolute;
+            z-index: 2;
+        }
+
+        .o_sign_resize_n,
+        .o_sign_resize_s {
+            left: 6px;
+            right: 6px;
+            height: 8px;
+            cursor: ns-resize;
+        }
+
+        .o_sign_resize_n { top: -4px; }
+        .o_sign_resize_s { bottom: -4px; }
+
+        .o_sign_resize_e,
+        .o_sign_resize_w {
+            top: 6px;
+            bottom: 6px;
+            width: 8px;
+            cursor: ew-resize;
+        }
+
+        .o_sign_resize_e { right: -4px; }
+        .o_sign_resize_w { left: -4px; }
+
+        .o_sign_resize_nw,
+        .o_sign_resize_ne,
+        .o_sign_resize_sw {
+            width: 10px;
+            height: 10px;
+        }
+
+        .o_sign_resize_nw { top: -5px; left: -5px; cursor: nwse-resize; }
+        .o_sign_resize_ne { top: -5px; right: -5px; cursor: nesw-resize; }
+        .o_sign_resize_sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+
+        .o_sign_field_text {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 0 4px;
+
+            &.o_multiline {
+                align-self: stretch;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                white-space: pre-wrap;
+                overflow: hidden;
+            }
+        }
+
+        .o_sign_field_caret {
+            padding: 0 6px;
+            font-size: 1.3em;
+        }
+
+        .o_sign_field_icon {
+            margin: auto;
+            line-height: 1;
+        }
+
+        .resize-box-handle {
+            position: absolute;
+            right: -5px;
+            bottom: -5px;
+            width: 9px;
+            height: 9px;
+            border: 1px solid;
+            border-radius: 50%;
+            background-color: #fff;
+            cursor: nwse-resize;
+        }
+    }
+
+    .o_sign_field_checkbox,
+    .o_sign_field_radio {
+        justify-content: center;
+    }
+
+    .o_sign_drag_ghost {
+        z-index: 2000;
+        opacity: 0.85;
+        pointer-events: none;
+    }
+
+    // ---- Field properties popover ------------------------------------------
+    .o_sign_popover {
+        position: absolute;
+        top: 0;
+        left: calc(100% + 12px);
+        z-index: 1050;
+        width: 200px;
+        border-radius: 8px;
+        background-color: var(--sign-bg);
+        color: var(--sign-text);
+        font-size: 0.9rem;
+        cursor: default;
+        user-select: text;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+
+        .o_sign_popover_header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background-color: var(--sign-card-bg);
+            font-weight: 600;
+        }
+
+        .o_sign_popover_close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border: 1.5px solid currentColor;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--sign-text);
+
+            .o_sign_icon {
+                width: 12px;
+                height: 12px;
+                stroke-width: 3;
+            }
+
+            &:hover {
+                color: $sign-teal;
+            }
+        }
+
+        .o_sign_popover_actions {
+            display: inline-flex;
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 32px;
+                padding: 0;
+                border: 1px solid var(--sign-border);
+                background-color: var(--sign-bg);
+                color: var(--sign-text);
+
+                &:first-child {
+                    border-radius: 4px 0 0 4px;
+                }
+
+                &:last-child {
+                    margin-left: -1px;
+                    border-radius: 0 4px 4px 0;
+                }
+
+                &:hover {
+                    background-color: var(--sign-card-bg);
+                }
+
+                &.o_sign_delete:hover {
+                    color: #d23f3a;
+                }
+            }
+        }
+
+        .o_sign_align_group .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sign-text);
+        }
+
+        .o_sign_popover_body {
+            padding: 14px;
+        }
+
+        .o_sign_popover_label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--sign-text);
+        }
+
+        .o_sign_underline_input {
+            width: 100%;
+            padding: 2px 0;
+            border: 0;
+            border-bottom: 1px solid var(--sign-border);
+            background: transparent;
+            color: inherit;
+            resize: vertical;
+
+            &:focus {
+                outline: 0;
+                border-bottom-color: $sign-teal;
+            }
+        }
+
+        .o_sign_options_input {
+            font-size: 0.9rem;
+            resize: vertical;
+
+            &:focus {
+                border-color: $sign-teal;
+                box-shadow: none;
+            }
+        }
+
+        .form-check-input:checked {
+            background-color: $sign-teal;
+            border-color: $sign-teal;
+        }
+    }
+}
+
+/* Sent document viewer */
+.o_hudson_sign_viewer {
+    .o_sign_viewer_menu {
+        left: 0;
+        min-width: 170px;
+        padding: 6px;
+        border-radius: 8px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+
+        .dropdown-item {
+            border-radius: 4px;
+            padding: 5px 18px;
+        }
+    }
+
+    .o_sign_viewer_signers {
+        max-height: 56px;
+        overflow-y: auto;
+    }
+
+    .o_sign_viewer_signer {
+        line-height: 1.3;
+        max-width: 220px;
+    }
+
+    .o_sign_viewer_signer_dot {
+        width: 9px;
+        height: 9px;
+        flex-shrink: 0;
+        border: 1px solid;
+        border-radius: 50%;
+    }
+
+    .o_sign_viewer_signer_state {
+        padding-left: 17px;
+        font-size: 0.8rem;
+        color: #c9922b;
+
+        &.o_state_signed {
+            color: #28a745;
+        }
+
+        &.o_state_draft {
+            color: var(--sign-muted);
+        }
+    }
+
+    .o_sign_field_readonly {
+        cursor: default;
+        border-style: dashed;
+    }
+}
+
+/* Dark mode: keep the document readable */
+[data-bs-theme="dark"] .o_hudson_sign_editor,
+[data-color-mode="dark"] .o_hudson_sign_editor,
+body.o_dark .o_hudson_sign_editor,
+.o_web_client.o_dark .o_hudson_sign_editor {
+    --sign-viewer-bg: #1a1d24;
+    --sign-toolbar-bg: #22252d;
+
+    .o_sign_toolbar,
+    .o_sign_tb_btn {
+        color: #d1d5db;
+    }
+
+    .o_sign_page_input,
+    .o_sign_zoom_select {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #e5e7eb;
+    }
+}
+
+@keyframes o_sign_spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* "Add Field" dialog */
+.o_hudson_sign_add_field .o_form_label {
+    font-weight: 500;
+}

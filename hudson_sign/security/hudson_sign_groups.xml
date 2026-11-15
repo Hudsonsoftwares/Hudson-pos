@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Implied by "Internal User" while the Sign setting "Manage template access" is off:
+         every template is then visible to everyone, whatever its Authorized Users -->
+    <record id="group_sign_template_access_open" model="res.groups">
+        <field name="name">Sign: Access to All Templates</field>
+    </record>
+
+    <data noupdate="1">
+        <function model="res.config.settings" name="_hudson_sign_open_template_access"/>
+    </data>
+</odoo>

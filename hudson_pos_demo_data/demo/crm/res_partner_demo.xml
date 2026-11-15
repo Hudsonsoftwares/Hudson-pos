@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_partner_category_customer" model="res.partner.category">
+            <field name="name">Resto Cafe Clients</field>
+            <field name="color" eval="3"/>
+        </record>
+        <record id="rc_partner_bluewave" model="res.partner">
+            <field name="name">BlueWave Technologies</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Infopark Phase 2, Kakkanad</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682042</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 240 1100</field>
+            <field name="email">info@bluewave.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_bluewave_contact" model="res.partner">
+            <field name="name">Neha Kurian</field>
+            <field name="parent_id" ref="rc_partner_bluewave"/>
+            <field name="function">HR &amp; Admin Manager</field>
+            <field name="email">neha.kurian@bluewave.example.com</field>
+            <field name="phone">+91 484 240 1100</field>
+        </record>
+        <record id="rc_partner_marina_events" model="res.partner">
+            <field name="name">Marina Bay Events &amp; Weddings</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Marine Drive</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682031</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 235 7788</field>
+            <field name="email">hello@marinabayevents.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_marina_events_contact" model="res.partner">
+            <field name="name">Anjali Thomas</field>
+            <field name="parent_id" ref="rc_partner_marina_events"/>
+            <field name="function">Wedding Planner</field>
+            <field name="email">anjali.thomas@marinabayevents.example.com</field>
+            <field name="phone">+91 484 235 7788</field>
+        </record>
+        <record id="rc_partner_harbour_park" model="res.partner">
+            <field name="name">Harbour Point Corporate Park</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Willingdon Island</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682003</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 266 0200</field>
+            <field name="email">facilities@harbourpoint.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_harbour_park_contact" model="res.partner">
+            <field name="name">Suresh Pillai</field>
+            <field name="parent_id" ref="rc_partner_harbour_park"/>
+            <field name="function">Facility Manager</field>
+            <field name="email">suresh.pillai@harbourpoint.example.com</field>
+            <field name="phone">+91 484 266 0200</field>
+        </record>
+        <record id="rc_partner_st_teresa" model="res.partner">
+            <field name="name">St. Teresa's Public School</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Park Avenue, Ernakulam</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682011</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 237 1010</field>
+            <field name="email">office@stteresas.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_st_teresa_contact" model="res.partner">
+            <field name="name">Fr. Joseph Mathew</field>
+            <field name="parent_id" ref="rc_partner_st_teresa"/>
+            <field name="function">Principal</field>
+            <field name="email">principal@stteresas.example.com</field>
+            <field name="phone">+91 484 237 1010</field>
+        </record>
+        <record id="rc_partner_grand_residency" model="res.partner">
+            <field name="name">Grand Residency Hotel</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">MG Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682016</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 238 4000</field>
+            <field name="email">reservations@grandresidency.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_grand_residency_contact" model="res.partner">
+            <field name="name">Vikram Shenoy</field>
+            <field name="parent_id" ref="rc_partner_grand_residency"/>
+            <field name="function">F&amp;B Director</field>
+            <field name="email">vikram.shenoy@grandresidency.example.com</field>
+            <field name="phone">+91 484 238 4000</field>
+        </record>
+        <record id="rc_partner_greenleaf" model="res.partner">
+            <field name="name">GreenLeaf Multispecialty Hospital</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Edappally Bypass</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682024</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 280 9000</field>
+            <field name="email">admin@greenleafhospital.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_greenleaf_contact" model="res.partner">
+            <field name="name">Dr. Arun Varghese</field>
+            <field name="parent_id" ref="rc_partner_greenleaf"/>
+            <field name="function">Administrator</field>
+            <field name="email">arun.varghese@greenleafhospital.example.com</field>
+            <field name="phone">+91 484 280 9000</field>
+        </record>
+        <record id="rc_partner_spice_route" model="res.partner">
+            <field name="name">Spice Route Travels</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Fort Kochi Beach Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682001</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 221 5566</field>
+            <field name="email">tours@spiceroute.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_spice_route_contact" model="res.partner">
+            <field name="name">Faisal Rahman</field>
+            <field name="parent_id" ref="rc_partner_spice_route"/>
+            <field name="function">Tour Operations Head</field>
+            <field name="email">faisal.rahman@spiceroute.example.com</field>
+            <field name="phone">+91 484 221 5566</field>
+        </record>
+        <record id="rc_partner_nest_cowork" model="res.partner">
+            <field name="name">Nest Coworking Spaces</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Panampilly Nagar</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682036</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 404 3322</field>
+            <field name="email">community@nestcowork.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_nest_cowork_contact" model="res.partner">
+            <field name="name">Rahul Iyer</field>
+            <field name="parent_id" ref="rc_partner_nest_cowork"/>
+            <field name="function">Community Manager</field>
+            <field name="email">rahul.iyer@nestcowork.example.com</field>
+            <field name="phone">+91 484 404 3322</field>
+        </record>
+        <record id="rc_partner_film_society" model="res.partner">
+            <field name="name">Kochi Film Society</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Durbar Hall Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682016</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 484 236 9191</field>
+            <field name="email">contact@kochifilm.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_film_society_contact" model="res.partner">
+            <field name="name">Meera Nambiar</field>
+            <field name="parent_id" ref="rc_partner_film_society"/>
+            <field name="function">Festival Coordinator</field>
+            <field name="email">meera.nambiar@kochifilm.example.com</field>
+            <field name="phone">+91 484 236 9191</field>
+        </record>
+        <record id="rc_partner_coastal_runners" model="res.partner">
+            <field name="name">Coastal Runners Club</field>
+            <field name="is_company" eval="True"/>
+            <field name="street">Queens Walkway, Chathiath</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682018</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="phone">+91 98470 33221</field>
+            <field name="email">run@coastalrunners.example.com</field>
+            <field name="category_id" eval="[Command.link(ref('rc_partner_category_customer'))]"/>
+        </record>
+        <record id="rc_partner_coastal_runners_contact" model="res.partner">
+            <field name="name">Divya Menon</field>
+            <field name="parent_id" ref="rc_partner_coastal_runners"/>
+            <field name="function">Club Secretary</field>
+            <field name="email">divya.menon@coastalrunners.example.com</field>
+            <field name="phone">+91 98470 33221</field>
+        </record>
+    </data>
+</odoo>

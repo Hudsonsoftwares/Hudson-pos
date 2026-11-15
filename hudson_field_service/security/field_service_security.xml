@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    
+    
+    
+
+    <record model="res.groups.privilege" id="res_groups_privilege_field_service">
+        <field name="name">Field Service</field>
+        <field name="sequence">5</field>
+        <field name="category_id" ref="base.module_category_services" />
+    </record>
+
+    <record id="group_field_service_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="comment">User: Can view and manage their own field service orders.</field>
+        <field name="sequence">10</field>
+        <!-- Field service is part of the Planning app: technicians plan their jobs as shifts. -->
+        <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('hudson_planning.group_planning_user'))]" />
+        <field name="privilege_id" ref="res_groups_privilege_field_service" />
+    </record>
+
+    <record id="group_field_service_manager" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="comment">Administrator: Full access to all field service orders, configuration, and reports.</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_field_service" />
+        <field name="implied_ids" eval="[(4, ref('hudson_field_service.group_field_service_user')), (4, ref('hudson_planning.group_planning_manager'))]" />
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
+    </record>
+
+    
+    
+    
+
+    <data noupdate="1">
+
+        
+        <record model="ir.access" id="field_service_order_comp_rule">
+            <field name="name">Field Service Order: multi-company</field>
+            <field name="model_id" ref="model_field_service_order" />
+            <field name="domain">[('company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field></record>
+
+        
+        <record model="ir.access" id="fs_planning_slot_comp_rule">
+            <field name="name">Field Service Planning Slot: multi-company</field>
+            <field name="model_id" ref="hudson_planning.model_fs_planning_slot" />
+            <field name="domain">[('company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field></record>
+
+        
+        <record model="ir.access" id="field_service_order_manager_rule">
+            <field name="name">Field Service Order: manager sees all</field>
+            <field name="model_id" ref="model_field_service_order" />
+            <field name="domain">[(1, '=', 1)]</field>
+            <field name="group_id" ref="hudson_field_service.group_field_service_manager" />
+        <field name="operation">crud</field></record>
+
+        
+        <record model="ir.access" id="field_service_timesheet_comp_rule">
+            <field name="name">Field Service Timesheet: multi-company</field>
+            <field name="model_id" ref="model_field_service_timesheet" />
+            <field name="domain">[('order_id.company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field></record>
+
+        
+        <record model="ir.access" id="field_service_product_line_comp_rule">
+            <field name="name">Field Service Product Line: multi-company</field>
+            <field name="model_id" ref="model_field_service_product_line" />
+            <field name="domain">[('order_id.company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field></record>
+
+    </data>
+
+    <!-- Multi-company: records of the user's companies (and shared ones) -->
+    <record model="ir.access" id="fs_worksheet_template_comp_rule">
+        <field name="name">Worksheet Template: multi-company</field>
+        <field name="model_id" ref="model_fs_worksheet_template"/>
+        <field name="domain">[('company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field>
+    </record>
+    <record model="ir.access" id="fs_equipment_comp_rule">
+        <field name="name">Equipment: multi-company</field>
+        <field name="model_id" ref="model_fs_equipment"/>
+        <field name="domain">[('company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field>
+    </record>
+    <record model="ir.access" id="field_service_material_comp_rule">
+        <field name="name">Field Service Material: multi-company</field>
+        <field name="model_id" ref="model_field_service_material"/>
+        <field name="domain">[('company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field>
+    </record>
+    <record model="ir.access" id="field_service_image_comp_rule">
+        <field name="name">Field Service Image: multi-company</field>
+        <field name="model_id" ref="model_field_service_image"/>
+        <field name="domain">[('order_id.company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field>
+    </record>
+    <record model="ir.access" id="field_service_active_timer_comp_rule">
+        <field name="name">Field Service Timer: multi-company</field>
+        <field name="model_id" ref="model_field_service_active_timer"/>
+        <field name="domain">[('order_id.company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field>
+    </record>
+    <record model="ir.access" id="field_service_report_comp_rule">
+        <field name="name">Field Service Analysis: multi-company</field>
+        <field name="model_id" ref="model_report_field_service_analysis"/>
+        <field name="domain">[('company_id', 'in', company_ids + [False])]</field>
+        <field name="operation">crud</field>
+    </record>
+
+    <!-- Own jobs (employees) and own interventions (portal customers) are in
+         ir.access.csv. These former rules also gave create/delete rights. -->
+    <delete model="ir.access" search="[('name', '=', 'Field Service Order: user sees own (published)')]"/>
+    <delete model="ir.access" search="[('name', '=', 'Field Service Order: portal user sees own')]"/>
+    <delete model="ir.access" search="[('name', '=', 'Field Service Product Line: portal user sees own')]"/>
+    <delete model="ir.access" search="[('name', '=', 'Field Service Image: portal user sees own')]"/>
+</odoo>

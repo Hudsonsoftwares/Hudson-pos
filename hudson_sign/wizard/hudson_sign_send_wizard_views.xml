@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hudson_sign_send_wizard_view_form" model="ir.ui.view">
+        <field name="name">hudson.sign.send.wizard.form</field>
+        <field name="model">hudson.sign.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Signature Request">
+                <field name="template_id" invisible="1"/>
+                <field name="is_sign_now" invisible="1"/>
+                <field name="has_multiple_roles" invisible="1"/>
+                <div class="row">
+                    <div class="col-6">
+                        <group>
+                            <field name="single_signer_id" invisible="has_multiple_roles" options="{'no_quick_create': True}" placeholder="Select Contact with Email..."/>
+                            <field name="role_ids" nolabel="1" colspan="2" invisible="not has_multiple_roles">
+                                <list editable="bottom" create="false" delete="false">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="role_id" column_invisible="1"/>
+                                    <field name="role_name" string="Role"/>
+                                    <field name="partner_id" options="{'no_quick_create': True}" placeholder="Select Contact with Email..."/>
+                                </list>
+                            </field>
+                        </group>
+                        <group invisible="is_sign_now or not has_multiple_roles">
+                            <field name="signing_order"/>
+                        </group>
+                    </div>
+                    <div class="col-6">
+                        <group invisible="is_sign_now">
+                            <field name="valid_until"/>
+                            <field name="reminders"/>
+                            <field name="reminder_days" invisible="not reminders"/>
+                        </group>
+                        <group>
+                            <field name="hide_certificate_key"/>
+                        </group>
+                    </div>
+                </div>
+                <separator string="Email Details" invisible="is_sign_now"/>
+                <group invisible="is_sign_now">
+                    <field name="subject"/>
+                    <field name="cc" placeholder="Optional CC Emails..."/>
+                    <field name="message" placeholder="Optional Message..."/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Send" type="object" class="btn-primary" invisible="is_sign_now"/>
+                    <button name="action_confirm" string="Sign Now" type="object" class="btn-primary" invisible="not is_sign_now"/>
+                    <button special="cancel" string="Discard" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

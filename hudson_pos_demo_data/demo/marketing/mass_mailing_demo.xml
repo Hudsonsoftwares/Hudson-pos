@@ -1,0 +1,535 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_mkt_campaign_newsletter" model="utm.campaign">
+            <field name="name">Weekly Newsletter</field>
+            <field name="stage_id" ref="utm.default_utm_stage"/>
+        </record>
+        <record id="rc_mkt_campaign_events" model="utm.campaign">
+            <field name="name">Events &amp; Masterclasses</field>
+            <field name="stage_id" ref="utm.default_utm_stage"/>
+        </record>
+        <record id="rc_mkt_campaign_festive" model="utm.campaign">
+            <field name="name">Festive Season 2026</field>
+            <field name="stage_id" ref="utm.default_utm_stage"/>
+        </record>
+        <record id="rc_mkt_campaign_corporate" model="utm.campaign">
+            <field name="name">Corporate Lunch 2027</field>
+            <field name="stage_id" ref="utm.default_utm_stage"/>
+        </record>
+        <record id="rc_list_newsletter" model="mailing.list">
+            <field name="name">Resto Cafe Newsletter</field>
+            <field name="is_public" eval="True"/>
+        </record>
+        <record id="rc_list_loyalty" model="mailing.list">
+            <field name="name">Loyalty Members</field>
+            <field name="is_public" eval="False"/>
+        </record>
+        <record id="rc_list_corporate" model="mailing.list">
+            <field name="name">Corporate Clients</field>
+            <field name="is_public" eval="False"/>
+        </record>
+        <record id="rc_list_events" model="mailing.list">
+            <field name="name">Event Lovers</field>
+            <field name="is_public" eval="True"/>
+        </record>
+        <record id="rc_mc_vivek" model="mailing.contact">
+            <field name="name">Vivek Nambiar</field>
+            <field name="email">vivek.nambiar@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_loyalty'), ref('rc_list_events')])]"/>
+        </record>
+        <record id="rc_mc_deepa" model="mailing.contact">
+            <field name="name">Deepa Chandran</field>
+            <field name="email">deepa.chandran@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_events')])]"/>
+        </record>
+        <record id="rc_mc_sneha" model="mailing.contact">
+            <field name="name">Sneha Varghese</field>
+            <field name="email">sneha.varghese@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_loyalty')])]"/>
+        </record>
+        <record id="rc_mc_nikhil" model="mailing.contact">
+            <field name="name">Nikhil Menon</field>
+            <field name="email">nikhil.menon@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_events')])]"/>
+        </record>
+        <record id="rc_mc_ananya" model="mailing.contact">
+            <field name="name">Ananya Pillai</field>
+            <field name="email">ananya.pillai@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_loyalty')])]"/>
+        </record>
+        <record id="rc_mc_farhan" model="mailing.contact">
+            <field name="name">Farhan Ali</field>
+            <field name="email">farhan.ali@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter')])]"/>
+        </record>
+        <record id="rc_mc_riya" model="mailing.contact">
+            <field name="name">Riya George</field>
+            <field name="email">riya.george@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_events')])]"/>
+        </record>
+        <record id="rc_mc_karthik" model="mailing.contact">
+            <field name="name">Karthik Raj</field>
+            <field name="email">karthik.raj@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_loyalty')])]"/>
+        </record>
+        <record id="rc_mc_karthik_rc_list_newsletter_optout" model="mailing.subscription">
+            <field name="contact_id" ref="rc_mc_karthik"/>
+            <field name="list_id" ref="rc_list_newsletter"/>
+            <field name="opt_out" eval="True"/>
+            <field name="opt_out_datetime" eval="(DateTime.today() + relativedelta(days=-12, minutes=750)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mc_meenakshi" model="mailing.contact">
+            <field name="name">Meenakshi Das</field>
+            <field name="email">meenakshi.das@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_loyalty')])]"/>
+        </record>
+        <record id="rc_mc_joel" model="mailing.contact">
+            <field name="name">Joel Mathew</field>
+            <field name="email">joel.mathew@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_events')])]"/>
+        </record>
+        <record id="rc_mc_neha" model="mailing.contact">
+            <field name="name">Neha Kurian</field>
+            <field name="email">neha.kurian@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_corporate'), ref('rc_list_newsletter')])]"/>
+            <field name="company_name">BlueWave Technologies</field>
+        </record>
+        <record id="rc_mc_suresh" model="mailing.contact">
+            <field name="name">Suresh Pillai</field>
+            <field name="email">suresh.pillai@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_corporate')])]"/>
+            <field name="company_name">Harbour Point Corporate Park</field>
+        </record>
+        <record id="rc_mc_vikram" model="mailing.contact">
+            <field name="name">Vikram Shenoy</field>
+            <field name="email">vikram.shenoy@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_corporate')])]"/>
+            <field name="company_name">Grand Residency Hotel</field>
+        </record>
+        <record id="rc_mc_arun_v" model="mailing.contact">
+            <field name="name">Dr. Arun Varghese</field>
+            <field name="email">arun.varghese@example.com</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_corporate')])]"/>
+            <field name="company_name">GreenLeaf Multispecialty Hospital</field>
+        </record>
+        <record id="rc_mc_bounce" model="mailing.contact">
+            <field name="name">Old Contact</field>
+            <field name="email">old.contact@invalid-domain.example</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="list_ids" eval="[Command.set([ref('rc_list_newsletter')])]"/>
+        </record>
+        <record id="rc_mailing_breakfast" model="mailing.mailing">
+            <field name="subject">This Week at Resto Cafe: Our New Breakfast Menu</field>
+            <field name="preview">Appam, dosa and filter coffee from 7 a.m.</field>
+            <field name="mailing_type">mail</field>
+            <field name="mailing_model_id" ref="mass_mailing.model_mailing_list"/>
+            <field name="contact_list_ids" eval="[Command.set([ref('rc_list_newsletter')])]"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="email_from">Resto Cafe Solutions &lt;hello@restocafe.example.com&gt;</field>
+            <field name="body_arch">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Good Morning, Kochi!&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Our new breakfast menu is here: soft appam with stew, ghee roast dosa, puttu &amp;amp; kadala and our famous filter coffee, served daily from 7 a.m.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;See the Menu&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="body_html">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Good Morning, Kochi!&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Our new breakfast menu is here: soft appam with stew, ghee roast dosa, puttu &amp;amp; kadala and our famous filter coffee, served daily from 7 a.m.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;See the Menu&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="state">done</field>
+            <field name="schedule_type">now</field>
+            <field name="sent_date" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_link" model="link.tracker">
+            <field name="url">https://restocafe.example.com/breakfast</field>
+            <field name="title">See the Menu</field>
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+        </record>
+        <record id="rc_mailing_breakfast_trace_1" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_vivek"/>
+            <field name="email">vivek.nambiar@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">reply</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="reply_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=570)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_trace_2" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_deepa"/>
+            <field name="email">deepa.chandran@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_trace_3" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_sneha"/>
+            <field name="email">sneha.varghese@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_trace_4" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_nikhil"/>
+            <field name="email">nikhil.menon@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="links_click_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=450)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_click_4" model="link.tracker.click">
+            <field name="link_id" ref="rc_mailing_breakfast_link"/>
+            <field name="mailing_trace_id" ref="rc_mailing_breakfast_trace_4"/>
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="country_id" ref="base.in"/>
+            <field name="ip">103.21.58.13</field>
+        </record>
+        <record id="rc_mailing_breakfast_trace_5" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_ananya"/>
+            <field name="email">ananya.pillai@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_trace_6" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_farhan"/>
+            <field name="email">farhan.ali@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+        <record id="rc_mailing_breakfast_trace_7" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_riya"/>
+            <field name="email">riya.george@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_trace_8" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_meenakshi"/>
+            <field name="email">meenakshi.das@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="links_click_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=450)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_breakfast_click_8" model="link.tracker.click">
+            <field name="link_id" ref="rc_mailing_breakfast_link"/>
+            <field name="mailing_trace_id" ref="rc_mailing_breakfast_trace_8"/>
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="country_id" ref="base.in"/>
+            <field name="ip">103.21.58.17</field>
+        </record>
+        <record id="rc_mailing_breakfast_trace_9" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_neha"/>
+            <field name="email">neha.kurian@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+        <record id="rc_mailing_breakfast_trace_10" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_breakfast"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_bounce"/>
+            <field name="email">old.contact@invalid-domain.example</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-10, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">bounce</field>
+            <field name="failure_type">mail_bounce</field>
+        </record>
+        <record id="rc_mailing_sadya_class" model="mailing.mailing">
+            <field name="subject">Learn to Cook a Real Onam Sadya with Our Head Chef</field>
+            <field name="preview">Only 20 seats - lunch included</field>
+            <field name="mailing_type">mail</field>
+            <field name="mailing_model_id" ref="mass_mailing.model_mailing_list"/>
+            <field name="contact_list_ids" eval="[Command.set([ref('rc_list_events'), ref('rc_list_newsletter')])]"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="email_from">Resto Cafe Solutions &lt;hello@restocafe.example.com&gt;</field>
+            <field name="body_arch">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Kerala Sadya Cooking Masterclass&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Cook 8 classic Sadya dishes in a hands-on class with our head chef. Lunch included, only 20 seats.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;Book Your Seat&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="body_html">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Kerala Sadya Cooking Masterclass&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Cook 8 classic Sadya dishes in a hands-on class with our head chef. Lunch included, only 20 seats.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;Book Your Seat&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="state">done</field>
+            <field name="schedule_type">now</field>
+            <field name="sent_date" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_sadya_class_link" model="link.tracker">
+            <field name="url">https://restocafe.example.com/sadya-class</field>
+            <field name="title">Book Your Seat</field>
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_1" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_vivek"/>
+            <field name="email">vivek.nambiar@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_2" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_deepa"/>
+            <field name="email">deepa.chandran@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_3" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_nikhil"/>
+            <field name="email">nikhil.menon@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="links_click_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=450)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_sadya_class_click_3" model="link.tracker.click">
+            <field name="link_id" ref="rc_mailing_sadya_class_link"/>
+            <field name="mailing_trace_id" ref="rc_mailing_sadya_class_trace_3"/>
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="country_id" ref="base.in"/>
+            <field name="ip">103.21.58.12</field>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_4" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_riya"/>
+            <field name="email">riya.george@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_5" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_joel"/>
+            <field name="email">joel.mathew@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_6" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_sneha"/>
+            <field name="email">sneha.varghese@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_7" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_ananya"/>
+            <field name="email">ananya.pillai@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">reply</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="reply_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=570)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_8" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_farhan"/>
+            <field name="email">farhan.ali@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_9" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_meenakshi"/>
+            <field name="email">meenakshi.das@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_10" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_neha"/>
+            <field name="email">neha.kurian@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+        <record id="rc_mailing_sadya_class_trace_11" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sadya_class"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_bounce"/>
+            <field name="email">old.contact@invalid-domain.example</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_events"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-4, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">bounce</field>
+            <field name="failure_type">mail_bounce</field>
+        </record>
+        <record id="rc_mailing_loyalty" model="mailing.mailing">
+            <field name="subject">Double Loyalty Points All Weekend</field>
+            <field name="preview">Members earn 2x points on every bill</field>
+            <field name="mailing_type">mail</field>
+            <field name="mailing_model_id" ref="mass_mailing.model_mailing_list"/>
+            <field name="contact_list_ids" eval="[Command.set([ref('rc_list_loyalty')])]"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="email_from">Resto Cafe Solutions &lt;hello@restocafe.example.com&gt;</field>
+            <field name="body_arch">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Double Points Weekend&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;As a loyalty member you earn double points on every bill this Saturday and Sunday. Points can be redeemed for desserts, coffee and gift cards.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;View My Points&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="body_html">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Double Points Weekend&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;As a loyalty member you earn double points on every bill this Saturday and Sunday. Points can be redeemed for desserts, coffee and gift cards.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;View My Points&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="state">done</field>
+            <field name="schedule_type">now</field>
+            <field name="sent_date" eval="(DateTime.today() + relativedelta(days=-18, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_loyalty_link" model="link.tracker">
+            <field name="url">https://restocafe.example.com/loyalty</field>
+            <field name="title">View My Points</field>
+            <field name="mass_mailing_id" ref="rc_mailing_loyalty"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+        </record>
+        <record id="rc_mailing_loyalty_trace_1" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_loyalty"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_vivek"/>
+            <field name="email">vivek.nambiar@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">reply</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="reply_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=570)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_loyalty_trace_2" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_loyalty"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_sneha"/>
+            <field name="email">sneha.varghese@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_loyalty_trace_3" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_loyalty"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_ananya"/>
+            <field name="email">ananya.pillai@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_loyalty_trace_4" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_loyalty"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_meenakshi"/>
+            <field name="email">meenakshi.das@example.com</field>
+            <field name="trace_type">mail</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="links_click_datetime" eval="(DateTime.today() + relativedelta(days=-18, minutes=450)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_loyalty_click_4" model="link.tracker.click">
+            <field name="link_id" ref="rc_mailing_loyalty_link"/>
+            <field name="mailing_trace_id" ref="rc_mailing_loyalty_trace_4"/>
+            <field name="mass_mailing_id" ref="rc_mailing_loyalty"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="country_id" ref="base.in"/>
+            <field name="ip">103.21.58.13</field>
+        </record>
+        <record id="rc_mailing_christmas" model="mailing.mailing">
+            <field name="subject">Christmas &amp; New Year Feast: Book Your Table Early</field>
+            <field name="preview">Festival passes and gala dinner now open</field>
+            <field name="mailing_type">mail</field>
+            <field name="mailing_model_id" ref="mass_mailing.model_mailing_list"/>
+            <field name="contact_list_ids" eval="[Command.set([ref('rc_list_newsletter'), ref('rc_list_events')])]"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_festive"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="email_from">Resto Cafe Solutions &lt;hello@restocafe.example.com&gt;</field>
+            <field name="body_arch">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;The Festive Season Is Here&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Join our Christmas Food &amp;amp; Wine Festival and ring in 2027 at the New Year's Eve Rooftop Gala Dinner.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;Get Festival Passes&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="body_html">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;The Festive Season Is Here&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Join our Christmas Food &amp;amp; Wine Festival and ring in 2027 at the New Year's Eve Rooftop Gala Dinner.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;Get Festival Passes&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="state">in_queue</field>
+            <field name="schedule_type">scheduled</field>
+            <field name="schedule_date" eval="(DateTime.today() + relativedelta(days=3, minutes=210)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="rc_mailing_corporate" model="mailing.mailing">
+            <field name="subject">Corporate Lunch Plans for 2027</field>
+            <field name="preview">Healthy lunch bowls delivered to your office</field>
+            <field name="mailing_type">mail</field>
+            <field name="mailing_model_id" ref="mass_mailing.model_mailing_list"/>
+            <field name="contact_list_ids" eval="[Command.set([ref('rc_list_corporate')])]"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_corporate"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="email_from">Resto Cafe Solutions &lt;hello@restocafe.example.com&gt;</field>
+            <field name="body_arch">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Lunch Your Team Will Love&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Monthly lunch subscriptions from 50 meals a day, with a rotating 4-week menu, healthy bowls under 500 calories and delivery between 12:30 and 13:30.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;Request a Tasting&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="body_html">&lt;div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;color:#333"&gt;&lt;div style="background:#5b2c6f;color:#fff;padding:24px;text-align:center"&gt;&lt;h1 style="margin:0;font-size:24px"&gt;Resto Cafe Solutions&lt;/h1&gt;&lt;p style="margin:4px 0 0"&gt;Marine Drive, Kochi&lt;/p&gt;&lt;/div&gt;&lt;div style="padding:24px"&gt;&lt;h2 style="color:#5b2c6f"&gt;Lunch Your Team Will Love&lt;/h2&gt;&lt;p style="line-height:1.6"&gt;Monthly lunch subscriptions from 50 meals a day, with a rotating 4-week menu, healthy bowls under 500 calories and delivery between 12:30 and 13:30.&lt;/p&gt;&lt;p style="text-align:center;margin:28px 0"&gt;&lt;a href="/event" style="background:#e67e22;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold"&gt;Request a Tasting&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;div style="background:#f4f4f4;padding:14px;text-align:center;font-size:12px;color:#777"&gt;You receive this email because you subscribed to Resto Cafe Solutions updates.&lt;/div&gt;&lt;/div&gt;</field>
+            <field name="state">draft</field>
+        </record>
+    </data>
+</odoo>

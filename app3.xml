@@ -1,0 +1,259 @@
+<t name="Appointment Details" t-name="appointment.appointment_info">
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <style>
+#wrap.o_appointment_info { background: #fbf7f0; font-family: 'Inter', system-ui, sans-serif; color: #3d332a; padding-bottom: 90px; }
+.o_appointment_info h1, .o_appointment_info h2, .o_appointment_info h3, .o_appointment_info h4, .o_appointment_info h5 { font-family: 'Playfair Display', Georgia, serif; color: #15110e; }
+.rc-book-hero { padding: 150px 0 110px; color: #f6efe4; margin-bottom: -60px;
+  background: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.8) 55%, rgba(21,17,14,.5) 100%),
+              url('/theme_bistro/static/src/img/backgrounds/20.webp') center/cover no-repeat; }
+.rc-book-hero .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: #c9a15d; }
+.rc-book-hero .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
+.rc-book-hero h1 { color: #fff !important; font-size: clamp(2.2rem, 4.6vw, 3.6rem); margin: 18px 0 10px; }
+.rc-book-hero p { color: #d9cfbf; margin: 0; }
+.rc-book-hero a { color: #e0c38c; text-decoration: none; }
+.rc-book-steps { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 26px; font-size: .88rem; color: #cbbfae; }
+.rc-book-steps span b { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; align-items: center; justify-content: center; margin-right: 8px; border: 1px solid rgba(201,161,93,.6); color: #c9a15d; font-weight: 600; }
+.rc-book-steps span.rc-on b { background: #c9a15d; color: #15110e; }
+.rc-book-steps span.rc-on { color: #fff; }
+.rc-book-steps span.rc-done b { background: rgba(201,161,93,.18); }
+.rc-book-steps span.rc-done { color: #e0c38c; }
+/* booking card */
+.o_appointment_info > .container, .o_appointment_info .container:first-of-type { position: relative; z-index: 2; }
+.o_appointment_info .premium-card, .o_appointment_info .o_cc1, .o_appointment_info .card {
+  background: #fff !important; border: 1px solid #efe5d5 !important; border-radius: 22px !important; box-shadow: 0 40px 80px -50px rgba(21,17,14,.55) !important; }
+.o_appointment_info .form-label { font-weight: 600 !important; color: #15110e; font-size: .85rem !important; letter-spacing: .02em; }
+.o_appointment_info .form-select, .o_appointment_info .form-control { border: 1px solid #e3d6c1; border-radius: 12px; padding: 11px 14px; background-color: #fdfaf5; }
+.o_appointment_info .form-select:focus, .o_appointment_info .form-control:focus { border-color: #c9a15d; box-shadow: 0 0 0 3px rgba(201,161,93,.18); }
+/* calendar */
+.o_appointment_info table { background: #fbf7f0; border-radius: 18px; overflow: hidden; }
+.o_appointment_info .o_appointment_cal_head th { color: #a99a86; text-transform: uppercase; letter-spacing: .1em; }
+.o_appointment_info .premium-cal-day { width: 44px; height: 44px; border-radius: 50% !important; border: 1px solid #e7dac4 !important; color: #15110e !important; background: #fff !important; font-weight: 500; transition: all .2s ease; }
+.o_appointment_info .premium-cal-day:hover { border-color: #c9a15d !important; color: #9a7a43 !important; transform: translateY(-2px); }
+.o_appointment_info .premium-cal-day.is-today { border-color: #c9a15d !important; }
+.o_appointment_info .premium-cal-day.active { background: #15110e !important; color: #c9a15d !important; border-color: #15110e !important; box-shadow: 0 10px 20px -10px rgba(0,0,0,.6); }
+.o_appointment_info .o_appointment_day_off { color: #cfc4b4; }
+.o_appointment_info .o_appointment_weekend { background: transparent !important; }
+/* time slots */
+.o_appointment_info .slot-label { border-radius: 999px !important; border: 1px solid #e3d6c1 !important; color: #3d332a !important; background: #fff !important; font-weight: 500; }
+.o_appointment_info .slot-label:hover { border-color: #c9a15d !important; color: #9a7a43 !important; }
+.o_appointment_info .slot-radio:checked + .slot-label, .o_appointment_info .slot-label.active { background: #15110e !important; border-color: #15110e !important; color: #c9a15d !important; }
+/* buttons */
+.o_appointment_info .premium-btn-primary, .o_appointment_info .btn-primary { background: #c9a15d !important; border-color: #c9a15d !important; color: #15110e !important;
+  border-radius: 999px !important; font-weight: 600; padding: 14px 24px; box-shadow: 0 12px 30px -12px rgba(201,161,93,.7); }
+.o_appointment_info .premium-btn-primary:hover, .o_appointment_info .btn-primary:hover { background: #15110e !important; border-color: #15110e !important; color: #c9a15d !important; }
+.o_appointment_info .btn-outline-primary:not(.slot-label):not(.premium-cal-day) { border-color: #15110e; color: #15110e; border-radius: 999px; }
+/* right column info + notices */
+.o_appointment_info .col-lg-4 h4 { font-size: 1.7rem; }
+.o_appointment_info .col-lg-4 .oi, .o_appointment_info .col-lg-4 .fa { color: #c9a15d; }
+.o_appointment_info .alert { border-radius: 16px; }
+/* website header: dark glass, same as the homepage */
+header#top { background: rgba(21,17,14,.92) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
+header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary), header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+header#top .navbar .navbar-brand, header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
+header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
+header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
+header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+header#top .offcanvas { background: #1f1813 !important; }
+header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
+header#top .offcanvas .btn-close { filter: invert(1); }
+header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
+
+/* details form */
+.o_appointment_info .form-control, .o_appointment_info .form-select, .o_appointment_info textarea { border: 1px solid #e3d6c1 !important; border-radius: 12px !important; padding: 11px 14px; background-color: #fdfaf5 !important; }
+.o_appointment_info .form-control:focus, .o_appointment_info .form-select:focus, .o_appointment_info textarea:focus { border-color: #c9a15d !important; box-shadow: 0 0 0 3px rgba(201,161,93,.18) !important; background-color: #fff !important; }
+.o_appointment_info label, .o_appointment_info .col-form-label { font-weight: 600; color: #15110e; font-size: .88rem; }
+.o_appointment_info .form-check-input:checked { background-color: #c9a15d; border-color: #c9a15d; }
+.o_appointment_info hr { border-color: #efe5d5; opacity: 1; }
+.o_appointment_info h5, .o_appointment_info h6 { font-family: 'Playfair Display', Georgia, serif; color: #15110e; }
+.o_appointment_info .col-lg-4 > div, .o_appointment_info .col-lg-4 .card { border-radius: 16px; }
+.o_appointment_info .col-lg-4 .fw-bold, .o_appointment_info .col-lg-4 strong { color: #15110e; }
+.o_appointment_info .btn-secondary, .o_appointment_info .btn-light, .o_appointment_info .btn-outline-secondary { border-radius: 999px; }
+.o_appointment_info .list-group-item { border-color: #efe5d5; }
+.o_appointment_info .badge { border-radius: 999px; }
+@media (max-width: 767px) { .rc-book-hero { padding: 120px 0 90px; } .o_appointment_info .premium-cal-day { width: 36px; height: 36px; } }
+        </style>
+    </t>
+        <t t-call="website.layout" head="head">
+            <div id="wrap" class="o_appointment_page o_appointment_info">
+                <section class="rc-book-hero">
+                    <div class="container">
+                        <span class="rc-eyebrow"><a href="/appointment">Reservations</a></span>
+                        <h1><span t-if="appointment_type.event_emoji" class="me-2" t-out="appointment_type.event_emoji"/><t t-out="appointment_type.name"/></h1>
+                        <p>Almost there: tell us who is coming and anything we should prepare for you.</p>
+                        <div class="rc-book-steps">
+                            <span class="rc-done"><b>&#10003;</b>Date &amp; time</span>
+                            <span class="rc-on"><b>2</b>Your details</span>
+                            <span><b>3</b>Confirmation</span>
+                        </div>
+                    </div>
+                </section>
+                <t t-if="request.env.user.has_group('base.group_user')">
+                    <div class="alert alert-info text-center m-0 border-0 rounded-0">
+                        This is a preview of the customer appointment form.
+                        <a t-attf-href="/web#id=#{appointment_type.id}&amp;model=appointment.type&amp;view_type=form" class="alert-link" style="text-decoration: underline;">
+                            <i class="oi" data-icon="arrow_forward"/> Back to edit mode
+                        </a>
+                    </div>
+                </t>
+
+                <div class="container mt-4 mb-5 premium-card o_cc o_cc1">
+                    <div class="row">
+                        <!-- Left Column: User Details Form -->
+                        <div class="col-lg-8 pe-lg-5">
+                            <h3 class="mb-4 font-weight-bold">Your details</h3>
+                            <!-- a resource linked to the booked one is busy at this time (booking stays possible) -->
+                            <div t-if="linked_warning" class="alert alert-warning d-flex align-items-start gap-2 mb-4 o_appointment_linked_warning" role="alert">
+                                <i class="oi oi-filled mt-1" data-icon="warning" aria-hidden="true"/>
+                                <span t-out="linked_warning"/>
+                            </div>
+
+                            <form t-attf-action="/appointment/#{appointment_type.id}/submit" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="date" t-att-value="selected_date"/>
+                                <input type="hidden" name="time" t-att-value="selected_time"/>
+                                <input type="hidden" name="party_size" t-att-value="party_size"/>
+                                <input type="hidden" name="invite_token" t-att-value="invite_token"/>
+                                <input type="hidden" name="staff_user_id" t-att-value="staff_user_id or ''"/>
+                                <input t-if="wish_ref" type="hidden" name="wish_ref" t-att-value="wish_ref"/>
+                                <input t-if="wish_token" type="hidden" name="wish_token" t-att-value="wish_token"/>
+
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 14px;">Full name *</label>
+                                    <input type="text" name="name" class="form-control" required="1" t-att-value="(wish_prefill.get('name') if wish_prefill else '') or (user.name if user else '')"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" style="font-size: 14px;">Phone number *</label>
+                                    <input type="tel" name="phone" class="form-control w-50" required="1" placeholder="e.g. +91 98765 43210" t-att-value="(wish_prefill.get('phone') if wish_prefill else '') or ((user.partner_id.phone or (user.partner_id.mobile if 'mobile' in user.partner_id._fields else '')) if user and user.partner_id else '')"/>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label" style="font-size: 14px;">Email <span class="text-muted small">(Optional)</span></label>
+                                    <input type="email" name="email" class="form-control w-50" placeholder="Optional — for email confirmation &amp; wishes" t-att-value="(wish_prefill.get('email') if wish_prefill else '') or (user.email if user else '')"/>
+                                </div>
+
+
+                                <t t-foreach="appointment_type.question_ids" t-as="question">
+                                    <t t-set="q_prefill" t-value="question_prefills.get(question.id, '') if question_prefills else ''"/>
+                                    <div class="mb-4">
+                                        <label class="form-label" style="font-size: 14px;">
+                                            <t t-out="question.name"/> <t t-if="question.is_required">*</t>
+                                        </label>
+                                        <t t-if="question.question_type == 'char'">
+                                            <input type="text" t-attf-name="question_#{question.id}" class="form-control" t-att-required="question.is_required" t-att-placeholder="question.placeholder" t-att-value="q_prefill"/>
+                                        </t>
+                                        <t t-elif="question.question_type == 'text'">
+                                            <textarea t-attf-name="question_#{question.id}" class="form-control" rows="4" t-att-required="question.is_required" t-att-placeholder="question.placeholder" t-out="q_prefill"/>
+                                        </t>
+                                        <t t-elif="question.question_type == 'phone'">
+                                            <input type="tel" t-attf-name="question_#{question.id}" class="form-control" t-att-required="question.is_required" t-att-placeholder="question.placeholder" t-att-value="q_prefill"/>
+                                        </t>
+                                        <t t-elif="question.question_type == 'date'">
+                                            <input type="date" t-attf-name="question_#{question.id}" class="form-control w-50" t-att-required="question.is_required" t-att-value="q_prefill"/>
+                                        </t>
+                                        <t t-elif="question.question_type == 'select'">
+                                            <select t-attf-name="question_#{question.id}" class="form-select w-50" t-att-required="question.is_required">
+                                                <t t-foreach="question.answer_ids" t-as="opt">
+                                                    <option t-att-value="opt.name"><t t-out="opt.name"/></option>
+                                                </t>
+                                            </select>
+                                        </t>
+                                        <t t-elif="question.question_type == 'radio'">
+                                            <t t-foreach="question.answer_ids" t-as="opt">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" t-attf-name="question_#{question.id}" t-att-id="'q_' + str(question.id) + '_' + str(opt_index)" t-att-value="opt.name" t-att-required="question.is_required"/>
+                                                    <label class="form-check-label" t-att-for="'q_' + str(question.id) + '_' + str(opt_index)">
+                                                        <t t-out="opt.name"/>
+                                                    </label>
+                                                </div>
+                                            </t>
+                                        </t>
+                                        <t t-elif="question.question_type == 'checkbox'">
+                                            <t t-foreach="question.answer_ids" t-as="opt">
+                                                <div class="form-check">
+                                                    <!-- For checkboxes, we append opt_index to the name so multiple values can be submitted if needed -->
+                                                    <input class="form-check-input" type="checkbox" t-attf-name="question_#{question.id}_#{opt_index}" t-att-id="'q_' + str(question.id) + '_' + str(opt_index)" t-att-value="opt.name"/>
+                                                    <label class="form-check-label" t-att-for="'q_' + str(question.id) + '_' + str(opt_index)">
+                                                        <t t-out="opt.name"/>
+                                                    </label>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </t>
+                                
+                                <t t-if="appointment_type.has_payment_step">
+                                    <button type="submit" class="btn btn-primary premium-btn-primary w-100 mt-4">
+                                        Proceed to Payment
+                                    </button>
+                                </t>
+                                <t t-else="">
+                                    <button type="submit" class="btn btn-primary premium-btn-primary w-100 mt-4">
+                                        Confirm Appointment
+                                    </button>
+                                </t>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Info -->
+                        <div class="col-lg-4 mt-5 mt-lg-0 ps-lg-5">
+                            <!-- Appointment Name and Description -->
+                            <div class="d-flex align-items-center mb-3">
+                                <t t-if="appointment_type.image_1920">
+                                    <img t-attf-src="/web/image/appointment.type/#{appointment_type.id}/image_1920" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Appointment Image"/>
+                                </t>
+                                <h4 class="mb-0" style="font-weight: bold;">
+                                    <span t-if="appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
+                                    <t t-out="appointment_type.name"/>
+                                </h4>
+                            </div>
+                            <t t-if="appointment_type.message_intro">
+                                <div class="text-muted mb-4" style="font-size: 13px;">
+                                    <t t-out="appointment_type.message_intro"/>
+                                </div>
+                            </t>
+                            
+                            <t t-if="appointment_type.has_payment_step">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="oi text-muted me-3" data-icon="payments" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                    <span style="font-size: 14px;">
+                                        <t t-out="appointment_type.product_id.lst_price" t-options="{'widget': 'monetary', 'display_currency': appointment_type.sudo().product_id.currency_id}"/>
+                                    </span>
+                                </div>
+                            </t>
+                            
+                            <!-- Selected Date & Time -->
+                            <div class="d-flex align-items-start mb-3 font-weight-bold" style="font-size: 14px;">
+                                <i class="oi oi-filled text-muted me-3 mt-1" data-icon="calendar_today" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                <span><t t-out="start_dt.strftime('%d %b %Y - %I:%M %p')"/></span>
+                            </div>
+                        
+                            <!-- Location -->
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="oi text-muted me-3 mt-1" data-icon="location_on" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                <div>
+                                    <div class="font-weight-bold" style="font-size: 14px;">
+                                        <t t-if="appointment_type.location == 'online'">Online</t>
+                                        <t t-elif="appointment_type.location == 'office'">Office</t>
+                                        <t t-else=""><t t-out="appointment_type.location_details"/></t>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 13px;">India</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Party Size -->
+                            <div class="d-flex align-items-center mb-4">
+                                <i class="oi oi-filled text-muted me-3" data-icon="group" style="font-size: 16px; width: 24px; text-align: center;"/>
+                                <span class="font-weight-bold" style="font-size: 14px;">
+                                    <t t-out="party_size"/> people
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_eco_bom_change_view_list" model="ir.ui.view">
+        <field name="name">mrp.eco.bom.change.view.list</field>
+        <field name="model">mrp.eco.bom.change</field>
+        <field name="arch" type="xml">
+            <list string="ECO Changes Summary" create="0" edit="0" delete="0">
+                <field name="change_type"/>
+                <field name="product_id"/>
+                <field name="quantity_diff" sum="Total Quantity"/>
+                <field name="uom_id"/>
+                <field name="cost_diff" sum="Total Cost" widget="monetary"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+</odoo>

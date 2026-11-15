@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- SEARCH VIEW                                                   -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_report_search_view" model="ir.ui.view">
+        <field name="name">report.field.service.analysis.search</field>
+        <field name="model">report.field.service.analysis</field>
+        <field name="arch" type="xml">
+            <search string="Service Analysis">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="employee_id"/>
+                <field name="project_id"/>
+                <separator/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Not Invoiced" name="not_invoiced" domain="[('invoice_status', '=', 'not_invoiced')]"/>
+                <filter string="Has Project" name="has_project" domain="[('has_project', '=', True)]"/>
+                <separator/>
+                <group>
+                    <filter string="Technician" name="group_user" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Project" name="group_project" context="{'group_by': 'project_id'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Planned Month" name="group_month" context="{'group_by': 'date_planned:month'}"/>
+                    <filter string="Invoice Status" name="group_invoice" context="{'group_by': 'invoice_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PIVOT VIEW                                                    -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_report_pivot_view" model="ir.ui.view">
+        <field name="name">report.field.service.analysis.pivot</field>
+        <field name="model">report.field.service.analysis</field>
+        <field name="arch" type="xml">
+            <pivot string="Service Analysis" sample="1">
+                <field name="employee_id" type="row"/>
+                <field name="nbr" type="measure"/>
+                <field name="total_time_spent" type="measure"/>
+                <field name="duration_planned" type="measure"/>
+                <field name="total_products_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- GRAPH VIEW                                                    -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_report_graph_view" model="ir.ui.view">
+        <field name="name">report.field.service.analysis.graph</field>
+        <field name="model">report.field.service.analysis</field>
+        <field name="arch" type="xml">
+            <graph string="Service Analysis" type="bar" sample="1">
+                <field name="employee_id"/>
+                <field name="total_time_spent" type="measure"/>
+                <field name="nbr" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- TREE VIEW                                                     -->
+    <!-- ============================================================ -->
+
+    <record id="field_service_report_tree_view" model="ir.ui.view">
+        <field name="name">report.field.service.analysis.tree</field>
+        <field name="model">report.field.service.analysis</field>
+        <field name="arch" type="xml">
+            <list string="Service Analysis">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="partner_id"/>
+                <field name="employee_id"/>
+                <field name="state"/>
+                <field name="date_planned"/>
+                <field name="duration_planned" widget="float_time"/>
+                <field name="total_time_spent" widget="float_time"/>
+                <field name="total_products_amount"/>
+                <field name="invoice_status"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- ACTION                                                        -->
+    <!-- ============================================================ -->
+
+    <record id="action_field_service_report" model="ir.actions.act_window">
+        <field name="name">Service Analysis</field>
+        <field name="res_model">report.field.service.analysis</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="field_service_report_search_view"/>
+        <field name="context">{'search_default_group_user': 1}</field>
+    </record>
+
+</odoo>

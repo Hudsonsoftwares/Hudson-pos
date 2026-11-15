@@ -1,0 +1,253 @@
+.o_fs_planning_schedule {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--o-view-background-color, #ffffff);
+}
+
+.fs-sched-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.fs-sched-actions .btn {
+    margin-right: 5px;
+}
+
+.fs-sched-actions, .fs-sched-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.fs-sched-actions {
+    justify-content: flex-start;
+}
+
+.fs-sched-search {
+    justify-content: flex-end;
+}
+
+.fs-sched-date-controls {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fs-sched-search-input {
+    min-width: 250px;
+}
+
+.fs-sched-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ── Main Grid Container ── */
+.fs-sched-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    overflow-y: auto;
+    background-color: var(--o-view-background-color, #ffffff);
+    color: var(--o-text-color, #212529);
+}
+
+.fs-sched-header-row,
+.fs-sched-resource-row {
+    display: flex;
+    min-width: fit-content;
+}
+
+.fs-sched-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* ── Columns ── */
+.fs-sched-resource-col {
+    width: 250px;
+    min-width: 250px;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+.fs-sched-header-row .fs-sched-resource-col {
+    z-index: 15; /* Top-left corner stays above both axes */
+}
+
+.fs-sched-cell {
+    flex: 1;
+    min-width: 100px;
+    border-right: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.fs-sched-main[data-mode="month"] .fs-sched-cell,
+.fs-sched-main[data-mode="custom"] .fs-sched-cell {
+    min-width: 60px;
+    max-width: 60px;
+    flex: 0 0 60px;
+}
+
+.fs-sched-main[data-mode="quarter"] .fs-sched-cell,
+.fs-sched-main[data-mode="year"] .fs-sched-cell {
+    min-width: 45px;
+    max-width: 45px;
+    flex: 0 0 45px;
+}
+
+
+.fs-sched-header-cell {
+    padding: 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.fs-sched-header-cell .fs-day {
+    font-size: 20px;
+}
+
+.fs-sched-header-cell.is-today {
+    color: #fd7e14;
+}
+.fs-sched-header-cell.is-today .fs-day {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px auto;
+}
+
+.fs-sched-cell.is-weekend {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* ── Slot Cards ── */
+.fs-sched-slot-card {
+    margin: 4px;
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 4px 6px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    position: relative;
+    border-left: 3px solid transparent;
+}
+
+.fs-sched-slot-card.draft {
+    opacity: 0.7;
+    border: 1px dashed #6c757d;
+}
+
+.fs-sched-slot-card:hover {
+    filter: brightness(1.1);
+}
+
+.fs-sched-slot-title {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fs-sched-slot-sub {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.9;
+}
+
+/* ── Sidebar ── */
+.fs-sched-sidebar {
+    width: 250px;
+    background-color: #f8f9fa;
+    border-left: 1px solid #dee2e6;
+    color: var(--o-text-color, #212529);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.fs-sidebar-mini-calendar {
+    padding: 16px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.fs-sidebar-section {
+    padding: 16px;
+}
+
+.fs-sidebar-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.fs-resource-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.fs-resource-checkbox input {
+    margin-right: 8px;
+}
+
+/* ── Colors (matching avatar colors for roles) ── */
+.bg-color-0 { background-color: #714b67; color: white; border-left-color: #55384d; }
+.bg-color-1 { background-color: #0d6efd; color: white; border-left-color: #0a58ca; }
+.bg-color-2 { background-color: #8540f5; color: white; border-left-color: #6a33c4; }
+.bg-color-3 { background-color: #dc3545; color: white; border-left-color: #b02a37; }
+.bg-color-4 { background-color: #fd7e14; color: white; border-left-color: #ca6510; }
+.bg-color-5 { background-color: #6610f2; color: white; border-left-color: #520dc2; }
+.bg-color-6 { background-color: #0dcaf0; color: #000;  border-left-color: #0aa2c0; }
+.bg-color-7 { background-color: #d63384; color: white; border-left-color: #ab296a; }
+.bg-color-8 { background-color: #d9534f; color: white;  border-left-color: #c9302c; }
+.bg-color-9 { background-color: #ffc107; color: #000;  border-left-color: #cc9a06; }
+
+/* ── Field Service jobs on the schedule ── */
+.fs-sched-job-card { background-color: #017e84; color: white; border-left-color: #015b5f; }
+.fs-sched-slot-card.is-job { border-left-width: 5px; }
+
+/* Shifts shown on the Field Service board (read-only availability) */
+.fs-sched-slot-card.is-shift {
+    background-color: #e9ecef;
+    color: #495057;
+    border-left-color: #adb5bd;
+    box-shadow: none;
+    cursor: default;
+}
+
+/* Shift dialog: publishing is done from the footer, as in the "Add Shift" dialog */
+.modal .o_fs_header_publish {
+    display: none !important;
+}
+

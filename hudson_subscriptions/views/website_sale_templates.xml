@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hide default price section for subscriptions -->
+    <template id="product_subscription_hide_price" inherit_id="website_sale.product">
+        <xpath expr="//div[hasclass('o_wsale_product_details_content_section_price')]" position="attributes">
+            <attribute name="t-if">not is_view_active('website_sale.cta_wrapper_boxed') and not product.recurring_invoice</attribute>
+        </xpath>
+    </template>
+
+    <!-- Inject subscription plans above add to cart -->
+    <template id="product_subscription_plans_cta" inherit_id="website_sale.cta_wrapper">
+        <xpath expr="//div[@id='add_to_cart_wrap']" position="before">
+            <t t-if="product.recurring_invoice">
+                <t t-set="plans" t-value="product.sudo()._get_subscription_pricing_plans()"/>
+                <div t-if="plans" class="mt-4 mb-4 subscription-plans w-100">
+                    <h5 class="mb-3">Subscription Plan</h5>
+                    <div class="list-group">
+                        <t t-foreach="plans" t-as="plan_data">
+                            <label class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <input type="radio" name="subscription_plan_id" t-att-value="plan_data['plan'].id"
+                                           class="form-check-input me-3" t-att-checked="plan_data_index == 0"/>
+                                    <span t-out="plan_data['plan'].name"/>
+                                </div>
+                                <div class="text-end">
+                                    <strong><span t-out="plan_data['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/></strong>
+                                    <div class="text-muted small">
+                                        <span t-out="plan_data['price_per_unit']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/> / <t t-out="plan_data['unit_label']"/>
+                                        <span t-if="plan_data['savings_percent'] &gt; 0" class="badge rounded-pill text-bg-success ms-1">
+                                            -<t t-out="plan_data['savings_percent']"/>%
+                                        </span>
+                                    </div>
+                                </div>
+                            </label>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Subscription Order Confirmation Banner -->
+    <template id="subscription_order_confirmation" inherit_id="website_sale.confirmation">
+        <xpath expr="//div[@id='order_name']" position="after">
+            <t t-if="order.is_subscription">
+                <div class="alert alert-success d-flex flex-wrap justify-content-between align-items-center mt-3 p-3 shadow-sm rounded-3">
+                    <div class="mb-2 mb-md-0">
+                        <h5 class="alert-heading mb-1 d-flex align-items-center">
+                            <i class="oi text-success me-2 fs-4" data-icon="check_circle"/>
+                            Subscription Confirmed &amp; Active!
+                        </h5>
+                        <p class="mb-0 text-muted">
+                            Your subscription <strong><t t-out="order.name"/></strong> (<t t-out="order.plan_id.name if order.plan_id else 'Subscription'"/>) has been confirmed and the invoice has been posted. You can manage your subscription, download invoices, or change options in your customer portal.
+                        </p>
+                    </div>
+                    <div>
+                        <a t-attf-href="/my/subscriptions/#{order.id}?access_token=#{order.access_token}" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="oi me-1" data-icon="autorenew"/> Manage Subscription
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

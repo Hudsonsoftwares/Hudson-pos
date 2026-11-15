@@ -1,0 +1,364 @@
+// POS Touch Polish - visual-only refinements of the standard Odoo POS.
+// Keeps Odoo's colours and layout: only sizes, spacing, emphasis and status cues.
+// Every rule is scoped to a POS screen class under `.pos`, so the self-order app,
+// customer display and kitchen display screens are not affected.
+
+$rc-touch: 48px;
+$rc-touch-lg: 56px;
+$rc-press-scale: .97;
+
+// status colours reuse Odoo/Bootstrap semantic colours
+$rc-status-occupied: $primary;
+$rc-status-unsent: $danger;
+$rc-status-booked: $warning;
+$rc-status-free: $o-gray-400;
+
+@mixin rc-press-feedback {
+    transition: transform .08s ease-out, box-shadow .15s ease-out;
+
+    &:active:not(:disabled):not(.disabled) {
+        transform: scale($rc-press-scale);
+    }
+}
+
+.pos {
+
+    // ------------------------------------------------------------------ search
+    .pos-rightheader .input-container {
+        min-height: $rc-touch;
+
+        input {
+            font-size: 1.05rem;
+        }
+    }
+
+    // ================================================================== PRODUCT SCREEN
+    .product-screen {
+
+        // ---- categories
+        .category-list {
+            gap: map-get($spacers, 2) !important;
+        }
+
+        .category-button {
+            min-height: $rc-touch;
+            font-weight: 500;
+            box-shadow: $box-shadow-sm;
+            @include rc-press-feedback;
+
+            &:not(.opacity-75):not(.border-0) {
+                // selected / ancestor category: clearer than Odoo's border-only cue
+                box-shadow: 0 0 0 2px $o-component-active-border;
+                font-weight: 600;
+            }
+        }
+
+        // ---- product cards
+        .product-list .product {
+            border-radius: $border-radius-lg !important;
+            box-shadow: $box-shadow-sm;
+            overflow: hidden;
+            @include rc-press-feedback;
+
+            &:hover {
+                box-shadow: $box-shadow;
+            }
+
+            .product-img img {
+                object-fit: cover;
+            }
+
+            .product-content {
+                padding-block: map-get($spacers, 1);
+            }
+
+            .product-name {
+                font-weight: 600;
+                font-size: .95rem;
+            }
+
+            // cards with a picture: name on 2 lines max
+            &:has(.product-img) .product-name {
+                --lines-clamp: 2;
+            }
+
+            .product-cart-qty {
+                min-width: 2rem;
+                text-align: center;
+                box-shadow: $box-shadow-sm;
+            }
+        }
+
+        // ---- control buttons (Note, Customer, Guests, Split, ...)
+        .control-buttons .btn,
+        .control-button {
+            min-height: $rc-touch;
+            @include rc-press-feedback;
+        }
+
+        // ---- numpad
+        .numpad-button {
+            min-height: 52px;
+            font-weight: 500;
+        }
+
+        // ---- order panel
+        .leftpane {
+            .orderline {
+                position: relative;
+                padding-block: .55rem;
+
+                .line-details {
+                    align-items: baseline;
+                    font-size: 1.05rem;
+                }
+
+                .qty {
+                    min-width: 2.25rem;
+                    text-align: center;
+                }
+
+                .product-price {
+                    min-width: 5.5rem;
+                    text-align: end;
+                    font-variant-numeric: tabular-nums;
+                }
+
+                .info-list {
+                    font-size: .9rem;
+                    color: $text-muted;
+                    gap: 2px;
+                }
+
+                .customer-note {
+                    font-size: .9rem;
+                    line-height: 1.35;
+                }
+
+                .internal-note-container .o_tag {
+                    font-size: .85rem;
+                    padding-block: 2px;
+                }
+
+                &.selected {
+                    // keep Odoo's selected background, add a clear frame
+                    outline: 2px solid $o-component-active-border;
+                    outline-offset: -2px;
+                    border-radius: $border-radius;
+                }
+            }
+
+            .order-summary {
+                .subentry {
+                    font-variant-numeric: tabular-nums;
+                }
+
+                .total {
+                    font-size: 1.15em;
+                    font-variant-numeric: tabular-nums;
+                }
+            }
+
+            // Payment / Order / fast payment buttons
+            .pay-order-button,
+            .fast-pay-button {
+                min-height: 72px;
+                font-size: 1.3rem;
+                font-weight: 700;
+                @include rc-press-feedback;
+            }
+        }
+
+        // small screens: bottom Pay / Cart switch buttons
+        .btn-switchpane {
+            font-weight: 600;
+            @include rc-press-feedback;
+        }
+    }
+
+    // ================================================================== FLOOR PLAN
+    .floor-screen {
+
+        .floor-selector .button-floor {
+            min-height: $rc-touch;
+            font-weight: 600;
+
+            &.active {
+                box-shadow: inset 0 -3px 0 $o-component-active-border;
+            }
+        }
+
+        .new-order,
+        .right-buttons .btn {
+            min-height: $rc-touch;
+        }
+
+        .o_fp_table {
+            transition: box-shadow .2s ease-out;
+
+            .o_fp_table_number {
+                font-size: 1.6rem !important;
+                line-height: 1.1;
+            }
+
+            .order-count {
+                min-width: 1.75rem;
+                height: 1.75rem;
+                font-size: .85rem;
+                margin: -.4rem -.4rem 0 0;
+                box-shadow: $box-shadow-sm;
+            }
+
+            .table-timer-badge {
+                font-size: .8rem !important;
+                font-weight: 600;
+            }
+
+            // guest count + amount under the table number
+            .rc-table-info {
+                top: calc(50% + .95rem);
+                font-size: .78rem;
+                z-index: 1;
+
+                .oi {
+                    font-size: .85rem;
+                    vertical-align: -1px;
+                }
+            }
+
+            // ---- status rings (follow the table shape, keep the table's own colour)
+            &:has(> .rc-tstate-occupied) {
+                box-shadow: 0 0 0 3px $rc-status-occupied;
+            }
+
+            &:has(> .rc-tstate-unsent) {
+                box-shadow: 0 0 0 3px $rc-status-unsent;
+                animation: rc-unsent-pulse 1.8s ease-in-out infinite;
+            }
+
+            &:has(> .rc-tstate-booked) {
+                box-shadow: 0 0 0 3px $rc-status-booked;
+            }
+        }
+
+        // ---- legend
+        .rc-floor-legend {
+            z-index: 3;
+            font-size: .8rem;
+            background: rgba($o-view-background-color, .9);
+            box-shadow: $box-shadow-sm;
+
+            .rc-legend-item {
+                display: inline-flex;
+                align-items: center;
+                gap: .35rem;
+
+                &::before {
+                    content: "";
+                    width: .8rem;
+                    height: .8rem;
+                    border-radius: 50%;
+                    border: 3px solid $rc-status-free;
+                    background: transparent;
+                }
+            }
+
+            .rc-legend-occupied::before { border-color: $rc-status-occupied; }
+            .rc-legend-unsent::before { border-color: $rc-status-unsent; }
+            .rc-legend-booked::before { border-color: $rc-status-booked; }
+
+            @include media-breakpoint-down(md) {
+                .rc-legend-item {
+                    font-size: 0; // dots only on phones
+                    gap: 0;
+                }
+            }
+        }
+    }
+
+    // ================================================================== PAYMENT SCREEN
+    .payment-screen {
+
+        // payment method tiles
+        .paymentmethod {
+            min-height: $rc-touch-lg;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: $box-shadow-sm;
+            @include rc-press-feedback;
+
+            .payment-method-icon {
+                max-width: 40px;
+                max-height: 40px;
+            }
+        }
+
+        // payment lines
+        .paymentline {
+            box-shadow: $box-shadow-sm;
+
+            .payment-amount {
+                font-weight: 700;
+                font-variant-numeric: tabular-nums;
+            }
+
+            &.selected {
+                border-width: 2px;
+                box-shadow: 0 0 0 2px rgba($o-component-active-border, .35);
+            }
+
+            .delete-button {
+                min-width: $rc-touch;
+                min-height: $rc-touch;
+            }
+        }
+
+        // remaining / change amount
+        .payment-status-container {
+            .amount {
+                font-size: 1.25em;
+                font-variant-numeric: tabular-nums;
+            }
+        }
+
+        .paymentlines-container.text-success .payment-status-amount {
+            font-weight: 700;
+        }
+
+        // Customer / Invoice / Tip / Cashbox buttons
+        .payment-buttons .btn {
+            min-height: $rc-touch;
+        }
+
+        // numpad
+        .numpad-button {
+            min-height: 56px;
+            font-weight: 500;
+        }
+
+        // Back / Validate
+        .back-button,
+        .validation-button {
+            min-height: 64px;
+            font-size: 1.2rem;
+            @include rc-press-feedback;
+        }
+
+        .validation-button.highlight {
+            font-weight: 700;
+            font-size: 1.35rem;
+            box-shadow: $box-shadow;
+        }
+    }
+}
+
+@keyframes rc-unsent-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px $rc-status-unsent; }
+    50% { box-shadow: 0 0 0 6px rgba($rc-status-unsent, .35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pos .floor-screen .o_fp_table:has(> .rc-tstate-unsent) {
+        animation: none;
+    }
+}

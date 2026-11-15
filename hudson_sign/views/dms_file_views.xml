@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Signing documents of the Documents app goes through the Sign app -->
+    <record id="view_dms_file_form_inherit_hudson_sign" model="ir.ui.view">
+        <field name="name">dms.file.form.inherit.hudson.sign</field>
+        <field name="model">dms.file</field>
+        <field name="inherit_id" ref="dms_enterprise_features.view_dms_file_form_inherit_document_controller"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_reset_approval']" position="after">
+                <button name="action_setup_signatures" string="Request Signature" type="object" class="btn btn-secondary"
+                        invisible="mimetype != 'application/pdf' or (is_locked and not is_lock_editor)"
+                        groups="dms.group_dms_manager"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Signature Requests" name="signatures" invisible="mimetype != 'application/pdf'">
+                    <field name="signature_request_ids" readonly="1">
+                        <list>
+                            <field name="recipient_id" widget="many2one_avatar_user"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'signed'"
+                                   decoration-muted="state != 'signed'"/>
+                            <field name="signed_date"/>
+                            <field name="hudson_request_id" string="Sign Document" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_hudson_sign_request_to_sign" model="ir.actions.act_window">
+        <field name="name">Signature Requests</field>
+        <field name="res_model">hudson.sign.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hudson_sign_request_view_search"/>
+        <field name="context">{'search_default_to_sign_by_me': 1}</field>
+    </record>
+
+    <menuitem id="menu_dms_my_signature_requests"
+              name="Signature Requests"
+              action="action_hudson_sign_request_to_sign"
+              parent="dms_enterprise_features.menu_dms_my_documents_root"
+              sequence="20"/>
+</odoo>

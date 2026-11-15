@@ -1,0 +1,166 @@
+<t t-name="website.plan-my-event">
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <style>
+#wrap.rc-page { --ink: #15110e; --esp: #1f1813; --bean: #2b211a; --cream: #f6efe4; --paper: #fbf7f0; --gold: #c9a15d; --gold2: #e0c38c; --muted: #a99a86; --text: #3d332a;
+  font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--text); overflow-x: hidden; }
+#wrap.rc-page h1, #wrap.rc-page h2, #wrap.rc-page h3, #wrap.rc-page h4 { font-family: 'Playfair Display', Georgia, serif; color: var(--ink); }
+#wrap.rc-page a { text-decoration: none; }
+.rc-page .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); }
+.rc-page .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
+.rc-page .rc-title { font-size: clamp(2rem, 3.8vw, 3.1rem); line-height: 1.15; margin: 16px 0 18px; }
+.rc-page .rc-title em { color: #9a7a43; }
+.rc-page .rc-lead { color: #6f6253; font-size: 1.06rem; line-height: 1.8; max-width: 620px; }
+.rc-page .rc-btn { display: inline-flex; align-items: center; gap: .55rem; padding: 14px 28px; border-radius: 999px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; transition: all .3s ease; }
+.rc-page .rc-btn-gold { background: var(--gold); color: var(--ink) !important; box-shadow: 0 12px 30px -12px rgba(201,161,93,.7); }
+.rc-page .rc-btn-gold:hover { background: var(--gold2); transform: translateY(-2px); }
+.rc-page .rc-btn-ghost { border-color: rgba(246,239,228,.45); color: var(--cream) !important; }
+.rc-page .rc-btn-ghost:hover { background: var(--cream); color: var(--ink) !important; }
+.rc-page .rc-hero { position: relative; padding: 170px 0 120px; color: var(--cream); background-size: cover; background-position: center; }
+.rc-page .rc-hero h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.05; color: #fff; margin: 22px 0; max-width: 800px; }
+.rc-page .rc-hero h1 em { color: var(--gold); }
+.rc-page .rc-hero p { color: #d9cfbf; font-size: 1.12rem; line-height: 1.8; max-width: 600px; }
+.rc-page .rc-section { padding: 110px 0; }
+.rc-page .rc-dark { background: var(--ink); color: var(--cream); }
+.rc-page .rc-dark h2, .rc-page .rc-dark h3, .rc-page .rc-dark h4 { color: #fff; }
+.rc-page .rc-dark .rc-title em { color: var(--gold); }
+.rc-page .rc-dark .rc-lead { color: var(--muted); }
+/* steps */
+.rc-page .rc-step { position: relative; padding: 34px 28px; border-radius: 16px; background: var(--esp); border: 1px solid rgba(201,161,93,.18); height: 100%; }
+.rc-page .rc-step .rc-num { font-family: 'Playfair Display', serif; font-size: 3rem; line-height: 1; color: var(--gold); opacity: .9; }
+.rc-page .rc-step h4 { margin: 14px 0 8px; font-size: 1.3rem; }
+.rc-page .rc-step p { color: var(--muted); margin: 0; font-size: .95rem; line-height: 1.7; }
+/* header: dark glass like the homepage */
+header#top { background: rgba(21,17,14,.92) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
+header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary), header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+header#top .navbar .navbar-brand, header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
+header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
+header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
+header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+header#top .offcanvas { background: #1f1813 !important; }
+header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
+header#top .offcanvas .btn-close { filter: invert(1); }
+header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
+@media (max-width: 991px) { .rc-page .rc-hero { padding: 140px 0 90px; } .rc-page .rc-section { padding: 80px 0; } }
+
+.rc-page .rc-plan { margin-top: -80px; position: relative; z-index: 3; padding-bottom: 110px; }
+.rc-page .rc-plan-card { background: #fff; border-radius: 22px; border: 1px solid #efe5d5; box-shadow: 0 40px 80px -45px rgba(21,17,14,.55); overflow: hidden; }
+.rc-page .rc-plan-info { background: var(--ink); color: var(--cream); padding: 48px 40px; height: 100%; }
+.rc-page .rc-plan-info h2 { color: #fff; font-size: 1.9rem; margin: 14px 0 12px; }
+.rc-page .rc-plan-info p { color: var(--muted); line-height: 1.75; }
+.rc-page .rc-plan-info ul { list-style: none; padding: 0; margin: 26px 0; }
+.rc-page .rc-plan-info li { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(246,239,228,.08); color: #e7dccb; font-size: .95rem; }
+.rc-page .rc-plan-info li i { color: var(--gold); width: 18px; margin-top: 3px; }
+.rc-page .rc-plan-contact { margin-top: 26px; padding: 18px 20px; border-radius: 14px; background: rgba(201,161,93,.1); border: 1px solid rgba(201,161,93,.25); }
+.rc-page .rc-plan-contact small { color: var(--muted); display: block; letter-spacing: .14em; text-transform: uppercase; font-size: .7rem; }
+.rc-page .rc-plan-contact a { color: var(--gold) !important; font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+.rc-page .rc-plan-form { padding: 44px 44px 36px; }
+.rc-page .rc-plan-form h3 { font-size: 1.7rem; margin-bottom: 6px; }
+.rc-page .rc-plan-form .rc-sub { color: var(--muted); margin-bottom: 26px; }
+/* Odoo form fields, restyled (form itself unchanged) */
+.rc-page .s_website_form { padding: 0 !important; background: transparent; }
+.rc-page .s_website_form .container-fluid { padding: 0; }
+.rc-page .s_website_form .s_website_form_label { width: auto !important; font-weight: 600; font-size: .85rem; color: var(--ink); padding-bottom: 6px; flex: 0 0 100%; max-width: 100%; }
+.rc-page .s_website_form .s_website_form_field > .row > .col-sm { flex: 0 0 100%; max-width: 100%; }
+.rc-page .s_website_form .form-control, .rc-page .s_website_form .form-select {
+  border: 1px solid #e3d6c1; border-radius: 12px; padding: 12px 14px; background: #fdfaf5; transition: all .2s ease; }
+.rc-page .s_website_form .form-control:focus, .rc-page .s_website_form .form-select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,161,93,.18); background: #fff; }
+.rc-page .s_website_form textarea.form-control { min-height: 130px; }
+.rc-page .s_website_form .input-group-text { border-radius: 0 12px 12px 0; background: #f4ecdf; border-color: #e3d6c1; color: #9a7a43; }
+.rc-page .s_website_form .s_website_form_send { background: var(--gold) !important; border-color: var(--gold) !important; color: var(--ink) !important;
+  border-radius: 999px; padding: 14px 34px; font-weight: 600; box-shadow: 0 12px 30px -12px rgba(201,161,93,.7); }
+.rc-page .s_website_form .s_website_form_send:hover { background: var(--ink) !important; border-color: var(--ink) !important; color: var(--gold) !important; }
+.rc-page .s_website_form .s_website_form_mark { color: #b4442e; }
+@media (min-width: 768px) {
+  .rc-page .s_website_form .s_website_form_rows { display: flex; flex-wrap: wrap; margin: 0 -10px; }
+  .rc-page .s_website_form .s_website_form_field { flex: 0 0 50%; max-width: 50%; padding: 0 10px; }
+  .rc-page .s_website_form .s_website_form_field[data-type="text"], .rc-page .s_website_form .s_website_form_field[data-type="char"]:has(input[name="name"]),
+  .rc-page .s_website_form .s_website_form_submit, .rc-page .s_website_form .s_website_form_dnone { flex: 0 0 100%; max-width: 100%; }
+}
+@media (max-width: 991px) { .rc-page .rc-plan-info, .rc-page .rc-plan-form { padding: 34px 24px; } .rc-page .rc-plan { margin-top: -50px; } }
+        </style>
+    </t>
+    <t t-call="website.layout" head="head">
+        <div id="wrap" class="oe_structure oe_empty rc-page">
+
+            <section class="rc-hero o_colored_level" data-name="Plan Hero" style="padding-bottom: 170px; background-image: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.8) 55%, rgba(21,17,14,.45) 100%), url('/theme_bistro/static/src/img/configurator/landscape_xl_3.webp');">
+                <div class="container">
+                    <span class="rc-eyebrow">Plan My Event</span>
+                    <h1>Let's plan something <em>unforgettable</em></h1>
+                    <p>Weddings, corporate lunches, birthdays, candlelight dinners or a banquet for 250: tell us your plan and our event team will call you back within 24 hours with menu ideas and a quotation.</p>
+                </div>
+            </section>
+
+            <section class="rc-plan o_colored_level" data-name="Plan Form">
+                <div class="container">
+                    <div class="rc-plan-card">
+                        <div class="row g-0">
+                            <div class="col-lg-5">
+                                <div class="rc-plan-info">
+                                    <span class="rc-eyebrow">Why plan with us</span>
+                                    <h2>One planner, every detail</h2>
+                                    <p>From the first call to the last plate, a dedicated Resto Cafe planner handles your menu, décor, staff and timing.</p>
+                                    <ul>
+                                        <li><i class="fa fa-cutlery"/><span>Free menu tasting at our restaurant</span></li>
+                                        <li><i class="fa fa-users"/><span>From 20 to 2,000 guests, indoors or outdoors</span></li>
+                                        <li><i class="fa fa-leaf"/><span>Veg, Jain, Kerala Sadya and multi-cuisine menus</span></li>
+                                        <li><i class="fa fa-birthday-cake"/><span>Custom cakes and dessert tables from our bakery</span></li>
+                                        <li><i class="fa fa-building"/><span>Banquet hall for up to 250 guests, with AV and parking</span></li>
+                                    </ul>
+                                    <div class="rc-plan-contact">
+                                        <small>Prefer to talk?</small>
+                                        <a href="tel:+914842350000">+91 484 235 0000</a>
+                                        <div style="color:#a99a86;font-size:.85rem">Mon – Sun · 9 AM – 9 PM</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="rc-plan-form">
+                                    <h3>Tell us about your event</h3>
+                                    <p class="rc-sub">Fields marked * are required. We reply within 24 hours.</p>
+                                    <section class="s_website_form pt16 pb16 o_colored_level" data-vcss="001" data-snippet="s_website_form" data-name="Form">
+        <div class="container-fluid">
+            <form action="/website/form/" method="post" enctype="multipart/form-data" data-mark="*" data-pre-fill="true" data-model_name="crm.lead" data-success-mode="redirect" data-success-page="/contactus-thank-you">
+                <div class="s_website_form_rows row s_col_no_bgcolor">
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_required undefined" data-type="char"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" for="odxjv84ucg6d" style="width: 200px;"><span class="s_website_form_label_content">Your Name</span></label><div class="col-sm"><input class="form-control s_website_form_input" type="text" name="contact_name" required="1" data-fill-with="name" id="odxjv84ucg6d"/></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 undefined" data-type="tel"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" for="oin571d1ykub" style="width: 200px;"><span class="s_website_form_label_content">Phone Number</span></label><div class="col-sm"><input class="form-control s_website_form_input" type="tel" name="phone" data-fill-with="phone" id="oin571d1ykub"/></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_required undefined" data-type="email"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" for="opvfnfrwpwtf" style="width: 200px;"><span class="s_website_form_label_content">Your Email</span></label><div class="col-sm"><input class="form-control s_website_form_input" type="email" name="email_from" required="1" data-fill-with="email" id="opvfnfrwpwtf"/></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_model_required undefined" data-type="char"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" for="o6n4htnx5ugg" style="width: 200px;"><span class="s_website_form_label_content">Subject</span><br/></label><div class="col-sm"><input class="form-control s_website_form_input" type="text" name="name" required="" id="o6n4htnx5ugg"/></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="many2one"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" for="oyl4asrjlncc" style="width: 200px;"><span class="s_website_form_label_content">Select Your Services</span><br/></label><div class="col-sm"><select class="form-select s_website_form_input" name="Select Your Services" id="oyl4asrjlncc"><option id="oyl4asrjlncc0" value="Corporate Lunch" selected="selected">Corporate Lunch</option><option id="oyl4asrjlncc1" value="Wedding Catering">Wedding Catering</option><option id="oyl4asrjlncc2" value="CandleLight Dining">CandleLight Dining</option><option id="oyl4asrjlncc3" value="Birthday Celebrations">Birthday Celebrations</option><option id="oyl4asrjlncc4" value="Custom Cake order">Custom Cake order</option><option id="oyl4asrjlncc5" value="Banquet Hall">Banquet Hall</option></select></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="datetime"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" for="ofwmuilp9yvn" style="width: 200px;"><span class="s_website_form_label_content">Event Date &amp;amp; Time</span><br/></label><div class="col-sm"><div class="s_website_form_datetime input-group date"><input type="text" class="form-control datetimepicker-input s_website_form_input" name="Event Data&amp;Time" value="" placeholder="" id="ofwmuilp9yvn" data-fill-with="undefined" inputmode="none"/><div class="input-group-text o_input_group_date_icon cursor-pointer"><i class="oi oi-filled" data-icon="calendar_today"/></div></div></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_required undefined" data-type="text"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" for="oho823ufqyf" style="width: 200px;"><span class="s_website_form_label_content">Tell us about your event</span><br/></label><div class="col-sm"><textarea class="form-control s_website_form_input" name="description" required="1" id="oho823ufqyf" rows="3"/></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 undefined s_website_form_dnone"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px;"><span class="s_website_form_label_content"/></label><div class="col-sm"><input type="hidden" class="form-control s_website_form_input" name="team_id" value="8"/></div></div></div><div class="mb-0 py-2 col-12 s_website_form_submit text-end s_website_form_no_submit_label" data-name="Submit Button">
+                        <div style="width: 200px;" class="s_website_form_label"/>
+                        <span id="s_website_form_result"/>
+                        <a href="#" role="button" class="btn btn-primary s_website_form_send o_translate_inline">Submit</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="rc-section rc-dark o_colored_level" data-name="What Happens Next">
+                <div class="container">
+                    <div class="text-center mb-5">
+                        <span class="rc-eyebrow">What happens next</span>
+                        <h2 class="rc-title">Three easy steps to <em>your perfect event</em></h2>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-4"><div class="rc-step"><div class="rc-num">01</div><h4>We call you</h4><p>Your planner calls within 24 hours to understand the occasion, guests and budget.</p></div></div>
+                        <div class="col-md-4"><div class="rc-step"><div class="rc-num">02</div><h4>Taste and finalise</h4><p>Join us for a free tasting, then receive a detailed menu, layout and quotation.</p></div></div>
+                        <div class="col-md-4"><div class="rc-step"><div class="rc-num">03</div><h4>Celebrate</h4><p>We arrive early, set up, serve and clear up. You simply enjoy your day.</p></div></div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </t>
+</t>

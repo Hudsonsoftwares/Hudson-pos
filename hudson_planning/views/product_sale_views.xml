@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Product: Plan Services as <role> (services only) -->
+    <record id="product_template_form_view_planning" model="ir.ui.view">
+        <field name="name">product.template.form.planning</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="show_qty_update_button" position="before">
+                <label for="planning_enabled" invisible="type != 'service'"/>
+                <div name="planning_services" class="d-flex flex-column" invisible="type != 'service'">
+                    <div class="d-flex align-items-center gap-2">
+                        <field name="planning_enabled" nolabel="1" class="w-auto flex-grow-0"/>
+                        <span invisible="not planning_enabled">as</span>
+                        <field name="planning_role_id" nolabel="1" class="oe_inline"
+                               invisible="not planning_enabled" required="planning_enabled"
+                               placeholder="Role" options="{'no_create_edit': True}"/>
+                    </div>
+                    <span class="fst-italic text-muted" invisible="not planning_enabled">
+                        Plan shifts for your orders for employees who have this role.
+                    </span>
+                </div>
+            </field>
+        </field>
+    </record>
+
+    <!-- Sales order: Planning smart button -->
+    <record id="sale_order_form_view_planning" model="ir.ui.view">
+        <field name="name">sale.order.form.planning</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_planning" type="object" class="oe_stat_button" icon="calendar_today"
+                        invisible="not planning_slot_count" groups="hudson_planning.group_planning_user">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="planning_hours_planned" widget="float_time" nolabel="1"/>
+                            <span class="ms-1">/ <field name="planning_slot_count" invisible="1"/></span>
+                            <field name="planning_hours_to_plan" widget="float_time" nolabel="1"/>
+                        </span>
+                        <span class="o_stat_text">Planned / To Plan</span>
+                    </div>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <!-- Role: the services planned with it -->
+    <record id="fs_planning_role_view_form_products" model="ir.ui.view">
+        <field name="name">fs.planning.role.form.products</field>
+        <field name="model">fs.planning.role</field>
+        <field name="inherit_id" ref="hudson_planning.fs_planning_role_view_form"/>
+        <field name="arch" type="xml">
+            <page name="resources" position="after">
+                <page string="Services" name="services" groups="sales_team.group_sale_salesman">
+                    <field name="product_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="list_price"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+</odoo>

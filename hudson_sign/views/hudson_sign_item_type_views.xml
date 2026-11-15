@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hudson_sign_item_type_view_tree" model="ir.ui.view">
+            <field name="name">hudson.sign.item.type.list</field>
+            <field name="model">hudson.sign.item.type</field>
+            <field name="arch" type="xml">
+                <list string="Signature Fields">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="item_type"/>
+                    <field name="linked_to"/>
+                    <field name="linked_field_name" string="Linked field"/>
+                    <field name="update_field"/>
+                    <field name="shared" optional="hide"/>
+                    <field name="create_uid" string="Created by" widget="many2one_avatar_user"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hudson_sign_item_type_view_form" model="ir.ui.view">
+            <field name="name">hudson.sign.item.type.form</field>
+            <field name="model">hudson.sign.item.type</field>
+            <field name="arch" type="xml">
+                <form string="Signature Field">
+                    <sheet>
+                        <field name="item_type" widget="badges_selection" class="mb-2"/>
+                        <div class="oe_title">
+                            <label for="name" string="Field Name"/>
+                            <h1><field name="name" placeholder="e.g. Signature"/></h1>
+                        </div>
+                        <notebook>
+                            <page string="Default values" name="default_values">
+                                <group>
+                                    <group>
+                                        <field name="placeholder"/>
+                                        <field name="tip"/>
+                                        <field name="options" placeholder="e.g. Yes, No, Maybe"
+                                               invisible="item_type != 'selection'"/>
+                                        <field name="linked_to" placeholder="Autocomplete this field"
+                                               options="{'no_create': True, 'no_open': True}"
+                                               invisible="item_type not in ('text', 'multiline', 'selection', 'date')"/>
+                                        <field name="linked_field" options="{'no_create': True, 'no_open': True}"
+                                               invisible="not linked_to" required="linked_to"/>
+                                        <field name="update_field" invisible="not linked_field"/>
+                                    </group>
+                                    <group>
+                                        <field name="mandatory"/>
+                                        <field name="is_read_only" invisible="item_type in ('signature', 'initial')"/>
+                                        <field name="shared"/>
+                                        <field name="user_ids" widget="many2many_tags" placeholder="Anyone"
+                                               invisible="not shared"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- "Add Field" dialog of the template editor -->
+        <record id="hudson_sign_item_type_view_form_quick" model="ir.ui.view">
+            <field name="name">hudson.sign.item.type.form.quick</field>
+            <field name="model">hudson.sign.item.type</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Add Field" class="o_hudson_sign_add_field">
+                    <field name="item_type" widget="badges_selection" nolabel="1" class="mb-3"/>
+                    <group>
+                        <field name="name" string="Name" placeholder=""/>
+                        <field name="placeholder"/>
+                        <field name="options" placeholder="Enter options separated by Enter."
+                               invisible="item_type != 'selection'"/>
+                    </group>
+                    <separator string="Defaults"/>
+                    <group>
+                        <field name="is_read_only" string="Read-only"
+                               invisible="item_type in ('signature', 'initial')"/>
+                        <field name="mandatory"/>
+                        <field name="shared"/>
+                        <field name="user_ids" widget="many2many_tags" placeholder="Anyone"
+                               options="{'no_create': True}" invisible="not shared"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="hudson_sign_item_type_view_search" model="ir.ui.view">
+            <field name="name">hudson.sign.item.type.search</field>
+            <field name="model">hudson.sign.item.type</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="item_type"/>
+                    <filter string="Type" name="group_by_type" context="{'group_by': 'item_type'}"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hudson_sign_item_type" model="ir.actions.act_window">
+            <field name="name">Signature Fields</field>
+            <field name="res_model">hudson.sign.item.type</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem id="menu_hudson_sign_fields_action"
+                  name="Fields"
+                  parent="menu_hudson_sign_configuration"
+                  action="action_hudson_sign_item_type"
+                  sequence="20"/>
+    </data>
+</odoo>

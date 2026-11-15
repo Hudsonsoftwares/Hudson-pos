@@ -1,0 +1,158 @@
+<t name="Appointments" t-name="appointment.appointment_type_index">
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <style>
+#wrap.o_appointment_index { background: #fbf7f0; font-family: 'Inter', system-ui, sans-serif; color: #3d332a; padding-bottom: 90px; }
+.o_appointment_index h1, .o_appointment_index h2, .o_appointment_index h3, .o_appointment_index h4 { font-family: 'Playfair Display', Georgia, serif; color: #15110e; }
+.rc-appt-hero { position: relative; padding: 170px 0 120px; margin-bottom: 70px; color: #f6efe4;
+  background: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.78) 55%, rgba(21,17,14,.4) 100%),
+              url('/theme_bistro/static/src/img/backgrounds/20.webp') center/cover no-repeat; }
+.rc-appt-hero .rc-eyebrow, .o_appointment_index .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: #c9a15d; }
+.o_appointment_index .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
+.rc-appt-hero h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.05; color: #fff !important; margin: 22px 0; max-width: 800px; }
+.rc-appt-hero h1 em { color: #c9a15d; }
+.rc-appt-hero p { color: #d9cfbf; font-size: 1.12rem; line-height: 1.8; max-width: 600px; }
+.rc-appt-hero .rc-perks { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 30px; color: #e7dccb; font-size: .92rem; }
+.rc-appt-hero .rc-perks i { color: #c9a15d; margin-right: 8px; }
+/* title row + search */
+.o_appointment_index .rc-appt-head h2 { font-size: clamp(1.9rem, 3.4vw, 2.7rem); margin: 10px 0 0; }
+.o_appointment_index .o_appointment_search .form-control { border-radius: 999px 0 0 999px; border-color: #e0d2bb; padding: 11px 18px; background: #fff; min-width: 240px; }
+.o_appointment_index .o_appointment_search .btn { border-radius: 0 999px 999px 0; background: #15110e; border-color: #15110e; color: #c9a15d; padding: 0 18px; }
+.o_appointment_index .o_appointment_search .btn:hover { background: #c9a15d; color: #15110e; }
+/* cards grid */
+.o_appointment_index .rc-appt-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px !important; }
+.o_appointment_index .o_appointment_type_card { flex-direction: column !important; background: #fff !important; border: 1px solid #efe5d5 !important; border-radius: 20px !important;
+  color: #3d332a !important; text-decoration: none; position: relative; transition: all .35s ease; box-shadow: none; height: 100%; }
+.o_appointment_index .o_appointment_type_card:hover { transform: translateY(-6px); box-shadow: 0 34px 60px -34px rgba(43,33,26,.55); border-color: #e3d2b4 !important; }
+.o_appointment_index .o_appointment_type_card_image { display: block !important; order: -1; width: 100%; height: 220px; background-size: cover; background-position: center; transition: transform .9s ease; }
+.o_appointment_index .o_appointment_type_card:not(:has(.o_appointment_type_card_image))::before { content: ""; order: -1; display: block; height: 220px;
+  background: linear-gradient(140deg, rgba(21,17,14,.55), rgba(21,17,14,.15)), url('/theme_bistro/static/src/img/configurator/set_1_landscape_md_2.webp') center/cover; }
+.o_appointment_index .o_appointment_type_card > .d-flex { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 26px 26px 76px !important; }
+.o_appointment_index .premium-card-title { font-size: 1.5rem; line-height: 1.25; color: #15110e; display: flex; align-items: center; }
+.o_appointment_index .premium-card-title > span.me-2 { width: 46px; height: 46px; min-width: 46px; border-radius: 50%; background: #15110e; display: inline-flex; align-items: center; justify-content: center; font-size: 1.35rem; margin-right: 14px !important; }
+.o_appointment_index .o_appointment_type_card_info { flex-direction: row !important; flex-wrap: wrap; gap: 10px 22px !important; color: #6f6253; font-size: .92rem; }
+.o_appointment_index .o_appointment_type_card_info .fw-semibold { font-weight: 500 !important; }
+.o_appointment_index .o_appointment_type_card_info .oi { color: #c9a15d; }
+.o_appointment_index .o_appointment_chip { background: #f4ecdf; color: #7a6a57; border-radius: 999px; padding: 4px 12px 4px 4px; font-size: .82rem; display: inline-flex; align-items: center; gap: 8px; }
+.o_appointment_index .o_appointment_avatar { width: 26px; height: 26px; background: #15110e; color: #c9a15d; font-size: .75rem; font-weight: 600; }
+.o_appointment_index .o_appointment_type_card::after { content: "Book now  \2192"; position: absolute; left: 26px; right: 26px; bottom: 22px; text-align: center;
+  padding: 11px; border-radius: 999px; background: #15110e; color: #c9a15d; font-weight: 600; font-size: .9rem; transition: all .3s ease; }
+.o_appointment_index .o_appointment_type_card:hover::after { background: #c9a15d; color: #15110e; }
+.o_appointment_index .o_appointment_unpublished { position: absolute; top: 14px; right: 14px; border-radius: 999px; }
+/* how it works */
+.o_appointment_index .rc-appt-steps { margin-top: 80px; background: #15110e; border-radius: 24px; padding: 54px 46px; color: #f6efe4; }
+.o_appointment_index .rc-appt-steps h3 { color: #fff; font-size: clamp(1.7rem, 3vw, 2.3rem); margin: 12px 0 30px; }
+.o_appointment_index .rc-appt-steps h3 em { color: #c9a15d; }
+.o_appointment_index .rc-step { display: flex; gap: 16px; }
+.o_appointment_index .rc-step b { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #c9a15d; line-height: 1; }
+.o_appointment_index .rc-step h4 { color: #fff; font-size: 1.15rem; margin: 0 0 6px; }
+.o_appointment_index .rc-step p { color: #a99a86; margin: 0; font-size: .92rem; line-height: 1.6; }
+/* website header: dark glass, same as the homepage */
+header#top { background: rgba(21,17,14,.92) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
+header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary), header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+header#top .navbar .navbar-brand, header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
+header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
+header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
+header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+header#top .offcanvas { background: #1f1813 !important; }
+header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
+header#top .offcanvas .btn-close { filter: invert(1); }
+header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
+@media (max-width: 767px) { .rc-appt-hero { padding: 140px 0 80px; } .o_appointment_index .rc-appt-grid { grid-template-columns: 1fr; } .o_appointment_index .rc-appt-steps { padding: 36px 24px; } }
+        </style>
+    </t>
+        <t t-call="website.layout" head="head">
+            <div id="wrap" class="o_appointment_page o_appointment_index">
+                <section class="rc-appt-hero">
+                    <div class="container">
+                        <span class="rc-eyebrow">Reservations &amp; Celebrations</span>
+                        <h1>Reserve your table, <em>celebrate your moments</em></h1>
+                        <p>Book a table by the backwaters or let us host your birthday, anniversary or big win. Pick an experience, choose a time and we'll take care of the rest.</p>
+                        <div class="rc-perks">
+                            <span><i class="fa fa-bolt"/>Instant confirmation</span>
+                            <span><i class="fa fa-birthday-cake"/>Cakes &amp; décor on request</span>
+                            <span><i class="fa fa-calendar-times-o"/>Free changes up to 24 h before</span>
+                        </div>
+                    </div>
+                </section>
+                <div class="container">
+                    <div class="rc-appt-head d-flex flex-wrap align-items-end justify-content-between gap-3 mb-5">
+                        <div><span class="rc-eyebrow">Book online</span><h2>Choose your experience</h2></div>
+                        <form action="/appointment" method="get" class="o_appointment_search" role="search">
+                            <div class="input-group">
+                                <input type="search" name="search" class="form-control" placeholder="Search experiences..." aria-label="Search appointments" t-att-value="search or None"/>
+                                <button type="submit" class="btn btn-outline-primary" aria-label="Search">
+                                    <i class="oi" data-icon="search"/>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <t t-if="not appointment_types">
+                        <div class="text-center py-5">
+                            <p class="lead text-muted mb-2" t-if="search">No appointment matches "<t t-out="search"/>".</p>
+                            <p class="lead text-muted mb-2" t-else="">No appointments are currently available for booking.</p>
+                            <a t-if="search" href="/appointment" class="btn btn-link">Show all appointments</a>
+                        </div>
+                    </t>
+
+                    <div class="rc-appt-grid d-flex flex-column gap-3">
+                        <t t-foreach="appointment_types" t-as="appt">
+                            <a t-attf-href="/appointment/#{appt.id}" class="premium-card o_cc o_cc1 o_appointment_type_card d-flex align-items-stretch p-0 overflow-hidden">
+                                <div class="d-flex flex-column flex-md-row flex-grow-1 align-items-md-center gap-3 p-4">
+                                    <div class="o_appointment_type_card_name flex-grow-1">
+                                        <h3 class="premium-card-title mb-0">
+                                            <span t-if="appt.event_emoji" class="me-2"><t t-out="appt.event_emoji"/></span>
+                                            <t t-out="appt.name"/>
+                                        </h3>
+                                    </div>
+                                    <div class="o_appointment_type_card_info d-flex flex-column gap-1">
+                                        <div class="d-flex align-items-center fw-semibold">
+                                            <i t-if="appt.location == 'online' and appt.booking_target != 'resources'" class="oi oi-filled me-2" data-icon="videocam"/>
+                                            <i t-else="" class="oi me-2" data-icon="location_on"/>
+                                            <span t-out="appt._get_location_label()"/>
+                                        </div>
+                                        <div class="d-flex align-items-center fw-semibold">
+                                            <i class="oi me-2" data-icon="schedule"/>
+                                            <span t-out="appt._get_duration_label()"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_appointment_type_card_staff d-flex flex-wrap align-items-center gap-2">
+                                        <t t-if="appt.booking_target == 'resources'">
+                                            <span t-foreach="appt.resource_ids[:3]" t-as="resource" class="o_appointment_chip">
+                                                <span class="o_appointment_avatar rounded-circle d-inline-flex justify-content-center align-items-center" t-out="(resource.name or '?')[:1].upper()"/>
+                                                <span t-out="resource.name"/>
+                                            </span>
+                                            <span t-if="len(appt.resource_ids) &gt; 3" class="o_appointment_chip">+<t t-out="len(appt.resource_ids) - 3"/></span>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-foreach="appt.user_ids[:3]" t-as="staff" class="o_appointment_chip">
+                                                <span class="o_appointment_avatar rounded-circle d-inline-flex justify-content-center align-items-center" t-out="(staff.name or '?')[:1].upper()"/>
+                                                <span t-out="staff.name"/>
+                                            </span>
+                                            <span t-if="len(appt.user_ids) &gt; 3" class="o_appointment_chip">+<t t-out="len(appt.user_ids) - 3"/></span>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div t-if="appt.image_1920" class="o_appointment_type_card_image d-none d-md-block" t-attf-style="background-image: url('/web/image/appointment.type/#{appt.id}/image_512');"/>
+                                <span t-if="is_editor and not appt.is_published" class="badge text-bg-danger o_appointment_unpublished">
+                                    <i class="oi me-1" data-icon="block"/>Unpublished
+                                </span>
+                            </a>
+                        </t>
+                    </div>
+                    <div class="rc-appt-steps">
+                        <span class="rc-eyebrow">How booking works</span>
+                        <h3>Three steps to <em>your table</em></h3>
+                        <div class="row g-4">
+                            <div class="col-md-4"><div class="rc-step"><b>01</b><div><h4>Pick an experience</h4><p>Table booking, birthday, anniversary or any celebration.</p></div></div></div>
+                            <div class="col-md-4"><div class="rc-step"><b>02</b><div><h4>Choose date and time</h4><p>See live availability and select the slot and party size that suit you.</p></div></div></div>
+                            <div class="col-md-4"><div class="rc-step"><b>03</b><div><h4>Arrive and enjoy</h4><p>Get instant confirmation; your table and any décor will be ready when you arrive.</p></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>

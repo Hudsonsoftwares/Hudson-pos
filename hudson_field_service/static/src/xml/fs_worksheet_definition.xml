@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hudson_field_service.FsWorksheetDefinitionField" t-inherit="web.PropertiesDefinitionField" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_property_field_value')]/div[hasclass('w-100')]" position="inside">
+            <span class="o_fs_worksheet_field_type d-flex align-items-center text-muted">
+                <img class="me-2" t-attf-src="/web/static/src/views/fields/properties/icons/{{propertyConfiguration.type}}.png"
+                     style="width: 20px; height: 20px;" alt=""/>
+                <t t-out="this.getTypeLabel(propertyConfiguration.type)"/>
+            </span>
+        </xpath>
+    </t>
+</templates>

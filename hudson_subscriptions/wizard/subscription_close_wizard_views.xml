@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_subscription_close_wizard_form" model="ir.ui.view">
+        <field name="name">sale.subscription.close.wizard.form</field>
+        <field name="model">sale.subscription.close.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Close Subscription">
+                <sheet>
+                    <div class="text-muted mb-3">
+                        Select the primary reason for closing/churning this subscription and optionally add notes.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="subscription_id" readonly="1"/>
+                            <field name="close_reason_id" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="close_date"/>
+                        </group>
+                    </group>
+                    <group string="Additional Notes">
+                        <field name="notes" placeholder="Specify why the customer decided to cancel..." nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Close Subscription" name="action_close" type="object" class="btn-danger"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_subscription_close_wizard" model="ir.actions.act_window">
+        <field name="name">Close Subscription</field>
+        <field name="res_model">sale.subscription.close.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

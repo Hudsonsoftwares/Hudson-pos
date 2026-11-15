@@ -20,7 +20,6 @@ DEMO_XML_FILES = [
     'demo/loyalty_programs.xml',
     'demo/products_resto.xml',
     'demo/recruitment_demo.xml',
-    'demo/elearning_demo.xml',
 ]
 
 IMAGE_SEARCH_PATHS = [
@@ -115,9 +114,6 @@ def load_pos_demo_data(env, pos_config_ids=None):
         ):
             _logger.info("Skipping %s because website_hr_recruitment is not installed.", xml_file)
             continue
-        if xml_file == 'demo/elearning_demo.xml' and 'slide.channel' not in env:
-            _logger.info("Skipping %s because website_slides is not installed.", xml_file)
-            continue
         try:
             with env.cr.savepoint():
                 _logger.info("Loading demo XML: %s", xml_file)
@@ -196,10 +192,10 @@ def load_pos_demo_data(env, pos_config_ids=None):
     except Exception as e:
         _logger.warning("Could not load recruitment demo data: %s", e)
 
-    # 12. Configure & publish eLearning courses to website
+    # 12. Load Resto Cafe Solutions eLearning demo data (courses, quizzes, certification, paid course)
     try:
-        with env.cr.savepoint():
-            _load_elearning_demo_data(env)
+        from .demo_elearning_suite import load_elearning_suite_demo_data
+        load_elearning_suite_demo_data(env)
     except Exception as e:
         _logger.warning("Could not load eLearning demo data: %s", e)
 
@@ -233,6 +229,133 @@ def load_pos_demo_data(env, pos_config_ids=None):
             load_inventory_suite_demo_data(env)
     except Exception as e:
         _logger.warning("Could not load Inventory suite demo data: %s", e)
+
+    # 17. Load Resto Cafe Solutions CRM demo data (Leads, Pipeline, Teams, Activities, Lost reasons, UTM)
+    try:
+        from .demo_crm_suite import load_crm_suite_demo_data
+        load_crm_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load CRM suite demo data: %s", e)
+
+    # 18. Load Resto Cafe Solutions Blog, Events and Email Marketing demo data (installed apps only)
+    try:
+        from .demo_marketing_suite import load_marketing_suite_demo_data
+        load_marketing_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Marketing suite demo data: %s", e)
+
+    # 19. Load Resto Cafe Solutions packaged-food webshop (eCommerce) demo data
+    try:
+        from .demo_ecommerce_suite import load_ecommerce_suite_demo_data
+        load_ecommerce_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load eCommerce suite demo data: %s", e)
+
+    # 20. Load Resto Cafe Solutions Sales demo data (catering quotations, templates, headers/footers, promotions)
+    try:
+        from .demo_sales_suite import load_sales_suite_demo_data
+        load_sales_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Sales suite demo data: %s", e)
+
+    # 21. Load Resto Cafe Solutions Purchase & Inventory demo data
+    try:
+        from .demo_purchase_suite import load_purchase_suite_demo_data
+        load_purchase_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Purchase & Inventory demo data: %s", e)
+
+    # 22. Load Resto Cafe Solutions Manufacturing & Shop Floor demo data
+    try:
+        from .demo_mrp_suite import load_mrp_suite_demo_data
+        load_mrp_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Manufacturing & Shop Floor demo data: %s", e)
+
+    # 23. Load Resto Cafe Solutions Quality & Maintenance demo data
+    try:
+        from .demo_quality_maintenance_suite import load_quality_maintenance_suite_demo_data
+        load_quality_maintenance_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Quality & Maintenance demo data: %s", e)
+
+    # 23b. Load Resto Cafe Solutions Inventory features demo data (expiry lots, locations, packages, UoM,
+    #      removal strategies, reordering rules, multi-step routes, receipt quality checks, returns)
+    try:
+        from .demo_inventory_features_suite import load_inventory_features_suite_demo_data
+        load_inventory_features_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Inventory features demo data: %s", e)
+
+    # 24. Load Resto Cafe Solutions Rental & Subscriptions demo data
+    try:
+        from .demo_rental_subscription_suite import load_rental_subscription_suite_demo_data
+        load_rental_subscription_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Rental & Subscriptions demo data: %s", e)
+
+    # 25. Load Resto Cafe Solutions Planning demo data
+    try:
+        from .demo_planning_suite import load_planning_suite_demo_data
+        load_planning_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Planning demo data: %s", e)
+
+    # 26. Load Resto Cafe Solutions Project & Timesheet demo data
+    try:
+        from .demo_project_suite import load_project_suite_demo_data
+        load_project_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Project & Timesheet demo data: %s", e)
+
+    # 27. Load Resto Cafe Solutions Fleet, Lunch & Expenses demo data
+    try:
+        from .demo_fleet_lunch_expense_suite import load_fleet_lunch_expense_suite_demo_data
+        load_fleet_lunch_expense_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Fleet, Lunch & Expenses demo data: %s", e)
+
+    # 28. Load Resto Cafe Solutions Approvals & PLM demo data
+    try:
+        from .demo_approvals_plm_suite import load_approvals_plm_suite_demo_data
+        load_approvals_plm_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Approvals & PLM demo data: %s", e)
+
+    # 29. Load Resto Cafe Solutions Helpdesk demo data
+    try:
+        from .demo_helpdesk_suite import load_helpdesk_suite_demo_data
+        load_helpdesk_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Helpdesk demo data: %s", e)
+
+    # 30. Load Resto Cafe Solutions HR people demo data
+    try:
+        from .demo_hr_people_suite import load_hr_people_suite_demo_data
+        load_hr_people_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load HR people demo data: %s", e)
+
+    # 31. Load Resto Cafe Solutions Recruitment & Payroll demo data
+    try:
+        from .demo_recruitment_payroll_suite import load_recruitment_payroll_suite_demo_data
+        load_recruitment_payroll_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Recruitment & Payroll demo data: %s", e)
+
+    # 32. Load Resto Cafe Solutions Collaboration demo data
+    try:
+        from .demo_collaboration_suite import load_collaboration_suite_demo_data
+        load_collaboration_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Collaboration demo data: %s", e)
+
+    # 33. Load Resto Cafe Solutions Company setup demo data
+    try:
+        from .demo_company_setup_suite import load_company_setup_suite_demo_data
+        load_company_setup_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Company setup demo data: %s", e)
 
     _logger.info("Hudson POS: Restaurant & Cafe demo data loaded successfully.")
     return True
@@ -1016,79 +1139,6 @@ def _load_recruitment_demo_data(env):
                     _logger.warning("Could not set published state for job %s: %s", job.name, e)
 
     _logger.info("Hudson POS: Recruitment demo data published to website successfully.")
-
-
-def _load_elearning_demo_data(env):
-    """
-    Ensures Restaurant & Cafe eLearning courses (slide.channel) are active,
-    published to the website, and have sample lesson slides (slide.slide).
-    """
-    _logger.info("Hudson POS: Verifying eLearning demo data and website course publishing...")
-
-    if 'slide.channel' not in env:
-        _logger.warning("Hudson POS: slide.channel model not available, skipping eLearning demo data.")
-        return
-
-    SlideChannel = env['slide.channel'].sudo()
-
-    demo_channel_xml_ids = [
-        'slide_channel_kerala_cuisine',
-        'slide_channel_barista_coffee',
-        'slide_channel_restaurant_ops',
-        'slide_channel_food_safety',
-    ]
-
-    # Clean up any dummy website page intercepting /slides
-    if 'website.page' in env:
-        dummy_pages = env['website.page'].sudo().search([('url', '=', '/slides')])
-        for dp in dummy_pages:
-            try:
-                dp.unlink()
-            except Exception:
-                pass
-
-    for xml_id in demo_channel_xml_ids:
-        channel = env.ref(f'hudson_pos_demo_data.{xml_id}', raise_if_not_found=False)
-        if channel and channel.exists():
-            write_vals = {
-                'channel_type': 'training',
-                'visibility': 'public',
-                'enroll': 'public',
-            }
-            if hasattr(channel, 'is_published') and not channel.is_published:
-                write_vals['is_published'] = True
-            if hasattr(channel, 'active') and not channel.active:
-                write_vals['active'] = True
-            try:
-                channel.write(write_vals)
-                _logger.info("Hudson POS: Published eLearning channel: %s", channel.name)
-            except Exception as e:
-                _logger.warning("Could not publish eLearning channel %s: %s", channel.name, e)
-        else:
-            _logger.warning("Hudson POS: eLearning channel XML ID not found: %s", xml_id)
-
-    # Also ensure all lesson slides are published
-    if 'slide.slide' in env:
-        SlidePage = env['slide.slide'].sudo()
-        demo_channel_ids = []
-        for xml_id in demo_channel_xml_ids:
-            channel = env.ref(f'hudson_pos_demo_data.{xml_id}', raise_if_not_found=False)
-            if channel and channel.exists():
-                demo_channel_ids.append(channel.id)
-
-        if demo_channel_ids:
-            unpublished_slides = SlidePage.search([
-                ('channel_id', 'in', demo_channel_ids),
-                ('is_published', '=', False),
-            ])
-            if unpublished_slides:
-                try:
-                    unpublished_slides.write({'is_published': True})
-                    _logger.info("Hudson POS: Published %d eLearning slides.", len(unpublished_slides))
-                except Exception as e:
-                    _logger.warning("Could not publish eLearning slides: %s", e)
-
-    _logger.info("Hudson POS: eLearning demo data published to website successfully.")
 
 
 def _load_kitchen_display_demo_data(env):

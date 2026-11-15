@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="fs_planning_role_view_tree" model="ir.ui.view">
+        <field name="name">fs.planning.role.tree</field>
+        <field name="model">fs.planning.role</field>
+        <field name="arch" type="xml">
+            <list string="Roles" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="resource_ids" widget="many2many_avatar_employee"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="fs_planning_role_view_form" model="ir.ui.view">
+        <field name="name">fs.planning.role.form</field>
+        <field name="model">fs.planning.role</field>
+        <field name="arch" type="xml">
+            <form string="Role">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_fs_schedule_by_role)d" type="action" class="oe_stat_button" icon="calendar_today"
+                                context="{'search_default_role_id': id}">
+                            <field name="slot_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Electrician"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="color" widget="color_picker"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Resources" name="resources">
+                            <field name="resource_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="job_title"/>
+                                    <field name="department_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fs_planning_role" model="ir.actions.act_window">
+        <field name="name">Roles</field>
+        <field name="res_model">fs.planning.role</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Planning Role
+            </p>
+            <p>
+                Roles define the different types of work your employees can perform (e.g. Plumber, Electrician).
+            </p>
+        </field>
+    </record>
+
+    <!-- Employee: roles and default role (Work tab) -->
+    <record id="hr_employee_view_form_planning_roles" model="ir.ui.view">
+        <field name="name">hr.employee.form.planning.roles</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <group name="work_location" position="after">
+                <group name="planning" string="Planning" groups="hudson_planning.group_planning_manager">
+                    <field name="planning_role_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                    <field name="default_planning_role_id" options="{'no_create': True}"
+                           placeholder="First of the roles"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

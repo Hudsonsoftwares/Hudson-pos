@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Client action for Green Savings -->
+        <record id="action_hudson_sign_green_savings" model="ir.actions.client">
+            <field name="name">Green Savings</field>
+            <field name="tag">hudson_sign.green_savings</field>
+        </record>
+
+        <menuitem id="menu_hudson_sign_green_savings"
+                  name="Green Savings"
+                  parent="menu_hudson_sign_reports"
+                  action="action_hudson_sign_green_savings"
+                  sequence="10"/>
+    </data>
+</odoo>

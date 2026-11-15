@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ECO Analysis -->
+    <record id="mrp_eco_action_report" model="ir.actions.act_window">
+        <field name="name">ECO Analysis</field>
+        <field name="res_model">mrp.eco</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('mrp_eco_view_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('mrp_eco_view_pivot')})]"/>
+        <field name="context">{'search_default_group_by_type_id': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No data yet!</p>
+            <p>Analyse your Engineering Change Orders by type, stage, status, product or responsible.</p>
+        </field>
+    </record>
+
+    <!-- Approval Analysis -->
+    <record id="mrp_eco_approval_view_list" model="ir.ui.view">
+        <field name="name">mrp.eco.approval.view.list</field>
+        <field name="model">mrp.eco.approval</field>
+        <field name="arch" type="xml">
+            <list string="Approvals" create="0" edit="0" delete="0"
+                  decoration-success="status == 'approved'" decoration-danger="status == 'rejected'">
+                <field name="eco_id"/>
+                <field name="eco_type_id"/>
+                <field name="product_tmpl_id"/>
+                <field name="stage_id"/>
+                <field name="name"/>
+                <field name="approval_type"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="approval_date"/>
+                <field name="status" widget="badge" decoration-success="status == 'approved'"
+                       decoration-danger="status == 'rejected'" decoration-info="status == 'none'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mrp_eco_approval_view_pivot" model="ir.ui.view">
+        <field name="name">mrp.eco.approval.view.pivot</field>
+        <field name="model">mrp.eco.approval</field>
+        <field name="arch" type="xml">
+            <pivot string="Approval Analysis" sample="1">
+                <field name="name" type="row"/>
+                <field name="status" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="mrp_eco_approval_view_graph" model="ir.ui.view">
+        <field name="name">mrp.eco.approval.view.graph</field>
+        <field name="model">mrp.eco.approval</field>
+        <field name="arch" type="xml">
+            <graph string="Approval Analysis" type="bar" stacked="1" sample="1">
+                <field name="name"/>
+                <field name="status"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="mrp_eco_approval_view_search" model="ir.ui.view">
+        <field name="name">mrp.eco.approval.view.search</field>
+        <field name="model">mrp.eco.approval</field>
+        <field name="arch" type="xml">
+            <search string="Approvals">
+                <field name="eco_id"/>
+                <field name="product_tmpl_id"/>
+                <field name="user_id"/>
+                <filter string="Pending" name="filter_pending" domain="[('status', '=', 'none')]"/>
+                <filter string="Approved" name="filter_approved" domain="[('status', '=', 'approved')]"/>
+                <filter string="Rejected" name="filter_rejected" domain="[('status', '=', 'rejected')]"/>
+                <separator/>
+                <filter string="Decision Date" name="filter_approval_date" date="approval_date"/>
+                <group>
+                    <filter string="Role" name="group_by_name" context="{'group_by': 'name'}"/>
+                    <filter string="Approved by" name="group_by_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Stage" name="group_by_stage" context="{'group_by': 'stage_id'}"/>
+                    <filter string="ECO Type" name="group_by_type" context="{'group_by': 'eco_type_id'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="mrp_eco_approval_action_report" model="ir.actions.act_window">
+        <field name="name">Approval Analysis</field>
+        <field name="res_model">mrp.eco.approval</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No approvals yet!</p>
+            <p>See who approved or rejected which ECOs, and where decisions are pending.</p>
+        </field>
+    </record>
+
+    <!-- BoM Change Analysis -->
+    <record id="mrp_eco_bom_change_view_pivot" model="ir.ui.view">
+        <field name="name">mrp.eco.bom.change.view.pivot</field>
+        <field name="model">mrp.eco.bom.change</field>
+        <field name="arch" type="xml">
+            <pivot string="BoM Change Analysis" sample="1">
+                <field name="product_tmpl_id" type="row"/>
+                <field name="change_type" type="col"/>
+                <field name="cost_diff" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="mrp_eco_bom_change_view_graph" model="ir.ui.view">
+        <field name="name">mrp.eco.bom.change.view.graph</field>
+        <field name="model">mrp.eco.bom.change</field>
+        <field name="arch" type="xml">
+            <graph string="BoM Change Analysis" type="bar" sample="1">
+                <field name="product_tmpl_id"/>
+                <field name="cost_diff" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="mrp_eco_bom_change_view_search" model="ir.ui.view">
+        <field name="name">mrp.eco.bom.change.view.search</field>
+        <field name="model">mrp.eco.bom.change</field>
+        <field name="arch" type="xml">
+            <search string="BoM Changes">
+                <field name="eco_id"/>
+                <field name="product_tmpl_id"/>
+                <field name="product_id"/>
+                <filter string="Added" name="filter_add" domain="[('change_type', '=', 'add')]"/>
+                <filter string="Removed" name="filter_remove" domain="[('change_type', '=', 'remove')]"/>
+                <filter string="Updated" name="filter_update" domain="[('change_type', '=', 'update')]"/>
+                <group>
+                    <filter string="ECO" name="group_by_eco" context="{'group_by': 'eco_id'}"/>
+                    <filter string="Product" name="group_by_product" context="{'group_by': 'product_tmpl_id'}"/>
+                    <filter string="Component" name="group_by_component" context="{'group_by': 'product_id'}"/>
+                    <filter string="Change Type" name="group_by_change_type" context="{'group_by': 'change_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="mrp_eco_bom_change_action_report" model="ir.actions.act_window">
+        <field name="name">BoM Change Analysis</field>
+        <field name="res_model">mrp.eco.bom.change</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No BoM changes yet!</p>
+            <p>Component changes and their cost impact appear here once an ECO revision is started.</p>
+        </field>
+    </record>
+
+    <!-- Operation Change Analysis -->
+    <record id="mrp_eco_routing_change_view_list" model="ir.ui.view">
+        <field name="name">mrp.eco.routing.change.view.list</field>
+        <field name="model">mrp.eco.routing.change</field>
+        <field name="arch" type="xml">
+            <list string="Operation Changes" create="0" edit="0" delete="0">
+                <field name="eco_id"/>
+                <field name="change_type"/>
+                <field name="operation_name"/>
+                <field name="workcenter_id"/>
+                <field name="duration_diff" widget="float_time" sum="Total Duration"/>
+                <field name="cost_diff" sum="Total Cost" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mrp_eco_routing_change_view_pivot" model="ir.ui.view">
+        <field name="name">mrp.eco.routing.change.view.pivot</field>
+        <field name="model">mrp.eco.routing.change</field>
+        <field name="arch" type="xml">
+            <pivot string="Operation Change Analysis" sample="1">
+                <field name="workcenter_id" type="row"/>
+                <field name="change_type" type="col"/>
+                <field name="duration_diff" type="measure"/>
+                <field name="cost_diff" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="mrp_eco_routing_change_view_search" model="ir.ui.view">
+        <field name="name">mrp.eco.routing.change.view.search</field>
+        <field name="model">mrp.eco.routing.change</field>
+        <field name="arch" type="xml">
+            <search string="Operation Changes">
+                <field name="eco_id"/>
+                <field name="product_tmpl_id"/>
+                <field name="workcenter_id"/>
+                <group>
+                    <filter string="ECO" name="group_by_eco" context="{'group_by': 'eco_id'}"/>
+                    <filter string="Work Center" name="group_by_workcenter" context="{'group_by': 'workcenter_id'}"/>
+                    <filter string="Change Type" name="group_by_change_type" context="{'group_by': 'change_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="mrp_eco_routing_change_action_report" model="ir.actions.act_window">
+        <field name="name">Operation Change Analysis</field>
+        <field name="res_model">mrp.eco.routing.change</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No operation changes yet!</p>
+            <p>Changes to operations and work centers appear here once an ECO revision is started.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_plm_report_eco" name="Engineering Changes" parent="menu_plm_reporting"
+              action="mrp_eco_action_report" sequence="10"/>
+    <menuitem id="menu_plm_report_approval" name="Approvals" parent="menu_plm_reporting"
+              action="mrp_eco_approval_action_report" sequence="20"/>
+    <menuitem id="menu_plm_report_bom_change" name="BoM Changes" parent="menu_plm_reporting"
+              action="mrp_eco_bom_change_action_report" sequence="30"/>
+    <menuitem id="menu_plm_report_routing_change" name="Operation Changes" parent="menu_plm_reporting"
+              action="mrp_eco_routing_change_action_report" sequence="40"/>
+</odoo>

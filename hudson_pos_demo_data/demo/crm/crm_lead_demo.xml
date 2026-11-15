@@ -1,0 +1,790 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_lead_1" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=2)"/>
+            <field name="type">lead</field>
+            <field name="name">Office Christmas Party Catering (80 pax)</field>
+            <field name="contact_name">Sandeep Raj</field>
+            <field name="email_from">sandeep.raj@kinfra.example.com</field>
+            <field name="phone">+91 98950 44110</field>
+            <field name="partner_name">Kinfra Export Park</field>
+            <field name="function">Admin Executive</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_catering'), ref('rc_tag_party')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="campaign_id" ref="rc_campaign_christmas"/>
+            <field name="medium_id" ref="utm.utm_medium_website"/>
+            <field name="source_id" ref="utm.utm_source_google"/>
+        </record>
+        <record id="rc_lead_2" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=4)"/>
+            <field name="type">lead</field>
+            <field name="name">Weekly Snack Boxes for Co-working Members</field>
+            <field name="contact_name">Rahul Iyer</field>
+            <field name="email_from">rahul.iyer@nestcowork.example.com</field>
+            <field name="phone">+91 484 404 3322</field>
+            <field name="partner_name">Nest Coworking Spaces</field>
+            <field name="function">Community Manager</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_bakery'), ref('rc_tag_subscription')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="campaign_id" ref="rc_campaign_corporate"/>
+            <field name="medium_id" ref="utm.utm_medium_email"/>
+            <field name="source_id" ref="utm.utm_source_newsletter"/>
+        </record>
+        <record id="rc_lead_3" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=6)"/>
+            <field name="type">lead</field>
+            <field name="name">Film Festival Hospitality Lounge (5 days)</field>
+            <field name="contact_name">Meera Nambiar</field>
+            <field name="email_from">meera.nambiar@kochifilm.example.com</field>
+            <field name="phone">+91 484 236 9191</field>
+            <field name="partner_name">Kochi Film Society</field>
+            <field name="function">Festival Coordinator</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_banquet'), ref('rc_tag_outdoor')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="medium_id" ref="utm.utm_medium_social_media"/>
+            <field name="source_id" ref="utm.utm_source_instagram"/>
+        </record>
+        <record id="rc_lead_4" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=9)"/>
+            <field name="type">lead</field>
+            <field name="name">Marathon Finish-Line Breakfast Stall</field>
+            <field name="contact_name">Divya Menon</field>
+            <field name="email_from">divya.menon@coastalrunners.example.com</field>
+            <field name="phone">+91 98470 33221</field>
+            <field name="partner_name">Coastal Runners Club</field>
+            <field name="function">Club Secretary</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_outdoor')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="medium_id" ref="utm.utm_medium_social_media"/>
+            <field name="source_id" ref="utm.utm_source_facebook"/>
+        </record>
+        <record id="rc_lead_5" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=12)"/>
+            <field name="type">lead</field>
+            <field name="name">Franchise Enquiry – Café Outlet in Thrissur</field>
+            <field name="contact_name">Joseph Antony</field>
+            <field name="email_from">joseph@antonyhospitality.example.com</field>
+            <field name="phone">+91 94460 77881</field>
+            <field name="partner_name">Antony Hospitality Group</field>
+            <field name="function">Managing Partner</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_franchise')])]"/>
+            <field name="priority">3</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="medium_id" ref="utm.utm_medium_website"/>
+            <field name="source_id" ref="utm.utm_source_linkedin"/>
+        </record>
+        <record id="rc_lead_6" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=15)"/>
+            <field name="type">lead</field>
+            <field name="name">School Annual Day Snacks (600 students)</field>
+            <field name="contact_name">Fr. Joseph Mathew</field>
+            <field name="email_from">principal@stteresas.example.com</field>
+            <field name="phone">+91 484 237 1010</field>
+            <field name="partner_name">St. Teresa's Public School</field>
+            <field name="function">Principal</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_catering'), ref('rc_tag_bakery')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="campaign_id" ref="rc_campaign_onam"/>
+            <field name="medium_id" ref="utm.utm_medium_phone"/>
+            <field name="source_id" ref="utm.utm_source_referral"/>
+        </record>
+        <record id="rc_lead_7" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=20)"/>
+            <field name="type">lead</field>
+            <field name="name">Tourist Group Lunch Packages</field>
+            <field name="contact_name">Faisal Rahman</field>
+            <field name="email_from">faisal.rahman@spiceroute.example.com</field>
+            <field name="phone">+91 484 221 5566</field>
+            <field name="partner_name">Spice Route Travels</field>
+            <field name="function">Tour Operations Head</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_catering')])]"/>
+            <field name="priority">0</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="medium_id" ref="utm.utm_medium_email"/>
+            <field name="source_id" ref="utm.utm_source_mailing"/>
+        </record>
+        <record id="rc_lead_8" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=1)"/>
+            <field name="type">lead</field>
+            <field name="name">Engagement Ceremony Dessert Table</field>
+            <field name="contact_name">Aishwarya Pillai</field>
+            <field name="email_from">aishwarya.pillai@example.com</field>
+            <field name="phone">+91 99460 12121</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_wedding'), ref('rc_tag_bakery')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="campaign_id" ref="rc_campaign_wedding"/>
+            <field name="medium_id" ref="utm.utm_medium_social_media"/>
+            <field name="source_id" ref="utm.utm_source_instagram"/>
+        </record>
+        <record id="rc_opp_1" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=3)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Christmas Eve Family Feast – Private Dining (25 pax)</field>
+            <field name="partner_id" ref="rc_partner_bluewave_contact"/>
+            <field name="partner_name">BlueWave Technologies</field>
+            <field name="contact_name">Neha Kurian</field>
+            <field name="function">HR &amp; Admin Manager</field>
+            <field name="email_from">neha.kurian@bluewave.example.com</field>
+            <field name="phone">+91 484 240 1100</field>
+            <field name="street">Infopark Phase 2, Kakkanad</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682042</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_party')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="probability" eval="20"/>
+            <field name="expected_revenue" eval="45000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=3)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=20)).strftime('%Y-%m-%d')"/>
+            <field name="campaign_id" ref="rc_campaign_christmas"/>
+            <field name="medium_id" ref="utm.utm_medium_website"/>
+            <field name="source_id" ref="utm.utm_source_google"/>
+        </record>
+        <record id="rc_opp_2" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=5)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Hospital Staff Night-Shift Meal Plan</field>
+            <field name="partner_id" ref="rc_partner_greenleaf_contact"/>
+            <field name="partner_name">GreenLeaf Multispecialty Hospital</field>
+            <field name="contact_name">Dr. Arun Varghese</field>
+            <field name="function">Administrator</field>
+            <field name="email_from">arun.varghese@greenleafhospital.example.com</field>
+            <field name="phone">+91 484 280 9000</field>
+            <field name="street">Edappally Bypass</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682024</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_subscription'), ref('rc_tag_corporate')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="probability" eval="15"/>
+            <field name="expected_revenue" eval="120000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=5)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=35)).strftime('%Y-%m-%d')"/>
+            <field name="recurring_revenue" eval="40000"/>
+            <field name="recurring_plan" ref="crm.crm_recurring_plan_monthly"/>
+            <field name="campaign_id" ref="rc_campaign_corporate"/>
+            <field name="medium_id" ref="utm.utm_medium_email"/>
+            <field name="source_id" ref="utm.utm_source_newsletter"/>
+        </record>
+        <record id="rc_opp_3" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=7)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Weekend Brunch Buffet Partnership</field>
+            <field name="partner_id" ref="rc_partner_grand_residency_contact"/>
+            <field name="partner_name">Grand Residency Hotel</field>
+            <field name="contact_name">Vikram Shenoy</field>
+            <field name="function">F&amp;B Director</field>
+            <field name="email_from">vikram.shenoy@grandresidency.example.com</field>
+            <field name="phone">+91 484 238 4000</field>
+            <field name="street">MG Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682016</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_banquet')])]"/>
+            <field name="priority">0</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="probability" eval="10"/>
+            <field name="expected_revenue" eval="90000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=7)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=45)).strftime('%Y-%m-%d')"/>
+            <field name="medium_id" ref="utm.utm_medium_direct"/>
+            <field name="source_id" ref="utm.utm_source_referral"/>
+        </record>
+        <record id="rc_opp_4" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=1)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Birthday Party Package – Rooftop (40 pax)</field>
+            <field name="contact_name">Kavitha Suresh</field>
+            <field name="email_from">kavitha.suresh@example.com</field>
+            <field name="phone">+91 99950 88112</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_party')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="probability" eval="25"/>
+            <field name="expected_revenue" eval="38000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=1)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=12)).strftime('%Y-%m-%d')"/>
+            <field name="medium_id" ref="utm.utm_medium_social_media"/>
+            <field name="source_id" ref="utm.utm_source_instagram"/>
+        </record>
+        <record id="rc_opp_5" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=14)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Corporate Daily Lunch Subscription (120 staff)</field>
+            <field name="partner_id" ref="rc_partner_harbour_park_contact"/>
+            <field name="partner_name">Harbour Point Corporate Park</field>
+            <field name="contact_name">Suresh Pillai</field>
+            <field name="function">Facility Manager</field>
+            <field name="email_from">suresh.pillai@harbourpoint.example.com</field>
+            <field name="phone">+91 484 266 0200</field>
+            <field name="street">Willingdon Island</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682003</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_corporate'), ref('rc_tag_subscription')])]"/>
+            <field name="priority">3</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="probability" eval="40"/>
+            <field name="expected_revenue" eval="360000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=14)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=18)).strftime('%Y-%m-%d')"/>
+            <field name="recurring_revenue" eval="120000"/>
+            <field name="recurring_plan" ref="crm.crm_recurring_plan_monthly"/>
+            <field name="campaign_id" ref="rc_campaign_corporate"/>
+            <field name="medium_id" ref="utm.utm_medium_email"/>
+            <field name="source_id" ref="utm.utm_source_mailing"/>
+        </record>
+        <record id="rc_opp_6" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=10)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Onam Sadya for Tour Groups (300 guests)</field>
+            <field name="partner_id" ref="rc_partner_spice_route_contact"/>
+            <field name="partner_name">Spice Route Travels</field>
+            <field name="contact_name">Faisal Rahman</field>
+            <field name="function">Tour Operations Head</field>
+            <field name="email_from">faisal.rahman@spiceroute.example.com</field>
+            <field name="phone">+91 484 221 5566</field>
+            <field name="street">Fort Kochi Beach Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682001</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_catering'), ref('rc_tag_outdoor')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="probability" eval="45"/>
+            <field name="expected_revenue" eval="210000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=10)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=25)).strftime('%Y-%m-%d')"/>
+            <field name="campaign_id" ref="rc_campaign_onam"/>
+            <field name="medium_id" ref="utm.utm_medium_phone"/>
+            <field name="source_id" ref="utm.utm_source_referral"/>
+        </record>
+        <record id="rc_opp_7" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=18)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Co-working Café Corner – Coffee &amp; Pastry Supply</field>
+            <field name="partner_id" ref="rc_partner_nest_cowork_contact"/>
+            <field name="partner_name">Nest Coworking Spaces</field>
+            <field name="contact_name">Rahul Iyer</field>
+            <field name="function">Community Manager</field>
+            <field name="email_from">rahul.iyer@nestcowork.example.com</field>
+            <field name="phone">+91 484 404 3322</field>
+            <field name="street">Panampilly Nagar</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682036</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_bakery'), ref('rc_tag_subscription')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="probability" eval="50"/>
+            <field name="expected_revenue" eval="96000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=18)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+            <field name="recurring_revenue" eval="8000"/>
+            <field name="recurring_plan" ref="crm.crm_recurring_plan_monthly"/>
+            <field name="medium_id" ref="utm.utm_medium_website"/>
+            <field name="source_id" ref="utm.utm_source_linkedin"/>
+        </record>
+        <record id="rc_opp_8" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=8)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Film Festival Opening Night Cocktail Dinner</field>
+            <field name="partner_id" ref="rc_partner_film_society_contact"/>
+            <field name="partner_name">Kochi Film Society</field>
+            <field name="contact_name">Meera Nambiar</field>
+            <field name="function">Festival Coordinator</field>
+            <field name="email_from">meera.nambiar@kochifilm.example.com</field>
+            <field name="phone">+91 484 236 9191</field>
+            <field name="street">Durbar Hall Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682016</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_banquet')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="probability" eval="35"/>
+            <field name="expected_revenue" eval="175000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=8)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=30)).strftime('%Y-%m-%d')"/>
+            <field name="medium_id" ref="utm.utm_medium_social_media"/>
+            <field name="source_id" ref="utm.utm_source_facebook"/>
+        </record>
+        <record id="rc_opp_9" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=22)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Wedding Reception Catering &amp; Live Counters (450 pax)</field>
+            <field name="partner_id" ref="rc_partner_marina_events_contact"/>
+            <field name="partner_name">Marina Bay Events &amp; Weddings</field>
+            <field name="contact_name">Anjali Thomas</field>
+            <field name="function">Wedding Planner</field>
+            <field name="email_from">anjali.thomas@marinabayevents.example.com</field>
+            <field name="phone">+91 484 235 7788</field>
+            <field name="street">Marine Drive</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682031</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_wedding'), ref('rc_tag_catering')])]"/>
+            <field name="priority">3</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+            <field name="probability" eval="70"/>
+            <field name="expected_revenue" eval="680000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=22)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=7)).strftime('%Y-%m-%d')"/>
+            <field name="campaign_id" ref="rc_campaign_wedding"/>
+            <field name="medium_id" ref="utm.utm_medium_email"/>
+            <field name="source_id" ref="utm.utm_source_mailing"/>
+        </record>
+        <record id="rc_opp_10" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=16)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Annual Day Lunch &amp; Snack Boxes (600 students)</field>
+            <field name="partner_id" ref="rc_partner_st_teresa_contact"/>
+            <field name="partner_name">St. Teresa's Public School</field>
+            <field name="contact_name">Fr. Joseph Mathew</field>
+            <field name="function">Principal</field>
+            <field name="email_from">principal@stteresas.example.com</field>
+            <field name="phone">+91 484 237 1010</field>
+            <field name="street">Park Avenue, Ernakulam</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682011</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_catering'), ref('rc_tag_bakery')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+            <field name="probability" eval="65"/>
+            <field name="expected_revenue" eval="150000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=16)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-2)).strftime('%Y-%m-%d')"/>
+            <field name="campaign_id" ref="rc_campaign_onam"/>
+            <field name="medium_id" ref="utm.utm_medium_phone"/>
+            <field name="source_id" ref="utm.utm_source_referral"/>
+        </record>
+        <record id="rc_opp_11" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=26)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Hotel Banquet Overflow Catering Contract</field>
+            <field name="partner_id" ref="rc_partner_grand_residency_contact"/>
+            <field name="partner_name">Grand Residency Hotel</field>
+            <field name="contact_name">Vikram Shenoy</field>
+            <field name="function">F&amp;B Director</field>
+            <field name="email_from">vikram.shenoy@grandresidency.example.com</field>
+            <field name="phone">+91 484 238 4000</field>
+            <field name="street">MG Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682016</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_banquet'), ref('rc_tag_catering')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+            <field name="probability" eval="60"/>
+            <field name="expected_revenue" eval="420000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=26)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=14)).strftime('%Y-%m-%d')"/>
+            <field name="recurring_revenue" eval="35000"/>
+            <field name="recurring_plan" ref="crm.crm_recurring_plan_yearly"/>
+            <field name="medium_id" ref="utm.utm_medium_direct"/>
+            <field name="source_id" ref="utm.utm_source_referral"/>
+        </record>
+        <record id="rc_opp_12" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=40)"/>
+            <field name="type">opportunity</field>
+            <field name="name">IT Park Onam Celebration Sadya (250 pax)</field>
+            <field name="partner_id" ref="rc_partner_bluewave_contact"/>
+            <field name="partner_name">BlueWave Technologies</field>
+            <field name="contact_name">Neha Kurian</field>
+            <field name="function">HR &amp; Admin Manager</field>
+            <field name="email_from">neha.kurian@bluewave.example.com</field>
+            <field name="phone">+91 484 240 1100</field>
+            <field name="street">Infopark Phase 2, Kakkanad</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682042</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_catering'), ref('rc_tag_corporate')])]"/>
+            <field name="priority">3</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead4"/>
+            <field name="probability" eval="100"/>
+            <field name="expected_revenue" eval="187500"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=40)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-20)).strftime('%Y-%m-%d')"/>
+            <field name="campaign_id" ref="rc_campaign_onam"/>
+            <field name="medium_id" ref="utm.utm_medium_email"/>
+            <field name="source_id" ref="utm.utm_source_newsletter"/>
+            <field name="date_closed" eval="DateTime.now() - relativedelta(days=30)"/>
+        </record>
+        <record id="rc_opp_13" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=55)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Destination Wedding Welcome Dinner (120 pax)</field>
+            <field name="partner_id" ref="rc_partner_marina_events_contact"/>
+            <field name="partner_name">Marina Bay Events &amp; Weddings</field>
+            <field name="contact_name">Anjali Thomas</field>
+            <field name="function">Wedding Planner</field>
+            <field name="email_from">anjali.thomas@marinabayevents.example.com</field>
+            <field name="phone">+91 484 235 7788</field>
+            <field name="street">Marine Drive</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682031</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_wedding'), ref('rc_tag_banquet')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead4"/>
+            <field name="probability" eval="100"/>
+            <field name="expected_revenue" eval="264000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=55)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-30)).strftime('%Y-%m-%d')"/>
+            <field name="campaign_id" ref="rc_campaign_wedding"/>
+            <field name="medium_id" ref="utm.utm_medium_social_media"/>
+            <field name="source_id" ref="utm.utm_source_instagram"/>
+            <field name="date_closed" eval="DateTime.now() - relativedelta(days=45)"/>
+        </record>
+        <record id="rc_opp_14" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=70)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Hospital Cafeteria Bakery Supply – 12 months</field>
+            <field name="partner_id" ref="rc_partner_greenleaf_contact"/>
+            <field name="partner_name">GreenLeaf Multispecialty Hospital</field>
+            <field name="contact_name">Dr. Arun Varghese</field>
+            <field name="function">Administrator</field>
+            <field name="email_from">arun.varghese@greenleafhospital.example.com</field>
+            <field name="phone">+91 484 280 9000</field>
+            <field name="street">Edappally Bypass</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682024</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_bakery'), ref('rc_tag_subscription')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead4"/>
+            <field name="probability" eval="100"/>
+            <field name="expected_revenue" eval="216000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=70)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-45)).strftime('%Y-%m-%d')"/>
+            <field name="recurring_revenue" eval="18000"/>
+            <field name="recurring_plan" ref="crm.crm_recurring_plan_monthly"/>
+            <field name="medium_id" ref="utm.utm_medium_direct"/>
+            <field name="source_id" ref="utm.utm_source_referral"/>
+            <field name="date_closed" eval="DateTime.now() - relativedelta(days=60)"/>
+        </record>
+        <record id="rc_opp_15" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=35)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Marathon Hydration &amp; Energy Snack Kiosks</field>
+            <field name="partner_id" ref="rc_partner_coastal_runners_contact"/>
+            <field name="partner_name">Coastal Runners Club</field>
+            <field name="contact_name">Divya Menon</field>
+            <field name="function">Club Secretary</field>
+            <field name="email_from">divya.menon@coastalrunners.example.com</field>
+            <field name="phone">+91 98470 33221</field>
+            <field name="street">Queens Walkway, Chathiath</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682018</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_outdoor')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="probability" eval="0"/>
+            <field name="expected_revenue" eval="60000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=35)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-10)).strftime('%Y-%m-%d')"/>
+            <field name="medium_id" ref="utm.utm_medium_social_media"/>
+            <field name="source_id" ref="utm.utm_source_facebook"/>
+            <field name="lost_reason_id" ref="crm.lost_reason_1"/>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="rc_opp_16" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=48)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Corporate Retreat Outdoor BBQ (200 pax)</field>
+            <field name="partner_id" ref="rc_partner_harbour_park_contact"/>
+            <field name="partner_name">Harbour Point Corporate Park</field>
+            <field name="contact_name">Suresh Pillai</field>
+            <field name="function">Facility Manager</field>
+            <field name="email_from">suresh.pillai@harbourpoint.example.com</field>
+            <field name="phone">+91 484 266 0200</field>
+            <field name="street">Willingdon Island</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682003</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_outdoor'), ref('rc_tag_banquet')])]"/>
+            <field name="priority">2</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="team_id" ref="sales_team.team_sales_department"/>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+            <field name="probability" eval="0"/>
+            <field name="expected_revenue" eval="240000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=48)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-15)).strftime('%Y-%m-%d')"/>
+            <field name="campaign_id" ref="rc_campaign_corporate"/>
+            <field name="medium_id" ref="utm.utm_medium_email"/>
+            <field name="source_id" ref="utm.utm_source_mailing"/>
+            <field name="lost_reason_id" ref="crm.lost_reason_2"/>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="rc_opp_17" model="crm.lead">
+            <field name="create_date" eval="DateTime.now() - relativedelta(days=60)"/>
+            <field name="type">opportunity</field>
+            <field name="name">Tour Season Packed Lunch Boxes (2,000/day)</field>
+            <field name="partner_id" ref="rc_partner_spice_route_contact"/>
+            <field name="partner_name">Spice Route Travels</field>
+            <field name="contact_name">Faisal Rahman</field>
+            <field name="function">Tour Operations Head</field>
+            <field name="email_from">faisal.rahman@spiceroute.example.com</field>
+            <field name="phone">+91 484 221 5566</field>
+            <field name="street">Fort Kochi Beach Road</field>
+            <field name="city">Kochi</field>
+            <field name="zip">682001</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_tag_catering')])]"/>
+            <field name="priority">1</field>
+            <field name="user_id" ref="rc_user_arjun"/>
+            <field name="team_id" ref="rc_team_catering_events"/>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="probability" eval="0"/>
+            <field name="expected_revenue" eval="500000"/>
+            <field name="date_open" eval="DateTime.now() - relativedelta(days=60)"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-25)).strftime('%Y-%m-%d')"/>
+            <field name="medium_id" ref="utm.utm_medium_phone"/>
+            <field name="source_id" ref="utm.utm_source_referral"/>
+            <field name="lost_reason_id" ref="crm.lost_reason_3"/>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="rc_attach_corporate_menu" model="ir.attachment">
+            <field name="name">Corporate_Lunch_Proposal.txt</field>
+            <field name="datas">UmVzdG8gQ2FmZSBTb2x1dGlvbnMgLSBDb3Jwb3JhdGUgTHVuY2ggUHJvcG9zYWwKV2VlayAxLTQgcm90YXRpbmcgbWVudSwgdmVnIGFuZCBub24tdmVnIG9wdGlvbnMsIGRlbGl2ZXJ5IDEyOjMwLTEzOjMwLCBzZXJ2aW5nIHN0YWZmIGluY2x1ZGVkLgo=</field>
+            <field name="res_model">crm.lead</field>
+            <field name="res_id" ref="rc_opp_5"/>
+            <field name="mimetype">text/plain</field>
+        </record>
+        <record id="rc_msg_lead_1" model="mail.message">
+            <field name="subject">Christmas party catering</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_lead_1"/>
+            <field name="author_id" eval="False"/>
+            <field name="email_from">sandeep.raj@kinfra.example.com</field>
+            <field name="body">&lt;p&gt;Hello,&lt;br/&gt;We are planning our office Christmas party for about 80 people on 20th December. Could you share your buffet menu options with a dessert counter and the per-plate price?&lt;br/&gt;Thanks, Sandeep&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+        </record>
+        <record id="rc_msg_lead_5" model="mail.message">
+            <field name="subject">Franchise opportunity</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_lead_5"/>
+            <field name="author_id" eval="False"/>
+            <field name="email_from">joseph@antonyhospitality.example.com</field>
+            <field name="body">&lt;p&gt;Hi,&lt;br/&gt;We run two restaurants in Thrissur and love your café concept. We would like to understand your franchise model, investment and support. Can we schedule a call?&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+        </record>
+        <record id="rc_msg_opp_5_1" model="mail.message">
+            <field name="subject">Daily lunch for our tenants</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_opp_5"/>
+            <field name="author_id" eval="False"/>
+            <field name="email_from">suresh.pillai@harbourpoint.example.com</field>
+            <field name="body">&lt;p&gt;Dear team,&lt;br/&gt;We need a daily veg/non-veg lunch service for around 120 staff, Monday to Saturday. Please send a monthly subscription quote including delivery and serving staff.&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+        </record>
+        <record id="rc_msg_opp_5_2" model="mail.message">
+            <field name="subject">Re: Daily lunch for our tenants</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_opp_5"/>
+            <field name="author_id" ref="rc_partner_arjun"/>
+            <field name="body">&lt;p&gt;Hi Suresh,&lt;br/&gt;Thanks for reaching out. Attached is our corporate lunch proposal with a rotating 4-week menu. We can start with a free tasting session for your committee next week.&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+            <field name="attachment_ids" eval="[Command.set([ref('rc_attach_corporate_menu')])]"/>
+        </record>
+        <record id="rc_msg_opp_9_1" model="mail.message">
+            <field name="subject">Reception catering – 450 guests</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_opp_9"/>
+            <field name="author_id" eval="False"/>
+            <field name="email_from">anjali.thomas@marinabayevents.example.com</field>
+            <field name="body">&lt;p&gt;Hi,&lt;br/&gt;Our client's wedding reception is at the Marine Drive venue for 450 guests. They want Kerala and North Indian live counters plus a mocktail bar. Please share a detailed quotation.&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+        </record>
+        <record id="rc_msg_opp_9_2" model="mail.message">
+            <field name="subject">Re: Reception catering – 450 guests</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_opp_9"/>
+            <field name="author_id" ref="rc_partner_arjun"/>
+            <field name="body">&lt;p&gt;Hi Anjali,&lt;br/&gt;Quotation sent with three menu tiers and live counter options. The family is welcome for a tasting at our restaurant this Saturday.&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+        </record>
+        <record id="rc_msg_opp_10" model="mail.message">
+            <field name="subject">Annual day snacks</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_opp_10"/>
+            <field name="author_id" eval="False"/>
+            <field name="email_from">principal@stteresas.example.com</field>
+            <field name="body">&lt;p&gt;Dear Sir/Madam,&lt;br/&gt;Kindly confirm whether you can deliver 600 snack boxes and lunch for staff and guests on our annual day. Please keep the menu nut-free.&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+        </record>
+        <record id="rc_msg_opp_12" model="mail.message">
+            <field name="subject">Onam Sadya confirmed</field>
+            <field name="model">crm.lead</field>
+            <field name="res_id" ref="rc_opp_12"/>
+            <field name="author_id" eval="False"/>
+            <field name="email_from">neha.kurian@bluewave.example.com</field>
+            <field name="body">&lt;p&gt;Hi,&lt;br/&gt;We are happy to confirm the Onam Sadya for 250 employees. The banana leaf service was a big hit last year. Please send the advance invoice.&lt;/p&gt;</field>
+            <field name="message_type">email</field>
+            <field name="subtype_id" ref="mail.mt_comment"/>
+        </record>
+        <record id="rc_activity_1" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_5"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_meeting"/>
+            <field name="summary">Menu tasting with the facility committee</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+        <record id="rc_activity_2" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_9"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Confirm final guest count and live counters</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="rc_user_arjun"/>
+        </record>
+        <record id="rc_activity_3" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_10"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+            <field name="summary">Send revised nut-free menu and quotation</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-2)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+        <record id="rc_activity_4" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_6"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Discuss Sadya serving schedule for tour groups</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="rc_user_arjun"/>
+        </record>
+        <record id="rc_activity_5" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_11"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_meeting"/>
+            <field name="summary">Contract review with F&amp;B Director</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+        <record id="rc_activity_6" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_lead_1"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+            <field name="summary">Share Christmas buffet menu PDF</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="rc_user_arjun"/>
+        </record>
+        <record id="rc_activity_7" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_lead_5"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Franchise introduction call</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+        <record id="rc_activity_8" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_2"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+            <field name="summary">Prepare night-shift meal plan costing</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="rc_user_arjun"/>
+        </record>
+        <record id="rc_activity_9" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_8"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_meeting"/>
+            <field name="summary">Venue walkthrough for opening night</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=7)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="rc_user_arjun"/>
+        </record>
+        <record id="rc_activity_10" model="mail.activity">
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="res_id" ref="rc_opp_7"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_upload_document"/>
+            <field name="summary">Upload pastry supply price list</field>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=4)).strftime('%Y-%m-%d')"/>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+    </data>
+</odoo>

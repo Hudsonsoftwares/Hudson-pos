@@ -1,0 +1,41 @@
+/* Part of Hudson Community. See LICENSE file for full copyright and licensing details. */
+
+/* Job map (Maps > By Resource / Timeline, Planning > My > Map), on top of the live map styles */
+.o_fs_job_map .fs-map-body {
+    position: relative;
+}
+
+.o_fs_job_map .fs-map-loading {
+    position: absolute;
+    inset: 0 300px 0 0;
+    z-index: 600;
+    background: rgba(248, 249, 250, 0.7);
+}
+
+.o_fs_job_map .fs-job-map-job {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px 8px 28px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--o-border-color, #dee2e6);
+    cursor: pointer;
+}
+
+.o_fs_job_map .fs-job-map-job:hover,
+.o_fs_job_map .fs-job-map-job.active {
+    background-color: rgba(var(--o-brand-primary-rgb, 113, 75, 103), 0.06);
+}
+
+.o_fs_job_map .fs-job-map-index {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: 700;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

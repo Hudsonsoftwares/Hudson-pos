@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Multicolour map pin of the Google Maps buttons -->
+    <t t-name="hudson_planning.FsMapGoogleIcon">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7z" fill="#34a853"/>
+            <path d="M12 2a7 7 0 0 0-5 2.1L12 9l5-4.9A7 7 0 0 0 12 2z" fill="#4285f4"/>
+            <path d="M5 9c0 1.3.3 2.6.9 3.9L12 9 7 4.1A7 7 0 0 0 5 9z" fill="#fbbc04"/>
+            <path d="M19 9a7 7 0 0 0-2-4.9L12 9l6.1 3.9c.6-1.3.9-2.6.9-3.9z" fill="#ea4335"/>
+            <circle cx="12" cy="9" r="2.6" fill="#fff"/>
+        </svg>
+    </t>
+
+    <t t-name="hudson_planning.FsMapView">
+        <div class="o_fs_map_view h-100" t-att-class="this.props.className" t-ref="this.rootRef">
+            <Layout className="'o_fs_map_layout'" display="this.props.display">
+                <t t-set-slot="control-panel-additional-actions">
+                    <CogMenu/>
+                </t>
+                <t t-set-slot="control-panel-buttons">
+                    <div class="d-flex gap-1">
+                        <button t-if="this.isManager and this.props.archInfo.canCreate and this.props.createRecord"
+                                class="btn btn-primary o_fs_map_new" type="button" t-on-click="() => this.onClickNew()">New</button>
+                        <button class="btn btn-secondary d-flex align-items-center gap-1 o_fs_map_google" type="button"
+                                title="Route through the shown addresses in Google Maps"
+                                t-att-disabled="!this.locatedCount" t-on-click="() => this.navigateAll()">
+                            <t t-call="hudson_planning.FsMapGoogleIcon"/> Maps
+                        </button>
+                    </div>
+                </t>
+                <t t-set-slot="control-panel-actions">
+                    <SearchBar toggler="this.searchBarToggler"/>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <t t-component="this.searchBarToggler.component" t-props="this.searchBarToggler.props"/>
+                </t>
+                <t t-set-slot="default">
+                    <div class="o_fs_map_body d-flex h-100">
+                        <div class="o_fs_map_canvas flex-grow-1 position-relative">
+                            <div class="o_fs_map_leaflet h-100 w-100" t-ref="this.mapRef"/>
+                            <div t-if="this.state.error" class="alert alert-warning position-absolute top-0 start-50 translate-middle-x mt-3" role="status">
+                                The map could not be loaded: <t t-out="this.state.error"/>
+                            </div>
+                            <div t-elif="!this.state.loading and this.state.records.length and !this.locatedCount"
+                                 class="alert alert-info position-absolute top-0 start-50 translate-middle-x mt-3" role="status">
+                                None of these shifts has a customer address that could be located.
+                            </div>
+                        </div>
+
+                        <!-- Groups (resource by default), like Online -->
+                        <div class="o_fs_map_panel border-start overflow-auto">
+                            <div t-if="!this.state.loading and !this.state.groups.length" class="p-3 text-muted">
+                                No shifts found.
+                            </div>
+                            <t t-foreach="this.state.groups" t-as="group" t-key="this.groupId(group)">
+                                <div class="o_fs_map_group">
+                                    <div class="o_fs_map_group_header d-flex align-items-center gap-1 px-2 py-2"
+                                         t-on-click="() => this.toggleGroup(group)">
+                                        <i class="oi text-muted" t-att-data-icon="this.isExpanded(group) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'"/>
+                                        <i class="oi oi-filled" data-icon="location_on" t-att-style="'color: ' + this.groupColor(group)"/>
+                                        <span class="flex-grow-1 text-truncate" t-out="group.name" t-att-title="group.name"/>
+                                        <span class="badge rounded-pill text-bg-light" t-out="this.groupRecords(group).length"/>
+                                        <button class="btn btn-link p-0 ms-1" type="button" title="Route in Google Maps"
+                                                t-on-click.stop="() => this.navigateGroup(group)">
+                                            <t t-call="hudson_planning.FsMapGoogleIcon"/>
+                                        </button>
+                                    </div>
+                                    <t t-if="this.isExpanded(group)">
+                                        <div t-foreach="this.groupRecords(group)" t-as="record" t-key="record.id"
+                                             class="o_fs_map_record ps-5 pe-2 py-1"
+                                             t-att-class="(record.latitude or record.longitude) ? '' : 'o_fs_map_unlocated'"
+                                             t-att-title="(record.latitude or record.longitude) ? record.address : 'No location: ' + (record.address or 'no customer address')"
+                                             t-on-click="() => this.onRecordClick(record)">
+                                            <div class="text-truncate" t-out="record.name"/>
+                                            <div class="text-muted small text-truncate" t-out="this.recordTime(record)"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </Layout>
+        </div>
+    </t>
+
+</templates>

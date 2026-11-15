@@ -1,0 +1,129 @@
+/* Sign templates: one full-width row per template, scrolling vertically */
+.o_kanban_view.o_sign_kanban_list_view .o_kanban_renderer {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    overflow-x: hidden !important;
+    overflow-y: auto;
+    padding: 8px 16px 16px 8px !important;
+}
+
+.o_kanban_view.o_sign_kanban_list_view .o_kanban_ghost {
+    display: none !important;
+}
+
+.o_kanban_view.o_sign_kanban_list_view .o_kanban_record {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid #e7e9ed !important;
+    border-top: none !important;
+    border-radius: 0 !important;
+    background-color: var(--o-view-background-color, #fff);
+    box-shadow: none !important;
+}
+
+.o_kanban_view.o_sign_kanban_list_view .o_kanban_record:first-of-type {
+    border-top: 1px solid #e7e9ed !important;
+    border-radius: 6px 6px 0 0 !important;
+}
+
+.o_kanban_view.o_sign_kanban_list_view .o_kanban_record:last-of-type {
+    border-radius: 0 0 6px 6px !important;
+}
+
+.o_kanban_view.o_sign_kanban_list_view .o_kanban_record:only-of-type {
+    border-radius: 6px !important;
+}
+
+.o_sign_template_row {
+    min-height: 100px;
+    padding: 20px 28px;
+    gap: 16px;
+}
+
+.o_sign_template_main {
+    flex: 1 1 40%;
+    gap: 8px;
+}
+
+.o_sign_template_star .o_favorite {
+    color: #f3cc00;
+    font-size: 1.1rem;
+}
+
+.o_sign_template_name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #212529;
+}
+
+.o_sign_template_meta {
+    margin-top: 4px;
+    color: #4c4c4c;
+}
+
+.o_sign_template_meta .o_field_many2one_avatar_user .o_m2o_avatar > img,
+.o_sign_template_meta .o_field_many2one_avatar_user img {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.o_sign_template_tags {
+    flex: 0 0 20%;
+    min-width: 0;
+}
+
+.o_sign_template_stat {
+    flex: 0 0 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: #4c4c4c;
+    line-height: 1.5;
+}
+
+.o_sign_template_count {
+    color: #017e84;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.o_sign_template_buttons {
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+.o_sign_template_buttons .btn {
+    padding: 6px 12px;
+    font-weight: 500;
+}
+
+@media (max-width: 991px) {
+    .o_sign_template_row {
+        flex-wrap: wrap;
+        padding: 16px;
+    }
+
+    .o_sign_template_main {
+        flex-basis: 100%;
+    }
+
+    .o_sign_template_tags {
+        flex-basis: 100%;
+    }
+}
+
+.o_sign_template_buttons .o_sign_template_share {
+    background-color: #fff;
+    border: 1px solid #d8dadd;
+    color: #374151;
+}
+
+.o_sign_template_buttons .o_sign_template_share:hover {
+    background-color: #f3f4f6;
+}

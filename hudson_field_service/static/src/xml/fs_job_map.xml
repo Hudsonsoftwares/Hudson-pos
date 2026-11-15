@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- FsJobMap — field service jobs on a map (Maps > By Resource / Timeline, Planning > My > Map) -->
+    <t t-name="hudson_field_service.FsJobMap">
+        <div class="o_fs_live_map o_fs_job_map o_action" style="height: 100%; display: flex; flex-direction: column;">
+
+            <div class="fs-map-header">
+                <div>
+                    <h4>
+                        <i class="fa me-2" t-att-class="this.mapMode === 'timeline' ? 'fa-road' : 'fa-map-marker'" style="color: #017e84;"/>
+                        <t t-out="this.title"/>
+                    </h4>
+                    <p class="fs-map-subtitle">
+                        <t t-out="this.state.jobs.length"/> job(s) on <t t-out="this.dayLabel"/>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-warning"
+                            t-if="this.unlocatedCount"
+                            t-att-disabled="this.state.locating"
+                            t-on-click="this.onLocateCustomers"
+                            title="Find the coordinates of the customers from their address">
+                        <i class="fa fa-crosshairs" t-att-class="this.state.locating ? 'fa-spin' : ''"/>
+                        Locate <t t-out="this.unlocatedCount"/> customer(s)
+                    </button>
+                    <div class="btn-group">
+                        <button class="btn btn-light border" t-on-click="this.onPrevDay" title="Previous day"><i class="oi oi-chevron-left"/></button>
+                        <button class="btn btn-light border" t-on-click="this.onToday">Today</button>
+                        <button class="btn btn-light border" t-on-click="this.onNextDay" title="Next day"><i class="oi oi-chevron-right"/></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fs-map-body" t-if="!this.state.error">
+                <div class="fs-map-loading" t-if="this.state.loading">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"/>
+                </div>
+
+                <div t-ref="this.mapRef" class="fs-map-container"/>
+
+                <div class="fs-map-sidebar">
+                    <div class="fs-sidebar-header">
+                        <i class="fa fa-users me-2"/>
+                        Resources
+                        <span class="badge text-bg-primary ms-2" t-out="this.resources.length"/>
+                    </div>
+                    <div class="fs-tech-list">
+                        <div class="p-4 text-center text-muted" style="font-size: 13px;" t-if="!this.state.loading and !this.state.jobs.length">
+                            No field service jobs planned on this day.
+                        </div>
+                        <t t-foreach="this.resources" t-as="resource" t-key="resource.id">
+                            <div class="fs-tech-card"
+                                 t-att-class="this.state.resourceFilter === resource.id ? 'active' : ''"
+                                 t-on-click="() => this.setResourceFilter(resource.id)"
+                                 title="Show only this resource">
+                                <div class="fs-tech-avatar-placeholder" t-attf-style="background: {{ resource.color }};">
+                                    <t t-out="this._initials(resource.name)"/>
+                                </div>
+                                <div class="fs-tech-info">
+                                    <div class="fs-tech-name" t-out="resource.name"/>
+                                    <div class="fs-tech-order">
+                                        <t t-out="resource.jobs.length"/> job(s)
+                                        <t t-if="this.state.travelTimes[resource.id] !== undefined">
+                                            · <i class="fa fa-car"/> <t t-out="this.state.travelTimes[resource.id]"/> min driving
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <t t-foreach="resource.jobs" t-as="job" t-key="job.id">
+                                <div class="fs-job-map-job"
+                                     t-att-class="this.state.selectedId === job.id ? 'active' : ''"
+                                     t-on-click="() => this.onJobClick(job)">
+                                    <span class="fs-job-map-index" t-attf-style="background: {{ resource.color }};" t-if="this.mapMode === 'timeline'">
+                                        <t t-out="job_index + 1"/>
+                                    </span>
+                                    <div class="flex-grow-1 text-truncate">
+                                        <div class="fw-bold text-truncate">
+                                            <t t-out="this.formatTime(job.start)"/> - <t t-out="this.formatTime(job.end)"/>
+                                            · <t t-out="job.partner_name"/>
+                                        </div>
+                                        <div class="text-muted text-truncate"><t t-out="job.order_name"/> — <t t-out="job.title"/></div>
+                                        <div class="text-warning" t-if="!job.located"><i class="fa fa-exclamation-triangle me-1"/>No location</div>
+                                    </div>
+                                    <i class="fa fa-external-link text-muted" title="Open" t-on-click.stop="() => this.openJob(job.id)"/>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-danger m-3" t-if="this.state.error">
+                <i class="fa fa-exclamation-triangle me-2"/>
+                <strong>Failed to load map:</strong>
+                <t t-out="this.state.error"/>
+            </div>
+        </div>
+    </t>
+
+</templates>

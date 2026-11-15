@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_product_course_baking" model="product.product">
+            <field name="name">Course: Home Baking with Resto Cafe</field>
+            <field name="type">service</field>
+            <field name="service_tracking">course</field>
+            <field name="list_price" eval="29.0"/>
+            <field name="invoice_policy">order</field>
+            <field name="is_published" eval="True"/>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/baking.webp"/>
+        </record>
+        <record id="slide_channel_home_baking" model="slide.channel">
+            <field name="name">Home Baking with Resto Cafe</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">payment</field>
+            <field name="visibility">public</field>
+            <field name="product_id" ref="rc_product_course_baking"/>
+            <field name="is_published" eval="True"/>
+            <field name="allow_comment" eval="True"/>
+            <field name="image_1920" type="bytes" file="hudson_pos_demo_data/static/src/img/elearning/baking.webp"/>
+            <field name="description_short">&lt;p&gt;Bake our bestsellers at home: brownies, plum cake and cardamom cookies.&lt;/p&gt;</field>
+            <field name="description">&lt;p&gt;A paid video course by our pastry chef. Lifetime access, printable recipes and a certificate of completion.&lt;/p&gt;</field>
+            <field name="tag_ids" eval="[Command.set([ref('website_slides.slide_channel_tag_level_basic'), ref('rc_tag_cafe')])]"/>
+            <field name="karma_gen_channel_finish" eval="40"/>
+        </record>
+        <record id="slide_baking_intro" model="slide.slide">
+            <field name="name">Welcome &amp; Kitchen Setup</field>
+            <field name="channel_id" ref="slide_channel_home_baking"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="1"/>
+            <field name="completion_time" eval="0.1"/>
+            <field name="is_preview" eval="True"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Tools you need: digital scale, 9-inch tin, parchment, oven thermometer. Always weigh, never use cups.&lt;/p&gt;</field>
+        </record>
+        <record id="slide_baking_brownie" model="slide.slide">
+            <field name="name">Fudgy Brownies Step by Step</field>
+            <field name="channel_id" ref="slide_channel_home_baking"/>
+            <field name="slide_category">video</field>
+            <field name="sequence" eval="2"/>
+            <field name="completion_time" eval="0.33"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="source_type">external</field>
+            <field name="url">https://www.youtube.com/watch?v=REPLACE_WITH_YOUR_VIDEO</field>
+        </record>
+        <record id="slide_baking_cookies" model="slide.slide">
+            <field name="name">Cardamom Butter Cookies</field>
+            <field name="channel_id" ref="slide_channel_home_baking"/>
+            <field name="slide_category">article</field>
+            <field name="sequence" eval="3"/>
+            <field name="completion_time" eval="0.25"/>
+            <field name="is_preview" eval="False"/>
+            <field name="is_published" eval="True"/>
+            <field name="html_content">&lt;p&gt;Cream 250 g butter with 120 g icing sugar, add 1 tsp ground cardamom and 300 g flour. Chill, cut and bake at 160 °C for 14 minutes.&lt;/p&gt;</field>
+        </record>
+    </data>
+</odoo>

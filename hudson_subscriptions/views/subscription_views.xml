@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION TREE VIEW (Matches User Reference Image)            -->
+    <!-- ================================================================= -->
+    <record id="view_sale_subscription_tree" model="ir.ui.view">
+        <field name="name">sale.subscription.tree</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <list string="Subscriptions" multi_edit="1" sample="1">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name" string="Number" decoration-bf="1"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="next_invoice_date" string="Next Invoi."/>
+                <field name="user_id" string="Salesperson" widget="many2one_avatar_user"/>
+                <field name="activity_ids" string="Activities" widget="list_activity"/>
+                <field name="company_id" string="Company" groups="base.group_multi_company" optional="show"/>
+                <field name="recurring_total" string="Recurring" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="plan_id" string="Recurring Plan"/>
+                <field name="team_id" string="Sales Team" optional="hide"/>
+                <field name="first_contract_date" string="First Contract Date" optional="hide"/>
+                <field name="end_date" string="End Date" optional="hide"/>
+                <field name="payment_mode" string="Payment Mode" optional="hide"/>
+                <field name="auto_invoice" string="Automatic Invoicing" optional="hide"/>
+                <field name="in_error" string="In Error" optional="hide" widget="boolean_toggle"/>
+                <field name="subscription_state" string="Subscription Status" widget="badge"
+                       decoration-danger="subscription_state == '6_churn'"
+                       decoration-success="subscription_state == '3_progress'"
+                       decoration-info="subscription_state in ('draft', 'sent')"
+                       decoration-warning="subscription_state == '5_renew'"
+                       decoration-primary="subscription_state == '7_upsell'"
+                       decoration-muted="subscription_state in ('4_paused', '5_renewed')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION KANBAN VIEW                                          -->
+    <!-- ================================================================= -->
+    <record id="view_sale_subscription_kanban" model="ir.ui.view">
+        <field name="name">sale.subscription.kanban</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="subscription_state" sample="1" quick_create="false">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="recurring_total"/>
+                <field name="currency_id"/>
+                <field name="plan_id"/>
+                <field name="next_invoice_date"/>
+                <field name="subscription_state"/>
+                <field name="activity_state"/>
+                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                <div class="text-muted"><field name="partner_id"/></div>
+                                <div class="mt-1 d-flex justify-content-between">
+                                    <span>Plan: <field name="plan_id"/></span>
+                                    <strong class="text-primary"><field name="recurring_total" widget="monetary"/></strong>
+                                </div>
+                                <div class="text-muted small mt-1" t-if="record.next_invoice_date.value">
+                                    <span>Next Invoice: <field name="next_invoice_date"/></span>
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION FORM VIEW INHERITED FROM SALE ORDER                  -->
+    <!-- ================================================================= -->
+    <record id="view_sale_subscription_form_inherit" model="ir.ui.view">
+        <field name="name">sale.subscription.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='validity_date']" position="after">
+                <field name="is_subscription" invisible="1"/>
+                <field name="is_upsell" invisible="1"/>
+                <field name="subscription_paid" invisible="1"/>
+                <label for="plan_id" string="Recurring Plan" invisible="not is_subscription"/>
+                <div class="o_row" invisible="not is_subscription">
+                    <field name="plan_id" options="{'no_create': True}" readonly="is_subscription and subscription_state not in ('draft', 'sent')"/>
+                    <span invisible="not plan_id">
+                        <i class="fa fa-arrow-right mx-1"/> Until
+                    </span>
+                    <field name="end_date" invisible="not plan_id" placeholder="e.g. 1 Jan 2027"/>
+                </div>
+                <field name="next_invoice_date" invisible="not is_subscription or state in ('draft', 'sent', 'cancel')"/>
+                <field name="start_date" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@id='create_invoice']" position="attributes">
+                <attribute name="invisible">is_subscription or invoice_status != 'to invoice'</attribute>
+            </xpath>
+            <xpath expr="//button[@id='create_invoice_percentage']" position="attributes">
+                <attribute name="invisible">is_subscription or (invoice_status != 'no' or state != 'sale')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">state in ['cancel', 'sale'] or (is_subscription and subscription_state not in ('draft', 'sent'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_order']" position="attributes">
+                <attribute name="readonly">state in ['cancel', 'sale'] or (is_subscription and subscription_state not in ('draft', 'sent'))</attribute>
+            </xpath>
+            <xpath expr="//field[@name='pricelist_id']" position="attributes">
+                <attribute name="readonly">state in ['cancel', 'sale'] or (is_subscription and subscription_state not in ('draft', 'sent'))</attribute>
+            </xpath>
+            <xpath expr="//button[@id='create_invoice']" position="before">
+                <!-- 'Create Invoice' is always available on a running subscription (like Odoo Online):
+                     highlighted while the current period is not invoiced yet, a normal button afterwards. -->
+                <field name="subscription_invoice_due" invisible="1"/>
+                <button name="action_create_recurring_invoice" string="Create Invoice" type="object"
+                    class="btn-primary"
+                    invisible="not is_subscription or subscription_state not in ('3_progress', '5_renew', '7_upsell') or state != 'sale' or not subscription_invoice_due"/>
+                <button name="action_create_recurring_invoice" string="Create Invoice" type="object"
+                    class="btn-secondary"
+                    invisible="not is_subscription or subscription_state not in ('3_progress', '5_renew', '7_upsell') or state != 'sale' or subscription_invoice_due"/>
+            </xpath>
+
+            <xpath expr="//field[@name='state']" position="before">
+                <!-- Subscription lifecycle buttons — hidden on upsell quotes -->
+                <button name="action_renew_subscription" string="Renew" type="object" class="btn-secondary" invisible="not is_subscription or is_upsell or subscription_state not in ('3_progress', '5_renew', '6_churn')"/>
+                <button name="action_reopen_subscription" string="Reopen" type="object" class="btn-secondary" invisible="not is_subscription or is_upsell or subscription_state != '6_churn'"/>
+                <button name="action_upsell_subscription" string="Upsell" type="object" class="btn-secondary" invisible="not is_subscription or is_upsell or subscription_state != '3_progress'"/>
+                <button name="action_pause_subscription" string="Pause" type="object" class="btn-secondary" invisible="not is_subscription or is_upsell or subscription_state != '3_progress'"/>
+                <button name="action_resume_subscription" string="Resume" type="object" class="btn-secondary" invisible="not is_subscription or is_upsell or subscription_state != '4_paused'"/>
+                <button name="action_close_subscription" string="Close Subscription" type="object" class="btn-outline-danger" invisible="not is_subscription or is_upsell or subscription_state in ('5_renewed', '6_churn', 'draft', 'sent')"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_renewals" type="object" class="oe_stat_button" icon="refresh" invisible="renewal_order_count == 0">
+                    <field name="renewal_order_count" widget="statinfo" string="Renewal Quotes"/>
+                </button>
+                <!-- Removed Upsell Quotes smart button per user request. 
+                     Invoices of upsells now roll up into the main Invoices smart button. -->
+                <button name="action_view_upsells" type="object" class="oe_stat_button" icon="arrow_upward" invisible="1">
+                    <field name="upsell_order_count" widget="statinfo" string="Upsell Quotes"/>
+                </button>
+                <button name="action_view_mrr_analysis" type="object" class="oe_stat_button" icon="show_chart" invisible="not is_subscription or state in ('draft', 'sent', 'cancel')">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">MRR</span>
+                        <span class="o_stat_value">
+                            <field name="recurring_monthly" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="after">
+                <div class="float-end mt-2" invisible="not is_subscription or subscription_state in ('draft', 'sent')">
+                    <field name="subscription_state" widget="badge" decoration-success="subscription_state == '3_progress'" decoration-warning="subscription_state in ('4_paused', '5_renew')" decoration-danger="subscription_state == '6_churn'" decoration-info="subscription_state == '5_renewed'"/>
+                </div>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <field name="is_subscription_overdue" invisible="1"/>
+                <div class="alert alert-warning text-center o_form_header" role="alert" invisible="not is_subscription_overdue or subscription_state != '3_progress'">
+                    This subscription is overdue and exceeds the auto-close limit of the recurring plan. It will be closed soon by the system.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION CALENDAR VIEW                                        -->
+    <!-- ================================================================= -->
+    <record id="view_sale_subscription_calendar" model="ir.ui.view">
+        <field name="name">sale.subscription.calendar</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <calendar string="Subscriptions" date_start="next_invoice_date" color="subscription_state" event_open_popup="True" mode="month">
+                <field name="partner_id"/>
+                <field name="recurring_total"/>
+                <field name="subscription_state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION PIVOT & GRAPH VIEWS                                  -->
+    <!-- ================================================================= -->
+    <record id="view_sale_subscription_pivot" model="ir.ui.view">
+        <field name="name">sale.subscription.pivot</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Subscriptions Pivot" sample="1">
+                <field name="start_date" interval="month" type="row"/>
+                <field name="plan_id" type="col"/>
+                <field name="recurring_monthly" type="measure"/>
+                <field name="recurring_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_sale_subscription_graph" model="ir.ui.view">
+        <field name="name">sale.subscription.graph</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <graph string="Subscriptions Graph" sample="1">
+                <field name="plan_id"/>
+                <field name="recurring_monthly" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION ACTIVITY VIEW                                        -->
+    <!-- ================================================================= -->
+    <record id="view_sale_subscription_activity" model="ir.ui.view">
+        <field name="name">sale.subscription.activity</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <activity string="Subscriptions">
+                <templates>
+                    <div t-name="activity-box">
+                        <div>
+                            <field name="name" display="full" class="o_text_bold"/>
+                            <field name="partner_id" muted="1" display="full"/>
+                            <field name="recurring_total" widget="monetary"/>
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION SEARCH VIEW                                          -->
+    <!-- ================================================================= -->
+    <record id="view_sale_subscription_search" model="ir.ui.view">
+        <field name="name">sale.subscription.search</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <search string="Search Subscriptions">
+                <field name="name" string="Subscription" filter_domain="['|', ('name', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                <field name="partner_id" operator="child_of"/>
+                <field name="user_id"/>
+                <field name="team_id"/>
+                <field name="plan_id"/>
+                <field name="sale_order_template_id"/>
+
+                <!-- Section 1: Salesperson assignment -->
+                <filter string="My Subscriptions" name="filter_my_subscriptions" domain="[('user_id', '=', uid)]"/>
+                <filter string="Unassigned" name="filter_unassigned" domain="[('user_id', '=', False)]"/>
+                <separator/>
+
+                <!-- Section 2: Core statuses -->
+                <filter string="Quotations" name="filter_quotations" domain="[('subscription_state', 'in', ('draft', 'sent'))]"/>
+                <filter string="In Progress" name="filter_in_progress" domain="[('subscription_state', '=', '3_progress')]"/>
+                <filter string="Paused" name="filter_paused" domain="[('subscription_state', '=', '4_paused')]"/>
+                <filter string="Renewed" name="filter_renewed" domain="[('subscription_state', '=', '5_renewed')]"/>
+                <filter string="Churned" name="filter_churned" domain="[('subscription_state', '=', '6_churn')]"/>
+                <separator/>
+
+                <!-- Section 3: Closing -->
+                <filter string="Closing" name="filter_closing" domain="['|', ('subscription_state', '=', '5_renew'), '&amp;', ('end_date', '!=', False), ('end_date', '&lt;=', context_today)]"/>
+                <separator/>
+
+                <!-- Section 4: To Invoice -->
+                <filter string="To Invoice" name="filter_to_invoice" domain="['|', ('subscription_state', '=', '5_renew'), '&amp;', ('subscription_state', '=', '3_progress'), '|', ('next_invoice_date', '&lt;=', context_today), ('next_invoice_date', '=', False)]"/>
+                <separator/>
+
+                <!-- Section 5: Payment & Invoicing Modes -->
+                <filter string="Automatic Payments" name="filter_automatic_payments" domain="[('payment_mode', '=', 'automatic')]"/>
+                <filter string="Manual Payment" name="filter_manual_payment" domain="[('payment_mode', '=', 'manual')]"/>
+                <filter string="Automatic Invoicing" name="filter_automatic_invoicing" domain="[('auto_invoice', '=', True)]"/>
+                <separator/>
+
+                <!-- Section 6: In Error -->
+                <filter string="In Error" name="filter_in_error" domain="[('in_error', '=', True)]"/>
+                <separator/>
+
+                <!-- Section 7: First Contract Date -->
+                <filter string="First Contract Date" name="filter_first_contract_date" date="first_contract_date"/>
+
+                <!-- Group By Options Matching Enterprise -->
+                <group>
+                    <filter string="Salesperson" name="group_by_salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter string="Sales Team" name="group_by_team" domain="[]" context="{'group_by': 'team_id'}"/>
+                    <filter string="Subscription Status" name="group_by_subscription_status" domain="[]" context="{'group_by': 'subscription_state'}"/>
+                    <filter string="Template" name="group_by_template" domain="[]" context="{'group_by': 'sale_order_template_id'}"/>
+                    <filter string="Recurring Plan" name="group_by_plan" domain="[]" context="{'group_by': 'plan_id'}"/>
+                    <filter string="Customer" name="group_by_customer" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="First Contract Date" name="group_by_first_contract_date" domain="[]" context="{'group_by': 'first_contract_date'}"/>
+                    <filter string="End Date" name="group_by_end_date" domain="[]" context="{'group_by': 'end_date'}"/>
+                    <filter string="Next Invoice Date" name="group_by_next_invoice_date" domain="[]" context="{'group_by': 'next_invoice_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SUBSCRIPTION ACTIONS FOR TABS & VIEWS                             -->
+    <!-- ================================================================= -->
+
+    <!-- 1. Default Landing Action: Subscriptions -->
+    <record id="action_subscription_orders" model="ir.actions.act_window">
+        <field name="name">Subscriptions</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,kanban,calendar,pivot,graph,activity,form</field>
+        <field name="search_view_id" ref="view_sale_subscription_search"/>
+        <field name="domain">[('is_subscription', '=', True)]</field>
+        <field name="context">{'default_is_subscription': True, 'search_default_filter_in_progress': 1, 'search_default_filter_paused': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_sale_subscription_tree')}),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_sale_subscription_kanban')}),
+            (0, 0, {'view_mode': 'calendar', 'view_id': ref('view_sale_subscription_calendar')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_subscription_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_sale_subscription_graph')}),
+            (0, 0, {'view_mode': 'activity', 'view_id': ref('view_sale_subscription_activity')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Subscription!
+            </p>
+            <p>
+                Track recurring billing contracts, automate invoices, manage renewals, and prevent churn.
+            </p>
+        </field>
+    </record>
+
+    <!-- 2. Subscriptions -> Quotations Action -->
+    <record id="action_subscription_quotations" model="ir.actions.act_window">
+        <field name="name">Subscription Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="search_view_id" ref="view_sale_subscription_search"/>
+        <field name="domain">[('is_subscription', '=', True), ('subscription_state', 'in', ('draft', 'sent'))]</field>
+        <field name="context">{'default_is_subscription': True, 'default_subscription_state': 'draft'}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_sale_subscription_tree')}),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_sale_subscription_kanban')})]"/>
+    </record>
+
+    <!-- 3. Subscriptions -> To Renew Action -->
+    <record id="action_subscription_to_renew" model="ir.actions.act_window">
+        <field name="name">Subscriptions to Renew</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="search_view_id" ref="view_sale_subscription_search"/>
+        <field name="domain">[('is_subscription', '=', True)]</field>
+        <field name="context">{'default_is_subscription': True, 'search_default_filter_to_invoice': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_sale_subscription_tree')}),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_sale_subscription_kanban')})]"/>
+    </record>
+
+    <!-- 4. Subscriptions -> Upsells Action -->
+    <record id="action_subscription_upsells" model="ir.actions.act_window">
+        <field name="name">Subscription Upsells</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="search_view_id" ref="view_sale_subscription_search"/>
+        <field name="domain">[('is_subscription', '=', True), '|', ('subscription_state', '=', '7_upsell'), ('is_upsell', '=', True)]</field>
+        <field name="context">{'default_is_subscription': True, 'default_is_upsell': True, 'default_subscription_state': '7_upsell'}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_sale_subscription_tree')}),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_sale_subscription_kanban')})]"/>
+    </record>
+</odoo>

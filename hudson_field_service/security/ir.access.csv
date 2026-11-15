@@ -1,0 +1,40 @@
+id,name,model_id,group_id/id,operation,domain
+access_field_service_material_user,field.service.material.user,field.service.material,hudson_field_service.group_field_service_user,cru,
+access_field_service_material_manager,field.service.material.manager,field.service.material,hudson_field_service.group_field_service_manager,crud,
+access_field_service_order_user,field.service.order.user,field.service.order,hudson_field_service.group_field_service_user,ru,"[('is_published', '=', True), '|', '|', ('employee_id.user_id', '=', user.id), ('extra_employee_ids.user_id', 'in', [user.id]), ('employee_id', '=', False)]"
+access_field_service_order_manager,field.service.order.manager,field.service.order,hudson_field_service.group_field_service_manager,crud,
+access_field_service_stage_user,field.service.stage.user,field.service.stage,hudson_field_service.group_field_service_user,r,
+access_field_service_stage_manager,field.service.stage.manager,field.service.stage,hudson_field_service.group_field_service_manager,crud,
+access_field_service_tag_user,field.service.tag.user,field.service.tag,hudson_field_service.group_field_service_user,r,
+access_field_service_tag_manager,field.service.tag.manager,field.service.tag,hudson_field_service.group_field_service_manager,crud,
+access_field_service_timesheet_user,field.service.timesheet.user,field.service.timesheet,hudson_field_service.group_field_service_user,crud,"[('order_id.is_published', '=', True), '|', '|', ('order_id.employee_id.user_id', '=', user.id), ('order_id.extra_employee_ids.user_id', 'in', [user.id]), ('order_id.employee_id', '=', False)]"
+access_field_service_timesheet_manager,field.service.timesheet.manager,field.service.timesheet,hudson_field_service.group_field_service_manager,crud,
+access_field_service_product_line_user,field.service.product.line.user,field.service.product.line,hudson_field_service.group_field_service_user,crud,"[('order_id.is_published', '=', True), '|', '|', ('order_id.employee_id.user_id', '=', user.id), ('order_id.extra_employee_ids.user_id', 'in', [user.id]), ('order_id.employee_id', '=', False)]"
+access_field_service_product_line_manager,field.service.product.line.manager,field.service.product.line,hudson_field_service.group_field_service_manager,crud,
+access_field_service_stop_wizard_user,field.service.stop.wizard.user,field.service.stop.wizard,hudson_field_service.group_field_service_user,crud,
+access_field_service_create_invoice_wizard_user,field.service.create.invoice.wizard.user,field.service.create.invoice.wizard,hudson_field_service.group_field_service_user,crud,
+access_field_service_create_invoice_wizard_manager,field.service.create.invoice.wizard.manager,field.service.create.invoice.wizard,hudson_field_service.group_field_service_manager,crud,
+access_field_service_report_user,report.field.service.analysis.user,report.field.service.analysis,hudson_field_service.group_field_service_user,r,"[('employee_id.user_id', '=', user.id)]"
+access_field_service_report_manager,report.field.service.analysis.manager,report.field.service.analysis,hudson_field_service.group_field_service_manager,r,
+access_field_service_image_user,field.service.image.user,field.service.image,hudson_field_service.group_field_service_user,crud,"[('order_id.is_published', '=', True), '|', '|', ('order_id.employee_id.user_id', '=', user.id), ('order_id.extra_employee_ids.user_id', 'in', [user.id]), ('order_id.employee_id', '=', False)]"
+access_field_service_image_manager,field.service.image.manager,field.service.image,hudson_field_service.group_field_service_manager,crud,
+access_field_service_order_portal,field.service.order.portal,field.service.order,base.group_portal,r,"['|', ('partner_id', 'child_of', [user.partner_id.commercial_partner_id.id]), ('message_partner_ids', 'child_of', [user.partner_id.commercial_partner_id.id])]"
+access_field_service_timesheet_portal,field.service.timesheet.portal,field.service.timesheet,base.group_portal,r,"['|', ('order_id.partner_id', 'child_of', [user.partner_id.commercial_partner_id.id]), ('order_id.message_partner_ids', 'child_of', [user.partner_id.commercial_partner_id.id])]"
+access_field_service_stage_portal,field.service.stage.portal,field.service.stage,base.group_portal,r,
+access_field_service_product_line_portal,field.service.product.line.portal,field.service.product.line,base.group_portal,r,"['|', ('order_id.partner_id', 'child_of', [user.partner_id.commercial_partner_id.id]), ('order_id.message_partner_ids', 'child_of', [user.partner_id.commercial_partner_id.id])]"
+access_field_service_image_portal,field.service.image.portal,field.service.image,base.group_portal,r,"['|', ('order_id.partner_id', 'child_of', [user.partner_id.commercial_partner_id.id]), ('order_id.message_partner_ids', 'child_of', [user.partner_id.commercial_partner_id.id])]"
+access_field_service_active_timer,field.service.active.timer,field.service.active.timer,base.group_user,crud,"[('user_id', '=', user.id)]"
+access_fs_worksheet_template_user,fs.worksheet.template.user,fs.worksheet.template,hudson_field_service.group_field_service_user,r,
+access_fs_worksheet_template_manager,fs.worksheet.template.manager,fs.worksheet.template,hudson_field_service.group_field_service_manager,crud,
+access_fs_worksheet_template_planning,fs.worksheet.template.planning,fs.worksheet.template,hudson_planning.group_planning_user,r,
+access_fs_equipment_user,fs.equipment.user,fs.equipment,hudson_field_service.group_field_service_user,cru,
+access_fs_equipment_manager,fs.equipment.manager,fs.equipment,hudson_field_service.group_field_service_manager,crud,
+access_fs_equipment_planning,fs.equipment.planning,fs.equipment,hudson_planning.group_planning_user,r,
+access_field_service_order_planning_user,field.service.order.planning.user,field.service.order,hudson_planning.group_planning_user,r,"[('is_published', '=', True), '|', '|', ('employee_id.user_id', '=', user.id), ('extra_employee_ids.user_id', 'in', [user.id]), ('employee_id', '=', False)]"
+access_field_service_order_planning_manager,field.service.order.planning.manager,field.service.order,hudson_planning.group_planning_manager,r,
+access_field_service_timesheet_planning_manager,field.service.timesheet.planning.manager,field.service.timesheet,hudson_planning.group_planning_manager,r,
+access_field_service_product_line_planning_manager,field.service.product.line.planning.manager,field.service.product.line,hudson_planning.group_planning_manager,r,
+access_field_service_image_planning_manager,field.service.image.planning.manager,field.service.image,hudson_planning.group_planning_manager,r,
+access_field_service_report_planning_manager,report.field.service.analysis.planning.manager,report.field.service.analysis,hudson_planning.group_planning_manager,r,
+access_field_service_active_timer_manager,field.service.active.timer.manager,field.service.active.timer,hudson_planning.group_planning_manager,r,
+access_fs_worksheet_template_internal,fs.worksheet.template.internal: worksheet of the services,fs.worksheet.template,base.group_user,r,

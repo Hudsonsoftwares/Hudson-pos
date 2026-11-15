@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hudson_sign_request_view_tree" model="ir.ui.view">
+            <field name="name">hudson.sign.request.tree</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="arch" type="xml">
+                <list string="Documents" create="false" js_class="hudson_sign_template_list" default_order="create_date desc"
+                      action="action_open_viewer" type="object">
+                    <field name="create_date" string="Date" widget="datetime"/>
+                    <field name="name" string="Name"/>
+                    <field name="create_uid" string="Sent by" widget="many2one_avatar_user"/>
+                    <field name="request_ids" string="Signers" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                    <field name="state" string="Status" widget="badge"
+                           decoration-success="state == 'signed'"
+                           decoration-danger="state in ('canceled', 'expired')"
+                           decoration-info="state == 'shared'"
+                           decoration-muted="state in ('draft', 'sent')"/>
+                    <field name="valid_until"/>
+                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                    <button name="action_send_reminder" type="object" string="Reminder" icon="notifications"
+                            class="btn-link" invisible="state != 'sent'"/>
+                    <button name="action_download" type="object" string="Download" icon="download"
+                            class="btn-link" invisible="state != 'signed'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hudson_sign_request_view_kanban" model="ir.ui.view">
+            <field name="name">hudson.sign.request.kanban</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="arch" type="xml">
+                <kanban create="false" js_class="hudson_sign_template_kanban" default_order="create_date desc"
+                        action="action_open_viewer" type="object">
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <field name="name" class="fw-bold fs-5 text-truncate"/>
+                                <field name="state" widget="badge"
+                                       decoration-success="state == 'signed'"
+                                       decoration-danger="state in ('canceled', 'expired')"
+                                       decoration-info="state == 'shared'"
+                                       decoration-muted="state in ('draft', 'sent')"/>
+                            </div>
+                            <field name="request_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <footer>
+                                <div class="d-flex align-items-center gap-2 text-muted">
+                                    <field name="create_date" widget="datetime" options="{'show_time': false}"/>
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
+                                <field name="create_uid" widget="many2one_avatar_user" class="ms-auto"/>
+                            </footer>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="hudson_sign_request_view_form" model="ir.ui.view">
+            <field name="name">hudson.sign.request.form</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="arch" type="xml">
+                <form string="Signature Request" create="false">
+                    <header>
+                        <button name="action_send_reminder" type="object" string="Send Reminder" class="oe_highlight" invisible="state != 'sent'"/>
+                        <button name="action_download" type="object" string="Download" class="oe_highlight" invisible="state != 'signed'"/>
+                        <button name="action_open_viewer" type="object" string="Preview"/>
+                        <button name="action_stop_sharing" type="object" string="Stop Sharing" invisible="state != 'shared'"
+                                confirm="The share link will stop working. Continue?"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state not in ('draft', 'sent', 'expired')"
+                                confirm="Signers will no longer be able to sign this document. Continue?"/>
+                        <field name="state" widget="statusbar" statusbar_visible="sent,signed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_file" type="object" class="oe_stat_button" icon="article" invisible="not file_id">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Document</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="template_id" invisible="not template_id"/>
+                                <field name="file_id"/>
+                                <field name="subject" invisible="not subject"/>
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                <field name="valid_until"/>
+                            </group>
+                            <group>
+                                <field name="create_date" string="Sent on"/>
+                                <field name="create_uid" string="Sent by" widget="many2one_avatar_user"/>
+                                <label for="signed_count" string="Progress"/>
+                                <div>
+                                    <field name="signed_count" class="oe_inline"/> / <field name="signer_count" class="oe_inline"/> signed
+                                </div>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Signers" name="signers">
+                                <field name="request_ids" readonly="1">
+                                    <list>
+                                        <field name="sequence" string="Order"/>
+                                        <field name="recipient_id" widget="many2one_avatar_user"/>
+                                        <field name="state" widget="badge"
+                                               decoration-success="state == 'signed'"
+                                               decoration-muted="state != 'signed'"/>
+                                        <field name="signed_date"/>
+                                        <field name="last_reminder_date" optional="hide"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Message" name="message" invisible="not message">
+                                <field name="message" readonly="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="hudson_sign_request_view_pivot" model="ir.ui.view">
+            <field name="name">hudson.sign.request.pivot</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="arch" type="xml">
+                <pivot string="Documents">
+                    <field name="create_date" interval="month" type="row"/>
+                    <field name="state" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="hudson_sign_request_view_graph" model="ir.ui.view">
+            <field name="name">hudson.sign.request.graph</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="arch" type="xml">
+                <graph string="Documents" type="bar">
+                    <field name="create_date" interval="month"/>
+                    <field name="state"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="hudson_sign_request_view_activity" model="ir.ui.view">
+            <field name="name">hudson.sign.request.activity</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="arch" type="xml">
+                <activity string="Documents">
+                    <field name="create_uid"/>
+                    <templates>
+                        <div t-name="activity-box">
+                            <field name="create_uid" widget="many2one_avatar_user"/>
+                            <div class="flex-grow-1">
+                                <field name="name" display="full" class="o_text_block o_text_bold"/>
+                                <field name="state" muted="1" display="full"/>
+                            </div>
+                        </div>
+                    </templates>
+                </activity>
+            </field>
+        </record>
+
+        <record id="hudson_sign_request_view_search" model="ir.ui.view">
+            <field name="name">hudson.sign.request.search</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="arch" type="xml">
+                <search string="Documents">
+                    <field name="name"/>
+                    <field name="request_ids" string="Signer" filter_domain="[('request_ids.recipient_id', 'ilike', self)]"/>
+                    <field name="create_uid" string="Sent by"/>
+                    <field name="tag_ids"/>
+                    <filter string="My Documents" name="my_documents" domain="[('create_uid', '=', uid)]"/>
+                    <filter string="To Sign by Me" name="to_sign_by_me"
+                            domain="[('request_ids', 'any', [('recipient_id', '=', uid), ('state', '=', 'sent')])]"/>
+                    <separator/>
+                    <filter string="To Sign" name="to_sign" domain="[('state', '=', 'sent')]"/>
+                    <filter string="Signed" name="signed" domain="[('state', '=', 'signed')]"/>
+                    <filter string="Cancelled" name="canceled" domain="[('state', '=', 'canceled')]"/>
+                    <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+                    <separator/>
+                    <filter string="Date" name="filter_create_date" date="create_date"/>
+                    <separator/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Sent by" name="group_by_create_uid" context="{'group_by': 'create_uid'}"/>
+                    <filter string="Template" name="group_by_template" context="{'group_by': 'template_id'}"/>
+                    <filter string="Date" name="group_by_create_date" context="{'group_by': 'create_date'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Share dialog, opened by the Share button of a template -->
+        <record id="hudson_sign_request_view_form_share" model="ir.ui.view">
+            <field name="name">hudson.sign.request.form.share</field>
+            <field name="model">hudson.sign.request</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Share Document" create="false" class="o_hudson_sign_share_form">
+                    <group>
+                        <field name="share_link" widget="CopyClipboardChar" readonly="1"/>
+                        <field name="valid_until" placeholder="No expiration"/>
+                    </group>
+                    <footer>
+                        <button name="action_stop_sharing" type="object" string="Stop sharing" class="btn-primary"/>
+                        <widget name="hudson_sign_copy_link"/>
+                        <button string="Close" special="save" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hudson_sign_request" model="ir.actions.act_window">
+            <field name="name">Documents</field>
+            <field name="res_model">hudson.sign.request</field>
+            <field name="view_mode">list,kanban,pivot,graph,activity,form</field>
+            <field name="search_view_id" ref="hudson_sign_request_view_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Upload a PDF to request a signature</p>
+                <p>Signature requests sent from the Sign app or from the Documents app appear here.</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_hudson_sign_documents_action"
+                  parent="menu_hudson_sign_documents"
+                  action="action_hudson_sign_request"
+                  sequence="10"/>
+
+        <record id="ir_cron_hudson_sign_expire" model="ir.cron">
+            <field name="name">Sign: Mark expired requests</field>
+            <field name="model_id" ref="model_hudson_sign_request"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_update_expired()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+        </record>
+    </data>
+</odoo>

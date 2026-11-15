@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- PLANNING BOARD — Client Action (Manager Only)                -->
+    <!-- ============================================================ -->
+
+    <!--
+        This client action renders the OWL-based Planning Board component.
+        It is intentionally restricted to the Field Service Manager group
+        via the menu item below.
+        Normal (non-manager) users see the standard calendar view on the
+        Dashboard menu, filtered to their own orders.
+    -->
+    <record id="action_field_service_planning_board" model="ir.actions.client">
+        <field name="name">Planning Board</field>
+        <field name="tag">field_service_planning_board</field>
+    </record>
+
+</odoo>

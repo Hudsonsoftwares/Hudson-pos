@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Client Action — OWL Live Map Component                        -->
+    <!-- ============================================================ -->
+
+    <record id="action_fs_live_map" model="ir.actions.client">
+        <field name="name">Live Technician Map</field>
+        <field name="tag">fs_live_map</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Field service jobs on a map, at their customer's location -->
+    <record id="action_fs_job_map_by_resource" model="ir.actions.client">
+        <field name="name">Map by Resource</field>
+        <field name="tag">hudson_field_service.fs_job_map</field>
+        <field name="context">{'map_mode': 'resource'}</field>
+    </record>
+
+    <record id="action_fs_job_map_timeline" model="ir.actions.client">
+        <field name="name">Timeline</field>
+        <field name="tag">hudson_field_service.fs_job_map</field>
+        <field name="context">{'map_mode': 'timeline'}</field>
+    </record>
+
+    <record id="action_fs_job_map_my" model="ir.actions.client">
+        <field name="name">My Map</field>
+        <field name="tag">hudson_field_service.fs_job_map</field>
+        <field name="context">{'map_mode': 'timeline', 'my_only': True}</field>
+    </record>
+
+</odoo>

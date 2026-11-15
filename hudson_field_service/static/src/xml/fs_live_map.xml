@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        FsLiveMap — Live Technician Map Template
+        OWL 3 template for the live field service technician map.
+    -->
+    <t t-name="hudson_field_service.FsLiveMap">
+        <div class="o_fs_live_map o_action" style="height: 100%; display: flex; flex-direction: column;">
+
+            <!-- ── Header toolbar ── -->
+            <div class="fs-map-header">
+                <div>
+                    <h4>
+                        <i class="fa fa-map-marker me-2" style="color: #017e84;"/>
+                        Live Technician Map
+                    </h4>
+                    <p class="fs-map-subtitle" t-if="!this.state.loading">
+                        <span class="fs-refresh-status">
+                            <span class="dot"/>
+                            Auto-refreshes every 60 s &#160;·&#160; Last updated: <t t-out="this.formattedLastUpdate"/>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Active count badge -->
+                    <span class="badge text-bg-success fs-6 px-3 py-2"
+                          t-if="!this.state.loading and this.state.technicians.length">
+                        <i class="fa fa-circle me-1" style="font-size: 10px;"/>
+                        <t t-out="this.state.technicians.length"/> Active
+                    </span>
+                    <span class="badge text-bg-secondary fs-6 px-3 py-2"
+                          t-if="!this.state.loading and !this.state.technicians.length">
+                        0 Active
+                    </span>
+
+                    <!-- Refresh button -->
+                    <button class="btn btn-outline-primary btn-refresh"
+                            t-on-click="this.onRefresh"
+                            t-att-disabled="this.state.loading">
+                        <i class="fa fa-refresh" t-att-class="this.state.loading ? 'fa-spin' : ''"/>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── Main body: map + sidebar ── -->
+            <div class="fs-map-body" t-if="!this.state.error">
+
+                <!-- Loading state -->
+                <div class="fs-map-loading" t-if="this.state.loading">
+                    <div class="d-flex flex-column align-items-center gap-3 text-muted">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"/>
+                        <span>Loading technician locations…</span>
+                    </div>
+                </div>
+
+                <!-- Map container -->
+                <div t-ref="this.mapRef"
+                     class="fs-map-container"
+                     t-att-style="this.state.loading ? 'visibility: hidden; position: absolute;' : ''"/>
+
+                <!-- Empty state overlay (shown over map area) -->
+                <div class="fs-map-empty"
+                     t-if="!this.state.loading and this.state.technicians.length === 0"
+                     style="position: absolute; inset: 60px 300px 0 0; background: rgba(248,249,250,0.92); z-index: 500;">
+                    <i class="fa fa-map-o"/>
+                    <h5>No Active Technicians</h5>
+                    <p>
+                        Technicians will appear here when they start a timer on a field service order
+                        with location tracking enabled.
+                    </p>
+                </div>
+
+                <!-- Sidebar — technician list -->
+                <div class="fs-map-sidebar" t-if="!this.state.loading">
+                    <div class="fs-sidebar-header">
+                        <i class="fa fa-users me-2"/>
+                        Technicians
+                        <span class="badge text-bg-primary ms-2" t-out="this.filteredTechnicians.length"/>
+                    </div>
+
+                    <div class="fs-sidebar-filters d-flex p-2 gap-1 border-bottom" style="font-size: 13px;">
+                        <button class="btn btn-sm flex-fill" t-att-class="this.state.filter === 'all' ? 'btn-primary' : 'btn-light'" t-on-click="() => this.setFilter('all')">All</button>
+                        <button class="btn btn-sm flex-fill" t-att-class="this.state.filter === 'in_zone' ? 'btn-primary' : 'btn-light'" t-on-click="() => this.setFilter('in_zone')">In Zone</button>
+                        <button class="btn btn-sm flex-fill" t-att-class="this.state.filter === 'away' ? 'btn-danger text-white' : 'btn-light'" t-on-click="() => this.setFilter('away')">Away</button>
+                    </div>
+
+                    <div class="fs-tech-list">
+                        <t t-if="this.filteredTechnicians.length === 0">
+                            <div class="p-4 text-center text-muted" style="font-size: 13px;">
+                                No active technicians found.
+                            </div>
+                        </t>
+                        <t t-foreach="this.filteredTechnicians" t-as="tech" t-key="tech.id">
+                            <div class="fs-tech-card"
+                                 t-att-class="this.state.selectedId === tech.id ? 'active' : ''"
+                                 t-on-click="() => this.onTechClick(tech.id)">
+
+                                <!-- Avatar -->
+                                <div class="fs-tech-avatar-placeholder">
+                                    <t t-out="this.getAvatarInitials(tech)"/>
+                                </div>
+
+                                <!-- Info -->
+                                <div class="fs-tech-info">
+                                    <div class="fs-tech-name" t-out="tech.employee_id ? tech.employee_id[1] : 'Unknown'"/>
+                                    <div class="fs-tech-order">
+                                        <i class="fa fa-wrench me-1" style="font-size: 11px;"/>
+                                        <t t-out="tech.name"/> — <t t-out="tech.title or 'Unnamed'"/>
+                                    </div>
+                                    <div class="fs-tech-order" t-if="tech.partner_id">
+                                        <i class="fa fa-user me-1" style="font-size: 11px;"/>
+                                        <t t-out="tech.partner_id[1]"/>
+                                    </div>
+                                </div>
+
+                                <!-- Live indicator & Warning -->
+                                <div class="fs-tech-status-container d-flex flex-column align-items-end gap-1">
+                                    <div class="fs-tech-status" title="Active"/>
+                                    <i t-if="tech.is_outside_radius" class="fa fa-exclamation-triangle text-danger" title="Outside Customer Radius" style="font-size:12px;"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Error state ── -->
+            <div class="alert alert-danger m-3" t-if="this.state.error">
+                <i class="fa fa-exclamation-triangle me-2"/>
+                <strong>Failed to load map:</strong>
+                <t t-out="this.state.error"/>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

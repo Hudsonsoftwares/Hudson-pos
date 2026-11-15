@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_planning.FsScheduleView">
+        <div class="o_fs_schedule_view h-100" t-att-class="this.props.className" t-ref="this.rootRef">
+            <Layout className="'o_fs_schedule_layout'" display="this.props.display">
+                <t t-set-slot="control-panel-additional-actions">
+                    <CogMenu/>
+                </t>
+                <t t-set-slot="control-panel-buttons">
+                    <div class="d-flex gap-1">
+                        <!-- Employees see their planning; administrators make it -->
+                        <button t-if="this.isManager" class="btn btn-primary o_fs_schedule_new" type="button" t-on-click="() => this.onClickNew()">New</button>
+                        <button t-if="this.isManager" class="btn btn-primary o_fs_schedule_publish" type="button" t-on-click="() => this.onPublish()">Publish</button>
+                        <Dropdown>
+                            <button class="btn btn-secondary o_fs_schedule_actions">Actions <i class="oi ms-1" data-icon="arrow_drop_down"/></button>
+                            <t t-set-slot="content">
+                                <DropdownItem t-if="this.isManager" onSelected="() => this.onCopyPrevious()">
+                                    <t t-out="this.copyPreviousLabel"/>
+                                </DropdownItem>
+                                <DropdownItem t-if="this.isManager" onSelected="() => this.onAutoPlan()">Auto Plan</DropdownItem>
+                                <DropdownItem t-if="this.isManager" onSelected="() => this.onGenerateShifts()">Generate Shifts</DropdownItem>
+                                <DropdownItem onSelected="() => this.onPrint()">Print</DropdownItem>
+                            </t>
+                        </Dropdown>
+                    </div>
+                </t>
+                <t t-set-slot="control-panel-actions">
+                    <SearchBar toggler="this.searchBarToggler"/>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <t t-component="this.searchBarToggler.component" t-props="this.searchBarToggler.props"/>
+                </t>
+                <t t-set-slot="default">
+                    <div class="o_fs_schedule d-flex flex-column h-100">
+                        <!-- Period navigation -->
+                        <div class="o_fs_schedule_nav d-flex align-items-center gap-2 px-3 py-2 d-print-none">
+                            <div class="btn-group">
+                                <button class="btn btn-secondary" title="Previous" t-on-click="() => this.onPrevious()"><i class="oi" data-icon="arrow_back"/></button>
+                                <button class="btn btn-secondary" title="Next" t-on-click="() => this.onNext()"><i class="oi" data-icon="arrow_forward"/></button>
+                            </div>
+                            <Dropdown>
+                                <button class="btn btn-secondary o_fs_schedule_scale">
+                                    <t t-out="this.scaleInfo.label"/> <i class="oi ms-1" data-icon="arrow_drop_down"/>
+                                </button>
+                                <t t-set-slot="content">
+                                    <t t-foreach="this.scaleKeys" t-as="scale" t-key="scale">
+                                        <DropdownItem onSelected="() => this.setScale(scale)" class="this.state.scale === scale ? 'selected' : ''">
+                                            <t t-out="this.scales[scale].label"/>
+                                        </DropdownItem>
+                                    </t>
+                                </t>
+                            </Dropdown>
+                            <button class="btn btn-secondary" t-on-click="() => this.onToday()">Today</button>
+                            <button class="btn ms-auto o_fs_side_panel_toggle" t-att-class="this.state.showSidePanel ? 'btn-outline-primary active' : 'btn-secondary'"
+                                    title="Toggle side panel" t-on-click="() => this.toggleSidePanel()">
+                                <i class="oi" data-icon="dock_to_left"/>
+                            </button>
+                        </div>
+
+                        <div class="o_fs_schedule_body d-flex flex-grow-1 overflow-hidden">
+                            <!-- Grid -->
+                            <div class="o_fs_schedule_grid_wrapper flex-grow-1 overflow-auto">
+                                <div class="o_fs_schedule_grid" t-att-style="this.gridStyle" t-att-class="this.state.loading ? 'o_fs_loading' : ''">
+                                    <div class="o_fs_row o_fs_header_row">
+                                        <div class="o_fs_row_header o_fs_header_title">Schedule</div>
+                                        <div class="o_fs_track">
+                                            <div class="o_fs_period_label" t-out="this.periodLabel"/>
+                                            <div class="o_fs_cells">
+                                                <t t-foreach="this.columns" t-as="col" t-key="col.key">
+                                                    <div class="o_fs_header_cell" t-att-class="col.isToday ? 'o_fs_today' : ''" t-out="col.label"/>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <t t-foreach="this.visibleRows" t-as="row" t-key="row.key === false ? 'none' : row.key">
+                                        <!-- Two group bys: header of a group (e.g. a role), click to fold -->
+                                        <div t-if="row.type === 'group'" class="o_fs_row o_fs_group_row" t-on-click="() => this.toggleGroup(row)">
+                                            <div class="o_fs_row_header">
+                                                <div class="d-flex align-items-center gap-1 w-100">
+                                                    <i class="oi" t-att-data-icon="this.isCollapsed(row) ? 'arrow_right' : 'arrow_drop_down'"/>
+                                                    <span class="text-truncate flex-grow-1 fw-bold" t-att-title="row.name" t-out="row.name"/>
+                                                    <span class="text-muted small" t-out="this.formatHours(row.planned_hours)"/>
+                                                </div>
+                                                <div t-if="row.capacity_hours" class="progress o_fs_progress mt-1"
+                                                     t-att-title="this.formatHours(row.planned_hours) + ' / ' + this.formatHours(row.capacity_hours)">
+                                                    <div class="progress-bar" t-att-class="row.planned_hours > row.capacity_hours ? 'bg-danger' : 'bg-success'"
+                                                         t-att-style="'width: ' + this.progress(row) + '%'"/>
+                                                </div>
+                                            </div>
+                                            <div class="o_fs_track">
+                                                <div class="o_fs_cells">
+                                                    <t t-foreach="this.groupColumnHours(row)" t-as="cell" t-key="cell.key">
+                                                        <div class="o_fs_group_cell">
+                                                            <t t-if="cell.hours > 0.01">
+                                                                <span class="o_fs_group_hours" t-out="this.formatSummaryHours(cell.hours)"/>
+                                                                <span class="o_fs_group_line"/>
+                                                            </t>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <t t-else="">
+                                        <t t-set="rowData" t-value="this.rowPills(row)"/>
+                                        <div class="o_fs_row" t-att-class="row.group_key ? 'o_fs_child_row' : ''" t-att-style="'min-height: ' + rowData.height + 'px'">
+                                            <div class="o_fs_row_header">
+                                                <div class="d-flex align-items-center gap-2 w-100">
+                                                    <img t-if="row.avatar" class="o_fs_avatar rounded" t-att-src="row.avatar" alt=""/>
+                                                    <span class="text-truncate flex-grow-1" t-att-title="row.name">
+                                                        <t t-out="row.name"/>
+                                                        <span t-if="row.job_title" class="text-muted"> (<t t-out="row.job_title"/>)</span>
+                                                    </span>
+                                                    <span class="text-muted small" t-out="this.formatHours(row.planned_hours)"/>
+                                                </div>
+                                                <div t-if="row.capacity_hours !== undefined" class="progress o_fs_progress mt-1"
+                                                     t-att-title="this.formatHours(row.planned_hours) + ' / ' + this.formatHours(row.capacity_hours)">
+                                                    <div class="progress-bar" t-att-class="row.planned_hours > row.capacity_hours ? 'bg-danger' : 'bg-success'"
+                                                         t-att-style="'width: ' + this.progress(row) + '%'"/>
+                                                </div>
+                                            </div>
+                                            <div class="o_fs_track">
+                                                <div class="o_fs_cells">
+                                                    <t t-foreach="this.columns" t-as="col" t-key="col.key">
+                                                        <div class="o_fs_cell" t-att-class="this.cellClass(row, col, row_index, col_index)"
+                                                             t-on-mousedown="(ev) => this.onCellMouseDown(row_index, col_index, ev)"
+                                                             t-on-mouseenter="() => this.onCellMouseEnter(row_index, col_index)"
+                                                             t-on-dragover="(ev) => this.onCellDragOver(row, col, ev)"
+                                                             t-on-dragleave="() => this.onCellDragLeave(row, col)"
+                                                             t-on-drop="(ev) => this.onCellDrop(row, col, ev)">
+                                                            <i t-if="this.isManager" class="oi o_fs_cell_add" data-icon="add"/>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                                <t t-foreach="rowData.pills" t-as="pill" t-key="pill.slot.id">
+                                                    <div class="o_fs_pill" t-att-class="this.pillClass(pill.slot)" t-att-style="pill.style"
+                                                         t-att-draggable="this.isManager ? 'true' : 'false'" t-att-title="pill.timeLabel + ' ' + pill.slot.label"
+                                                         t-on-dragstart="(ev) => this.onPillDragStart(pill, ev)"
+                                                         t-on-click.stop="(ev) => this.onPillClick(pill.slot, ev)">
+                                                        <i t-if="pill.slot.is_job" class="oi me-1" data-icon="build"/>
+                                                        <i t-if="pill.slot.request_to_switch" class="oi me-1" data-icon="swap_horiz" title="Replacement requested"/>
+                                                        <span t-if="pill.timeLabel" class="me-1" t-out="pill.timeLabel"/>
+                                                        <span t-out="pill.slot.label"/>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        </t>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Side panel: work still to schedule -->
+                            <div t-if="this.state.showSidePanel" class="o_fs_side_panel d-print-none">
+                                <h5 class="mb-3"><t t-out="this.state.toPlan.length"/> to schedule</h5>
+                                <div t-if="!this.state.toPlan.length" class="text-muted small">
+                                    Everything is planned.
+                                </div>
+                                <t t-foreach="this.state.toPlan" t-as="item" t-key="item.ref">
+                                    <div class="o_fs_to_plan d-flex align-items-center gap-2" t-att-draggable="this.isManager ? 'true' : 'false'"
+                                         t-att-title="'Drag onto the schedule to plan: ' + item.name"
+                                         t-on-dragstart="(ev) => this.onToPlanDragStart(item, ev)">
+                                        <i class="oi text-muted" data-icon="drag_indicator"/>
+                                        <span class="text-truncate" t-out="item.name"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </Layout>
+        </div>
+    </t>
+
+    <t t-name="hudson_planning.FsSlotPopover">
+        <div class="fs-slot-popover">
+            <div class="fs-slot-popover-body">
+                <div class="d-flex align-items-start gap-2 mb-2">
+                    <i class="oi oi-fw" data-icon="calendar_today"/>
+                    <span class="fw-bold" t-out="this.dateLabel"/>
+                    <span t-if="this.props.data.conflict_count" class="badge rounded-pill text-bg-danger ms-auto"
+                          title="Other shifts of the employee at the same time">
+                        <t t-out="this.props.data.conflict_count"/> conflicts
+                    </span>
+                </div>
+                <div t-if="this.props.data.name" class="fw-bold mb-2" t-out="this.props.data.name"/>
+                <t t-foreach="this.props.data.lines" t-as="line" t-key="line_index">
+                    <div class="d-flex align-items-start gap-2 mb-1">
+                        <i class="oi oi-fw" t-att-data-icon="line.icon"/>
+                        <span class="fs-slot-popover-text" t-out="line.text"/>
+                    </div>
+                </t>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <span t-if="this.props.data.priority !== false" class="fs-slot-popover-stars">
+                        <t t-foreach="this.stars" t-as="star" t-key="star_index">
+                            <i t-attf-class="oi {{ star ? 'oi-filled text-warning' : 'text-muted' }}" data-icon="star"/>
+                        </t>
+                    </span>
+                    <span t-else=""/>
+                    <img t-if="this.props.data.resource_id" class="rounded fs-slot-popover-avatar"
+                         t-att-src="'/web/image/hr.employee.public/' + this.props.data.resource_id + '/avatar_128'"
+                         t-att-alt="this.props.data.resource_name" t-att-title="this.props.data.resource_name"/>
+                </div>
+            </div>
+            <div class="fs-slot-popover-footer">
+                <button class="btn btn-primary" t-on-click="this.props.onEdit">Edit</button>
+                <t t-foreach="this.props.data.actions" t-as="action" t-key="action.method">
+                    <button class="btn btn-secondary" t-on-click="() => this.props.onAction(action)" t-out="action.string"/>
+                </t>
+                <button t-if="this.props.data.can_delete" class="btn btn-outline-danger ms-auto" title="Delete"
+                        t-on-click="this.props.onDelete">
+                    <i class="oi" data-icon="delete"/>
+                </button>
+            </div>
+        </div>
+    </t>
+
+</templates>

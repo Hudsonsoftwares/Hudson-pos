@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="fs_order_publish_wizard_view_form" model="ir.ui.view">
+        <field name="name">fs.order.publish.wizard.form</field>
+        <field name="model">fs.order.publish.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Validation Warnings">
+                <div class="alert alert-warning" role="alert">
+                    <h4 class="alert-heading">Conflicts Detected!</h4>
+                    <p>The following issues were found:</p>
+                    <hr/>
+                    <field name="warning_message" readonly="1" nolabel="1" widget="text"/>
+                </div>
+                <footer>
+                    <button string="Proceed Anyway" name="action_proceed_anyway" type="object" class="btn-danger"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

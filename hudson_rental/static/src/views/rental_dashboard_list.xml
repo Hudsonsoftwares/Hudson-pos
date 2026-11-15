@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_rental.RentalDashboard">
+        <div class="o_rental_dashboard container-fluid d-flex flex-wrap justify-content-between gap-2 px-3 pt-1 pb-3">
+            <t t-foreach="[this.leftCards, this.rightCards]" t-as="cardGroup" t-key="cardGroup_index">
+                <div class="d-flex flex-wrap gap-2">
+                    <t t-foreach="cardGroup" t-as="card" t-key="card.key">
+                        <button type="button"
+                                class="o_rental_card btn d-block py-2 px-3 lh-sm"
+                                t-att-class="this.cardClass(card)"
+                                t-att-data-card="card.key"
+                                t-on-click="() => this.onCardClick(card)">
+                            <span class="o_rental_card_value d-block fs-4 fw-bolder" t-out="this.state.data[card.key] or 0"/>
+                            <span class="d-block" t-out="card.label"/>
+                        </button>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="hudson_rental.RentalDashboardListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_list_renderer')]" position="before">
+            <RentalDashboard list="this.props.list"/>
+        </xpath>
+    </t>
+
+</templates>

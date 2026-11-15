@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action Main -->
+    <record id="mrp_eco_action_main" model="ir.actions.act_window">
+        <field name="name">Engineering Change Orders</field>
+        <field name="res_model">mrp.eco</field>
+        <field name="view_mode">kanban,list,form,pivot,graph,activity</field>
+        <field name="context">{'search_default_group_by_stage_id': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create an Engineering Change Order
+            </p><p>
+                ECOs let you revise a Bill of Materials or its operations through an approval workflow,
+                and keep a version history of every change.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_mrp_eco_action_main"
+              name="Changes"
+              parent="menu_plm_changes"
+              action="mrp_eco_action_main"
+              sequence="10"/>
+
+    <!-- Form View -->
+    <record id="mrp_eco_view_form" model="ir.ui.view">
+        <field name="name">mrp.eco.view.form</field>
+        <field name="model">mrp.eco</field>
+        <field name="arch" type="xml">
+            <form string="Engineering Change Order">
+                <header>
+                    <button name="action_approve" type="object" string="Approve" class="oe_highlight" invisible="not user_can_approve" data-hotkey="v"/>
+                    <button name="action_reject" type="object" string="Reject" class="btn-secondary" invisible="not user_can_reject" data-hotkey="x"/>
+                    <button name="action_request_reapproval" type="object" string="Request Re-approval" class="oe_highlight" invisible="state != 'conflict'"
+                            help="Reopen the rejected approvals of this stage so the approvers can review the ECO again."/>
+                    <button name="action_revert_stage" type="object" string="Revert to Previous Stage" class="btn-secondary" invisible="not can_revert_stage or state == 'done'"
+                            confirm="Send this ECO back to the previous stage? Approvals of that stage and the following ones will be requested again."/>
+                    <button name="action_start_revision" type="object" string="Start Revision" class="oe_highlight" invisible="new_bom_id or type == 'product'"/>
+                    <button name="action_apply_changes" type="object" string="Apply Changes" class="oe_highlight" invisible="not new_bom_id or is_applied"/>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'folded'}"/>
+                </header>
+                <div class="alert alert-danger mb-0" role="alert" invisible="state != 'conflict'">
+                    This stage has been <strong>rejected</strong>. Fix the revision and click <strong>Request Re-approval</strong>,
+                    or click <strong>Revert to Previous Stage</strong> to send it back. Approvers can also change their decision.
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_product" type="object" class="oe_stat_button" icon="inventory_2" invisible="not product_tmpl_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Product</span>
+                            </div>
+                        </button>
+                        <button name="action_open_documents" type="object" class="oe_stat_button" icon="description">
+                            <field name="document_count" widget="statinfo" string="Documents"/>
+                        </button>
+                        <button name="action_open_new_bom" type="object" class="oe_stat_button" icon="science" invisible="not new_bom_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">V<field name="new_bom_version"/></span>
+                                <span class="o_stat_text">Revision</span>
+                            </div>
+                        </button>
+                        <button name="action_review_changes" type="object" class="oe_stat_button" icon="swap_horiz" invisible="not new_bom_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Review Changes</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="state != 'done' or not active"/>
+                    <div class="oe_title">
+                        <label for="name" string="Description"/>
+                        <h1 class="d-flex">
+                            <field name="priority" widget="priority" class="me-3"/>
+                            <field name="name" placeholder="e.g. Awesome Product 2.0" readonly="0"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="" name="left_col">
+                            <field name="type_id" options="{'no_create': True}"/>
+                            <field name="type" string="Apply on"/>
+                            <field name="product_tmpl_id" required="1"/>
+                            <field name="bom_id" invisible="type == 'product'" readonly="new_bom_id"/>
+                            <field name="new_bom_id" invisible="1"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group string="" name="right_col">
+                            <field name="user_id" string="Responsible"/>
+                            <field name="effectivity" string="Effective Date"/>
+                            <field name="effectivity_date" invisible="effectivity == 'asap'"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="update_version" invisible="type == 'product'"/>
+                            <field name="state" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                            <field name="is_applied" invisible="1"/>
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="user_can_reject" invisible="1"/>
+                            <field name="can_revert_stage" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Note" name="note">
+                            <field name="note" placeholder="Description of the change and its reason."/>
+                        </page>
+                        <page string="Approvals" name="approvals">
+                            <field name="approval_ids">
+                                <list editable="bottom" create="0" delete="0" decoration-muted="not is_current_stage"
+                                      decoration-success="status == 'approved'" decoration-danger="status == 'rejected'">
+                                    <field name="stage_id"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="approval_type" readonly="1"/>
+                                    <field name="approver_ids" widget="many2many_avatar_user" optional="show"/>
+                                    <field name="user_id" readonly="1" widget="many2one_avatar_user"/>
+                                    <field name="approval_date" readonly="1" optional="show"/>
+                                    <field name="status" readonly="1" widget="badge"
+                                           decoration-success="status == 'approved'" decoration-danger="status == 'rejected'" decoration-info="status == 'none'"/>
+                                    <field name="is_current_stage" column_invisible="1"/>
+                                    <field name="user_is_approver" column_invisible="1"/>
+                                    <button name="action_approve" type="object" string="Approve" icon="check" class="btn btn-link text-success"
+                                            invisible="not is_current_stage or not user_is_approver or status == 'approved' or parent.state == 'done'"/>
+                                    <button name="action_reject" type="object" string="Reject" icon="close" class="btn btn-link text-danger"
+                                            invisible="not is_current_stage or not user_is_approver or status == 'rejected' or parent.state == 'done'"/>
+                                    <button name="action_reset" type="object" string="Reset" icon="undo" class="btn btn-link"
+                                            invisible="not is_current_stage or not user_is_approver or status == 'none' or parent.state == 'done'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Product" name="product" invisible="not product_tmpl_id">
+                            <group>
+                                <group>
+                                    <field name="product_default_code"/>
+                                    <field name="product_categ_id"/>
+                                    <field name="product_uom_id"/>
+                                </group>
+                                <group>
+                                    <field name="product_standard_price"/>
+                                    <field name="product_bom_count"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Bill of Materials" name="bom" invisible="not bom_id">
+                            <field name="bom_line_ids" readonly="1">
+                                <list>
+                                    <field name="product_id"/>
+                                    <field name="product_qty"/>
+                                    <field name="uom_id" groups="uom.group_uom"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Operations &amp; Work Centers" name="operations" invisible="not bom_id">
+                            <field name="operation_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="workcenter_id"/>
+                                    <field name="time_cycle_manual" string="Duration (min)" widget="float_time"/>
+                                </list>
+                            </field>
+                            <separator string="Work Centers"/>
+                            <field name="workcenter_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="costs_hour"/>
+                                    <field name="time_efficiency"/>
+                                    <field name="oee_target"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="BoM Changes" name="bom_changes" invisible="not new_bom_id">
+                            <button name="action_refresh_changes" type="object" string="Refresh" icon="refresh" class="btn-link" invisible="is_applied"/>
+                            <field name="bom_change_ids" readonly="1">
+                                <list create="0" delete="0" decoration-success="change_type == 'add'"
+                                      decoration-danger="change_type == 'remove'" decoration-warning="change_type == 'update'">
+                                    <field name="change_type"/>
+                                    <field name="product_id"/>
+                                    <field name="old_qty"/>
+                                    <field name="new_qty"/>
+                                    <field name="quantity_diff" sum="Total Quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="cost_diff" sum="Total Cost" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Operation Changes" name="routing_changes" invisible="not new_bom_id">
+                            <button name="action_refresh_changes" type="object" string="Refresh" icon="refresh" class="btn-link" invisible="is_applied"/>
+                            <field name="routing_change_ids" readonly="1">
+                                <list create="0" delete="0" decoration-success="change_type == 'add'"
+                                      decoration-danger="change_type == 'remove'" decoration-warning="change_type == 'update'">
+                                    <field name="change_type"/>
+                                    <field name="operation_name"/>
+                                    <field name="workcenter_id"/>
+                                    <field name="old_duration" widget="float_time"/>
+                                    <field name="new_duration" widget="float_time"/>
+                                    <field name="duration_diff" widget="float_time" sum="Total Duration"/>
+                                    <field name="cost_diff" sum="Total Cost" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="mrp_eco_view_tree" model="ir.ui.view">
+        <field name="name">mrp.eco.view.tree</field>
+        <field name="model">mrp.eco</field>
+        <field name="arch" type="xml">
+            <list string="Engineering Change Orders" decoration-danger="state == 'conflict'" decoration-muted="state == 'done'">
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="product_tmpl_id"/>
+                <field name="bom_id" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                <field name="stage_id"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-danger="state == 'conflict'" decoration-info="state == 'progress'"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+                <field name="date_done" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="mrp_eco_view_kanban" model="ir.ui.view">
+        <field name="name">mrp.eco.view.kanban</field>
+        <field name="model">mrp.eco</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column o_kanban_project_tasks" color="color">
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex">
+                            <field name="name" class="fw-bold fs-5 flex-grow-1"/>
+                            <span t-if="record.state.raw_value == 'conflict'" class="badge text-bg-danger">Rejected</span>
+                        </div>
+                        <field name="product_tmpl_id"/>
+                        <field name="type_id" class="text-muted"/>
+                        <div invisible="not bom_id" class="text-muted">BoM: <field name="bom_id"/></div>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <footer>
+                            <div class="d-flex gap-1">
+                                <field name="priority" widget="priority"/>
+                                <field name="activity_ids" widget="kanban_activity"/>
+                            </div>
+                            <field name="user_id" widget="many2one_avatar_user" class="ms-auto"/>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Reporting Views -->
+    <record id="mrp_eco_view_pivot" model="ir.ui.view">
+        <field name="name">mrp.eco.view.pivot</field>
+        <field name="model">mrp.eco</field>
+        <field name="arch" type="xml">
+            <pivot string="ECO Analysis" sample="1">
+                <field name="type_id" type="row"/>
+                <field name="stage_id" type="col"/>
+                <field name="lead_time" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="mrp_eco_view_graph" model="ir.ui.view">
+        <field name="name">mrp.eco.view.graph</field>
+        <field name="model">mrp.eco</field>
+        <field name="arch" type="xml">
+            <graph string="ECO Analysis" type="bar" sample="1">
+                <field name="stage_id"/>
+                <field name="type_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="mrp_eco_view_activity" model="ir.ui.view">
+        <field name="name">mrp.eco.view.activity</field>
+        <field name="model">mrp.eco</field>
+        <field name="arch" type="xml">
+            <activity string="ECOs">
+                <templates>
+                    <div t-name="activity-box">
+                        <div class="d-flex flex-column">
+                            <field name="name" class="o_text_block fw-bold"/>
+                            <field name="product_tmpl_id" class="text-muted"/>
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+
+    <record id="mrp_eco_view_search" model="ir.ui.view">
+        <field name="name">mrp.eco.view.search</field>
+        <field name="model">mrp.eco</field>
+        <field name="arch" type="xml">
+            <search string="Search ECOs">
+                <field name="name" string="ECO"/>
+                <field name="product_tmpl_id"/>
+                <field name="bom_id"/>
+                <field name="type_id"/>
+                <field name="user_id"/>
+                <field name="tag_ids"/>
+                <filter string="My ECOs" name="filter_my" domain="[('user_id', '=', uid)]"/>
+                <filter string="To Approve" name="filter_to_approve" domain="[('user_can_approve', '=', True)]"/>
+                <separator/>
+                <filter string="In Progress" name="filter_progress" domain="[('state', '=', 'progress')]"/>
+                <filter string="Rejected" name="filter_conflict" domain="[('state', '=', 'conflict')]"/>
+                <filter string="Done" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="Urgent" name="filter_urgent" domain="[('priority', '=', '1')]"/>
+                <separator/>
+                <filter string="Creation Date" name="filter_create_date" date="create_date"/>
+                <filter string="Completion Date" name="filter_date_done" date="date_done"/>
+                <separator/>
+                <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Stage" name="group_by_stage_id" context="{'group_by': 'stage_id'}"/>
+                    <filter string="Type" name="group_by_type_id" context="{'group_by': 'type_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Responsible" name="group_by_user_id" context="{'group_by': 'user_id'}"/>
+                    <filter string="Product" name="group_by_product" context="{'group_by': 'product_tmpl_id'}"/>
+                    <filter string="Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

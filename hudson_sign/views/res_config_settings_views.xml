@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_hudson_sign" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hudson.sign</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Sign" string="Sign" name="hudson_sign">
+                    <block title="Sign Settings" name="hudson_sign_settings">
+                        <setting id="hudson_sign_terms" string="Sign Default Terms &amp; Conditions"
+                                 help="Add terms &amp; conditions to the signature request email">
+                            <field name="hudson_sign_use_terms"/>
+                            <div class="content-group" invisible="not hudson_sign_use_terms">
+                                <div class="mt16">
+                                    <field name="hudson_sign_terms_type" widget="radio" class="o_light_label"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="hudson_sign_terms" class="oe-bordered-editor"
+                                           options="{'resizable': true}" placeholder="Your conditions..."/>
+                                </div>
+                                <div class="mt8" invisible="hudson_sign_terms_type != 'web'">
+                                    <span class="text-muted">The email links to a public page showing these terms.</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="hudson_sign_email_otp" string="Email verification"
+                                 help="Ask signers for a one-time code sent to their email address before they sign">
+                            <field name="hudson_sign_email_otp"/>
+                            <div class="content-group text-muted mt8" invisible="not hudson_sign_email_otp">
+                                Every signer must enter the code emailed to them before signing,
+                                including on documents shared by link.
+                                Users signing their own request while logged in are not asked.
+                            </div>
+                        </setting>
+                        <setting id="hudson_sign_template_access" string="Manage template access"
+                                 help="Allow users to define the users which have access to the template">
+                            <field name="hudson_sign_manage_template_access"/>
+                            <div class="content-group text-muted mt8" invisible="not hudson_sign_manage_template_access">
+                                Only the owner and the "Authorized Users" of a template can see and use it.
+                                Leave "Authorized Users" empty to share a template with everyone.
+                            </div>
+                        </setting>
+                        <setting id="hudson_sign_certificate" string="Cryptographic signature" company_dependent="1"
+                                 help="Certify your documents using a provided .pfx or .p12 file.">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="hudson_sign_certificate_id" class="col-lg-4 o_light_label"/>
+                                    <field name="hudson_sign_certificate_id" class="col-lg-8"
+                                           options="{'no_quick_create': True}"
+                                           context="{'default_company_id': company_id}"/>
+                                </div>
+                                <div class="text-muted small mt8">
+                                    Applied to the final document once everyone has signed.
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_hudson_sign_config_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'module': 'hudson_sign'}</field>
+    </record>
+</odoo>

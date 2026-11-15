@@ -1,0 +1,703 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_pcat_packaged" model="product.public.category">
+            <field name="name">Packaged Foods</field>
+            <field name="sequence" eval="1"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_packaged.png"/>
+        </record>
+        <record id="rc_poscat_packaged" model="pos.category">
+            <field name="name">Packaged Foods</field>
+            <field name="sequence" eval="50"/>
+            <field name="color" eval="4"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_packaged.png"/>
+        </record>
+        <record id="rc_pcat_snacks" model="product.public.category">
+            <field name="name">Snacks &amp; Chips</field>
+            <field name="parent_id" ref="rc_pcat_packaged"/>
+            <field name="sequence" eval="1"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_snacks.png"/>
+        </record>
+        <record id="rc_poscat_snacks" model="pos.category">
+            <field name="name">Snacks &amp; Chips</field>
+            <field name="parent_id" ref="rc_poscat_packaged"/>
+            <field name="sequence" eval="51"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_snacks.png"/>
+        </record>
+        <record id="rc_pcat_spices" model="product.public.category">
+            <field name="name">Spices &amp; Masalas</field>
+            <field name="parent_id" ref="rc_pcat_packaged"/>
+            <field name="sequence" eval="2"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_spices.png"/>
+        </record>
+        <record id="rc_poscat_spices" model="pos.category">
+            <field name="name">Spices &amp; Masalas</field>
+            <field name="parent_id" ref="rc_poscat_packaged"/>
+            <field name="sequence" eval="52"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_spices.png"/>
+        </record>
+        <record id="rc_pcat_ready" model="product.public.category">
+            <field name="name">Ready-to-Eat Meals</field>
+            <field name="parent_id" ref="rc_pcat_packaged"/>
+            <field name="sequence" eval="3"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_ready.png"/>
+        </record>
+        <record id="rc_poscat_ready" model="pos.category">
+            <field name="name">Ready-to-Eat Meals</field>
+            <field name="parent_id" ref="rc_poscat_packaged"/>
+            <field name="sequence" eval="53"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_ready.png"/>
+        </record>
+        <record id="rc_pcat_pickles" model="product.public.category">
+            <field name="name">Pickles &amp; Chutneys</field>
+            <field name="parent_id" ref="rc_pcat_packaged"/>
+            <field name="sequence" eval="4"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_pickles.png"/>
+        </record>
+        <record id="rc_poscat_pickles" model="pos.category">
+            <field name="name">Pickles &amp; Chutneys</field>
+            <field name="parent_id" ref="rc_poscat_packaged"/>
+            <field name="sequence" eval="54"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_pickles.png"/>
+        </record>
+        <record id="rc_pcat_sweets" model="product.public.category">
+            <field name="name">Sweets &amp; Bakery</field>
+            <field name="parent_id" ref="rc_pcat_packaged"/>
+            <field name="sequence" eval="5"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_sweets.png"/>
+        </record>
+        <record id="rc_poscat_sweets" model="pos.category">
+            <field name="name">Sweets &amp; Bakery</field>
+            <field name="parent_id" ref="rc_poscat_packaged"/>
+            <field name="sequence" eval="55"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_sweets.png"/>
+        </record>
+        <record id="rc_pcat_beverages" model="product.public.category">
+            <field name="name">Coffee &amp; Tea</field>
+            <field name="parent_id" ref="rc_pcat_packaged"/>
+            <field name="sequence" eval="6"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_beverages.png"/>
+        </record>
+        <record id="rc_poscat_beverages" model="pos.category">
+            <field name="name">Coffee &amp; Tea</field>
+            <field name="parent_id" ref="rc_poscat_packaged"/>
+            <field name="sequence" eval="56"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_beverages.png"/>
+        </record>
+        <record id="rc_pcat_breakfast" model="product.public.category">
+            <field name="name">Breakfast Mixes</field>
+            <field name="parent_id" ref="rc_pcat_packaged"/>
+            <field name="sequence" eval="7"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_breakfast.png"/>
+        </record>
+        <record id="rc_poscat_breakfast" model="pos.category">
+            <field name="name">Breakfast Mixes</field>
+            <field name="parent_id" ref="rc_poscat_packaged"/>
+            <field name="sequence" eval="57"/>
+            <field name="image_512" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/category_breakfast.png"/>
+        </record>
+        <record id="rc_ptag_veg" model="product.tag">
+            <field name="name">Vegetarian</field>
+        </record>
+        <record id="rc_ptag_vegan" model="product.tag">
+            <field name="name">Vegan</field>
+        </record>
+        <record id="rc_ptag_gf" model="product.tag">
+            <field name="name">Gluten-Free</field>
+        </record>
+        <record id="rc_ptag_best" model="product.tag">
+            <field name="name">Bestseller</field>
+        </record>
+        <record id="rc_ptag_kerala" model="product.tag">
+            <field name="name">Kerala Special</field>
+        </record>
+        <record id="rc_ptag_gift" model="product.tag">
+            <field name="name">Gift Pack</field>
+        </record>
+        <record id="rc_attr_pack_size" model="product.attribute">
+            <field name="name">Pack Size</field>
+            <field name="display_type">pills</field>
+            <field name="create_variant">always</field>
+        </record>
+        <record id="rc_size_100" model="product.attribute.value">
+            <field name="name">100 g</field>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="sequence" eval="1"/>
+        </record>
+        <record id="rc_size_250" model="product.attribute.value">
+            <field name="name">250 g</field>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="sequence" eval="2"/>
+        </record>
+        <record id="rc_size_500" model="product.attribute.value">
+            <field name="name">500 g</field>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="sequence" eval="3"/>
+        </record>
+        <record id="rc_size_1kg" model="product.attribute.value">
+            <field name="name">1 kg</field>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="sequence" eval="4"/>
+        </record>
+        <record id="rc_pf_banana_chips" model="product.template">
+            <field name="name">Kerala Banana Chips (Coconut Oil)</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="140"/>
+            <field name="weight" eval="0.2"/>
+            <field name="default_code">PF-BANANA_CHIPS</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_snacks')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf'), ref('rc_ptag_kerala'), ref('rc_ptag_best')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Thin Nendran banana slices fried in pure coconut oil, lightly salted. Our bestselling tea-time snack.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 200 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 60 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Thin Nendran banana slices fried in pure coconut oil, lightly salted. Our bestselling tea-time snack.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_snacks')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/banana_chips.png"/>
+            <field name="compare_list_price" eval="170"/>
+            <field name="website_ribbon_id" ref="website_sale.sale_ribbon"/>
+        </record>
+        <record id="rc_pf_jackfruit_chips" model="product.template">
+            <field name="name">Jackfruit Chips</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="170"/>
+            <field name="weight" eval="0.2"/>
+            <field name="default_code">PF-JACKFRUIT_CH</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_snacks')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Crunchy ripe jackfruit chips with a natural sweetness, fried in coconut oil.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 200 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 60 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Crunchy ripe jackfruit chips with a natural sweetness, fried in coconut oil.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_snacks')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/jackfruit_chips.png"/>
+        </record>
+        <record id="rc_pf_murukku" model="product.template">
+            <field name="name">Rice Murukku</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="100"/>
+            <field name="weight" eval="0.25"/>
+            <field name="default_code">PF-MURUKKU</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_snacks')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_veg'), ref('rc_ptag_gf')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Spiral rice-flour murukku with cumin and sesame. Crispy, light and perfect with filter coffee.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 250 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 45 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Spiral rice-flour murukku with cumin and sesame. Crispy, light and perfect with filter coffee.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_snacks')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/murukku.png"/>
+        </record>
+        <record id="rc_pf_mixture" model="product.template">
+            <field name="name">Spicy Kerala Mixture</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="110"/>
+            <field name="weight" eval="0.25"/>
+            <field name="default_code">PF-MIXTURE</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_snacks')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_veg'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Sev, boondi, peanuts, curry leaves and fried gram in our house spice blend.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 250 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 45 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Sev, boondi, peanuts, curry leaves and fried gram in our house spice blend.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_snacks')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/mixture.png"/>
+            <field name="compare_list_price" eval="135"/>
+            <field name="website_ribbon_id" ref="website_sale.sale_ribbon"/>
+        </record>
+        <record id="rc_pf_garam_masala" model="product.template">
+            <field name="name">Resto Cafe Garam Masala</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="65"/>
+            <field name="weight" eval="0.1"/>
+            <field name="default_code">PF-GARAM_MASALA</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_spices')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf'), ref('rc_ptag_best')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Our kitchen's own blend of cardamom, cinnamon, clove, mace and pepper, roasted and ground in small batches.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 100 g (more sizes available)&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Our kitchen's own blend of cardamom, cinnamon, clove, mace and pepper, roasted and ground in small batches.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_spices')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/garam_masala.png"/>
+        </record>
+        <record id="rc_pf_garam_masala_size_line" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="rc_pf_garam_masala"/>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="value_ids" eval="[Command.set([ref('rc_size_100'), ref('rc_size_250'), ref('rc_size_500'), ref('rc_size_1kg')])]"/>
+        </record>
+        <record id="rc_pf_chicken_masala" model="product.template">
+            <field name="name">Kerala Chicken Masala</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="70"/>
+            <field name="weight" eval="0.1"/>
+            <field name="default_code">PF-CHICKEN_MASA</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_spices')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;The masala behind our chicken roast: Kashmiri chilli, coriander, fennel and black pepper.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 100 g (more sizes available)&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">The masala behind our chicken roast: Kashmiri chilli, coriander, fennel and black pepper.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_spices')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/chicken_masala.png"/>
+        </record>
+        <record id="rc_pf_chicken_masala_size_line" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="rc_pf_chicken_masala"/>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="value_ids" eval="[Command.set([ref('rc_size_100'), ref('rc_size_250'), ref('rc_size_500'), ref('rc_size_1kg')])]"/>
+        </record>
+        <record id="rc_pf_sambar_powder" model="product.template">
+            <field name="name">Sambar Powder</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="60"/>
+            <field name="weight" eval="0.1"/>
+            <field name="default_code">PF-SAMBAR_POWDE</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_spices')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Roasted lentils, coriander and red chillies for a fragrant South Indian sambar.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 100 g (more sizes available)&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Roasted lentils, coriander and red chillies for a fragrant South Indian sambar.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_spices')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/sambar_powder.png"/>
+        </record>
+        <record id="rc_pf_sambar_powder_size_line" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="rc_pf_sambar_powder"/>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="value_ids" eval="[Command.set([ref('rc_size_100'), ref('rc_size_250'), ref('rc_size_500'), ref('rc_size_1kg')])]"/>
+        </record>
+        <record id="rc_pf_black_pepper" model="product.template">
+            <field name="name">Wayanad Black Pepper (Whole)</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="130"/>
+            <field name="weight" eval="0.1"/>
+            <field name="default_code">PF-BLACK_PEPPER</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_spices')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Bold, bright Malabar pepper from Wayanad hill farms. Grind fresh for the best aroma.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 100 g (more sizes available)&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 18 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Bold, bright Malabar pepper from Wayanad hill farms. Grind fresh for the best aroma.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_spices')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/black_pepper.png"/>
+            <field name="website_ribbon_id" ref="website_sale.new_ribbon"/>
+        </record>
+        <record id="rc_pf_black_pepper_size_line" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="rc_pf_black_pepper"/>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="value_ids" eval="[Command.set([ref('rc_size_100'), ref('rc_size_250'), ref('rc_size_500'), ref('rc_size_1kg')])]"/>
+        </record>
+        <record id="rc_pf_ready_biryani" model="product.template">
+            <field name="name">Malabar Chicken Biryani (Ready-to-Eat)</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="240"/>
+            <field name="weight" eval="0.35"/>
+            <field name="default_code">PF-READY_BIRYAN</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_ready')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_kerala'), ref('rc_ptag_best')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Fragrant jeerakasala rice and tender chicken, retort-packed. Heat for 3 minutes and serve.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 350 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Fragrant jeerakasala rice and tender chicken, retort-packed. Heat for 3 minutes and serve.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_ready')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/ready_biryani.png"/>
+        </record>
+        <record id="rc_pf_ready_avial" model="product.template">
+            <field name="name">Avial (Ready-to-Eat)</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="160"/>
+            <field name="weight" eval="0.3"/>
+            <field name="default_code">PF-READY_AVIAL</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_ready')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_veg'), ref('rc_ptag_gf'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Mixed vegetables in coconut and yoghurt gravy, a Sadya classic. No preservatives.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 300 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 9 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Mixed vegetables in coconut and yoghurt gravy, a Sadya classic. No preservatives.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_ready')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/ready_avial.png"/>
+        </record>
+        <record id="rc_pf_ready_dal" model="product.template">
+            <field name="name">Dal Makhani (Ready-to-Eat)</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="175"/>
+            <field name="weight" eval="0.3"/>
+            <field name="default_code">PF-READY_DAL</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_ready')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_veg'), ref('rc_ptag_gf')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Slow-cooked black lentils with butter and cream. Ready in 2 minutes.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 300 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Slow-cooked black lentils with butter and cream. Ready in 2 minutes.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_ready')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/ready_dal.png"/>
+            <field name="compare_list_price" eval="199"/>
+            <field name="website_ribbon_id" ref="website_sale.sale_ribbon"/>
+        </record>
+        <record id="rc_pf_ready_stew" model="product.template">
+            <field name="name">Vegetable Stew (Ready-to-Eat)</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="165"/>
+            <field name="weight" eval="0.3"/>
+            <field name="default_code">PF-READY_STEW</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_ready')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Mild coconut milk stew with potatoes, carrots and peas, our appam's best friend.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 300 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 9 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Mild coconut milk stew with potatoes, carrots and peas, our appam's best friend.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_ready')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/ready_stew.png"/>
+        </record>
+        <record id="rc_pf_mango_pickle" model="product.template">
+            <field name="name">Kerala Cut Mango Pickle</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="140"/>
+            <field name="weight" eval="0.3"/>
+            <field name="default_code">PF-MANGO_PICKLE</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_pickles')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_kerala'), ref('rc_ptag_best')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Tender mango pieces in gingelly oil with mustard and Kashmiri chilli.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 300 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Tender mango pieces in gingelly oil with mustard and Kashmiri chilli.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_pickles')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/mango_pickle.png"/>
+        </record>
+        <record id="rc_pf_lime_pickle" model="product.template">
+            <field name="name">Sweet &amp; Sour Lime Pickle</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="130"/>
+            <field name="weight" eval="0.3"/>
+            <field name="default_code">PF-LIME_PICKLE</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_pickles')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Sun-cured limes with jaggery and spices for a tangy-sweet bite.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 300 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Sun-cured limes with jaggery and spices for a tangy-sweet bite.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_pickles')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/lime_pickle.png"/>
+        </record>
+        <record id="rc_pf_prawn_pickle" model="product.template">
+            <field name="name">Prawn Pickle</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="320"/>
+            <field name="weight" eval="0.25"/>
+            <field name="default_code">PF-PRAWN_PICKLE</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_pickles')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_kerala'), ref('rc_ptag_gf')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Fried prawns in a fiery garlic and vinegar masala. A coastal Kerala favourite.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 250 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 6 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Fried prawns in a fiery garlic and vinegar masala. A coastal Kerala favourite.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_pickles')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/prawn_pickle.png"/>
+            <field name="website_ribbon_id" ref="website_sale.new_ribbon"/>
+        </record>
+        <record id="rc_pf_coconut_chutney" model="product.template">
+            <field name="name">Dry Coconut Chutney Powder</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="90"/>
+            <field name="weight" eval="0.2"/>
+            <field name="default_code">PF-COCONUT_CHUT</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_pickles')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Roasted coconut, urad dal and red chilli. Mix with oil and enjoy with idli and dosa.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 200 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 6 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Roasted coconut, urad dal and red chilli. Mix with oil and enjoy with idli and dosa.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_pickles')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/coconut_chutney.png"/>
+        </record>
+        <record id="rc_pf_plum_cake" model="product.template">
+            <field name="name">Christmas Plum Cake (Rich Fruit)</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="450"/>
+            <field name="weight" eval="0.8"/>
+            <field name="default_code">PF-PLUM_CAKE</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_sweets')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_veg'), ref('rc_ptag_gift')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Rum-soaked dried fruits, cashews and spices baked into our signature festive cake.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 800 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 60 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Rum-soaked dried fruits, cashews and spices baked into our signature festive cake.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_sweets')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/plum_cake.png"/>
+            <field name="website_ribbon_id" ref="website_sale.new_ribbon"/>
+        </record>
+        <record id="rc_pf_halwa" model="product.template">
+            <field name="name">Kozhikode Black Halwa</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="220"/>
+            <field name="weight" eval="0.4"/>
+            <field name="default_code">PF-HALWA</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_sweets')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_veg'), ref('rc_ptag_kerala'), ref('rc_ptag_gift')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Chewy jaggery and coconut milk halwa with cashews, made the traditional Kozhikode way.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 400 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 30 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Chewy jaggery and coconut milk halwa with cashews, made the traditional Kozhikode way.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_sweets')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/halwa.png"/>
+        </record>
+        <record id="rc_pf_cookies" model="product.template">
+            <field name="name">Cardamom Butter Cookies</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="180"/>
+            <field name="weight" eval="0.3"/>
+            <field name="default_code">PF-COOKIES</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_sweets')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_veg')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Melt-in-the-mouth butter cookies scented with green cardamom.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 300 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 90 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Melt-in-the-mouth butter cookies scented with green cardamom.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_sweets')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/cookies.png"/>
+            <field name="compare_list_price" eval="210"/>
+            <field name="website_ribbon_id" ref="website_sale.sale_ribbon"/>
+        </record>
+        <record id="rc_pf_gift_box" model="product.template">
+            <field name="name">Kerala Treats Gift Box</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="999"/>
+            <field name="weight" eval="1.5"/>
+            <field name="default_code">PF-GIFT_BOX</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_sweets')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_gift'), ref('rc_ptag_kerala'), ref('rc_ptag_best')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Banana chips, halwa, mango pickle, filter coffee and cookies in a reusable gift box.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 1.5 kg&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 45 days&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Banana chips, halwa, mango pickle, filter coffee and cookies in a reusable gift box.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_sweets')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/gift_box.png"/>
+        </record>
+        <record id="rc_pf_filter_coffee" model="product.template">
+            <field name="name">South Indian Filter Coffee Powder</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="120"/>
+            <field name="weight" eval="0.25"/>
+            <field name="default_code">PF-FILTER_COFFE</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_beverages')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf'), ref('rc_ptag_best')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;80:20 coffee-chicory blend from Chikmagalur estates, roasted every Monday in our café.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 100 g (more sizes available)&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 6 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">80:20 coffee-chicory blend from Chikmagalur estates, roasted every Monday in our café.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_beverages')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/filter_coffee.png"/>
+        </record>
+        <record id="rc_pf_filter_coffee_size_line" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="rc_pf_filter_coffee"/>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="value_ids" eval="[Command.set([ref('rc_size_100'), ref('rc_size_250'), ref('rc_size_500'), ref('rc_size_1kg')])]"/>
+        </record>
+        <record id="rc_pf_masala_chai" model="product.template">
+            <field name="name">Masala Chai Blend</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="150"/>
+            <field name="weight" eval="0.25"/>
+            <field name="default_code">PF-MASALA_CHAI</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_beverages')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Assam CTC tea with ginger, cardamom, clove and cinnamon.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 100 g (more sizes available)&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 12 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Assam CTC tea with ginger, cardamom, clove and cinnamon.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_beverages')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/masala_chai.png"/>
+        </record>
+        <record id="rc_pf_masala_chai_size_line" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="rc_pf_masala_chai"/>
+            <field name="attribute_id" ref="rc_attr_pack_size"/>
+            <field name="value_ids" eval="[Command.set([ref('rc_size_100'), ref('rc_size_250'), ref('rc_size_500'), ref('rc_size_1kg')])]"/>
+        </record>
+        <record id="rc_pf_appam_mix" model="product.template">
+            <field name="name">Instant Appam Mix</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="120"/>
+            <field name="weight" eval="0.5"/>
+            <field name="default_code">PF-APPAM_MIX</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_breakfast')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Lacy-edged, soft-centred appams in 30 minutes: just add water, rest and cook.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 500 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 6 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Lacy-edged, soft-centred appams in 30 minutes: just add water, rest and cook.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_breakfast')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/appam_mix.png"/>
+        </record>
+        <record id="rc_pf_puttu_podi" model="product.template">
+            <field name="name">Red Rice Puttu Podi</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="85"/>
+            <field name="weight" eval="1.0"/>
+            <field name="default_code">PF-PUTTU_PODI</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_breakfast')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf'), ref('rc_ptag_kerala')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Steamed and roasted Kerala red rice flour for soft puttu.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 1 kg&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 6 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Steamed and roasted Kerala red rice flour for soft puttu.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_breakfast')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/puttu_podi.png"/>
+        </record>
+        <record id="rc_pf_dosa_batter" model="product.template">
+            <field name="name">Idli &amp; Dosa Batter Mix</field>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="list_price" eval="110"/>
+            <field name="weight" eval="0.5"/>
+            <field name="default_code">PF-DOSA_BATTER</field>
+            <field name="public_categ_ids" eval="[Command.set([ref('rc_pcat_breakfast')])]"/>
+            <field name="product_tag_ids" eval="[Command.set([ref('rc_ptag_vegan'), ref('rc_ptag_gf')])]"/>
+            <field name="description_ecommerce">&lt;p&gt;Stone-ground rice and urad dal mix. Ferment overnight for crisp dosas and soft idlis.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Net weight:&lt;/strong&gt; 500 g&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Shelf life:&lt;/strong&gt; 6 months&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Storage:&lt;/strong&gt; Store in a cool, dry place. Keep airtight after opening.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Made by:&lt;/strong&gt; Resto Cafe Solutions, Kochi, Kerala&lt;/li&gt;&lt;/ul&gt;</field>
+            <field name="description_sale">Stone-ground rice and urad dal mix. Ferment overnight for crisp dosas and soft idlis.</field>
+            <field name="is_published" eval="True"/>
+            <field name="show_availability" eval="True"/>
+            <field name="available_threshold" eval="1000"/>
+            <field name="allow_out_of_stock_order" eval="False"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('rc_poscat_breakfast')])]"/>
+            <field name="image_1920" type="base64" file="hudson_pos_demo_data/static/src/img/packaged_food/dosa_batter.png"/>
+            <field name="website_ribbon_id" ref="website_sale.new_ribbon"/>
+        </record>
+        <record id="rc_pf_appam_mix" model="product.template">
+            <field name="alternative_product_ids" eval="[Command.set([ref('rc_pf_puttu_podi'), ref('rc_pf_dosa_batter')])]"/>
+        </record>
+        <record id="rc_pf_banana_chips" model="product.template">
+            <field name="alternative_product_ids" eval="[Command.set([ref('rc_pf_jackfruit_chips'), ref('rc_pf_mixture')])]"/>
+        </record>
+        <record id="rc_pf_filter_coffee" model="product.template">
+            <field name="alternative_product_ids" eval="[Command.set([ref('rc_pf_masala_chai')])]"/>
+        </record>
+        <record id="rc_pf_mango_pickle" model="product.template">
+            <field name="alternative_product_ids" eval="[Command.set([ref('rc_pf_lime_pickle'), ref('rc_pf_prawn_pickle')])]"/>
+        </record>
+        <record id="rc_pf_plum_cake" model="product.template">
+            <field name="alternative_product_ids" eval="[Command.set([ref('rc_pf_halwa'), ref('rc_pf_cookies')])]"/>
+        </record>
+        <record id="rc_pf_ready_biryani" model="product.template">
+            <field name="alternative_product_ids" eval="[Command.set([ref('rc_pf_ready_dal'), ref('rc_pf_ready_avial')])]"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hudson_shopfloor" model="ir.actions.client">
+        <field name="name">Shop Floor</field>
+        <field name="tag">hudson_shopfloor.shopfloor_app</field>
+        <field name="target">main</field>
+    </record>
+
+    <menuitem id="menu_hudson_shopfloor"
+              name="Shop Floor"
+              action="action_hudson_shopfloor"
+              web_icon="mrp,static/description/icon.png"
+              sequence="5"/>
+
+    <!-- Manufacturing > Overview (Work Centers Overview), also the app's landing page,
+         as in Enterprise. Cleared again by the uninstall hook. -->
+    <record id="mrp.menu_mrp_root" model="ir.ui.menu">
+        <field name="action" ref="mrp.mrp_workcenter_kanban_action"/>
+    </record>
+
+    <menuitem id="menu_mrp_overview"
+              name="Overview"
+              parent="mrp.menu_mrp_root"
+              action="mrp.mrp_workcenter_kanban_action"
+              sequence="5"/>
+</odoo>

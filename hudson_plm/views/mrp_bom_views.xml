@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_bom_view_form_inherit_plm" model="ir.ui.view">
+        <field name="name">mrp.bom.view.form.inherit.plm</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_ecos" type="object" class="oe_stat_button" icon="settings" invisible="eco_count == 0">
+                    <field name="eco_count" widget="statinfo" string="ECO(s)"/>
+                </button>
+                <button name="action_view_versions" type="object" class="oe_stat_button" icon="history" invisible="version_count &lt;= 1">
+                    <field name="version_count" widget="statinfo" string="Versions"/>
+                </button>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_restore_version" type="object" string="Restore This Version" class="oe_highlight" invisible="active"/>
+                </header>
+            </xpath>
+            <xpath expr="//widget[@name='web_ribbon']" position="after">
+                <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="version" string="Version"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mrp_bom_view_list_inherit_plm" model="ir.ui.view">
+        <field name="name">mrp.bom.view.list.inherit.plm</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="version" string="Version" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

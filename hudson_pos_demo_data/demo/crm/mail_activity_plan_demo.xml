@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_plan_event_enquiry" model="mail.activity.plan">
+            <field name="name">New Event Enquiry Follow-up</field>
+            <field name="res_model">crm.lead</field>
+        </record>
+        <record id="rc_plan_event_enquiry_step_1" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_event_enquiry"/>
+            <field name="sequence" eval="10"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Qualification call: date, guest count, budget, venue</field>
+            <field name="delay_count" eval="0"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Confirm event type, date, number of guests, veg/non-veg split, budget per plate and venue.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_event_enquiry_step_2" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_event_enquiry"/>
+            <field name="sequence" eval="20"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+            <field name="summary">Send menu packages &amp; per-plate pricing</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Share the Silver / Gold / Platinum catering menus and live counter add-ons.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_event_enquiry_step_3" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_event_enquiry"/>
+            <field name="sequence" eval="30"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_meeting"/>
+            <field name="summary">Invite client for complimentary food tasting</field>
+            <field name="delay_count" eval="3"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Book a table at the restaurant and inform the kitchen of the tasting menu.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_event_enquiry_step_4" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_event_enquiry"/>
+            <field name="sequence" eval="40"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+            <field name="summary">Follow up on quotation</field>
+            <field name="delay_count" eval="7"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Check if the client reviewed the quotation; offer an early-booking discount if needed.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_wedding_countdown" model="mail.activity.plan">
+            <field name="name">Wedding &amp; Banquet Event Countdown</field>
+            <field name="res_model">crm.lead</field>
+        </record>
+        <record id="rc_plan_wedding_countdown_step_1" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_wedding_countdown"/>
+            <field name="sequence" eval="10"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_meeting"/>
+            <field name="summary">Final menu tasting with the family</field>
+            <field name="delay_count" eval="30"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">before_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Plan date = event date. Lock the final menu, live counters and dessert table.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_wedding_countdown_step_2" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_wedding_countdown"/>
+            <field name="sequence" eval="20"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_upload_document"/>
+            <field name="summary">Upload signed contract &amp; 50% advance receipt</field>
+            <field name="delay_count" eval="21"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">before_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="note">&lt;p&gt;Attach the signed catering contract and advance payment proof.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_wedding_countdown_step_3" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_wedding_countdown"/>
+            <field name="sequence" eval="30"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Confirm final guest count &amp; seating plan</field>
+            <field name="delay_count" eval="7"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">before_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Guest count drives kitchen purchasing, so confirm it a week ahead.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_wedding_countdown_step_4" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_wedding_countdown"/>
+            <field name="sequence" eval="40"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+            <field name="summary">Brief kitchen, service staff &amp; logistics</field>
+            <field name="delay_count" eval="2"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">before_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="rc_user_arjun"/>
+            <field name="note">&lt;p&gt;Share the run sheet: setup time, counters, crockery, staff count and transport.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_wedding_countdown_step_5" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_wedding_countdown"/>
+            <field name="sequence" eval="50"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Post-event feedback call &amp; review request</field>
+            <field name="delay_count" eval="2"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Thank the client, collect feedback and ask for a Google review.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_corporate_lunch" model="mail.activity.plan">
+            <field name="name">Corporate Lunch Subscription Onboarding</field>
+            <field name="res_model">crm.lead</field>
+        </record>
+        <record id="rc_plan_corporate_lunch_step_1" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_corporate_lunch"/>
+            <field name="sequence" eval="10"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_meeting"/>
+            <field name="summary">Menu tasting with the client's food committee</field>
+            <field name="delay_count" eval="2"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Bring the 4-week rotating menu and sample lunch boxes.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_corporate_lunch_step_2" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_corporate_lunch"/>
+            <field name="sequence" eval="20"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+            <field name="summary">Send monthly subscription proposal</field>
+            <field name="delay_count" eval="3"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Include per-meal price, delivery window, serving staff and payment terms.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_corporate_lunch_step_3" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_corporate_lunch"/>
+            <field name="sequence" eval="30"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_upload_document"/>
+            <field name="summary">Upload signed service agreement</field>
+            <field name="delay_count" eval="7"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+        </record>
+        <record id="rc_plan_corporate_lunch_step_4" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_corporate_lunch"/>
+            <field name="sequence" eval="40"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+            <field name="summary">Set up delivery schedule &amp; kitchen production plan</field>
+            <field name="delay_count" eval="10"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="rc_user_arjun"/>
+            <field name="note">&lt;p&gt;Add the account to the daily production sheet and delivery route.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_corporate_lunch_step_5" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_corporate_lunch"/>
+            <field name="sequence" eval="50"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">First-month satisfaction review</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">months</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Review feedback, wastage and menu preferences; discuss renewal or upsell.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_bakery_bulk" model="mail.activity.plan">
+            <field name="name">Bulk Bakery &amp; Dessert Order</field>
+            <field name="res_model">crm.lead</field>
+        </record>
+        <record id="rc_plan_bakery_bulk_step_1" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_bakery_bulk"/>
+            <field name="sequence" eval="10"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Confirm quantities, flavours &amp; allergens</field>
+            <field name="delay_count" eval="0"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Note nut-free / eggless requirements and packaging (boxes, labels).&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_bakery_bulk_step_2" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_bakery_bulk"/>
+            <field name="sequence" eval="20"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+            <field name="summary">Schedule bakery production</field>
+            <field name="delay_count" eval="3"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">before_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="rc_user_arjun"/>
+            <field name="note">&lt;p&gt;Plan date = delivery date. Reserve oven slots and order raw materials.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_bakery_bulk_step_3" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_bakery_bulk"/>
+            <field name="sequence" eval="30"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Confirm delivery time &amp; address</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">before_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+        </record>
+        <record id="rc_plan_bakery_bulk_step_4" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_bakery_bulk"/>
+            <field name="sequence" eval="40"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+            <field name="summary">Send thank-you note &amp; reorder offer</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Offer 10% off on the next bulk order within 30 days.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_franchise" model="mail.activity.plan">
+            <field name="name">Franchise Enquiry Evaluation</field>
+            <field name="res_model">crm.lead</field>
+        </record>
+        <record id="rc_plan_franchise_step_1" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_franchise"/>
+            <field name="sequence" eval="10"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Introductory call with the prospective partner</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="note">&lt;p&gt;Understand their background, location and investment capacity.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_franchise_step_2" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_franchise"/>
+            <field name="sequence" eval="20"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+            <field name="summary">Send franchise brochure &amp; investment details</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+        </record>
+        <record id="rc_plan_franchise_step_3" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_franchise"/>
+            <field name="sequence" eval="30"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_upload_document"/>
+            <field name="summary">Collect investor profile &amp; proposed site details</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">weeks</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+        </record>
+        <record id="rc_plan_franchise_step_4" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_franchise"/>
+            <field name="sequence" eval="40"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_meeting"/>
+            <field name="summary">Site visit &amp; outlet feasibility review</field>
+            <field name="delay_count" eval="2"/>
+            <field name="delay_unit">weeks</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">other</field>
+            <field name="responsible_id" ref="base.user_admin"/>
+            <field name="note">&lt;p&gt;Check footfall, kitchen space, parking and competition near the proposed outlet.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_reengage" model="mail.activity.plan">
+            <field name="name">Lost Customer Re-engagement</field>
+            <field name="res_model">crm.lead</field>
+        </record>
+        <record id="rc_plan_reengage_step_1" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_reengage"/>
+            <field name="sequence" eval="10"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_email"/>
+            <field name="summary">Send seasonal festive menu offer</field>
+            <field name="delay_count" eval="2"/>
+            <field name="delay_unit">weeks</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+            <field name="note">&lt;p&gt;Use the current campaign (Onam / Christmas) menu with a returning-client discount.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_plan_reengage_step_2" model="mail.activity.plan.template">
+            <field name="plan_id" ref="rc_plan_reengage"/>
+            <field name="sequence" eval="20"/>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call"/>
+            <field name="summary">Check upcoming events &amp; catering needs</field>
+            <field name="delay_count" eval="1"/>
+            <field name="delay_unit">months</field>
+            <field name="delay_from">after_plan_date</field>
+            <field name="responsible_type">on_demand</field>
+        </record>
+    </data>
+</odoo>

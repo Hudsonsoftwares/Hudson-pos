@@ -1,0 +1,501 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_event_type_class" model="event.type">
+            <field name="name">Cooking / Barista Masterclass</field>
+            <field name="has_seats_limitation" eval="True"/>
+            <field name="seats_max" eval="20"/>
+            <field name="website_menu" eval="False"/>
+        </record>
+        <record id="rc_event_type_festival" model="event.type">
+            <field name="name">Food Festival &amp; Dining Event</field>
+            <field name="has_seats_limitation" eval="True"/>
+            <field name="seats_max" eval="300"/>
+            <field name="website_menu" eval="False"/>
+        </record>
+        <record id="rc_event_tag_cat_type" model="event.tag.category">
+            <field name="name">Experience</field>
+        </record>
+        <record id="rc_event_tag_masterclass" model="event.tag">
+            <field name="name">Masterclass</field>
+            <field name="category_id" ref="rc_event_tag_cat_type"/>
+            <field name="color" eval="1"/>
+        </record>
+        <record id="rc_event_tag_dining" model="event.tag">
+            <field name="name">Dining Experience</field>
+            <field name="category_id" ref="rc_event_tag_cat_type"/>
+            <field name="color" eval="2"/>
+        </record>
+        <record id="rc_event_tag_music" model="event.tag">
+            <field name="name">Live Music</field>
+            <field name="category_id" ref="rc_event_tag_cat_type"/>
+            <field name="color" eval="3"/>
+        </record>
+        <record id="rc_event_tag_festival" model="event.tag">
+            <field name="name">Festival</field>
+            <field name="category_id" ref="rc_event_tag_cat_type"/>
+            <field name="color" eval="4"/>
+        </record>
+        <record id="rc_event_tag_kids" model="event.tag">
+            <field name="name">Kids &amp; Family</field>
+            <field name="category_id" ref="rc_event_tag_cat_type"/>
+            <field name="color" eval="5"/>
+        </record>
+        <record id="rc_event_tag_cat_cuisine" model="event.tag.category">
+            <field name="name">Cuisine</field>
+        </record>
+        <record id="rc_event_tag_kerala" model="event.tag">
+            <field name="name">Kerala</field>
+            <field name="category_id" ref="rc_event_tag_cat_cuisine"/>
+            <field name="color" eval="6"/>
+        </record>
+        <record id="rc_event_tag_coffee" model="event.tag">
+            <field name="name">Coffee &amp; Desserts</field>
+            <field name="category_id" ref="rc_event_tag_cat_cuisine"/>
+            <field name="color" eval="7"/>
+        </record>
+        <record id="rc_event_tag_continental" model="event.tag">
+            <field name="name">Continental</field>
+            <field name="category_id" ref="rc_event_tag_cat_cuisine"/>
+            <field name="color" eval="8"/>
+        </record>
+        <record id="rc_event_sadya_class" model="event.event">
+            <field name="name">Kerala Sadya Cooking Masterclass</field>
+            <field name="subtitle">Cook 8 classic Sadya dishes with our head chef</field>
+            <field name="event_type_id" ref="rc_event_type_class"/>
+            <field name="date_begin" eval="(DateTime.today() + relativedelta(days=12, minutes=270)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=12, minutes=510)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_tz">Asia/Kolkata</field>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="20"/>
+            <field name="stage_id" ref="event.event_stage_booked"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_event_tag_masterclass'), ref('rc_event_tag_kerala')])]"/>
+            <field name="address_id" ref="base.main_partner"/>
+            <field name="organizer_id" ref="base.main_partner"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_published" eval="True"/>
+            <field name="website_menu" eval="False"/>
+            <field name="description">&lt;p&gt;Hands-on class: avial, thoran, olan, sambar, parippu, pachadi, payasam and pappadam. Lunch included.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_ticket_sadya_std" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="name">Standard</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="35"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="14"/>
+        </record>
+        <record id="rc_ticket_sadya_couple" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="name">Couple (2 persons)</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="60"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="3"/>
+        </record>
+        <record id="rc_event_sadya_class_reg_1" model="event.registration">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="event_ticket_id" ref="rc_ticket_sadya_std"/>
+            <field name="name">Vivek Nambiar</field>
+            <field name="email">vivek.nambiar@example.com</field>
+            <field name="phone">+91 98470 11223</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_sadya_class_reg_2" model="event.registration">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="event_ticket_id" ref="rc_ticket_sadya_std"/>
+            <field name="name">Deepa Chandran</field>
+            <field name="email">deepa.chandran@example.com</field>
+            <field name="phone">+91 97451 44556</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_sadya_class_reg_3" model="event.registration">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="event_ticket_id" ref="rc_ticket_sadya_couple"/>
+            <field name="name">Rohan &amp; Mira Thomas</field>
+            <field name="email">rohan.thomas@example.com</field>
+            <field name="phone">+91 99460 22113</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_sadya_class_reg_4" model="event.registration">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="event_ticket_id" ref="rc_ticket_sadya_std"/>
+            <field name="name">Sneha Varghese</field>
+            <field name="email">sneha.varghese@example.com</field>
+            <field name="phone">+91 98950 66771</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_sadya_class_reg_5" model="event.registration">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="event_ticket_id" ref="rc_ticket_sadya_std"/>
+            <field name="name">Arun Kumar</field>
+            <field name="email">arun.kumar@example.com</field>
+            <field name="phone">+91 94470 55889</field>
+            <field name="state">draft</field>
+        </record>
+        <record id="rc_event_sadya_class_reg_6" model="event.registration">
+            <field name="event_id" ref="rc_event_sadya_class"/>
+            <field name="event_ticket_id" ref="rc_ticket_sadya_std"/>
+            <field name="name">Lakshmi Iyer</field>
+            <field name="email">lakshmi.iyer@example.com</field>
+            <field name="phone">+91 97440 33445</field>
+            <field name="state">cancel</field>
+        </record>
+        <record id="rc_event_latte" model="event.event">
+            <field name="name">Latte Art Workshop for Beginners</field>
+            <field name="subtitle">Heart, tulip and rosetta with our baristas</field>
+            <field name="event_type_id" ref="rc_event_type_class"/>
+            <field name="date_begin" eval="(DateTime.today() + relativedelta(days=5, minutes=630)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=5, minutes=750)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_tz">Asia/Kolkata</field>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="12"/>
+            <field name="stage_id" ref="event.event_stage_announced"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_event_tag_masterclass'), ref('rc_event_tag_coffee')])]"/>
+            <field name="address_id" ref="base.main_partner"/>
+            <field name="organizer_id" ref="base.main_partner"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_published" eval="True"/>
+            <field name="website_menu" eval="False"/>
+            <field name="description">&lt;p&gt;Learn milk steaming and three classic latte art pours. Every guest makes 6 drinks. Max 12 people.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_ticket_latte" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="name">Workshop Seat</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="20"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="12"/>
+        </record>
+        <record id="rc_event_latte_reg_1" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Nikhil Menon</field>
+            <field name="email">nikhil.menon@example.com</field>
+            <field name="phone">+91 98471 12121</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_2" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Ananya Pillai</field>
+            <field name="email">ananya.pillai@example.com</field>
+            <field name="phone">+91 99951 34343</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_3" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Farhan Ali</field>
+            <field name="email">farhan.ali@example.com</field>
+            <field name="phone">+91 97452 56565</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_4" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Riya George</field>
+            <field name="email">riya.george@example.com</field>
+            <field name="phone">+91 94471 78787</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_5" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Karthik Raj</field>
+            <field name="email">karthik.raj@example.com</field>
+            <field name="phone">+91 98952 90909</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_6" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Meenakshi Das</field>
+            <field name="email">meenakshi.das@example.com</field>
+            <field name="phone">+91 99462 13579</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_7" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Joel Mathew</field>
+            <field name="email">joel.mathew@example.com</field>
+            <field name="phone">+91 97453 24680</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_8" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Shalini Nair</field>
+            <field name="email">shalini.nair@example.com</field>
+            <field name="phone">+91 94472 11335</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_9" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Aditya Varma</field>
+            <field name="email">aditya.varma@example.com</field>
+            <field name="phone">+91 98953 22446</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_latte_reg_10" model="event.registration">
+            <field name="event_id" ref="rc_event_latte"/>
+            <field name="event_ticket_id" ref="rc_ticket_latte"/>
+            <field name="name">Neethu Joseph</field>
+            <field name="email">neethu.joseph@example.com</field>
+            <field name="phone">+91 99463 55779</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_xmas_fest" model="event.event">
+            <field name="name">Christmas Food &amp; Wine Festival</field>
+            <field name="subtitle">Three days of cake mixing, live counters, music and wine pairing</field>
+            <field name="event_type_id" ref="rc_event_type_festival"/>
+            <field name="date_begin" eval="(DateTime.today() + relativedelta(days=40, minutes=330)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=40, minutes=870)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_tz">Asia/Kolkata</field>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="300"/>
+            <field name="stage_id" ref="event.event_stage_announced"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_event_tag_festival'), ref('rc_event_tag_music'), ref('rc_event_tag_continental')])]"/>
+            <field name="address_id" ref="base.main_partner"/>
+            <field name="organizer_id" ref="base.main_partner"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_published" eval="True"/>
+            <field name="website_menu" eval="False"/>
+            <field name="description">&lt;p&gt;Our biggest event of the year: plum cake mixing ceremony, live appam and roast counters, carol singers, a wine &amp;amp; spice pairing talk and a kids' cookie corner.&lt;/p&gt;</field>
+            <field name="website_track" eval="True"/>
+            <field name="website_track_proposal" eval="True"/>
+        </record>
+        <record id="rc_ticket_xmas_day" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="name">Day Pass</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="15"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="200"/>
+        </record>
+        <record id="rc_ticket_xmas_family" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="name">Family Pass (2 adults + 2 kids)</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="40"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="60"/>
+        </record>
+        <record id="rc_ticket_xmas_vip" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="name">VIP Tasting Pass</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="75"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="40"/>
+        </record>
+        <record id="rc_event_xmas_fest_reg_1" model="event.registration">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="event_ticket_id" ref="rc_ticket_xmas_day"/>
+            <field name="name">BlueWave Technologies Team</field>
+            <field name="email">events@bluewave.example.com</field>
+            <field name="phone">+91 484 240 1100</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_xmas_fest_reg_2" model="event.registration">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="event_ticket_id" ref="rc_ticket_xmas_family"/>
+            <field name="name">Thomas Kurian</field>
+            <field name="email">thomas.kurian@example.com</field>
+            <field name="phone">+91 98470 43210</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_xmas_fest_reg_3" model="event.registration">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="event_ticket_id" ref="rc_ticket_xmas_vip"/>
+            <field name="name">Priya &amp; Rahul Menon</field>
+            <field name="email">priya.menon@example.com</field>
+            <field name="phone">+91 97450 99887</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_xmas_fest_reg_4" model="event.registration">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="event_ticket_id" ref="rc_ticket_xmas_vip"/>
+            <field name="name">Anjali Thomas</field>
+            <field name="email">anjali.thomas@example.com</field>
+            <field name="phone">+91 484 235 7788</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_xmas_fest_reg_5" model="event.registration">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="event_ticket_id" ref="rc_ticket_xmas_day"/>
+            <field name="name">Sandeep Raj</field>
+            <field name="email">sandeep.raj@example.com</field>
+            <field name="phone">+91 98950 44110</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_xmas_fest_reg_6" model="event.registration">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="event_ticket_id" ref="rc_ticket_xmas_family"/>
+            <field name="name">Divya Menon</field>
+            <field name="email">divya.menon@example.com</field>
+            <field name="phone">+91 98470 33221</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_xmas_fest_reg_7" model="event.registration">
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="event_ticket_id" ref="rc_ticket_xmas_day"/>
+            <field name="name">Faisal Rahman</field>
+            <field name="email">faisal.rahman@example.com</field>
+            <field name="phone">+91 484 221 5566</field>
+            <field name="state">draft</field>
+        </record>
+        <record id="rc_event_kids_pizza" model="event.event">
+            <field name="name">Sunday Kids' Pizza Making Party</field>
+            <field name="subtitle">Little chefs make and decorate their own pizza</field>
+            <field name="event_type_id" ref="rc_event_type_class"/>
+            <field name="date_begin" eval="(DateTime.today() + relativedelta(days=19, minutes=570)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=19, minutes=690)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_tz">Asia/Kolkata</field>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="25"/>
+            <field name="stage_id" ref="event.event_stage_booked"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_event_tag_kids'), ref('rc_event_tag_continental')])]"/>
+            <field name="address_id" ref="base.main_partner"/>
+            <field name="organizer_id" ref="base.main_partner"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_published" eval="True"/>
+            <field name="website_menu" eval="False"/>
+            <field name="description">&lt;p&gt;For children aged 6-12. Aprons, chef hats and a certificate for every little chef. Parents enjoy free coffee.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_ticket_pizza_kid" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_kids_pizza"/>
+            <field name="name">Child</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="18"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="25"/>
+        </record>
+        <record id="rc_event_kids_pizza_reg_1" model="event.registration">
+            <field name="event_id" ref="rc_event_kids_pizza"/>
+            <field name="event_ticket_id" ref="rc_ticket_pizza_kid"/>
+            <field name="name">Aarav (age 8)</field>
+            <field name="email">parent.aarav@example.com</field>
+            <field name="phone">+91 98470 70707</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_kids_pizza_reg_2" model="event.registration">
+            <field name="event_id" ref="rc_event_kids_pizza"/>
+            <field name="event_ticket_id" ref="rc_ticket_pizza_kid"/>
+            <field name="name">Diya (age 10)</field>
+            <field name="email">parent.diya@example.com</field>
+            <field name="phone">+91 97450 80808</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_kids_pizza_reg_3" model="event.registration">
+            <field name="event_id" ref="rc_event_kids_pizza"/>
+            <field name="event_ticket_id" ref="rc_ticket_pizza_kid"/>
+            <field name="name">Ishaan (age 7)</field>
+            <field name="email">parent.ishaan@example.com</field>
+            <field name="phone">+91 99950 90909</field>
+            <field name="state">open</field>
+        </record>
+        <record id="rc_event_monsoon" model="event.event">
+            <field name="name">Monsoon Seafood Night</field>
+            <field name="subtitle">Karimeen, pepper crab and tapioca by the backwaters</field>
+            <field name="event_type_id" ref="rc_event_type_festival"/>
+            <field name="date_begin" eval="(DateTime.today() + relativedelta(days=-30, minutes=810)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=-30, minutes=990)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_tz">Asia/Kolkata</field>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="60"/>
+            <field name="stage_id" ref="event.event_stage_done"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_event_tag_dining'), ref('rc_event_tag_kerala'), ref('rc_event_tag_music')])]"/>
+            <field name="address_id" ref="base.main_partner"/>
+            <field name="organizer_id" ref="base.main_partner"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_published" eval="True"/>
+            <field name="website_menu" eval="False"/>
+            <field name="description">&lt;p&gt;A sold-out evening of Kerala seafood with live mappila songs.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_ticket_monsoon" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_monsoon"/>
+            <field name="name">Dinner Ticket</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="45"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="60"/>
+        </record>
+        <record id="rc_event_monsoon_reg_1" model="event.registration">
+            <field name="event_id" ref="rc_event_monsoon"/>
+            <field name="event_ticket_id" ref="rc_ticket_monsoon"/>
+            <field name="name">Vivek Nambiar</field>
+            <field name="email">vivek.nambiar@example.com</field>
+            <field name="phone">+91 98470 11223</field>
+            <field name="state">done</field>
+        </record>
+        <record id="rc_event_monsoon_reg_2" model="event.registration">
+            <field name="event_id" ref="rc_event_monsoon"/>
+            <field name="event_ticket_id" ref="rc_ticket_monsoon"/>
+            <field name="name">Deepa Chandran</field>
+            <field name="email">deepa.chandran@example.com</field>
+            <field name="phone">+91 97451 44556</field>
+            <field name="state">done</field>
+        </record>
+        <record id="rc_event_monsoon_reg_3" model="event.registration">
+            <field name="event_id" ref="rc_event_monsoon"/>
+            <field name="event_ticket_id" ref="rc_ticket_monsoon"/>
+            <field name="name">Neha Kurian</field>
+            <field name="email">neha.kurian@example.com</field>
+            <field name="phone">+91 484 240 1100</field>
+            <field name="state">done</field>
+        </record>
+        <record id="rc_event_monsoon_reg_4" model="event.registration">
+            <field name="event_id" ref="rc_event_monsoon"/>
+            <field name="event_ticket_id" ref="rc_ticket_monsoon"/>
+            <field name="name">Suresh Pillai</field>
+            <field name="email">suresh.pillai@example.com</field>
+            <field name="phone">+91 484 266 0200</field>
+            <field name="state">done</field>
+        </record>
+        <record id="rc_event_monsoon_reg_5" model="event.registration">
+            <field name="event_id" ref="rc_event_monsoon"/>
+            <field name="event_ticket_id" ref="rc_ticket_monsoon"/>
+            <field name="name">Meera Nambiar</field>
+            <field name="email">meera.nambiar@example.com</field>
+            <field name="phone">+91 484 236 9191</field>
+            <field name="state">cancel</field>
+        </record>
+        <record id="rc_event_nye" model="event.event">
+            <field name="name">New Year's Eve Rooftop Gala Dinner</field>
+            <field name="subtitle">7-course dinner, live band and midnight fireworks view</field>
+            <field name="event_type_id" ref="rc_event_type_festival"/>
+            <field name="date_begin" eval="(DateTime.today() + relativedelta(days=47, minutes=870)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=47, minutes=1170)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_tz">Asia/Kolkata</field>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="120"/>
+            <field name="stage_id" ref="event.event_stage_new"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_event_tag_dining'), ref('rc_event_tag_music')])]"/>
+            <field name="address_id" ref="base.main_partner"/>
+            <field name="organizer_id" ref="base.main_partner"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="is_published" eval="False"/>
+            <field name="website_menu" eval="False"/>
+            <field name="description">&lt;p&gt;Draft: menu and band line-up to be confirmed before publishing.&lt;/p&gt;</field>
+        </record>
+        <record id="rc_ticket_nye_std" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_nye"/>
+            <field name="name">Gala Dinner</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="95"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="100"/>
+        </record>
+        <record id="rc_ticket_nye_table" model="event.event.ticket">
+            <field name="event_id" ref="rc_event_nye"/>
+            <field name="name">Private Table of 6</field>
+            <field name="product_id" ref="event_product.product_product_event"/>
+            <field name="price" eval="520"/>
+            <field name="seats_limited" eval="True"/>
+            <field name="seats_max" eval="10"/>
+        </record>
+    </data>
+</odoo>

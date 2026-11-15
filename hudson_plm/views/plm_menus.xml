@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_plm_root"
+              name="PLM"
+              sequence="55"/>
+
+    <!-- App Menus -->
+    <menuitem id="menu_plm_overview"
+              name="Overview"
+              parent="menu_plm_root"
+              sequence="10"/>
+
+    <menuitem id="menu_plm_changes"
+              name="Changes"
+              parent="menu_plm_root"
+              sequence="20"/>
+
+    <menuitem id="menu_plm_master_data"
+              name="Master Data"
+              parent="menu_plm_root"
+              sequence="30"/>
+              
+    <menuitem id="menu_plm_reporting"
+              name="Reporting"
+              parent="menu_plm_root"
+              sequence="40"/>
+
+    <menuitem id="menu_plm_configuration"
+              name="Configuration"
+              parent="menu_plm_root"
+              sequence="100"/>
+              
+    <!-- Submenus for Configuration -->
+    <menuitem id="menu_mrp_eco_stages"
+              name="ECO Stages"
+              parent="menu_plm_configuration"
+              sequence="10"/>
+
+    <menuitem id="menu_mrp_eco_types"
+              name="ECO Types"
+              parent="menu_plm_configuration"
+              sequence="20"/>
+
+    <menuitem id="menu_mrp_eco_tags"
+              name="ECO Tags"
+              parent="menu_plm_configuration"
+              sequence="30"/>
+
+</odoo>

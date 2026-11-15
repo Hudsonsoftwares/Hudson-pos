@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!-- Customer Satisfaction Survey — created at module install      -->
+        <!-- noupdate="1" so manual edits by the user are preserved       -->
+        <!--                                                              -->
+        <!-- Odoo 19 survey.question field reference:                     -->
+        <!--   scale type: scale_min (int), scale_max (int, max 10)      -->
+        <!--   simple_choice: suggested_answer_ids → survey.question.answer -->
+        <!--   survey.question.answer field: value (Char)                 -->
+        <!-- ============================================================ -->
+
+        <record id="field_service_satisfaction_survey" model="survey.survey">
+            <field name="title">Field Service — Customer Satisfaction</field>
+            <field name="access_mode">public</field>
+            <field name="users_login_required" eval="False"/>
+            <field name="scoring_type">no_scoring</field>
+            <field name="description" type="html">
+                <p>
+                    Thank you for choosing our field service team.
+                    Please take a moment to share your experience — your feedback
+                    helps us continuously improve our service quality.
+                </p>
+            </field>
+        </record>
+
+        <!-- ── Question 1: Overall satisfaction (scale 1–5) ── -->
+        <record id="fsq_overall_satisfaction" model="survey.question">
+            <field name="survey_id" ref="field_service_satisfaction_survey"/>
+            <field name="sequence">1</field>
+            <field name="title">How satisfied are you with the overall service?</field>
+            <field name="question_type">scale</field>
+            <field name="scale_min">1</field>
+            <field name="scale_max">5</field>
+            <field name="scale_min_label">Very Dissatisfied</field>
+            <field name="scale_max_label">Very Satisfied</field>
+            <field name="constr_mandatory" eval="True"/>
+        </record>
+
+        <!-- ── Question 2: Technician professionalism (simple_choice) ── -->
+        <record id="fsq_technician_professional" model="survey.question">
+            <field name="survey_id" ref="field_service_satisfaction_survey"/>
+            <field name="sequence">2</field>
+            <field name="title">Was the technician professional and courteous?</field>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory" eval="True"/>
+        </record>
+        <record id="fsq_tech_ans_yes" model="survey.question.answer">
+            <field name="question_id" ref="fsq_technician_professional"/>
+            <field name="value">Yes, absolutely</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="fsq_tech_ans_could_be" model="survey.question.answer">
+            <field name="question_id" ref="fsq_technician_professional"/>
+            <field name="value">Could be better</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="fsq_tech_ans_no" model="survey.question.answer">
+            <field name="question_id" ref="fsq_technician_professional"/>
+            <field name="value">No, not satisfied</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- ── Question 3: Work completed to satisfaction (simple_choice) ── -->
+        <record id="fsq_work_completed" model="survey.question">
+            <field name="survey_id" ref="field_service_satisfaction_survey"/>
+            <field name="sequence">3</field>
+            <field name="title">Was the work completed to your satisfaction?</field>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory" eval="True"/>
+        </record>
+        <record id="fsq_work_ans_yes" model="survey.question.answer">
+            <field name="question_id" ref="fsq_work_completed"/>
+            <field name="value">Yes, fully completed</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="fsq_work_ans_partial" model="survey.question.answer">
+            <field name="question_id" ref="fsq_work_completed"/>
+            <field name="value">Partially completed</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="fsq_work_ans_no" model="survey.question.answer">
+            <field name="question_id" ref="fsq_work_completed"/>
+            <field name="value">Not completed</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- ── Question 4: Free-text comments ── -->
+        <record id="fsq_comments" model="survey.question">
+            <field name="survey_id" ref="field_service_satisfaction_survey"/>
+            <field name="sequence">4</field>
+            <field name="title">Any additional comments or suggestions?</field>
+            <field name="question_type">text_box</field>
+            <field name="constr_mandatory" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

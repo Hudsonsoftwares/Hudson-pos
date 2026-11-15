@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Subscriptions App Menu -->
+    <menuitem id="menu_subscription_root"
+              name="Subscriptions"
+              web_icon="hudson_subscriptions,static/description/icon.png"
+              sequence="25"
+              groups="hudson_subscriptions.group_subscription_user"/>
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: SUBSCRIPTIONS (Default Landing)                            -->
+    <!-- ================================================================= -->
+    <menuitem id="menu_subscription_main_tab"
+              name="Subscriptions"
+              parent="menu_subscription_root"
+              sequence="10"/>
+
+    <menuitem id="menu_subscription_orders"
+              name="Subscriptions"
+              parent="menu_subscription_main_tab"
+              action="action_subscription_orders"
+              sequence="10"/>
+
+    <menuitem id="menu_subscription_quotations"
+              name="Quotations"
+              parent="menu_subscription_main_tab"
+              action="action_subscription_quotations"
+              sequence="20"/>
+
+    <menuitem id="menu_subscription_to_renew"
+              name="To Renew"
+              parent="menu_subscription_main_tab"
+              action="action_subscription_to_renew"
+              sequence="30"/>
+
+    <menuitem id="menu_subscription_upsells"
+              name="Upsells"
+              parent="menu_subscription_main_tab"
+              action="action_subscription_upsells"
+              sequence="40"/>
+
+    <menuitem id="menu_subscription_customers"
+              name="Customers"
+              parent="menu_subscription_main_tab"
+              action="action_subscription_customers"
+              sequence="50"/>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: PRODUCTS                                                   -->
+    <!-- ================================================================= -->
+    <menuitem id="menu_subscription_product_tab"
+              name="Products"
+              parent="menu_subscription_root"
+              sequence="20"/>
+
+    <menuitem id="menu_subscription_products"
+              name="Products"
+              parent="menu_subscription_product_tab"
+              action="action_subscription_products"
+              sequence="10"/>
+
+    <menuitem id="menu_subscription_pricelists"
+              name="Pricelists"
+              parent="menu_subscription_product_tab"
+              action="action_subscription_pricelists"
+              sequence="20"/>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: REPORTING                                                  -->
+    <!-- ================================================================= -->
+    <menuitem id="menu_subscription_reporting_tab"
+              name="Reporting"
+              parent="menu_subscription_root"
+              sequence="30"
+              groups="hudson_subscriptions.group_subscription_user"/>
+
+    <menuitem id="menu_subscription_reporting_subscriptions"
+              name="Subscriptions"
+              parent="menu_subscription_reporting_tab"
+              action="action_subscription_report_subscriptions"
+              sequence="10"/>
+
+    <menuitem id="menu_subscription_reporting_retention"
+              name="Retention"
+              parent="menu_subscription_reporting_tab"
+              action="action_subscription_retention_cohort"
+              sequence="20"/>
+
+    <menuitem id="menu_subscription_reporting_mrr_breakdown"
+              name="MRR Breakdown"
+              parent="menu_subscription_reporting_tab"
+              action="action_subscription_report_mrr_breakdown"
+              sequence="30"/>
+
+    <menuitem id="menu_subscription_reporting_mrr_timeline"
+              name="MRR Timeline"
+              parent="menu_subscription_reporting_tab"
+              action="action_subscription_report_mrr_timeline"
+              sequence="40"/>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: CONFIGURATION                                              -->
+    <!-- ================================================================= -->
+    <menuitem id="menu_subscription_config_tab"
+              name="Configuration"
+              parent="menu_subscription_root"
+              sequence="40"
+              groups="hudson_subscriptions.group_subscription_manager"/>
+
+    <menuitem id="menu_subscription_config_settings"
+              name="Settings"
+              parent="menu_subscription_config_tab"
+              action="action_subscription_config_settings"
+              sequence="10"/>
+
+    <menuitem id="menu_subscription_config_plans"
+              name="Recurring Plans"
+              parent="menu_subscription_config_tab"
+              action="action_subscription_plans"
+              sequence="20"/>
+
+    <menuitem id="menu_subscription_config_templates"
+              name="Quotation Templates"
+              parent="menu_subscription_config_tab"
+              action="action_subscription_quotation_templates"
+              sequence="30"/>
+
+    <menuitem id="menu_subscription_config_close_reasons"
+              name="Close Reasons"
+              parent="menu_subscription_config_tab"
+              action="action_subscription_close_reasons"
+              sequence="40"/>
+
+    <menuitem id="menu_subscription_config_activity_types"
+              name="Activity Types"
+              parent="menu_subscription_config_tab"
+              action="mail.mail_activity_type_action"
+              sequence="50"/>
+
+    <menuitem id="menu_subscription_config_activity_plans"
+              name="Activity Plans"
+              parent="menu_subscription_config_tab"
+              action="mail.mail_activity_plan_action"
+              sequence="60"/>
+</odoo>

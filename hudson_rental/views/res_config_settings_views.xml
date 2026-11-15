@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Settings View, laid out like Odoo's Rental app. The Products and Quotations
+             options are the Sales settings themselves: changing them here changes them there. -->
+        <record id="res_config_settings_view_form_rental" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.rental</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app string="Rental" data-string="Rental" name="hudson_rental" groups="hudson_rental.group_rental_manager">
+                        <block title="Rental" name="rental_setting_container">
+                            <setting id="rental_delay_costs" string="Default Delay Costs" company_dependent="1"
+                                     help="Additional costs for late returns">
+                                <div class="content-group">
+                                    <div class="row mt-2">
+                                        <label for="rental_extra_hour" class="col-lg-4 o_light_label"/>
+                                        <field name="rental_extra_hour" widget="monetary" class="oe_inline"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="rental_extra_day" class="col-lg-4 o_light_label"/>
+                                        <field name="rental_extra_day" widget="monetary" class="oe_inline"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="rental_min_extra_hour" class="col-lg-4 o_light_label"/>
+                                        <div class="col">
+                                            <field name="rental_min_extra_hour" class="oe_inline text-center" style="width: 3rem;"/> hours
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label for="rental_late_fee_product_id" class="col-lg-4 o_light_label"/>
+                                        <field name="rental_late_fee_product_id" class="oe_inline"
+                                               context="{'default_type': 'service', 'default_sale_ok': True}"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting id="rental_availabilities" company_dependent="1"
+                                     help="Days during which pickup and return are possible.">
+                                <field name="rental_calendar_id" placeholder="Every day" class="oe_inline"/>
+                            </setting>
+                        </block>
+
+                        <block title="Products" name="rental_products_setting_container">
+                            <setting id="rental_variant_options" help="Sell variants of a product using attributes (size, color, etc.)">
+                                <field name="group_product_variant"/>
+                                <div class="content-group" invisible="not group_product_variant">
+                                    <div class="mt8">
+                                        <button name="%(product.attribute_action)d" icon="east" type="action" string="Attributes" class="btn-link"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting id="rental_coupon_settings" string="Promotions, Loyalty &amp; Gift Card"
+                                     help="Manage Promotions, Coupons, Loyalty cards, Gift cards &amp; eWallet">
+                                <field name="module_loyalty"/>
+                            </setting>
+                            <setting id="rental_pricelist_configuration" help="Set multiple prices per product, automated discounts, etc.">
+                                <field name="group_product_pricelist"/>
+                                <div class="content-group" invisible="not group_product_pricelist">
+                                    <div class="mt16">
+                                        <button name="%(product.product_pricelist_action2)d" icon="east" type="action" string="Pricelists" groups="product.group_product_pricelist" class="btn-link"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting id="rental_discount_sale_order_lines" help="Grant discounts on sales order lines.">
+                                <field name="group_discount_per_so_line"/>
+                            </setting>
+                        </block>
+
+                        <block title="Quotations" name="rental_quotations_setting_container">
+                            <setting id="rental_pdf_quote_builder" string="PDF Quote builder"
+                                     help="Make your quote attractive by adding header pages, product descriptions and footer pages to your quote.">
+                                <field name="module_sale_pdf_quote_builder"/>
+                            </setting>
+                            <setting id="rental_quotation_templates" help="Create standardized offers with default products.">
+                                <field name="module_sale_management" readonly="1"/>
+                                <div class="content-group">
+                                    <div class="mt8">
+                                        <button name="%(sale_management.sale_order_template_action)d" icon="east" type="action" string="Quotation Templates" class="btn-link"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting id="rental_mandatory_product" help="Prevent selling without a linked product">
+                                <field name="sale_order_mandatory_product"/>
+                            </setting>
+                        </block>
+
+                        <block title="Inventory" name="rental_inventory_setting_container">
+                            <setting id="rental_transfers" company_dependent="1"
+                                     help="Activate to use stock deliveries and receipts for rental orders.">
+                                <field name="rental_use_transfers"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Rental > Configuration > Settings -->
+        <record id="action_rental_config_settings" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_id" ref="res_config_settings_view_form_rental"/>
+            <field name="view_mode">form</field>
+            <field name="context">{'module': 'hudson_rental'}</field>
+        </record>
+
+    </data>
+</odoo>

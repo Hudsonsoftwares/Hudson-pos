@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_order_template_form_inherit_subscription" model="ir.ui.view">
+        <field name="name">sale.order.template.form.inherit.subscription</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="is_subscription"/>
+                <field name="plan_id" invisible="not is_subscription" required="is_subscription"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_subscription_quotation_templates" model="ir.actions.act_window">
+        <field name="name">Quotation Templates</field>
+        <field name="res_model">sale.order.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'default_is_subscription': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create recurring quotation templates!
+            </p>
+            <p>
+                Standardize your subscription contracts with pre-set lines and recurring billing plans.
+            </p>
+        </field>
+    </record>
+</odoo>

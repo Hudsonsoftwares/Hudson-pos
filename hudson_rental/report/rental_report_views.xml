@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Rental Report Action -->
+        <record id="action_rental_report" model="ir.actions.act_window">
+            <field name="name">Rental Analysis</field>
+            <field name="res_model">rental.report</field>
+            <field name="view_mode">graph,pivot,list</field>
+            <field name="context">{'search_default_month': 1}</field>
+        </record>
+
+        <!-- Rental Report Search View -->
+        <record id="rental_report_view_search" model="ir.ui.view">
+            <field name="name">rental.report.search</field>
+            <field name="model">rental.report</field>
+            <field name="arch" type="xml">
+                <search string="Rental Analysis">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <field name="categ_id"/>
+                    <field name="user_id"/>
+                    <filter string="Quotations" name="draft" domain="[('state', 'in', ['draft', 'sent'])]"/>
+                    <filter string="Reserved" name="reserved" domain="[('state', '=', 'pickup')]"/>
+                    <filter string="Picked-up" name="in_progress" domain="[('state', '=', 'return')]"/>
+                    <filter string="Returned" name="completed" domain="[('state', '=', 'returned')]"/>
+                    <separator/>
+                    <filter string="Order Date" name="order_date" date="date_order"/>
+                    <filter string="Pickup Date" name="pickup_date" date="pickup_date"/>
+                    <separator/>
+                    <filter string="This Month" name="month" 
+                            domain="[('date_order', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                     ('date_order', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                    <group>
+                        <filter string="Customer" name="group_customer" context="{'group_by':'partner_id'}"/>
+                        <filter string="Salesperson" name="salesperson" context="{'group_by': 'user_id'}"/>
+                        <filter string="Product" name="product" context="{'group_by': 'product_id'}"/>
+                        <filter string="Category" name="category" context="{'group_by': 'categ_id'}"/>
+                        <filter string="Status" name="status" context="{'group_by': 'state'}"/>
+                        <filter string="Order Date" name="group_order_date" context="{'group_by': 'date_order:month'}"/>
+                        <filter string="Pickup Date" name="group_pickup_date" context="{'group_by': 'pickup_date:month'}"/>
+                        <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Rental Report Graph View -->
+        <record id="rental_report_view_graph" model="ir.ui.view">
+            <field name="name">rental.report.graph</field>
+            <field name="model">rental.report</field>
+            <field name="arch" type="xml">
+                <graph string="Rental Analysis" type="bar" sample="1">
+                    <field name="categ_id"/>
+                    <field name="price_total" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Rental Report Pivot View -->
+        <record id="rental_report_view_pivot" model="ir.ui.view">
+            <field name="name">rental.report.pivot</field>
+            <field name="model">rental.report</field>
+            <field name="arch" type="xml">
+                <pivot string="Rental Analysis" sample="1">
+                    <field name="date_order" interval="month" type="row"/>
+                    <field name="categ_id" type="col"/>
+                    <field name="price_total" type="measure"/>
+                    <field name="duration_days" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Rental Report Tree View -->
+        <record id="rental_report_view_tree" model="ir.ui.view">
+            <field name="name">rental.report.tree</field>
+            <field name="model">rental.report</field>
+            <field name="arch" type="xml">
+                <list string="Rental Analysis" create="false" delete="false">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <field name="date_order"/>
+                    <field name="pickup_date"/>
+                    <field name="quantity"/>
+                    <field name="duration_days"/>
+                    <field name="price_total"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+    </data>
+</odoo>

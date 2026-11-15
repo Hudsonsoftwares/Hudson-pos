@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_field_service.FsBoard">
+        <div class="o_fs_planning_schedule o_action">
+            <!-- Toolbar -->
+            <div class="fs-sched-toolbar">
+                <div class="fs-sched-actions">
+                    <button class="btn btn-secondary" t-on-click="this.onCopyPrevious">Copy previous</button>
+                    <button class="btn btn-primary" t-on-click="this.onPublish">Publish</button>
+                    <button class="btn btn-secondary" t-on-click="this.onPrint">Print</button>
+                    <button class="btn btn-secondary" t-on-click="this.onAutoPlan" t-if="this.props?.autoPlanEnabled">Auto Plan</button>
+                    <div class="btn-group ms-2">
+                        <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                            <t t-if="this.state.filterMyPlanning">My Planning</t>
+                            <t t-else="">All Planning</t>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => this.toggleMyPlanning(true)">My Planning</a></li>
+                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => this.toggleMyPlanning(false)">All Planning</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="fs-sched-date-controls d-flex align-items-center">
+                    <div class="btn-group me-2">
+                        <button class="btn btn-light border" t-on-click="this.onPrevPeriod"><i class="oi" data-icon="chevron_backward"/></button>
+                        <button class="btn btn-light border" t-on-click="this.onNextPeriod"><i class="oi" data-icon="chevron_forward"/></button>
+                    </div>
+                    <div class="dropdown me-2">
+                        <button class="btn btn-light border dropdown-toggle" data-bs-toggle="dropdown">
+                            <t t-if="this.state.mode == 'day'">Day</t>
+                            <t t-if="this.state.mode == 'week'">Week</t>
+                            <t t-if="this.state.mode == 'month'">Month</t>
+                            <t t-if="this.state.mode == 'quarter'">Quarter</t>
+                            <t t-if="this.state.mode == 'year'">Year</t>
+                            <t t-if="this.state.mode == 'custom'">Custom</t>
+                        </button>
+                        <ul class="dropdown-menu" style="min-width: 250px;">
+                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => this.setMode('day')">
+                                <i t-attf-class="fa fa-check me-2 {{ this.state.mode == 'day' ? '' : 'invisible' }}"/>Day
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => this.setMode('week')">
+                                <i t-attf-class="fa fa-check me-2 {{ this.state.mode == 'week' ? '' : 'invisible' }}"/>Week
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => this.setMode('month')">
+                                <i t-attf-class="fa fa-check me-2 {{ this.state.mode == 'month' ? '' : 'invisible' }}"/>Month
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => this.setMode('quarter')">
+                                <i t-attf-class="fa fa-check me-2 {{ this.state.mode == 'quarter' ? '' : 'invisible' }}"/>Quarter
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => this.setMode('year')">
+                                <i t-attf-class="fa fa-check me-2 {{ this.state.mode == 'year' ? '' : 'invisible' }}"/>Year
+                            </a></li>
+                            <li><hr class="dropdown-divider"/></li>
+                            <li class="px-3 py-2">
+                                <div class="d-flex align-items-center">
+                                    <input type="date" class="form-control form-control-sm border-0 bg-light p-1 shadow-none" t-model.proxy="this.state.customStartDate" style="max-width: 110px; font-size: 0.85rem;" t-on-click.stop=""/>
+                                    <i class="fa fa-arrow-right mx-1 text-muted" style="font-size: 0.8rem;"/>
+                                    <input type="date" class="form-control form-control-sm border-0 bg-light p-1 shadow-none" t-model.proxy="this.state.customEndDate" style="max-width: 110px; font-size: 0.85rem;" t-on-click.stop=""/>
+                                    <button class="btn btn-sm btn-secondary ms-2" style="background-color: #714b67; color: white !important; border: none;" t-on-click.stop="this.onApplyCustomDate">Apply</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-light border me-3" t-on-click="this.onToday">Today</button>
+                    <span class="fw-bold fs-5" t-out="this.state.dateLabel"/>
+                </div>
+
+                <div class="fs-sched-search">
+                    <div class="input-group fs-sched-search-input">
+                        <span class="input-group-text"><i class="fa fa-search"/></span>
+                        <input type="text" class="form-control" placeholder="Search..." t-model.proxy="this.state.searchQuery" t-on-keyup="this.onSearch"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fs-sched-body">
+                <!-- Main Grid -->
+                <div class="fs-sched-main" t-att-data-mode="this.state.mode">
+                    <!-- Loading -->
+                    <div t-if="this.state.loading" class="p-4 text-center text-muted">
+                        <i class="fa fa-spin fa-spinner fa-2x"/>
+                    </div>
+
+                    <t t-if="!this.state.loading">
+                        <!-- Header Row -->
+                        <div class="fs-sched-header-row">
+                            <div class="fs-sched-resource-col">
+                                <!-- Group By Selector could go here -->
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light text-start w-100 border-0 shadow-none">
+                                        GroupBy: Resource
+                                    </button>
+                                </div>
+                            </div>
+                            <t t-foreach="this.state.columns" t-as="col" t-key="col.key">
+                                <div class="fs-sched-cell fs-sched-header-cell" t-att-class="col.cssClass">
+                                    <div t-out="col.labelTop" class="text-uppercase" style="font-size: 10px; opacity: 0.7;"/>
+                                    <div class="fs-day" t-out="col.labelBottom"/>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Resource Rows -->
+                        <t t-foreach="this.filteredResources" t-as="res" t-key="res.id">
+                            <div class="fs-sched-resource-row">
+                                <div class="fs-sched-resource-col" style="flex-direction: column; align-items: stretch; justify-content: center;">
+                                    <div class="d-flex align-items-center w-100 mb-1">
+                                        <div class="flex-grow-1 text-truncate fw-bold">
+                                            <i t-if="res.type == 'material'" class="fa fa-wrench me-1 text-muted"/>
+                                            <i t-if="res.type == 'employee'" class="fa fa-user me-1 text-muted"/>
+                                            <t t-out="res.name"/>
+                                        </div>
+                                    </div>
+                                    <div class="w-100">
+                                        <div class="d-flex justify-content-between text-muted" style="font-size: 11px; margin-bottom: 2px;">
+                                            <span><strong><t t-out="Math.round(res.allocatedHours || 0)"/>h</strong> / 40h</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div t-attf-class="progress-bar #{ (res.allocatedHours || 0) > 40 ? 'bg-danger' : 'bg-success' }" role="progressbar"
+                                                 t-attf-style="width: #{Math.min(((res.allocatedHours || 0) / 40) * 100, 100)}%;"
+                                                 t-att-aria-valuenow="res.allocatedHours || 0" aria-valuemin="0" aria-valuemax="40"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <t t-foreach="this.state.columns" t-as="col" t-key="col.key">
+                                    <div class="fs-sched-cell" t-att-class="col.cssClass" t-on-click="() => this.onCellClick(res.id, col)">
+                                        <t t-foreach="this.getSlots(res.id, col)" t-as="slot" t-key="slot.key">
+                                            <div class="fs-sched-slot-card"
+                                                 t-att-class="slot.is_shift ? 'is-shift' : ('bg-color-' + (slot.color % 10)) + (slot.state === 'new' ? ' draft' : '')"
+                                                 t-on-click.stop="() => this.openSlot(slot)"
+                                                 t-att-title="slot.name">
+                                                <div class="fs-sched-slot-title"><t t-out="this.formatTime(slot.date_start) + ' - ' + this.formatTime(slot.date_end)"/></div>
+                                                <div class="fs-sched-slot-sub"><t t-out="slot.role_name"/></div>
+                                                <div class="fs-sched-slot-sub" t-if="slot.partner_name"><i class="fa fa-map-marker me-1"/> <t t-out="slot.partner_name"/></div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="fs-sched-sidebar">
+                    <div class="fs-sidebar-mini-calendar">
+                        <!-- Simplified representation; real one would use Owl DatePicker -->
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <i class="oi" data-icon="chevron_backward" style="cursor: pointer;" t-on-click="this.onPrevPeriod"/>
+                            <span class="fw-bold"><t t-out="this.state.monthLabel"/></span>
+                            <i class="oi" data-icon="chevron_forward" style="cursor: pointer;" t-on-click="this.onNextPeriod"/>
+                        </div>
+                    </div>
+                    <div class="fs-sidebar-section">
+                        <div class="fs-sidebar-title">
+                            Resources
+                            <i class="fa fa-caret-down"/>
+                        </div>
+                        <t t-foreach="this.state.resources" t-as="res" t-key="res.id">
+                            <label class="fs-resource-checkbox">
+                                <input type="checkbox" t-model.proxy="res.checked"/>
+                                <span class="text-truncate">
+                                    <i t-if="res.type == 'material'" class="fa fa-wrench me-1 text-muted"/>
+                                    <t t-out="res.name"/>
+                                </span>
+                            </label>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

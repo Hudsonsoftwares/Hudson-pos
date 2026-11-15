@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo salesperson. No password is set, so nobody can log in with it. -->
+        <record id="rc_partner_arjun" model="res.partner">
+            <field name="name">Arjun Nair</field>
+            <field name="email">arjun.nair@restocafe.example.com</field>
+            <field name="phone">+91 98470 55660</field>
+            <field name="city">Kochi</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="function">Catering &amp; Events Sales Executive</field>
+        </record>
+        <record id="rc_user_arjun" model="res.users">
+            <field name="partner_id" ref="rc_partner_arjun"/>
+            <field name="login">arjun.nair.demo@restocafe.example.com</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[Command.link(ref('base.main_company'))]"/>
+            <field name="group_ids" eval="[Command.link(ref('base.group_user')), Command.link(ref('sales_team.group_sale_salesman'))]"/>
+        </record>
+    </data>
+</odoo>

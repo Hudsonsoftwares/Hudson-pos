@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="fs_shift_template_apply_wizard_view_form" model="ir.ui.view">
+        <field name="name">fs.shift.template.apply.wizard.form</field>
+        <field name="model">fs.shift.template.apply.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Apply Shift Templates">
+                <sheet>
+                    <p class="text-muted">
+                        Bulk create planning slots by applying pre-defined shift templates to employees over a date range.
+                    </p>
+                    <group>
+                        <group string="Date Range">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Target Resources">
+                            <field name="role_id"/>
+                            <field name="role_employee_ids" invisible="1"/>
+                            <field name="employee_ids" widget="many2many_tags"
+                                invisible="not role_id"
+                                options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="template_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Days of Week">
+                        <group>
+                            <field name="work_on_monday"/>
+                            <field name="work_on_tuesday"/>
+                            <field name="work_on_wednesday"/>
+                            <field name="work_on_thursday"/>
+                        </group>
+                        <group>
+                            <field name="work_on_friday"/>
+                            <field name="work_on_saturday"/>
+                            <field name="work_on_sunday"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_apply" string="Apply Templates" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- This action can be added to the Shift Templates list view via an action binding later -->
+    <record id="action_fs_shift_template_apply_wizard" model="ir.actions.act_window">
+        <field name="name">Apply Templates</field>
+        <field name="res_model">fs.shift.template.apply.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,413 @@
+<t name="Appointment Preview" t-name="appointment.appointment_preview">
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <style>
+#wrap.o_appointment_preview { background: #fbf7f0; font-family: 'Inter', system-ui, sans-serif; color: #3d332a; padding-bottom: 90px; }
+.o_appointment_preview h1, .o_appointment_preview h2, .o_appointment_preview h3, .o_appointment_preview h4, .o_appointment_preview h5 { font-family: 'Playfair Display', Georgia, serif; color: #15110e; }
+.rc-book-hero { padding: 150px 0 110px; color: #f6efe4; margin-bottom: -60px;
+  background: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.8) 55%, rgba(21,17,14,.5) 100%),
+              url('/theme_bistro/static/src/img/backgrounds/20.webp') center/cover no-repeat; }
+.rc-book-hero .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: #c9a15d; }
+.rc-book-hero .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
+.rc-book-hero h1 { color: #fff !important; font-size: clamp(2.2rem, 4.6vw, 3.6rem); margin: 18px 0 10px; }
+.rc-book-hero p { color: #d9cfbf; margin: 0; }
+.rc-book-hero a { color: #e0c38c; text-decoration: none; }
+.rc-book-steps { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 26px; font-size: .88rem; color: #cbbfae; }
+.rc-book-steps span b { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; align-items: center; justify-content: center; margin-right: 8px; border: 1px solid rgba(201,161,93,.6); color: #c9a15d; font-weight: 600; }
+.rc-book-steps span.rc-on b { background: #c9a15d; color: #15110e; }
+.rc-book-steps span.rc-on { color: #fff; }
+/* booking card */
+.o_appointment_preview > .container, .o_appointment_preview .container:first-of-type { position: relative; z-index: 2; }
+.o_appointment_preview .premium-card, .o_appointment_preview .o_cc1, .o_appointment_preview .card {
+  background: #fff !important; border: 1px solid #efe5d5 !important; border-radius: 22px !important; box-shadow: 0 40px 80px -50px rgba(21,17,14,.55) !important; }
+.o_appointment_preview .form-label { font-weight: 600 !important; color: #15110e; font-size: .85rem !important; letter-spacing: .02em; }
+.o_appointment_preview .form-select, .o_appointment_preview .form-control { border: 1px solid #e3d6c1; border-radius: 12px; padding: 11px 14px; background-color: #fdfaf5; }
+.o_appointment_preview .form-select:focus, .o_appointment_preview .form-control:focus { border-color: #c9a15d; box-shadow: 0 0 0 3px rgba(201,161,93,.18); }
+/* calendar */
+.o_appointment_preview table { background: #fbf7f0; border-radius: 18px; overflow: hidden; }
+.o_appointment_preview .o_appointment_cal_head th { color: #a99a86; text-transform: uppercase; letter-spacing: .1em; }
+.o_appointment_preview .premium-cal-day { width: 44px; height: 44px; border-radius: 50% !important; border: 1px solid #e7dac4 !important; color: #15110e !important; background: #fff !important; font-weight: 500; transition: all .2s ease; }
+.o_appointment_preview .premium-cal-day:hover { border-color: #c9a15d !important; color: #9a7a43 !important; transform: translateY(-2px); }
+.o_appointment_preview .premium-cal-day.is-today { border-color: #c9a15d !important; }
+.o_appointment_preview .premium-cal-day.active { background: #15110e !important; color: #c9a15d !important; border-color: #15110e !important; box-shadow: 0 10px 20px -10px rgba(0,0,0,.6); }
+.o_appointment_preview .o_appointment_day_off { color: #cfc4b4; }
+.o_appointment_preview .o_appointment_weekend { background: transparent !important; }
+/* time slots */
+.o_appointment_preview .slot-label { border-radius: 999px !important; border: 1px solid #e3d6c1 !important; color: #3d332a !important; background: #fff !important; font-weight: 500; }
+.o_appointment_preview .slot-label:hover { border-color: #c9a15d !important; color: #9a7a43 !important; }
+.o_appointment_preview .slot-radio:checked + .slot-label, .o_appointment_preview .slot-label.active { background: #15110e !important; border-color: #15110e !important; color: #c9a15d !important; }
+/* buttons */
+.o_appointment_preview .premium-btn-primary, .o_appointment_preview .btn-primary { background: #c9a15d !important; border-color: #c9a15d !important; color: #15110e !important;
+  border-radius: 999px !important; font-weight: 600; padding: 14px 24px; box-shadow: 0 12px 30px -12px rgba(201,161,93,.7); }
+.o_appointment_preview .premium-btn-primary:hover, .o_appointment_preview .btn-primary:hover { background: #15110e !important; border-color: #15110e !important; color: #c9a15d !important; }
+.o_appointment_preview .btn-outline-primary:not(.slot-label):not(.premium-cal-day) { border-color: #15110e; color: #15110e; border-radius: 999px; }
+/* right column info + notices */
+.o_appointment_preview .col-lg-4 h4 { font-size: 1.7rem; }
+.o_appointment_preview .col-lg-4 .oi, .o_appointment_preview .col-lg-4 .fa { color: #c9a15d; }
+.o_appointment_preview .alert { border-radius: 16px; }
+/* website header: dark glass, same as the homepage */
+header#top { background: rgba(21,17,14,.92) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
+header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary), header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+header#top .navbar .navbar-brand, header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
+header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
+header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
+header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+header#top .offcanvas { background: #1f1813 !important; }
+header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
+header#top .offcanvas .btn-close { filter: invert(1); }
+header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
+@media (max-width: 767px) { .rc-book-hero { padding: 120px 0 90px; } .o_appointment_preview .premium-cal-day { width: 36px; height: 36px; } }
+        </style>
+    </t>
+        <t t-call="website.layout" head="head">
+            <div id="wrap" class="o_appointment_page o_appointment_preview">
+                <section class="rc-book-hero">
+                    <div class="container">
+                        <span class="rc-eyebrow"><a href="/appointment">Reservations</a></span>
+                        <h1><span t-if="appointment_type.event_emoji" class="me-2" t-out="appointment_type.event_emoji"/><t t-out="appointment_type.name"/></h1>
+                        <p>Choose a date, party size and time. Your booking is confirmed instantly.</p>
+                        <div class="rc-book-steps">
+                            <span class="rc-on"><b>1</b>Date &amp; time</span>
+                            <span><b>2</b>Your details</span>
+                            <span><b>3</b>Confirmation</span>
+                        </div>
+                    </div>
+                </section>
+                <!-- Preview Banner -->
+                <t t-if="preview">
+                    <div class="alert alert-info text-center m-0 border-0 rounded-0">
+                        This is a preview of the customer appointment form.
+                        <a t-attf-href="/web#id=#{appointment_type.id}&amp;model=appointment.type&amp;view_type=form" class="alert-link" style="text-decoration: underline;">
+                            <i class="oi" data-icon="arrow_forward"/> Back to edit mode
+                        </a>
+                    </div>
+                </t>
+
+                <div class="container mt-4 mb-5 premium-card o_cc o_cc1">
+                    <!-- Cancellation Alerts -->
+                    <t t-if="state == 'cancel-success'">
+                        <div class="alert alert-success mb-4" role="alert" style="border-left-width: 5px;">
+                            <h5 class="alert-heading mb-1 font-weight-bold" style="color: inherit; font-size: 16px;">Appointment cancelled!</h5>
+                            <p class="mb-0" style="font-size: 14px;">You can now choose a different schedule that suits you better.</p>
+                        </div>
+                    </t>
+                    <t t-if="request.params.get('error') == 'cancel_too_late'">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Sorry!</strong> It is too late to cancel this appointment online. Please contact us directly.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                        </div>
+                    </t>
+                    <t t-if="request.params.get('error') in ('conflict', 'table_conflict', 'no_resource_available', 'missing_fields', 'missing_datetime', 'invalid_datetime', 'closed_day') or request.params.get('msg')">
+                        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                            <strong><i class="fa fa-exclamation-triangle me-1"/> Booking Notice:</strong>
+                            <t t-if="request.params.get('msg')" t-out="request.params.get('msg')"/>
+                            <t t-elif="request.params.get('error') == 'no_resource_available'">
+                                No table is available for the selected party size and time slot. Please choose another time or party size.
+                            </t>
+                            <t t-elif="request.params.get('error') == 'missing_fields'">
+                                Please fill in all required booking details (Name, Phone number, and mandatory celebration fields).
+                            </t>
+                            <t t-elif="request.params.get('error') in ('missing_datetime', 'invalid_datetime')">
+                                Please select a valid date and time slot for your celebration.
+                            </t>
+                            <t t-elif="request.params.get('error') == 'closed_day'">
+                                The selected date and time slot is closed for bookings. Please choose another time.
+                            </t>
+                            <t t-else="">
+                                The selected table or time slot is already booked. Please choose another table or time slot.
+                            </t>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                        </div>
+                    </t>
+                    
+                    <div class="row">
+                        <!-- Left Column: Scheduling -->
+                        <div class="col-lg-8 pe-lg-5">
+                            <t t-if="existing_booking">
+                                <div class="alert alert-warning alert-dismissible fade show p-3 mb-4" role="alert">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div style="font-size: 14px;">
+                                            You already booked "<t t-out="appointment_type.name"/>" on <span class="fw-bold"><t t-out="existing_booking_label"/></span>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="background: none; border: none; font-size: 20px; cursor: pointer; color: inherit;">×</button>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            
+                            <form t-attf-action="/appointment/#{appointment_type.id}/info" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input t-if="invite_token" type="hidden" name="invite_token" t-att-value="invite_token"/>
+                                <input t-if="wish_ref" type="hidden" name="wish_ref" t-att-value="wish_ref"/>
+                                <input t-if="wish_token" type="hidden" name="wish_token" t-att-value="wish_token"/>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label font-weight-bold" style="font-size: 14px;">Date</label>
+                                        <select class="form-select mb-3" name="date" onchange="this.form.submit()">
+                                            <!-- Simple dropdown matching the screenshot -->
+                                            <option t-att-value="selected_date"><t t-out="selected_date"/></option>
+                                        </select>
+                                    </div>
+                                    <t t-if="appointment_type.capacity &gt; 1 or appointment_type.booking_target == 'resources'">
+                                        <div class="col-md-6">
+                                            <label class="form-label font-weight-bold" style="font-size: 14px;">Party size</label>
+                                            <select class="form-select mb-3" name="party_size" onchange="window.location.href = window.location.pathname + '?date=' + document.querySelector('select[name=date]').value + (document.querySelector('input[name=invite_token]') ? '&amp;invite_token=' + encodeURIComponent(document.querySelector('input[name=invite_token]').value) : '') + (document.querySelector('input[name=wish_ref]') ? '&amp;wish_ref=' + encodeURIComponent(document.querySelector('input[name=wish_ref]').value) : '') + (document.querySelector('input[name=wish_token]') ? '&amp;wish_token=' + encodeURIComponent(document.querySelector('input[name=wish_token]').value) : '') + (document.querySelector('input[name=staff_user_id]') &amp;&amp; document.querySelector('input[name=staff_user_id]').value ? '&amp;staff_user_id=' + document.querySelector('input[name=staff_user_id]').value : '') + '&amp;party_size=' + this.value">
+                                                <t t-foreach="party_sizes" t-as="p_size">
+                                                    <option t-att-value="p_size" t-att-selected="p_size == selected_party_size"><t t-out="p_size"/></option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </t>
+                                </div>
+                                
+                                <!-- User Selection if Starts With = User -->
+                                <t t-if="assign_method == 'customer' and has_multiple_targets and schedule_based_on == 'users'">
+                                    <div class="mb-4">
+                                        <label class="form-label font-weight-bold" style="font-size: 14px;">
+                                            <t t-if="appointment_type.booking_target == 'resources'">Resource</t>
+                                            <t t-else="">With</t>
+                                        </label>
+                                        <div class="row g-2">
+                                            <div class="col-md-4 col-sm-6">
+                                                <a t-attf-href="?date=#{selected_date}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{wish_ref and ('&amp;wish_ref=' + wish_ref) or ''}#{wish_token and ('&amp;wish_token=' + wish_token) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" class="text-decoration-none">
+                                                    <div t-attf-class="btn btn-outline-primary w-100 py-2 text-center slot-label #{not staff_user_id and 'active' or ''}">
+                                                        <i class="oi oi-filled me-2" data-icon="group"/> No Preference
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <t t-foreach="users_possible" t-as="u">
+                                                <div class="col-md-4 col-sm-6">
+                                                    <a t-attf-href="?date=#{selected_date}&amp;staff_user_id=#{u.id}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{wish_ref and ('&amp;wish_ref=' + wish_ref) or ''}#{wish_token and ('&amp;wish_token=' + wish_token) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" class="text-decoration-none">
+                                                        <div t-attf-class="btn btn-outline-primary w-100 py-2 text-center slot-label #{staff_user_id == str(u.id) and 'active' or ''}">
+                                                            <div class="d-flex align-items-center justify-content-center">
+                                                                <div class="rounded-circle d-inline-flex justify-content-center align-items-center me-2 o_appointment_avatar">
+                                                                    <t t-out="u.name[:1].upper()"/>
+                                                                </div>
+                                                                <t t-out="u.name"/>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="staff_user_id" t-att-value="staff_user_id or ''"/>
+                                </t>
+                                
+                                <!-- Calendar Widget -->
+                                <div class="border-0 rounded pt-3 pb-2 px-3 mb-4 o_appointment_panel">
+                                    <div class="d-flex justify-content-center align-items-center mb-3 position-relative">
+                                        <a t-attf-href="?date=#{prev_month_date}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{wish_ref and ('&amp;wish_ref=' + wish_ref) or ''}#{wish_token and ('&amp;wish_token=' + wish_token) or ''}#{staff_user_id and ('&amp;staff_user_id=' + staff_user_id) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" style="position: absolute; left: 10px; text-decoration: none;">
+                                            <i class="oi text-muted" data-icon="keyboard_arrow_left" style="cursor: pointer; font-size: 18px;"/>
+                                        </a>
+                                        <h5 class="mb-0 font-weight-bold" style="font-size: 15px;"><t t-out="month_name"/> <t t-out="year"/></h5>
+                                        <a t-attf-href="?date=#{next_month_date}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{wish_ref and ('&amp;wish_ref=' + wish_ref) or ''}#{wish_token and ('&amp;wish_token=' + wish_token) or ''}#{staff_user_id and ('&amp;staff_user_id=' + staff_user_id) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" style="position: absolute; right: 10px; text-decoration: none;">
+                                            <i class="oi text-muted" data-icon="keyboard_arrow_right" style="cursor: pointer; font-size: 18px;"/>
+                                        </a>
+                                    </div>
+                                    <table class="table table-borderless text-center mb-0 o_appointment_calendar" style="table-layout: fixed; font-size: 13px;">
+                                        <thead>
+                                            <tr class="o_appointment_cal_head">
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Sun</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Mon</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Tue</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Wed</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Thu</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Fri</th>
+                                                <th class="p-2 font-weight-bold" style="font-size: 11px;">Sat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="month_grid" t-as="week">
+                                                <tr>
+                                                    <t t-foreach="week" t-as="day_info">
+                                                        <td t-attf-class="p-1 align-middle #{day_info_index == 0 and 'o_appointment_weekend' or ''}">
+                                                            <t t-if="day_info['is_current_month']">
+                                                                <t t-if="day_info['is_available']">
+                                                                    <a t-attf-href="?date=#{day_info['date_str']}#{invite_token and ('&amp;invite_token=' + invite_token) or ''}#{wish_ref and ('&amp;wish_ref=' + wish_ref) or ''}#{wish_token and ('&amp;wish_token=' + wish_token) or ''}#{staff_user_id and ('&amp;staff_user_id=' + staff_user_id) or ''}#{selected_party_size and ('&amp;party_size=' + str(selected_party_size)) or ''}" t-attf-class="btn btn-outline-primary p-0 d-flex justify-content-center align-items-center mx-auto text-decoration-none premium-cal-day #{day_info['is_selected'] and 'active' or (day_info['is_today'] and 'is-today' or '')}">
+                                                                        <t t-out="day_info['day']"/>
+                                                                    </a>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <div class="d-flex justify-content-center align-items-center mx-auto o_appointment_day_off">
+                                                                        <t t-out="day_info['day']"/>
+                                                                    </div>
+                                                                </t>
+                                                            </t>
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Old style block removed in favor of global block -->
+                                <t t-set="rc_free_slots" t-value="[s for s in (slots or []) if s.get('available', True)]"/>
+                                <t t-if="rc_free_slots">
+                                    <div class="mb-3">
+                                        <label class="form-label font-weight-bold" style="font-size: 14px;">Pick a Time</label>
+                                        <div class="row g-2">
+                                            <t t-foreach="rc_free_slots" t-as="slot">
+                                                <t t-if="slot.get('available', True)">
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <input type="radio" name="time" t-att-id="'slot_' + str(slot_index)" t-att-value="slot['val']" class="d-none slot-radio" t-att-checked="slot_index == 0" required="required"/>
+                                                        <label t-att-for="'slot_' + str(slot_index)" class="btn btn-outline-primary w-100 py-2 slot-label text-center">
+                                                            <t t-out="slot['time']"/>
+                                                        </label>
+                                                    </div>
+                                                </t>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <t t-if="assign_method == 'customer' and has_multiple_targets and schedule_based_on == 'website'">
+                                        <div class="mb-3 mt-4" id="staff_selection_container" style="display: none;">
+                                            <label class="form-label font-weight-bold" style="font-size: 14px;">
+                                                <t t-if="appointment_type.booking_target == 'resources'">Resource</t>
+                                                <t t-else="">With</t>
+                                            </label>
+                                            <div class="row g-2" id="staff_selection_options"/>
+                                            <input type="hidden" name="staff_user_id" id="selected_staff_id" value=""/>
+                                        </div>
+                                        <script>
+                                            var slotUserMap = {
+                                                <t t-foreach="slots" t-as="slot">
+                                                    <t t-if="slot.get('available', True)">
+                                                        "<t t-out="slot['val']"/>": [
+                                                            <t t-foreach="slot.get('available_users', [])" t-as="u">
+                                                                {"id": <t t-out="u['id']"/>, "name": "<t t-out="u['name']"/>", "capacity": <t t-out="u.get('capacity', 1)"/>},
+                                                            </t>
+                                                        ],
+                                                    </t>
+                                                </t>
+                                            };
+                                            
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                var radios = document.querySelectorAll('input[name="time"]');
+                                                var staffContainer = document.getElementById('staff_selection_container');
+                                                var staffOptions = document.getElementById('staff_selection_options');
+                                                var hiddenStaffInput = document.getElementById('selected_staff_id');
+                                                
+                                                function updateStaff() {
+                                                    var selectedTime = document.querySelector('input[name="time"]:checked');
+                                                    if (!selectedTime) return;
+                                                    
+                                                    var users = slotUserMap[selectedTime.value] || [];
+                                                    var partySizeSelect = document.querySelector('select[name="party_size"]');
+                                                    var selectedPartySize = partySizeSelect ? parseInt(partySizeSelect.value) : 1;
+                                                    
+                                                    staffOptions.innerHTML = '';
+                                                    
+                                                    var validUsers = users.filter(u =&gt; u.capacity &gt;= selectedPartySize);
+                                                    
+                                                    if (validUsers.length &gt; 0) {
+                                                        staffContainer.style.display = 'block';
+                                                        var noPrefHtml = `
+                                                            <div class="col-md-4 col-sm-6">
+                                                                <input type="radio" name="staff_user_id_radio" id="staff_none" value="" class="d-none slot-radio" checked="checked"/>
+                                                                <label for="staff_none" class="btn btn-outline-primary w-100 py-2 slot-label text-center">
+                                                                    <div class="d-flex align-items-center justify-content-center">
+                                                                        <i class="oi oi-filled me-2" data-icon="group"/> No Preference
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        `;
+                                                        staffOptions.innerHTML += noPrefHtml;
+                                                        
+                                                        validUsers.forEach(function(u) {
+                                                            var html = `
+                                                                <div class="col-md-4 col-sm-6">
+                                                                    <input type="radio" name="staff_user_id_radio" id="staff_${u.id}" value="${u.id}" class="d-none slot-radio"/>
+                                                                    <label for="staff_${u.id}" class="btn btn-outline-primary w-100 py-2 slot-label text-center">
+                                                                        <div class="d-flex align-items-center justify-content-center">
+                                                                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center me-2 o_appointment_avatar">
+                                                                                ${u.name.charAt(0).toUpperCase()}
+                                                                            </div>
+                                                                            ${u.name}
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            `;
+                                                            staffOptions.innerHTML += html;
+                                                        });
+                                                        
+                                                        var staffRadios = document.querySelectorAll('input[name="staff_user_id_radio"]');
+                                                        staffRadios.forEach(function(r) {
+                                                            r.addEventListener('change', function() {
+                                                                hiddenStaffInput.value = this.value;
+                                                            });
+                                                        });
+                                                        hiddenStaffInput.value = "";
+                                                    } else {
+                                                        staffContainer.style.display = 'none';
+                                                        hiddenStaffInput.value = "";
+                                                    }
+                                                }
+                                                
+                                                radios.forEach(function(r) {
+                                                    r.addEventListener('change', updateStaff);
+                                                });
+                                                var partySizeSelect = document.querySelector('select[name="party_size"]');
+                                                if (partySizeSelect) {
+                                                    partySizeSelect.addEventListener('change', updateStaff);
+                                                }
+                                                
+                                                updateStaff();
+                                            });
+                                        </script>
+                                    </t>
+        
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-primary premium-btn-primary w-100">
+                                            Continue
+                                        </button>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="alert alert-warning mt-4 mb-0" role="alert">
+                                        <i class="oi me-2" data-icon="warning"/>
+                                        There are no available time slots on this date. Please select a different date.
+                                    </div>
+                                </t>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Info -->
+                        <div class="col-lg-4 mt-5 mt-lg-0 ps-lg-5">
+                            <!-- Appointment Name and Description -->
+                            <div class="d-flex align-items-center mb-3">
+                                <t t-if="appointment_type.image_1920">
+                                    <img t-attf-src="/web/image/appointment.type/#{appointment_type.id}/image_1920" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Appointment Image"/>
+                                </t>
+                                <h4 class="mb-0 fw-bold">
+                                    <span t-if="appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
+                                    <t t-out="appointment_type.name"/>
+                                </h4>
+                            </div>
+                            <t t-if="appointment_type.message_intro">
+                                <div class="text-muted mb-4" style="font-size: 14px;">
+                                    <t t-out="appointment_type.message_intro"/>
+                                </div>
+                            </t>
+                            
+                            <!-- Location -->
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="oi text-muted me-3 mt-1" data-icon="location_on" style="font-size: 18px; width: 24px; text-align: center;"/>
+                                <div>
+                                    <div class="font-weight-bold" style="font-size: 14px;">
+                                        <t t-if="appointment_type.location == 'online'">Online</t>
+                                        <t t-elif="appointment_type.location == 'office'">Office</t>
+                                        <t t-else=""><t t-out="appointment_type.location_details"/></t>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 13px;">India</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>

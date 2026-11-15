@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_fs_schedule" model="report.paperformat">
+        <field name="name">Planning Schedule (A4 landscape)</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">32</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">25</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Printed from the schedule (Actions > Print), with the shown period and filters -->
+    <record id="action_report_fs_schedule" model="ir.actions.report">
+        <field name="name">Schedule</field>
+        <field name="model">fs.planning.slot</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_planning.report_fs_schedule</field>
+        <field name="paperformat_id" ref="paperformat_fs_schedule"/>
+    </record>
+
+    <template id="report_fs_schedule">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page o_fs_schedule_report">
+                    <style>
+                        .o_fs_schedule_report table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+                        .o_fs_schedule_report th, .o_fs_schedule_report td { border: 1px solid #dee2e6; padding: 3px; vertical-align: top; }
+                        .o_fs_schedule_report th { background: #f1f3f5; text-align: center; }
+                        .o_fs_schedule_report .o_fs_row_name { width: 16%; }
+                        .o_fs_schedule_report .o_fs_weekend { background: #f8f9fa; }
+                        .o_fs_schedule_report .o_fs_shift { background: #e3f2fd; border-left: 3px solid #1e88e5; border-radius: 2px; padding: 2px 3px; margin-bottom: 2px; page-break-inside: avoid; }
+                        .o_fs_schedule_report .o_fs_shift.o_fs_job { background: #e0f2f1; border-left-color: #00897b; }
+                        .o_fs_schedule_report .o_fs_shift.o_fs_draft { background: #ffffff; border: 1px dashed #adb5bd; border-left-width: 3px; }
+                        .o_fs_schedule_report tr { page-break-inside: avoid; }
+                    </style>
+                    <h4 class="mb-1">Schedule</h4>
+                    <p class="text-muted mb-3" t-out="title"/>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="o_fs_row_name"/>
+                                <th t-foreach="columns" t-as="col" t-att-class="col['is_weekend'] and 'o_fs_weekend' or ''" t-out="col['label']"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="rows" t-as="row" t-att-style="row['is_group'] and 'background-color: #eef0f3;' or None">
+                                <td class="o_fs_row_name" t-att-style="not row['is_group'] and 'padding-left: 16px;' or None">
+                                    <strong t-out="row['name']"/>
+                                    <div t-if="row['job_title']" class="text-muted" t-out="row['job_title']"/>
+                                    <div class="text-muted">
+                                        <span t-out="row['planned_hours']" t-options="{'widget': 'float_time'}"/>
+                                        <t t-if="row['capacity_hours']"> / <span t-out="row['capacity_hours']" t-options="{'widget': 'float_time'}"/></t>
+                                    </div>
+                                </td>
+                                <td t-foreach="row['cells']" t-as="cell" t-att-class="columns[cell_index]['is_weekend'] and 'o_fs_weekend' or ''">
+                                    <div t-foreach="cell" t-as="shift"
+                                         t-attf-class="o_fs_shift {{ 'o_fs_job' if shift['is_job'] else '' }} {{ 'o_fs_draft' if shift['draft'] else '' }}">
+                                        <strong t-out="shift['time']"/>
+                                        <div t-out="shift['label']"/>
+                                        <div t-if="shift['draft']" class="text-muted fst-italic">Draft</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr t-if="not rows">
+                                <td t-att-colspan="len(columns) + 1" class="text-center text-muted">No shifts.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

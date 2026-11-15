@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="rc_track_loc_stage" model="event.track.location">
+            <field name="name">Main Stage</field>
+        </record>
+        <record id="rc_track_loc_lawn" model="event.track.location">
+            <field name="name">Garden Lawn</field>
+        </record>
+        <record id="rc_track_loc_kids" model="event.track.location">
+            <field name="name">Kids' Corner</field>
+        </record>
+        <record id="rc_track_cake" model="event.track">
+            <field name="name">Plum Cake Mixing Ceremony</field>
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="partner_name">Chef Joseph Antony</field>
+            <field name="date" eval="(DateTime.today() + relativedelta(days=40, minutes=330)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="duration" eval="1.5"/>
+            <field name="location_id" ref="rc_track_loc_lawn"/>
+            <field name="stage_id" ref="website_event_track.event_track_stage3"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="rc_track_wine" model="event.track">
+            <field name="name">Wine &amp; Spice Pairing Talk</field>
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="partner_name">Anita D'Souza (Sommelier)</field>
+            <field name="date" eval="(DateTime.today() + relativedelta(days=40, minutes=630)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="duration" eval="1.0"/>
+            <field name="location_id" ref="rc_track_loc_stage"/>
+            <field name="stage_id" ref="website_event_track.event_track_stage3"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="rc_track_appam" model="event.track">
+            <field name="name">Live Appam &amp; Duck Roast Counter</field>
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="partner_name">Chef Mary Kurian</field>
+            <field name="date" eval="(DateTime.today() + relativedelta(days=41, minutes=390)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="duration" eval="2.0"/>
+            <field name="location_id" ref="rc_track_loc_lawn"/>
+            <field name="stage_id" ref="website_event_track.event_track_stage2"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="rc_track_carols" model="event.track">
+            <field name="name">Carol Night with St. Mary's Choir</field>
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="partner_name">St. Mary's Choir</field>
+            <field name="date" eval="(DateTime.today() + relativedelta(days=41, minutes=810)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="duration" eval="1.5"/>
+            <field name="location_id" ref="rc_track_loc_stage"/>
+            <field name="stage_id" ref="website_event_track.event_track_stage2"/>
+            <field name="is_published" eval="True"/>
+        </record>
+        <record id="rc_track_cookies" model="event.track">
+            <field name="name">Kids' Christmas Cookie Decorating</field>
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="partner_name">Pastry Team</field>
+            <field name="date" eval="(DateTime.today() + relativedelta(days=42, minutes=570)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="duration" eval="1.0"/>
+            <field name="location_id" ref="rc_track_loc_kids"/>
+            <field name="stage_id" ref="website_event_track.event_track_stage1"/>
+            <field name="is_published" eval="False"/>
+        </record>
+        <record id="rc_track_proposal" model="event.track">
+            <field name="name">Proposal: Vegan Christmas Desserts Demo</field>
+            <field name="event_id" ref="rc_event_xmas_fest"/>
+            <field name="partner_name">Green Bowl Café</field>
+            <field name="date" eval="(DateTime.today() + relativedelta(days=42, minutes=690)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="duration" eval="1.0"/>
+            <field name="location_id" ref="rc_track_loc_stage"/>
+            <field name="stage_id" ref="website_event_track.event_track_stage0"/>
+            <field name="is_published" eval="False"/>
+        </record>
+    </data>
+</odoo>

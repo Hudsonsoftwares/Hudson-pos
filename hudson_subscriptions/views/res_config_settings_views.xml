@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_subscription" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.subscription</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="70"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Subscriptions" string="Subscriptions" name="hudson_subscriptions">
+                    <block title="Subscription Defaults" id="subscription_defaults">
+                        <setting id="subscription_plan_setting" string="Default Recurring Plan" help="Default recurring billing plan for new subscriptions">
+                            <field name="subscription_default_plan_id"/>
+                        </setting>
+                        <setting id="subscription_template_setting" string="Default Quotation Template" help="Template preloaded when creating new subscription quotes">
+                            <field name="subscription_default_template_id"/>
+                        </setting>
+                    </block>
+                    <block title="Invoicing &amp; Renewal Automation" id="subscription_automation">
+                        <setting id="subscription_auto_invoice_setting" string="Automatic Invoicing" help="Automatically create recurring invoices on scheduled invoice dates">
+                            <field name="subscription_auto_invoice"/>
+                        </setting>
+                        <setting id="subscription_renewal_setting" string="Renewal Notice Period" help="Number of days before end date to flag subscriptions as 'To Renew'">
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <field name="subscription_renewal_days" class="oe_inline"/> days
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_subscription_config_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'module': 'hudson_subscriptions'}</field>
+    </record>
+</odoo>

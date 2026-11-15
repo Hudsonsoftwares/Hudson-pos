@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="rental_order_wizard_view_form" model="ir.ui.view">
+        <field name="name">rental.order.wizard.form</field>
+        <field name="model">rental.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Pickup / Return">
+                <field name="order_id" invisible="1"/>
+                <field name="status" invisible="1"/>
+                <field name="has_tracked_lines" invisible="1"/>
+                <div class="alert alert-warning mb-3" role="alert" invisible="not is_late or status != 'pickup'">
+                    This pickup is late.
+                </div>
+                <div class="alert alert-warning mb-3" role="alert" invisible="not is_late or status != 'return'">
+                    This return is late: delay costs will be added to the order.
+                </div>
+                <field name="line_ids" nolabel="1">
+                    <list editable="bottom" create="0" delete="0">
+                        <field name="order_line_id" column_invisible="1"/>
+                        <field name="status" column_invisible="1"/>
+                        <field name="tracking" column_invisible="1"/>
+                        <field name="allowed_lot_ids" column_invisible="1"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="lot_ids" widget="many2many_tags" string="Serial Numbers"
+                               column_invisible="not parent.has_tracked_lines"
+                               invisible="not tracking"
+                               options="{'no_create': True}"
+                               placeholder="Select serial numbers"/>
+                        <field name="qty_reserved" readonly="1"/>
+                        <field name="qty_delivered" readonly="1" column_invisible="parent.status == 'pickup'"/>
+                        <field name="qty_returned" readonly="1" column_invisible="parent.status == 'pickup'"/>
+                        <field name="qty" string="Pickup" column_invisible="parent.status != 'pickup'"/>
+                        <field name="qty" string="Return" column_invisible="parent.status != 'return'"/>
+                        <field name="uom_id" groups="uom.group_uom" readonly="1"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_apply" string="Validate" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

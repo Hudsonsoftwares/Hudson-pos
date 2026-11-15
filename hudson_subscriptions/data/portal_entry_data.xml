@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Odoo 20 portal home cards are portal.entry records; the card shows up
+         when the "subscription_count" counter finds at least one subscription. -->
+    <record id="portal_your_subscriptions" model="portal.entry">
+        <field name="name">Subscriptions</field>
+        <field name="description">Manage your subscriptions</field>
+        <field name="url">/my/subscriptions</field>
+        <field name="image" type="bytes" file="hudson_subscriptions/static/src/img/subscription.svg"/>
+        <field name="placeholder_count">subscription_count</field>
+        <field name="category">client_category</field>
+        <field name="sequence" eval="55"/>
+    </record>
+</odoo>

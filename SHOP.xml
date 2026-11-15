@@ -1,0 +1,572 @@
+<t name="Products" t-name="website_sale.products">
+        <t t-set="website_sale_sortable" t-value="website._get_product_sort_mapping()"/>
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <style>
+            /* ================= Resto Cafe Solutions - Deli Shop ================= */
+            .rc-shop {
+                --rc-ink: #15110e; --rc-espresso: #1f1813; --rc-bean: #2b211a;
+                --rc-cream: #f6efe4; --rc-paper: #fbf7f0; --rc-gold: #c9a15d; --rc-gold-soft: #e0c38c;
+                --rc-muted: #a99a86; --rc-text: #3d332a; --rc-sale: #b4442e; --rc-leaf: #3f6b4b;
+                font-family: 'Inter', system-ui, sans-serif; background: var(--rc-paper); color: var(--rc-text); overflow-x: hidden;
+            }
+            .rc-shop h1, .rc-shop h2, .rc-shop h3, .rc-shop .rc-serif { font-family: 'Playfair Display', Georgia, serif; }
+            .rc-shop a { text-decoration: none; }
+            .rc-shop .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--rc-gold); }
+            .rc-shop .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
+            .rc-shop .rc-btn { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; padding: 14px 28px; border-radius: 999px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; transition: all .3s ease; cursor: pointer; }
+            .rc-shop .rc-btn-gold { background: var(--rc-gold); color: var(--rc-ink) !important; box-shadow: 0 12px 30px -12px rgba(201,161,93,.7); }
+            .rc-shop .rc-btn-gold:hover { background: var(--rc-gold-soft); transform: translateY(-2px); }
+            .rc-shop .rc-btn-ghost { border-color: rgba(246,239,228,.45); color: var(--rc-cream) !important; }
+            .rc-shop .rc-btn-ghost:hover { background: var(--rc-cream); color: var(--rc-ink) !important; }
+
+            /* hero */
+            .rc-shop .rc-shop-hero {
+                position: relative; padding: 170px 0 110px; color: var(--rc-cream);
+                background: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.8) 50%, rgba(21,17,14,.45) 100%),
+                            url('/theme_bistro/static/src/img/backgrounds/15.webp') center/cover no-repeat;
+            }
+            .rc-shop .rc-shop-hero h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.05; color: #fff; margin: 22px 0; max-width: 760px; }
+            .rc-shop .rc-shop-hero h1 em { color: var(--rc-gold); }
+            .rc-shop .rc-shop-hero p { color: #d9cfbf; font-size: 1.12rem; line-height: 1.8; max-width: 560px; }
+            .rc-shop .rc-hero-packs { position: absolute; right: 6%; bottom: -60px; display: flex; gap: 18px; z-index: 2; }
+            .rc-shop .rc-hero-packs img { width: 150px; border-radius: 14px; background: var(--rc-cream); padding: 6px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.8); }
+            .rc-shop .rc-hero-packs img:nth-child(1) { transform: rotate(-8deg) translateY(10px); }
+            .rc-shop .rc-hero-packs img:nth-child(2) { transform: translateY(-24px); }
+            .rc-shop .rc-hero-packs img:nth-child(3) { transform: rotate(8deg) translateY(10px); }
+            .rc-shop .rc-perks { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 34px; color: #e7dccb; font-size: .92rem; }
+            .rc-shop .rc-perks i { color: var(--rc-gold); margin-right: 8px; }
+
+            /* filter bar */
+            .rc-shop .rc-filterbar { position: sticky; top: 0; z-index: 20; background: rgba(251,247,240,.92); backdrop-filter: blur(10px); border-bottom: 1px solid #eadfcd; }
+            .rc-shop .rc-filterbar .container { display: flex; align-items: center; gap: 16px; padding-top: 16px; padding-bottom: 16px; flex-wrap: wrap; }
+            .rc-shop .rc-pills { display: flex; gap: 10px; overflow-x: auto; flex: 1; scrollbar-width: none; padding-bottom: 2px; }
+            .rc-shop .rc-pill { white-space: nowrap; border: 1px solid #e0d2bb; background: #fff; color: var(--rc-text); border-radius: 999px; padding: 9px 18px; font-size: .9rem; font-weight: 500; cursor: pointer; transition: all .25s ease; }
+            .rc-shop .rc-pill:hover { border-color: var(--rc-gold); }
+            .rc-shop .rc-pill.active { background: var(--rc-ink); color: var(--rc-gold); border-color: var(--rc-ink); }
+            .rc-shop .rc-pill small { opacity: .6; margin-left: 4px; }
+            .rc-shop .rc-search { position: relative; min-width: 240px; }
+            .rc-shop .rc-search input { width: 100%; border: 1px solid #e0d2bb; border-radius: 999px; padding: 10px 16px 10px 40px; background: #fff; font-size: .92rem; outline: none; }
+            .rc-shop .rc-search input:focus { border-color: var(--rc-gold); box-shadow: 0 0 0 3px rgba(201,161,93,.18); }
+            .rc-shop .rc-search i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--rc-muted); }
+
+            /* products */
+            .rc-shop .rc-catalog { padding: 70px 0 100px; }
+            .rc-shop .rc-cat-head { display: flex; align-items: end; justify-content: space-between; margin: 10px 0 26px; }
+            .rc-shop .rc-cat-head h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--rc-ink); margin: 0; }
+            .rc-shop .rc-cat-head span { color: var(--rc-muted); font-size: .9rem; }
+            .rc-shop .rc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 26px; }
+            .rc-shop .rc-card { background: #fff; border: 1px solid #efe5d5; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: all .35s ease; position: relative; }
+            .rc-shop .rc-card:hover { transform: translateY(-6px); box-shadow: 0 30px 50px -30px rgba(43,33,26,.45); border-color: #e3d2b4; }
+            .rc-shop .rc-card-img { display: block; background: linear-gradient(160deg, #fbf3e6, #f1e4cf); aspect-ratio: 1; overflow: hidden; }
+            .rc-shop .rc-card-img img { width: 100%; height: 100%; object-fit: contain; padding: 14px; transition: transform .6s ease; }
+            .rc-shop .rc-card:hover .rc-card-img img { transform: scale(1.06) rotate(-1.5deg); }
+            .rc-shop .rc-badge { position: absolute; top: 14px; left: 14px; z-index: 2; font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; }
+            .rc-shop .rc-badge-sale { background: var(--rc-sale); color: #fff; }
+            .rc-shop .rc-badge-new { background: var(--rc-ink); color: var(--rc-gold); }
+            .rc-shop .rc-badge-out { background: #8b8178; color: #fff; }
+            .rc-shop .rc-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
+            .rc-shop .rc-card-cat { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--rc-gold); font-weight: 600; }
+            .rc-shop .rc-card h3 { font-size: 1.15rem; line-height: 1.3; margin: 6px 0 8px; }
+            .rc-shop .rc-card h3 a { color: var(--rc-ink); }
+            .rc-shop .rc-card h3 a:hover { color: #9a7a43; }
+            .rc-shop .rc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+            .rc-shop .rc-tags span { font-size: .72rem; background: #f4ecdf; color: #7a6a57; border-radius: 6px; padding: 3px 8px; }
+            .rc-shop .rc-card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+            .rc-shop .rc-price { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--rc-ink); font-weight: 600; }
+            .rc-shop .rc-price del { font-family: 'Inter', sans-serif; font-size: .85rem; color: #a99a86; margin-left: 6px; font-weight: 400; }
+            .rc-shop .rc-from { font-size: .75rem; color: var(--rc-muted); font-family: 'Inter', sans-serif; font-weight: 400; }
+            .rc-shop .rc-add { width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--rc-ink); color: var(--rc-gold); display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; transition: all .25s ease; cursor: pointer; }
+            .rc-shop .rc-add:hover { background: var(--rc-gold); color: var(--rc-ink); transform: scale(1.08); }
+            .rc-shop .rc-add[disabled] { background: #d8cfc3; color: #fff; cursor: not-allowed; transform: none; }
+            .rc-shop .rc-add.rc-added { background: var(--rc-leaf); color: #fff; }
+            .rc-shop .rc-empty { display: none; text-align: center; padding: 60px 0; color: var(--rc-muted); }
+
+            /* gift promo */
+            .rc-shop .rc-gift { background: var(--rc-ink); color: var(--rc-cream); border-radius: 22px; overflow: hidden; margin-top: 80px; }
+            .rc-shop .rc-gift .rc-gift-copy { padding: 60px 56px; }
+            .rc-shop .rc-gift h2 { color: #fff; font-size: clamp(1.9rem, 3.4vw, 2.8rem); margin: 16px 0; }
+            .rc-shop .rc-gift h2 em { color: var(--rc-gold); }
+            .rc-shop .rc-gift p { color: #cbbfae; line-height: 1.8; }
+            .rc-shop .rc-gift-visual { min-height: 360px; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(201,161,93,.35), transparent 60%), var(--rc-bean); display: flex; align-items: center; justify-content: center; }
+            .rc-shop .rc-gift-visual img { width: 62%; max-width: 300px; border-radius: 18px; background: var(--rc-cream); padding: 8px; transform: rotate(-4deg); box-shadow: 0 40px 70px -25px rgba(0,0,0,.9); }
+
+            /* promise strip */
+            .rc-shop .rc-promise { background: var(--rc-espresso); color: var(--rc-cream); padding: 56px 0; }
+            .rc-shop .rc-promise .rc-p { display: flex; gap: 16px; align-items: flex-start; }
+            .rc-shop .rc-promise i { width: 52px; height: 52px; min-width: 52px; border-radius: 50%; background: rgba(201,161,93,.15); color: var(--rc-gold); display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+            .rc-shop .rc-promise h4 { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.15rem; margin: 2px 0 4px; }
+            .rc-shop .rc-promise p { color: var(--rc-muted); font-size: .9rem; margin: 0; }
+
+            /* toast */
+            .rc-shop .rc-toast { position: fixed; right: 24px; bottom: 24px; z-index: 1050; background: var(--rc-ink); color: var(--rc-cream); border-left: 4px solid var(--rc-gold); padding: 14px 20px; border-radius: 10px; box-shadow: 0 20px 40px -15px rgba(0,0,0,.6); transform: translateY(150%); transition: transform .4s ease; }
+            .rc-shop .rc-toast.show { transform: none; }
+            .rc-shop .rc-toast a { color: var(--rc-gold); font-weight: 600; margin-left: 10px; }
+
+            /* header on this page: same dark glass style as the homepage */
+            header#top { background: rgba(21,17,14,.9) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
+            header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+            header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary),
+            header#top .navbar button:not(.btn-primary):not(.dropdown-item), header#top .navbar .navbar-brand,
+            header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
+            header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
+            header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
+            header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+            header#top .offcanvas { background: #1f1813 !important; }
+            header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
+            header#top .offcanvas .btn-close { filter: invert(1); }
+            header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
+
+            @media (max-width: 991px) {
+                .rc-shop .rc-hero-packs { display: none; }
+                .rc-shop .rc-shop-hero { padding: 140px 0 80px; }
+                .rc-shop .rc-gift .rc-gift-copy { padding: 40px 28px; }
+                .rc-shop .rc-search { min-width: 100%; }
+            }
+            @media (max-width: 575px) { .rc-shop .rc-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .rc-shop .rc-card-body { padding: 12px; } .rc-shop .rc-card h3 { font-size: 1rem; } }
+
+            /* ---- Odoo's standard grid (category pages, search) in the same style ---- */
+            .o_wsale_products_page { background: #fbf7f0; }
+            .o_wsale_products_page .oe_product .oe_product_cart, .o_wsale_products_page .o_wsale_product_grid_wrapper .card {
+                border: 1px solid #efe5d5 !important; border-radius: 16px !important; overflow: hidden; transition: all .35s ease; }
+            .o_wsale_products_page .oe_product:hover .oe_product_cart { transform: translateY(-5px); box-shadow: 0 30px 50px -30px rgba(43,33,26,.45); }
+            .o_wsale_products_page .oe_product_image { background: linear-gradient(160deg, #fbf3e6, #f1e4cf); }
+            .o_wsale_products_page .o_wsale_products_item_title a, .o_wsale_products_page h1, .o_wsale_products_page h2 { font-family: 'Playfair Display', Georgia, serif; color: #15110e; }
+            .o_wsale_products_page .oe_currency_value, .o_wsale_products_page .product_price { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; }
+            .o_wsale_products_page .btn-primary { background: #15110e !important; border-color: #15110e !important; color: #c9a15d !important; border-radius: 999px; }
+            .o_wsale_products_page .btn-primary:hover { background: #c9a15d !important; color: #15110e !important; }
+        </style>
+        <script>
+            /* Category pills, live search and one-tap Add to cart (Odoo 20 JSON route /shop/cart/add) */
+            document.addEventListener('DOMContentLoaded', function () {
+                const shop = document.querySelector('.rc-shop');
+                if (!shop) { return; }
+                const cards = Array.from(shop.querySelectorAll('.rc-card'));
+                const sections = Array.from(shop.querySelectorAll('.rc-cat-section'));
+                const empty = shop.querySelector('.rc-empty');
+                let activeCat = 'all';
+                function applyFilter() {
+                    const q = (shop.querySelector('.rc-search input').value || '').trim().toLowerCase();
+                    let shown = 0;
+                    cards.forEach(function (c) {
+                        const catOk = activeCat === 'all' || c.dataset.cat === activeCat; const textOk = !q || c.dataset.name.indexOf(q) !== -1; const ok = catOk ? textOk : false;
+                        c.style.display = ok ? '' : 'none';
+                        if (ok) { shown++; }
+                    });
+                    sections.forEach(function (s) {
+                        s.style.display = s.querySelector('.rc-card:not([style*="none"])') ? '' : 'none';
+                    });
+                    empty.style.display = shown ? 'none' : 'block';
+                }
+                shop.querySelectorAll('.rc-pill').forEach(function (p) {
+                    p.addEventListener('click', function () {
+                        shop.querySelectorAll('.rc-pill').forEach(function (x) { x.classList.remove('active'); });
+                        p.classList.add('active');
+                        activeCat = p.dataset.cat;
+                        applyFilter();
+                    });
+                });
+                shop.querySelector('.rc-search input').addEventListener('input', applyFilter);
+
+                const toast = shop.querySelector('.rc-toast');
+                shop.querySelectorAll('.rc-add[data-product-id]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        btn.disabled = true;
+                        fetch('/shop/cart/add', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {
+                                product_template_id: parseInt(btn.dataset.templateId), product_id: parseInt(btn.dataset.productId), quantity: 1 } })
+                        }).then(function (r) { return r.json(); }).then(function (res) {
+                            if (res.error) { throw res.error; }
+                            const qty = res.result ? (res.result.cart_quantity || res.result.quantity) : 0;
+                            document.querySelectorAll('.my_cart_quantity').forEach(function (el) {
+                                if (qty) { el.textContent = qty; } el.classList.remove('d-none');
+                            });
+                            btn.classList.add('rc-added'); btn.querySelector('i').className = 'fa fa-check';
+                            toast.querySelector('span').textContent = btn.dataset.name + ' added to your cart';
+                            toast.classList.add('show'); setTimeout(function () { toast.classList.remove('show'); }, 3200);
+                            setTimeout(function () { btn.classList.remove('rc-added'); btn.querySelector('i').className = 'fa fa-shopping-bag'; btn.disabled = false; }, 1800);
+                        }).catch(function () { window.location.href = btn.dataset.url; });
+                    });
+                });
+            });
+        </script>
+    </t>
+        <t t-call="website.layout" additional_title="category.name" website_sale_sortable="website_sale_sortable" head="head">
+            <t t-set="grid_block_name">Grid</t>
+            <t t-set="product_block_name">Product</t>
+
+            <!-- Qweb variable defining the class suffix for navbar items.
+                 Change accordingly to the derired visual result (eg. `primary`, `dark`...)-->
+            <t t-set="navClass" t-valuef="light"/>
+
+            <!-- Check for active options: the stored value may be used in sub-templates too  -->
+            <t t-set="opt_wsale_fullwidth" t-value="website.shop_page_container == 'fluid'"/>
+            <t t-set="opt_wsale_categories" t-value="is_view_active('website_sale.products_categories')"/>
+            <t t-set="opt_wsale_attributes" t-value="is_view_active('website_sale.products_attributes')"/>
+            <t t-set="opt_wsale_filter_price" t-value="is_view_active('website_sale.filter_products_price')"/>
+            <t t-set="opt_wsale_filter_tags" t-value="is_view_active('website_sale.filter_products_tags')"/>
+            <t t-set="opt_wsale_design_grid" t-value="'o_wsale_products_opt_design_grid' in website.shop_opt_products_design_classes"/>
+
+            <t t-set="opt_wsale_categories_top" t-value="is_view_active('website_sale.products_categories_top')"/>
+            <t t-set="opt_wsale_attributes_top" t-value="is_view_active('website_sale.products_attributes_top')"/>
+            <t t-set="opt_wsale_floating_bar" t-value="is_view_active('website_sale.floating_bar')"/>
+
+            <t t-set="opt_wsale_show_shop_title" t-value="is_view_active('website_sale.products_shop_title')"/>
+            <t t-set="opt_wsale_shop_title_align" t-value="is_view_active('website_sale.products_shop_title_align')"/>
+
+            <t t-set="opt_wsale_show_category_title" t-value="website.show_category_title"/>
+            <t t-set="opt_wsale_show_category_description" t-value="website.show_category_description"/>
+            <t t-set="opt_wsale_category_align" t-value="website.align_category_content"/>
+
+            <t t-set="show_price_filter" t-value="opt_wsale_filter_price and opt_wsale_attributes"/>
+            <t t-set="hasLeftColumn" t-value="                     (opt_wsale_categories and categories)                     or (opt_wsale_attributes and (attributes or all_tags or opt_wsale_filter_price))                     or show_price_filter                     or show_on_sale_filter                     or show_in_stock_filter                 "/>
+
+            <t t-set="isFilteringByPrice" t-if="opt_wsale_filter_price" t-value="float_round(available_min_price, 2) != float_round(min_price, 2) or float_round(available_max_price, 2) != float_round(max_price, 2)"/>
+            <t t-set="isSortingBy" t-value="[sort for sort in website_sale_sortable if sort[0]==request.params.get('order', '')]"/>
+
+            <t t-set="wsale_has_filters_btn" t-value="opt_wsale_categories or opt_wsale_attributes or opt_wsale_attributes_top"/>
+            <t t-set="wsale_has_filters_btn_lg" t-value="opt_wsale_attributes_top"/>
+
+            <div id="wrap" class="o_wsale_products_page">
+                <div class="oe_structure oe_empty oe_structure_not_nearest" id="oe_structure_website_sale_products_1"/>
+                <!-- Resto Cafe Deli landing: plain /shop shows only Packaged Foods &amp; Drinks -->
+                <t t-set="rc_root" t-value="request.env.ref('hudson_pos_demo_data.rc_pcat_packaged', raise_if_not_found=False)"/>
+                <t t-set="rc_categories" t-value="rc_root.child_id.sorted('sequence') if rc_root else []"/>
+                <t t-set="rc_products" t-value="request.env['product.template'].search([('public_categ_ids', 'child_of', rc_root.id), ('is_published', '=', True), ('sale_ok', '=', True)], order='website_sequence, name') if rc_root else []"/>
+                <t t-set="rc_featured" t-value="request.env.ref('hudson_pos_demo_data.rc_pf_gift_box', raise_if_not_found=False)"/>
+                <t t-set="rc_landing" t-value="rc_root and not category and not search and not request.httprequest.query_string"/>
+                <div t-if="rc_landing" class="rc-shop">
+
+            <!-- ===================== HERO ===================== -->
+            <section class="rc-shop-hero">
+                <div class="container position-relative">
+                    <span class="rc-eyebrow">The Resto Cafe Deli</span>
+                    <h1>Take the taste of <em>Kerala</em> home</h1>
+                    <p>Small-batch snacks, hand-ground masalas, ready meals, pickles and our own filter coffee: packed fresh in our Kochi kitchen and delivered to your door.</p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="#rc-catalog" class="rc-btn rc-btn-gold"><i class="fa fa-shopping-bag"/> Shop the Deli</a>
+                        <a href="/shop/cart" class="rc-btn rc-btn-ghost"><i class="fa fa-shopping-cart"/> View cart</a>
+                    </div>
+                    <div class="rc-perks">
+                        <span><i class="fa fa-truck"/>Free delivery above $ 30</span>
+                        <span><i class="fa fa-leaf"/>No artificial preservatives</span>
+                        <span><i class="fa fa-gift"/>Gift wrapping available</span>
+                    </div>
+                </div>
+                <div class="rc-hero-packs">
+                    <img src="/hudson_pos_demo_data/static/src/img/packaged_food/banana_chips.png" alt="Banana chips"/>
+                    <img src="/hudson_pos_demo_data/static/src/img/packaged_food/filter_coffee.png" alt="Filter coffee"/>
+                    <img src="/hudson_pos_demo_data/static/src/img/packaged_food/mango_pickle.png" alt="Mango pickle"/>
+                </div>
+            </section>
+
+            <!-- ===================== FILTER BAR ===================== -->
+            <div class="rc-filterbar">
+                <div class="container">
+                    <div class="rc-pills">
+                        <button type="button" class="rc-pill active" data-cat="all">All <small t-out="len(rc_products)"/></button>
+                        <t t-foreach="rc_categories" t-as="cat">
+                            <button type="button" class="rc-pill" t-att-data-cat="cat.id">
+                                <t t-out="cat.name"/> <small t-out="len(rc_products.filtered(lambda p: cat in p.public_categ_ids))"/>
+                            </button>
+                        </t>
+                    </div>
+                    <div class="rc-search">
+                        <i class="fa fa-search"/>
+                        <input type="search" placeholder="Search chips, masala, coffee..." aria-label="Search products"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== CATALOG ===================== -->
+            <section id="rc-catalog" class="rc-catalog">
+                <div class="container">
+                    <t t-if="not rc_root">
+                        <p class="text-center text-muted py-5">The Packaged Foods category was not found. Install/upgrade the "POS Demo Data" module.</p>
+                    </t>
+                    <t t-foreach="rc_categories" t-as="cat">
+                        <t t-set="cat_products" t-value="rc_products.filtered(lambda p: cat in p.public_categ_ids)"/>
+                        <div t-if="cat_products" class="rc-cat-section mb-5">
+                            <div class="rc-cat-head">
+                                <h2 t-out="cat.name"/>
+                                <span><t t-out="len(cat_products)"/> products</span>
+                            </div>
+                            <div class="rc-grid">
+                                <t t-foreach="cat_products" t-as="product">
+                                    <t t-set="variant" t-value="product.product_variant_ids[:1]"/>
+                                    <t t-set="has_sizes" t-value="len(product.product_variant_ids) &gt; 1"/>
+                                    <t t-set="sold_out" t-value="product.is_storable and not product.allow_out_of_stock_order and product.sudo().qty_available &lt;= 0"/>
+                                    <article class="rc-card" t-att-data-cat="cat.id" t-att-data-name="(product.name or '').lower()">
+                                        <span t-if="sold_out" class="rc-badge rc-badge-out">Sold out</span>
+                                        <span t-elif="product.compare_list_price and product.compare_list_price &gt; product.list_price" class="rc-badge rc-badge-sale">Sale</span>
+                                        <span t-elif="product.website_ribbon_id and 'New' in (product.website_ribbon_id.name or '')" class="rc-badge rc-badge-new">New</span>
+                                        <a class="rc-card-img" t-att-href="product.website_url">
+                                            <img t-att-src="'/web/image/product.template/%s/image_512' % product.id" t-att-alt="product.name" loading="lazy"/>
+                                        </a>
+                                        <div class="rc-card-body">
+                                            <span class="rc-card-cat" t-out="cat.name"/>
+                                            <h3><a t-att-href="product.website_url" t-out="product.name"/></h3>
+                                            <div class="rc-tags" t-if="product.product_tag_ids">
+                                                <t t-foreach="product.product_tag_ids[:3]" t-as="tag"><span t-out="tag.name"/></t>
+                                            </div>
+                                            <div class="rc-card-foot">
+                                                <div class="rc-price">
+                                                    <span t-if="has_sizes" class="rc-from">from </span>
+                                                    <span t-out="product.list_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                    <del t-if="product.compare_list_price and product.compare_list_price &gt; product.list_price"
+                                                         t-out="product.compare_list_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                </div>
+                                                <t t-if="sold_out">
+                                                    <button type="button" class="rc-add" disabled="disabled" title="Sold out"><i class="fa fa-ban"/></button>
+                                                </t>
+                                                <t t-elif="has_sizes">
+                                                    <a class="rc-add" t-att-href="product.website_url" title="Choose pack size"><i class="fa fa-sliders"/></a>
+                                                </t>
+                                                <t t-else="">
+                                                    <button type="button" class="rc-add" title="Add to cart"
+                                                            t-att-data-product-id="variant.id" t-att-data-template-id="product.id"
+                                                            t-att-data-name="product.name" t-att-data-url="product.website_url">
+                                                        <i class="fa fa-shopping-bag"/>
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                    <div class="rc-empty"><i class="fa fa-search fa-2x mb-3"/><p>No products match your search.</p></div>
+
+                    <!-- ===================== GIFT BOX PROMO ===================== -->
+                    <div t-if="rc_featured" class="rc-gift row g-0 align-items-stretch">
+                        <div class="col-lg-7">
+                            <div class="rc-gift-copy">
+                                <span class="rc-eyebrow">Gifting made delicious</span>
+                                <h2>The <em>Kerala Treats</em> Gift Box</h2>
+                                <p>Banana chips, Kozhikode halwa, mango pickle, filter coffee and cardamom cookies in a reusable box. Perfect for Onam, Christmas, Diwali and corporate gifting.</p>
+                                <div class="d-flex align-items-center gap-4 mt-4 flex-wrap">
+                                    <span class="rc-serif" style="font-size:2rem;color:#c9a15d" t-out="rc_featured.list_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                    <a t-att-href="rc_featured.website_url" class="rc-btn rc-btn-gold"><i class="fa fa-gift"/> Order the gift box</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="rc-gift-visual">
+                                <img t-att-src="'/web/image/product.template/%s/image_512' % rc_featured.id" alt="Kerala Treats Gift Box"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== PROMISE STRIP ===================== -->
+            <section class="rc-promise">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3"><div class="rc-p"><i class="fa fa-cutlery"/><div><h4>Made in our kitchen</h4><p>Same recipes and chefs as our restaurant.</p></div></div></div>
+                        <div class="col-md-6 col-lg-3"><div class="rc-p"><i class="fa fa-truck"/><div><h4>Fast delivery</h4><p>Kochi same-day, across India in 3-5 days.</p></div></div></div>
+                        <div class="col-md-6 col-lg-3"><div class="rc-p"><i class="fa fa-lock"/><div><h4>Secure checkout</h4><p>Cards, UPI and cash on delivery.</p></div></div></div>
+                        <div class="col-md-6 col-lg-3"><div class="rc-p"><i class="fa fa-refresh"/><div><h4>Freshness promise</h4><p>Not happy? We replace it, no questions asked.</p></div></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="rc-toast" role="status"><i class="fa fa-check-circle me-2" style="color:#c9a15d"/><span>Added to cart</span><a href="/shop/cart">View cart →</a></div>
+                </div>
+                <t t-if="not rc_landing">
+                <div id="o_wsale_container" t-attf-class="oe_website_sale                         {{opt_wsale_fullwidth and 'container-fluid o_wsale_page_fluid' or 'o_wsale_page_contained container'}}                         {{opt_wsale_categories_top and 'o_wsale_has_filmstrip'}}                         {{opt_wsale_floating_bar and 'o_wsale_has_floating_bar'}}                         {{hasLeftColumn and 'o_wsale_has_sidebar'}}                         {{editionPreviews and 'o_wsale_edit_preview_enabled'}}                         {{opt_wsale_design_grid and 'o_wsale_uses_grid_design'}}" t-att-data-ppg="ppg" t-att-data-ppr="ppr" t-att-data-default-sort="website.shop_default_sort">
+                    <div class="row o_wsale_products_main_row flex-nowrap">
+                        <aside t-if="hasLeftColumn" id="products_grid_before" class="d-none d-lg-block position-sticky align-self-start col clearfix pt-2">
+                            <t t-call="website_sale.sidebar_dropzone_at_top"/>
+                            <div class="o_wsale_products_grid_before_rail ms-n2 px-lg-2 ps-2 overflow-y-scroll">
+                                <t t-set="is_sidebar_collapsible" t-value="is_view_active('website_sale.products_categories_list_collapsible')"/>
+                                <div t-if="opt_wsale_categories" t-att-class="'products_categories'                                                 + (' accordion accordion-flush' if is_sidebar_collapsible else ' mb-3')">
+                                    <t t-call="website_sale.products_categories_list"/>
+                                </div>
+                                <t t-set="has_active_filters" t-value="(                                         attrib_values                                         or tags                                         or (show_on_sale_filter and on_sale_active)                                         or (show_in_stock_filter and in_stock_active)                                         or (show_price_filter and isFilteringByPrice)                                     )"/>
+                                <div t-attf-class="products_attributes_filters d-empty-none {{opt_wsale_categories and 'border-top'}} {{'pt-3' if not is_sidebar_collapsible else ''}}"/>
+                                <t t-if="show_price_filter" t-call="website_sale.filter_products_price" _classes.f="{{is_sidebar_collapsible and 'accordion accordion-flush'}} {{is_sidebar_collapsible and (opt_wsale_categories or len(attributes) &gt; 0) and 'border-top'}}">
+                                </t>
+                                <div t-if="show_on_sale_filter or show_in_stock_filter" class="d-flex flex-wrap gap-2 py-3 border-top">
+                                    <t t-call="website_sale.ribbon_filter_pills"/>
+                                </div>
+                                <div t-if="has_active_filters" class="border-top py-3 border-bottom">
+                                    <a t-att-href="keep(**reset_filters)" t-attf-class="btn btn-{{navClass}} d-flex align-items-center py-1" title="Clear Filters">
+                                        <small class="mx-auto"><b>Clear Filters</b></small>
+                                        <i class="oi" data-icon="close_small" role="presentation"/>
+                                    </a>
+                                </div>
+                                <t t-call="website_sale.sidebar_dropzone_at_bottom"/>
+                            </div>
+                        </aside>
+                        <div id="products_grid" class="col">
+                            <t t-set="_header_has_content" t-value="category or opt_wsale_categories_top or (not opt_wsale_floating_bar and (opt_wsale_attributes_top or is_view_active('website_sale.search') or is_view_active('website_sale.sort') or hasPricelistDropdown))"/>
+
+                            <header id="o_wsale_products_header" t-att-data-category-id="category.id" t-attf-class="d-flex flex-column gap-2                                     {{_header_has_content and 'pt-4 pb-3' or opt_wsale_design_grid and 'py-3'}}                                     {{category and 'o_wsale_products_header_is_category' or 'o_wsale_products_header_is_shop'}}                                     {{opt_wsale_show_category_title and 'o_wsale_products_header_show_category_title'}}                                     {{opt_wsale_show_category_description and 'o_wsale_products_header_show_category_description'}}                                     {{opt_wsale_category_align and 'o_wsale_products_header_category_center_content'}}                                     {{opt_wsale_show_shop_title and 'o_wsale_products_header_show_shop_title'}}                                     {{opt_wsale_shop_title_align and 'o_wsale_products_header_shop_center_content'}}">
+                                <t t-if="category and not search" t-call="website_sale.products_breadcrumb" _classes.f="w-100 p-0 mb-0 small {{not opt_wsale_show_category_title and 'mb-2 mb-lg-0'}}"/>
+                                <h1 t-if="category or search" t-attf-class="o_wsale_category_title d-flex gap-1 align-items-center mb-0 lh-lg {{search and bool(category) and 'mb-2'}} {{search and 'o_wsale_category_title_is_search base-fs font-sans-serif' or 'fs-3'}}">
+                                    <t t-if="search and category">
+                                        <span class="text-muted">Searching</span>
+                                        <span class="badge text-bg-info fw-normal base-fs">
+                                            <t t-out="search"/>
+                                            <a title="Clear search for this category" t-att-href="keep(search=0, **reset_filters)" class="link-info">
+                                                <i class="oi" data-icon="close_small" role="img"/>
+                                            </a>
+                                        </span>
+                                        <span class="text-muted">in</span>
+                                        <span class="badge text-bg-primary fw-normal base-fs">
+                                            <t t-out="category.name"/>
+                                            <a title="Search globally" t-att-href="keep(shop_path, search=search, **reset_filters)">
+                                                <i class="oi" data-icon="close_small" role="img"/>
+                                            </a>
+                                        </span>
+                                    </t>
+                                    <span t-elif="search">
+                                        <span class="text-muted">Search results for </span>'<strong t-out="search"/>' <small t-if="search_count" class="text-muted"> (<t t-out="search_count"/>)</small>
+                                    </span>
+                                    <t t-elif="category">
+                                        <span t-field="category.name"/>
+                                    </t>
+                                </h1>
+                                <div class="o_wsale_shop_title" t-if="not category and not search">
+                                    <h1 class="h4-fs">
+                                        All products
+                                    </h1>
+                                </div>
+                                <t t-if="category">
+                                    <t t-set="editor_msg">
+                                        Drag blocks here to customize the header of
+                                        the "<t t-out="category.name"/>" category
+                                    </t>
+                                    <div id="category_header" class="o_wsale_category_description" t-att-data-editor-message="editor_msg" t-field="category.website_description"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-set="editor_msg">
+                                        Drag blocks here to customize the Shop page header
+                                    </t>
+                                    <div id="oe_structure_products_header_shop" class="oe_structure oe_empty" t-att-data-editor-message="editor_msg"/>
+                                </t>
+                                <t t-if="opt_wsale_categories_top and category_entries" t-call="website_sale.filmstrip_categories" entries="category_entries"/>
+                                <div t-if="not opt_wsale_floating_bar" class="products_header d-flex gap-1 gap-lg-2 gap-xl-3">
+                                    <div class="o_wsale_products_header_inner d-flex justify-content-between w-100">
+                                        <t t-if="is_view_active('website_sale.search')">
+                                            <!-- Desktop Search button -->
+                                            <div class="o_wsale_products_header_search_form_container d-none d-sm-inline-block flex-grow-1 me-auto">
+                                                <t t-if="category" t-set="placeholder" t-valuef.translate="Search in {{category.name}}"/>
+                                                <t t-call="website_sale.search" placeholder="placeholder" search="original_search or search"/>
+                                            </div>
+                                            <!-- Mobile Search button -->
+                                            <t t-call="website.website_search_box_input" search_type.f="products" _simple_button_layout="True" _simple_button_classes.f="d-inline-block d-sm-none me-auto btn-{{navClass}}"/>
+                                        </t>
+                                        <t t-set="show_product_controls_header" t-value="hasPricelistDropdown or is_view_active('website_sale.sort') or wsale_has_filters_btn"/>
+                                        <div t-attf-class="{{'d-lg-none' if not show_product_controls_header else ''}} o_wsale_products_header_dropdown_wrap d-flex gap-3">
+                                            <t t-if="is_view_active('website_sale.sort')" t-call="website_sale.sort"/>
+                                            <button t-if="wsale_has_filters_btn" t-attf-class="btn btn-{{navClass}} position-relative {{not wsale_has_filters_btn_lg and 'd-lg-none'}} {{not is_view_active('website_sale.search') and 'ms-auto'}} text-nowrap" title="Filters" data-bs-toggle="offcanvas" data-bs-target="#o_wsale_offcanvas">
+                                                <i class="oi" data-icon="tune" role="img"/>
+                                                <small t-attf-class="ms-1 {{(hasPricelistDropdown and is_view_active('website_sale.search') and is_view_active('website_sale.sort')) and 'd-none d-md-inline-block'}}">Filters</small>
+                                                <span t-if="isFilteringByPrice or attrib_set or tags" t-attf-class="position-absolute top-0 start-100 translate-middle border border-{{navClass}} rounded-circle bg-danger p-1">
+                                                    <span class="visually-hidden">filters active</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div t-if="original_search and products" class="alert alert-warning mt8">
+                                    No results found for '<span t-out="original_search"/>'. Showing results for '<span t-out="search"/>'.
+                                </div>
+                            </header>
+
+                            <div t-if="products" class="o_wsale_products_grid_table_wrapper">
+                                <t t-set="grid_md_allow_custom_cols" t-value="hasLeftColumn"/>
+                                <t t-set="grid_md_use_3col" t-value="(not hasLeftColumn and ppr == 4) or (opt_wsale_fullwidth and ppr &gt; 3)"/>
+
+                                <section id="o_wsale_products_grid" t-attf-class="o_wsale_products_grid_table grid                                         {{grid_md_allow_custom_cols and 'o_wsale_products_grid_table_md'}}                                         {{website.shop_opt_products_design_classes}}" t-attf-style="--o-wsale-ppr: {{ppr}}; --o-wsale-ppg: {{ppg}}; --o-wsale-products-grid-gap: {{gap}};" t-att-data-name="grid_block_name">
+                                    <t t-foreach="bins" t-as="tr_product">
+                                        <t t-foreach="tr_product" t-as="td_product">
+                                            <t t-if="td_product">
+                                                <t t-set="col_height" t-value="td_product['y']"/>
+                                                <t t-set="col_width" t-value="12 // ppr * td_product['x']"/>
+                                                <t t-set="col_class" t-valuef="g-col-6"/>
+                                                <t t-set="col_class_lg" t-value="'g-col-lg-' + str(col_width)"/>
+                                                <t t-set="col_class_md" t-value="grid_md_allow_custom_cols and ('g-col-md-' + str(col_width)) or grid_md_use_3col and 'g-col-md-4' or 'g-col-md-6'"/>
+                                                <t t-set="col_is_stretched" t-value="(td_product['x'] &gt;= td_product['y'] * 2)"/>
+                                                <t t-set="col_is_custom_portrait" t-value="not col_is_stretched and (col_height &gt; td_product['x'])"/>
+                                                <t t-set="product" t-value="td_product['product']"/>
+                                                <t t-set="product_variant" t-value="product_variants[product]"/>
+                                                <t t-set="template_price_vals" t-value="get_product_prices(product)"/>
+                                                <t t-set="ribbon" t-value="product._get_ribbon(                                                         price_vals=template_price_vals,                                                         auto_assign_ribbons=auto_assign_ribbons,                                                     )"/>
+                                                <div t-attf-class="oe_product {{col_is_custom_portrait and 'oe_product_custom_portrait'}} {{col_class}} {{col_class_md}} {{col_class_lg}} {{col_is_stretched and 'oe_product_size_stretch'}}" t-attf-style="--o-wsale-products-grid-product-col-height: {{col_height}};" t-att-data-colspan="td_product['x'] != 1 and td_product['x']" t-att-data-rowspan="td_product['y'] != 1 and td_product['y']" t-att-data-name="product_block_name">
+                                                    <div t-attf-class="o_wsale_product_grid_wrapper position-relative h-100 o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">
+                                                        <t t-call="website_sale.products_item" design_field="website.shop_opt_products_design_classes" product_href="product._get_product_url(product_query_params, grouped_attributes_values)"/>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </section>
+                            </div>
+                            <div t-else="" class="o_wsale_empty_products_grid text-center mt128 mb256">
+                                <t groups="base.group_public">
+                                    <t t-if="not search">
+                                        <div class="mt-5 mb-3">
+                                            <t t-call="website.empty_search_svg"/>
+                                        </div>
+                                        <h3 class="mt8" style="text-align: center;">
+                                            No results
+                                        </h3>
+                                        <p style="text-align: center;">
+                                            Try to refine your search criteria.
+                                        </p>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="mt-5 mb-3">
+                                            <t t-call="website.empty_search_svg"/>
+                                        </div>
+                                        <h3 class="mt8" style="text-align: center;">No results</h3>
+                                        <p style="text-align: center;">
+                                            No results for "<strong t-out="search"/>"<t t-if="category"> in category "<strong t-out="category.display_name"/>"</t>.
+                                        </p>
+                                        <p style="text-align: center;">
+                                            <a t-if="category" t-att-href="keep(shop_path, search=search, **reset_filters)" t-attf-title="Search {{search}} globally" class="d-block pb-5">
+                                                Search globally
+                                            </a>
+                                        </p>
+                                    </t>
+                                </t>
+                                <t t-ignore="true" groups="sales_team.group_sale_manager">
+                                    <t t-call="website_sale.shop_page_empty_screen"/>
+                                    <h2 class="h4-fs mt-md-4">
+                                        Create your first product
+                                    </h2>
+                                    <div>
+                                        <a name="products_manager_button" href="/odoo/action-website_sale.product_template_action_website" class="btn btn-primary d-md-none mb-3">
+                                            Go to Products Manager
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                            <div id="o_wsale_pager" t-attf-class="products_pager d-flex justify-content-center {{opt_wsale_design_grid and 'py-4' or 'py-5 pb-4'}}">
+                                <t t-call="website.pager"/>
+                            </div>
+                            <t t-if="category">
+                                <t t-set="footer_editor_message">
+                                    Drag blocks here to customize the footer of
+                                    the "<t t-out="category.name"/>" category
+                                </t>
+                                <div class="mb16" id="category_footer" t-att-data-editor-message="footer_editor_message" t-field="category.website_footer"/>
+                            </t>
+                        </div>
+                    </div>
+
+                    <t t-call="website_sale.o_wsale_offcanvas"/>
+                </div>
+                </t>
+                <div class="oe_structure oe_empty oe_structure_not_nearest" id="oe_structure_website_sale_products_2"/>
+            </div>
+        </t>
+    </t>

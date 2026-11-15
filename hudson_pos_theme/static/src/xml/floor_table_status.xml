@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!--
+        Read-only status markers for floor plan tables. Nothing here changes data or behaviour:
+        - an invisible marker span whose class drives the status ring in SCSS (via :has());
+        - guest count and order amount on occupied tables.
+        `data` (change count) and `tableContentStyle` are set earlier in the same element template.
+    -->
+    <t t-inherit="pos_restaurant.floor_screen_element" t-inherit-mode="extension">
+        <xpath expr="//div[contains(@t-attf-class, 'o_fp_table')]" position="inside">
+            <t t-set="rcOrder" t-value="table.getOrder()"/>
+            <t t-set="rcBooking" t-value="!rcOrder and table.getUpcomingBooking ? table.getUpcomingBooking() : false"/>
+            <span class="rc-tstate d-none"
+                  t-attf-class="rc-tstate-{{ rcOrder ? (data.changes > 0 ? 'unsent' : 'occupied') : (rcBooking ? 'booked' : 'free') }}"/>
+            <div t-if="rcOrder and !rcOrder.isEmpty()"
+                 class="rc-table-info position-absolute start-0 end-0 d-flex justify-content-center gap-2 lh-sm fw-semibold pe-none"
+                 t-att-style="tableContentStyle">
+                <span class="rc-table-guests text-nowrap">
+                    <i class="oi" data-icon="person" aria-hidden="true"/>
+                    <t t-out="rcOrder.getCustomerCount()"/>
+                </span>
+                <span class="rc-table-amount text-nowrap" t-out="rcOrder.currencyDisplayPriceIncl"/>
+            </div>
+        </xpath>
+    </t>
+
+    <!-- Status legend on the floor plan (not shown while editing the plan) -->
+    <t t-inherit="pos_restaurant.FloorScreen" t-inherit-mode="extension">
+        <xpath expr="//FloorPlanEditor" position="after">
+            <div t-if="!this.isEditMode()"
+                 class="rc-floor-legend position-absolute bottom-0 end-0 m-2 d-flex flex-wrap gap-2 align-items-center rounded-3 px-2 py-1 pe-none">
+                <span class="rc-legend-item rc-legend-free">Free</span>
+                <span class="rc-legend-item rc-legend-occupied">Occupied</span>
+                <span class="rc-legend-item rc-legend-unsent">Not sent to kitchen</span>
+                <span class="rc-legend-item rc-legend-booked">Booked</span>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

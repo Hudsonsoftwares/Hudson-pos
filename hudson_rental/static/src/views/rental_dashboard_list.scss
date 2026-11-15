@@ -1,0 +1,33 @@
+.o_rental_card {
+    min-width: 7rem;
+    white-space: nowrap;
+
+    $rental-card-colors: (
+        gray: ($gray-200, $gray-300, $gray-700, $gray-900),
+        purple: ($purple-100, $purple-200, $purple-700, $purple-800),
+        pink: ($pink-100, $pink-200, $pink-700, $pink-800),
+        red: ($red-100, $red-200, $red-700, $red-800),
+        orange: ($orange-100, $orange-200, $orange-700, $orange-800),
+        cyan: ($cyan-100, $cyan-200, $cyan-700, $cyan-800),
+    );
+
+    @each $name, $c in $rental-card-colors {
+        &.o_rental_card_#{$name} {
+            --btn-bg: #{nth($c, 1)};
+            --btn-hover-bg: #{nth($c, 2)};
+            --btn-active-bg: #{nth($c, 2)};
+            --btn-active-border-color: transparent;
+            --btn-color: #{nth($c, 3)};
+            --btn-hover-color: #{nth($c, 4)};
+
+            .o_rental_card_value {
+                color: #{nth($c, 3)};
+            }
+
+            &.active {
+                outline: $border-width $border-style #{nth($c, 4)};
+                outline-offset: $border-width;
+            }
+        }
+    }
+}

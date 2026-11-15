@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_planning.ShiftConflictSuggestions">
+        <div class="o_fs_conflict_suggestions">
+            <div t-if="!this.suggestions.length" class="text-muted small">
+                No employee with this role is free in the next 30 days.
+            </div>
+            <t t-else="">
+                <div class="small text-muted mb-1">
+                    <t t-if="this.props.replacement">Free to replace:</t>
+                    <t t-else="">Free instead:</t>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <t t-foreach="this.suggestions" t-as="suggestion" t-key="suggestion.employee_id">
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2"
+                                t-att-disabled="this.readonly"
+                                t-att-title="suggestion.action + ': ' + suggestion.employee_name + ', ' + suggestion.when"
+                                t-on-click="() => this.apply(suggestion)">
+                            <img class="rounded" t-att-src="suggestion.avatar" alt="" style="width: 20px; height: 20px; object-fit: cover;"/>
+                            <span class="fw-bold" t-out="suggestion.employee_name"/>
+                            <span class="text-muted" t-out="suggestion.when"/>
+                            <span class="badge text-bg-primary" t-out="suggestion.action"/>
+                        </button>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

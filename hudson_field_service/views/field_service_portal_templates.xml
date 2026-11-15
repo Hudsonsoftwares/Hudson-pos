@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal layout : field service menu entries -->
+    <template id="portal_my_home_menu_field_service" name="Portal layout : field service menu entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'field_service' or order" t-attf-class="breadcrumb-item #{'active ' if not order else ''}">
+                <a t-if="order" t-attf-href="/my/field_service?{{ keep_query() }}">Field Services</a>
+                <t t-else="">Field Services</t>
+            </li>
+            <li t-if="order" class="breadcrumb-item active">
+                <t t-out="order.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- Show Field Services in Portal Home -->
+    <template id="portal_my_home_field_service" name="Show Field Services" inherit_id="portal.portal_my_home" customize_show="True" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Field Services</t>
+                <t t-set="url" t-value="'/my/field_service'"/>
+                <t t-set="placeholder_count" t-value="'field_service_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Portal My Field Services -->
+    <template id="portal_my_field_services" name="My Field Services">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Field Services</t>
+            </t>
+            <t t-if="not orders">
+                <p class="alert alert-warning">There are currently no field service orders for your account.</p>
+            </t>
+            <t t-if="orders" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Reference</th>
+                        <th class="text-right">Date</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="orders" t-as="order">
+                        <tr>
+                            <td><a t-att-href="order.get_portal_url()"><t t-out="order.name"/></a></td>
+                            <td class="text-right"><span t-field="order.create_date" t-options="{'widget': 'date'}"/></td>
+                            <td class="text-center">
+                                <span t-attf-class="badge rounded-pill #{'bg-success' if order.state == 'done' else 'bg-info' if order.state == 'in_progress' else 'bg-secondary'}">
+                                    <t t-out="dict(order._fields['state'].selection).get(order.state)"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <!-- Replace Powered By Odoo with Powered By Hudson -->
+    <!-- Commented out because another module is removing the "Powered by" reference, which causes XPath errors.
+    <template id="portal_record_sidebar_hudson" inherit_id="portal.portal_record_sidebar">
+        <xpath expr="//div[hasclass('text-muted') and a[@title='odoo']]" position="replace">
+            <div class="d-none d-lg-block mt-5 small text-center text-muted">
+                Powered by <b>Hudson</b>
+            </div>
+        </xpath>
+    </template>
+    -->
+
+    <!-- Portal Field Service Order Form -->
+    <template id="portal_my_field_service_order" name="Field Service Order" inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <t t-set="o_portal_fullwidth_alert" groups="hudson_field_service.group_field_service_user">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="('/odoo/fs.planning.slot/%s' % order.planning_slot_ids[:1].id) if order.planning_slot_ids else ('/odoo/field.service.order/%s' % order.id)"/>
+                </t>
+            </t>
+
+            <div class="row mt16 o_portal_fs_sidebar">
+                <!-- Sidebar -->
+                <!-- Odoo 20: the sidebar's values are passed to the t-call as attributes -->
+                    <t t-set="title">
+                        <h2 class="mb-0"><b><span t-field="order.name"/></b></h2>
+                    </t>
+
+                    <t t-set="entries">
+                        <div class="d-flex flex-column gap-4">
+                            <div class="d-flex flex-column gap-1">
+                                <div t-if="not order.customer_signature and can_sign">
+                                    <a role="button" class="btn btn-primary w-100" t-att-href="order.get_portal_url(query_string='sign=true', anchor='signature')">
+                                        <i class="fa fa-check"/> Sign Report
+                                    </a>
+                                </div>
+                                <div class="mt-2">
+                                    <a role="button" class="btn btn-light w-100" target="_blank" t-att-href="order.get_portal_url(report_type='pdf', download=True)">
+                                        <i class="fa fa-print"/> Print
+                                    </a>
+                                </div>
+                            </div>
+                            <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                                <li class="list-group-item d-grid align-content-start">
+                                    <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                                        Time &amp; Materials
+                                    </div>
+                                    <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                                        History
+                                    </div>
+                                </li>
+                                
+                                <li t-if="order.project_id" class="list-group-item d-grid align-content-start">
+                                    <div class="small mb-1">Project</div>
+                                    <div class="fw-bold"><span t-field="order.project_id.name"/></div>
+                                </li>
+                                <li t-if="order.task_id" class="list-group-item d-grid align-content-start">
+                                    <div class="small mb-1">Task</div>
+                                    <div class="fw-bold"><span t-field="order.task_id.name"/></div>
+                                </li>
+                            </ul>
+                            
+                            <div t-if="is_technician" class="d-flex flex-column gap-1 mt-3">
+                                <h5 class="mb-2">Technician Controls</h5>
+                                <div t-if="order.state in ['new', 'in_progress', 'paused'] and not order.is_timer_running">
+                                    <a role="button" class="btn btn-success w-100" t-attf-href="/my/field_service/#{order.id}/timer/start">
+                                        <i class="fa fa-play"/> Start/Resume Timer
+                                    </a>
+                                </div>
+                                <div t-if="order.is_timer_running">
+                                    <a role="button" class="btn btn-warning w-100 mb-2" t-attf-href="/my/field_service/#{order.id}/timer/pause">
+                                        <i class="fa fa-pause"/> Pause Timer
+                                    </a>
+                                    <a role="button" class="btn btn-danger w-100" t-attf-href="/my/field_service/#{order.id}/timer/stop">
+                                        <i class="fa fa-stop"/> Stop Timer
+                                    </a>
+                                </div>
+                                <div t-if="order.state in ['in_progress', 'paused'] and not order.is_timer_running">
+                                    <a role="button" class="btn btn-info w-100" t-attf-href="/my/field_service/#{order.id}/complete">
+                                        <i class="fa fa-check-circle"/> Complete Job
+                                    </a>
+                                </div>
+                                <div t-if="order.state == 'done'" class="alert alert-success text-center mb-2">
+                                    Completed
+                                </div>
+                                <div t-if="order.state == 'done'">
+                                    <t t-if="request.params.get('report_sent')">
+                                        <div class="alert alert-info text-center mb-0">
+                                            <i class="fa fa-check"/> Report Sent!
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <a role="button" class="btn btn-primary w-100" t-attf-href="/my/field_service/#{order.id}/send_report">
+                                            <i class="fa fa-paper-plane"/> Send Report
+                                        </a>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                <t t-call="portal.portal_record_sidebar" classes.f="col-lg-auto d-print-none" title="title" entries="entries"/>
+
+                <!-- Page content -->
+                <div id="field_service_content" class="col-12 col-lg justify-content-end">
+                    <div t-attf-class="card #{'pb-5' if report_type == 'html' else ''}" id="portal_field_service_content">
+                        <div class="card-body p-5">
+                            <!-- Header -->
+                            <h2 class="my-3">
+                                <span>Field Service Report - <span t-field="order.date_start" t-options="{'widget': 'date'}"/></span>
+                            </h2>
+                            
+                            <hr class="mt-4 mb-4"/>
+                            
+                            <!-- Timesheets and Products -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="mb-0">Time &amp; Materials</h3>
+                            </div>
+                            
+                            <!-- Add Product Form for Technician -->
+                            <div t-if="is_technician and order.state in ['new', 'in_progress', 'paused']" class="card mb-4 bg-light">
+                                <div class="card-body">
+                                    <form t-attf-action="/my/field_service/#{order.id}/add_product" method="POST" class="row gx-2 gy-2 align-items-center">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <div class="col-sm-6">
+                                            <select name="product_id" class="form-select" required="1">
+                                                <option value="">Select a product...</option>
+                                                <t t-foreach="products" t-as="p">
+                                                    <option t-att-value="p.id"><t t-out="p.display_name"/></option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" name="quantity" class="form-control" placeholder="Qty" value="1" min="1" step="1" required="1"/>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="submit" class="btn btn-primary w-100"><i class="fa fa-plus"/> Add Product</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <table class="table table-sm o_main_table">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="text-start">Product</th>
+                                        <th class="text-end">Quantity</th>
+                                        <th class="text-end">Unit Price</th>
+                                        <th class="text-end">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="order.timesheet_ids" t-as="line">
+                                        <tr>
+                                            <td>
+                                                <span t-field="line.description"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="line.duration"/> Hours
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="order.hourly_rate" t-options='{"widget": "monetary", "display_currency": order.company_id.currency_id}'/>
+                                            </td>
+                                            <td class="text-end">
+                                                <t t-set="line_amount" t-value="line.duration * order.hourly_rate"/>
+                                                <span t-out="line_amount" t-options='{"widget": "monetary", "display_currency": order.company_id.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="order.product_line_ids" t-as="line">
+                                        <tr>
+                                            <td>
+                                                <span t-field="line.product_id.name"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="line.quantity"/> Units
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": order.company_id.currency_id}'/>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": order.company_id.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            
+                            <!-- Totals -->
+                            <div class="row justify-content-end mb-4">
+                                <div class="col-4 text-end">
+                                    <table class="table table-sm table-borderless">
+                                        <tr class="border-top">
+                                            <td><strong>Total</strong></td>
+                                            <td>
+                                                <t t-set="total_time" t-value="sum(l.duration * order.hourly_rate for l in order.timesheet_ids)"/>
+                                                <t t-set="total_prod" t-value="sum(l.price_subtotal for l in order.product_line_ids)"/>
+                                                <span t-out="total_time + total_prod" t-options='{"widget": "monetary", "display_currency": order.company_id.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Signature Section -->
+                            <!-- Only the customer signs: internal users (technicians...) never get the signature form -->
+                            <div t-if="can_sign or order.customer_signature">
+                                <div t-if="not order.customer_signature" id="signature" class="mt-4">
+                                    <t t-call="portal.signature_form">
+                                        <t t-set="call_url" t-value="order.get_portal_url(suffix='/accept')"/>
+                                        <t t-set="default_name" t-value="order.partner_id.name"/>
+                                    </t>
+                                </div>
+                                <div t-if="order.customer_signature" class="mt-4">
+                                    <h3>Signature</h3>
+                                    <div class="row">
+                                        <div class="col-12 col-md-4">
+                                            <p>Signed by: <b t-field="order.customer_signed_by"/></p>
+                                            <p>Date: <span t-field="order.customer_signed_date"/></p>
+                                            <img t-att-src="image_data_uri(order.customer_signature)" style="max-height: 150px;"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <!-- Images Section -->
+                             <t t-if="(order.service_image_ids and any(img.include_in_report for img in order.service_image_ids)) or is_technician">
+                                 <hr class="mt-4 mb-4"/>
+                                 <h3 class="mb-3">Service Photos</h3>
+                                 
+                                 <!-- Add Photo Form for Technician -->
+                                 <div t-if="is_technician and order.state in ['new', 'in_progress', 'paused']" class="card mb-4 bg-light">
+                                     <div class="card-body">
+                                         <form t-attf-action="/my/field_service/#{order.id}/add_photo" method="POST" enctype="multipart/form-data" class="row gx-2 gy-2 align-items-center">
+                                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                             <div class="col-sm-5">
+                                                 <input type="file" name="photo" class="form-control" accept="image/*" required="1"/>
+                                             </div>
+                                             <div class="col-sm-5">
+                                                 <input type="text" name="description" class="form-control" placeholder="Description (optional)"/>
+                                             </div>
+                                             <div class="col-sm-2">
+                                                 <button type="submit" class="btn btn-primary w-100"><i class="fa fa-upload"/> Upload</button>
+                                             </div>
+                                         </form>
+                                     </div>
+                                 </div>
+
+                                 <div class="row">
+                                     <t t-foreach="order.service_image_ids" t-as="img">
+                                         <t t-if="img.include_in_report">
+                                             <div class="col-12 col-md-4 mb-4">
+                                                 <div class="card h-100 shadow-sm border-0" style="border-radius: 8px; overflow: hidden; background-color: #f8f9fa;">
+                                                     <div class="d-flex justify-content-center align-items-center" style="height: 180px; overflow: hidden;">
+                                                         <img t-att-src="image_data_uri(img.image)" style="max-height: 100%; max-width: 100%; object-fit: contain;"/>
+                                                     </div>
+                                                     <div class="card-body p-2 text-center" t-if="img.name" style="background-color: #ffffff;">
+                                                         <span class="small text-muted" t-field="img.name"/>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </t>
+                                     </t>
+                                 </div>
+                             </t>
+
+                             <!-- Communication History -->
+                             <div class="mt-5">
+                                 <t t-call="portal.message_thread"/>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

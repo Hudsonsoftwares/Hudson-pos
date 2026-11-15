@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ============================================================= -->
+        <!-- RECURRING PLANS                                               -->
+        <!-- ============================================================= -->
+        <record id="subscription_plan_daily" model="sale.subscription.plan">
+            <field name="name">Daily</field>
+            <field name="sequence">1</field>
+            <field name="billing_period_value">1</field>
+            <field name="billing_period_unit">days</field>
+            <field name="auto_close_limit">3</field>
+            <field name="user_closable">True</field>
+        </record>
+
+        <record id="subscription_plan_weekly" model="sale.subscription.plan">
+            <field name="name">Weekly</field>
+            <field name="sequence">2</field>
+            <field name="billing_period_value">1</field>
+            <field name="billing_period_unit">weeks</field>
+            <field name="auto_close_limit">7</field>
+            <field name="user_closable">True</field>
+        </record>
+
+        <record id="subscription_plan_monthly" model="sale.subscription.plan">
+            <field name="name">Monthly</field>
+            <field name="sequence">3</field>
+            <field name="billing_period_value">1</field>
+            <field name="billing_period_unit">months</field>
+            <field name="auto_close_limit">15</field>
+            <field name="user_closable">True</field>
+        </record>
+
+        <record id="subscription_plan_quarterly" model="sale.subscription.plan">
+            <field name="name">Quarterly</field>
+            <field name="sequence">4</field>
+            <field name="billing_period_value">3</field>
+            <field name="billing_period_unit">months</field>
+            <field name="auto_close_limit">15</field>
+            <field name="user_closable">True</field>
+        </record>
+
+        <record id="subscription_plan_yearly" model="sale.subscription.plan">
+            <field name="name">Yearly</field>
+            <field name="sequence">5</field>
+            <field name="billing_period_value">1</field>
+            <field name="billing_period_unit">years</field>
+            <field name="auto_close_limit">30</field>
+            <field name="user_closable">True</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- CLOSE REASONS                                                 -->
+        <!-- ============================================================= -->
+        <record id="close_reason_too_expensive" model="sale.subscription.close.reason">
+            <field name="name">Too expensive</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="close_reason_not_using" model="sale.subscription.close.reason">
+            <field name="name">Not using the service</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="close_reason_competitor" model="sale.subscription.close.reason">
+            <field name="name">Switched to competitor</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="close_reason_missing_features" model="sale.subscription.close.reason">
+            <field name="name">Missing required features</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="close_reason_other" model="sale.subscription.close.reason">
+            <field name="name">Other / Customer decision</field>
+            <field name="sequence">5</field>
+            <field name="empty_reason">True</field>
+        </record>
+
+        <!-- ============================================================= -->
+        <!-- AUTOMATED CRON JOB: CREATE RECURRING INVOICES                 -->
+        <!-- ============================================================= -->
+        <record id="ir_cron_subscription_recurring_invoicing" model="ir.cron">
+            <field name="name">Subscriptions: Generate Recurring Invoices</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_recurring_create_invoice()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

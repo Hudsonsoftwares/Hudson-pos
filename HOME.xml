@@ -1,0 +1,623 @@
+<t name="Homepage" t-name="website.homepage">
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <style>
+            /* ================= Resto Cafe Solutions - Home ================= */
+            #wrap.rc-home {
+                --rc-ink: #15110e;
+                --rc-espresso: #1f1813;
+                --rc-bean: #2b211a;
+                --rc-cream: #f6efe4;
+                --rc-sand: #e9dcc7;
+                --rc-gold: #c9a15d;
+                --rc-gold-soft: #e0c38c;
+                --rc-leaf: #3f6b4b;
+                --rc-muted: #a99a86;
+                font-family: 'Inter', system-ui, sans-serif;
+                color: var(--rc-cream);
+                background: var(--rc-ink);
+                overflow-x: hidden;
+            }
+            #wrap.rc-home h1, #wrap.rc-home h2, #wrap.rc-home h3, #wrap.rc-home .rc-serif {
+                font-family: 'Playfair Display', Georgia, serif;
+                letter-spacing: -0.01em;
+            }
+            #wrap.rc-home a { text-decoration: none; }
+            .rc-home .rc-eyebrow {
+                display: inline-flex; align-items: center; gap: .75rem;
+                font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase;
+                color: var(--rc-gold);
+            }
+            .rc-home .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
+            .rc-home .rc-section { padding: 120px 0; position: relative; }
+            .rc-home .rc-title { font-size: clamp(2.1rem, 4vw, 3.4rem); line-height: 1.12; color: var(--rc-cream); margin: 18px 0 20px; }
+            .rc-home .rc-title em { color: var(--rc-gold); font-style: italic; }
+            .rc-home .rc-lead { color: var(--rc-muted); font-size: 1.08rem; line-height: 1.8; max-width: 560px; }
+
+            /* buttons */
+            .rc-home .rc-btn {
+                display: inline-flex; align-items: center; gap: .6rem;
+                padding: 15px 30px; border-radius: 999px; font-weight: 600; font-size: .95rem;
+                transition: all .35s ease; border: 1px solid transparent;
+            }
+            .rc-home .rc-btn-gold { background: var(--rc-gold); color: var(--rc-ink) !important; box-shadow: 0 12px 30px -10px rgba(201,161,93,.6); }
+            .rc-home .rc-btn-gold:hover { background: var(--rc-gold-soft); transform: translateY(-2px); }
+            .rc-home .rc-btn-ghost { border-color: rgba(246,239,228,.45); color: var(--rc-cream) !important; backdrop-filter: blur(6px); }
+            .rc-home .rc-btn-ghost:hover { background: var(--rc-cream); color: var(--rc-ink) !important; }
+
+            /* ---------- hero ---------- */
+            .rc-home .rc-hero {
+                min-height: 100vh; display: flex; align-items: center; position: relative;
+                background: url('/theme_bistro/static/src/img/configurator/ultrawide_lg_5.webp') center/cover no-repeat;
+            }
+            .rc-home .rc-hero::before {
+                content: ""; position: absolute; inset: 0;
+                background: linear-gradient(100deg, rgba(21,17,14,.94) 0%, rgba(21,17,14,.78) 45%, rgba(21,17,14,.35) 100%);
+            }
+            .rc-home .rc-hero .container { position: relative; z-index: 2; padding-top: 110px; padding-bottom: 150px; }
+            .rc-home .rc-hero h1 { font-size: clamp(2.8rem, 6.4vw, 5.6rem); line-height: 1.02; margin: 26px 0; max-width: 820px; color: #fff; }
+            .rc-home .rc-hero h1 em { color: var(--rc-gold); font-style: italic; }
+            .rc-home .rc-hero p { font-size: 1.15rem; color: #d9cfbf; max-width: 540px; line-height: 1.8; }
+            .rc-home .rc-hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 38px; }
+            .rc-home .rc-hero-badge {
+                position: absolute; right: 7%; top: 30%; z-index: 2; width: 170px; height: 170px; border-radius: 50%;
+                border: 1px solid rgba(201,161,93,.6); display: flex; flex-direction: column; align-items: center; justify-content: center;
+                text-align: center; color: var(--rc-gold); background: rgba(21,17,14,.45); backdrop-filter: blur(4px);
+                animation: rc-spin-in 1.4s ease both .6s;
+            }
+            .rc-home .rc-hero-badge strong { font-family: 'Playfair Display', serif; font-size: 2.6rem; line-height: 1; color: #fff; }
+            .rc-home .rc-hero-badge span { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; margin-top: 6px; }
+            .rc-home .rc-infobar {
+                position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+                background: rgba(21,17,14,.72); backdrop-filter: blur(10px); border-top: 1px solid rgba(201,161,93,.25);
+            }
+            .rc-home .rc-infobar .rc-info { padding: 24px 10px; display: flex; gap: 14px; align-items: center; }
+            .rc-home .rc-infobar .rc-info i { color: var(--rc-gold); font-size: 1.35rem; }
+            .rc-home .rc-infobar small { display: block; color: var(--rc-muted); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; }
+            .rc-home .rc-infobar b { color: #fff; font-weight: 500; }
+
+            /* ---------- marquee ---------- */
+            .rc-home .rc-marquee { background: var(--rc-gold); color: var(--rc-ink); overflow: hidden; padding: 18px 0; }
+            .rc-home .rc-marquee-track { display: flex; width: max-content; animation: rc-marquee 38s linear infinite; }
+            .rc-home .rc-marquee span { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-style: italic; padding: 0 28px; white-space: nowrap; }
+            .rc-home .rc-marquee span::after { content: "✦"; font-style: normal; font-size: .9rem; margin-left: 56px; vertical-align: middle; }
+
+            /* ---------- story ---------- */
+            .rc-home .rc-story { background: var(--rc-espresso); }
+            .rc-home .rc-collage { position: relative; min-height: 560px; }
+            .rc-home .rc-collage img { position: absolute; object-fit: cover; border-radius: 6px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); }
+            .rc-home .rc-collage .rc-img-a { width: 68%; height: 82%; left: 0; top: 0; }
+            .rc-home .rc-collage .rc-img-b { width: 52%; height: 56%; right: 0; bottom: 0; border: 8px solid var(--rc-espresso); }
+            .rc-home .rc-collage .rc-stamp {
+                position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2;
+                background: var(--rc-gold); color: var(--rc-ink); border-radius: 50%; width: 132px; height: 132px;
+                display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+                font-weight: 600; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+            }
+            .rc-home .rc-collage .rc-stamp strong { font-family: 'Playfair Display', serif; font-size: 2.4rem; letter-spacing: 0; line-height: 1; }
+            .rc-home .rc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 44px; background: rgba(201,161,93,.25); border-radius: 6px; overflow: hidden; }
+            .rc-home .rc-stats div { background: var(--rc-espresso); padding: 24px 18px; }
+            .rc-home .rc-stats strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--rc-gold); }
+            .rc-home .rc-stats span { color: var(--rc-muted); font-size: .85rem; }
+            .rc-home .rc-signature { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: var(--rc-gold-soft); margin-top: 30px; }
+
+            /* ---------- signature dishes ---------- */
+            .rc-home .rc-dishes { background: var(--rc-ink); }
+            .rc-home .rc-dish {
+                position: relative; border-radius: 8px; overflow: hidden; height: 470px; display: block;
+                box-shadow: 0 24px 50px -24px rgba(0,0,0,.9);
+            }
+            .rc-home .rc-dish img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
+            .rc-home .rc-dish::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(15,11,9,.95) 100%); }
+            .rc-home .rc-dish:hover img { transform: scale(1.09); }
+            .rc-home .rc-dish-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px; z-index: 2; }
+            .rc-home .rc-dish-tag { display: inline-block; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--rc-ink); background: var(--rc-gold); padding: 5px 12px; border-radius: 999px; }
+            .rc-home .rc-dish h3 { color: #fff; font-size: 1.6rem; margin: 14px 0 8px; }
+            .rc-home .rc-dish p { color: #cfc3b1; font-size: .92rem; margin: 0; max-height: 0; opacity: 0; transition: all .5s ease; }
+            .rc-home .rc-dish:hover p { max-height: 90px; opacity: 1; margin-bottom: 10px; }
+            .rc-home .rc-dish .rc-price { font-family: 'Playfair Display', serif; color: var(--rc-gold); font-size: 1.3rem; }
+
+            /* ---------- experiences ---------- */
+            .rc-home .rc-experiences { background: var(--rc-cream); color: var(--rc-bean); }
+            .rc-home .rc-experiences .rc-title { color: var(--rc-ink); }
+            .rc-home .rc-experiences .rc-lead { color: #6f6253; }
+            .rc-home .rc-exp {
+                background: #fff; border-radius: 10px; padding: 38px 30px; height: 100%; display: block; color: var(--rc-bean);
+                border: 1px solid #eadfcd; transition: all .4s ease; position: relative; overflow: hidden;
+            }
+            .rc-home .rc-exp::before { content: ""; position: absolute; left: 0; top: 0; height: 4px; width: 0; background: var(--rc-gold); transition: width .5s ease; }
+            .rc-home .rc-exp:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -30px rgba(43,33,26,.45); }
+            .rc-home .rc-exp:hover::before { width: 100%; }
+            .rc-home .rc-exp .rc-icon {
+                width: 64px; height: 64px; border-radius: 50%; background: var(--rc-ink); color: var(--rc-gold);
+                display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 24px;
+            }
+            .rc-home .rc-exp h3 { font-size: 1.45rem; color: var(--rc-ink); margin-bottom: 10px; }
+            .rc-home .rc-exp p { color: #6f6253; font-size: .95rem; line-height: 1.7; }
+            .rc-home .rc-exp .rc-more { color: #9a7a43; font-weight: 600; font-size: .9rem; }
+
+            /* ---------- chef quote ---------- */
+            .rc-home .rc-quote {
+                background: linear-gradient(rgba(21,17,14,.82), rgba(21,17,14,.82)), url('/theme_bistro/static/src/img/configurator/ultrawide_lg_4.webp') center/cover fixed;
+                text-align: center; padding: 140px 0;
+            }
+            .rc-home .rc-quote blockquote { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.6rem, 3.2vw, 2.6rem); line-height: 1.4; color: #fff; max-width: 900px; margin: 26px auto; }
+            .rc-home .rc-quote img { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid var(--rc-gold); }
+            .rc-home .rc-quote cite { display: block; margin-top: 14px; font-style: normal; color: var(--rc-gold); letter-spacing: .14em; text-transform: uppercase; font-size: .8rem; }
+
+            /* ---------- menu ---------- */
+            .rc-home .rc-menu { background: var(--rc-espresso); }
+            .rc-home .rc-menu-card { background: var(--rc-bean); border: 1px solid rgba(201,161,93,.2); border-radius: 10px; padding: 44px 40px; height: 100%; }
+            .rc-home .rc-menu-card h3 { color: var(--rc-gold); font-size: 1.7rem; margin-bottom: 6px; }
+            .rc-home .rc-menu-card .rc-sub { color: var(--rc-muted); font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 26px; }
+            .rc-home .rc-item { display: flex; align-items: baseline; gap: 12px; padding: 14px 0; border-bottom: 1px dashed rgba(201,161,93,.18); }
+            .rc-home .rc-item:last-child { border-bottom: 0; }
+            .rc-home .rc-item .rc-name { color: #fff; font-weight: 500; }
+            .rc-home .rc-item .rc-name small { display: block; color: var(--rc-muted); font-weight: 300; font-size: .85rem; margin-top: 3px; }
+            .rc-home .rc-item .rc-dots { flex: 1; border-bottom: 1px dotted rgba(246,239,228,.25); transform: translateY(-5px); }
+            .rc-home .rc-item .rc-cost { font-family: 'Playfair Display', serif; color: var(--rc-gold); font-size: 1.15rem; }
+            .rc-home .rc-veg { display: inline-block; width: 10px; height: 10px; border: 1px solid var(--rc-leaf); margin-right: 6px; position: relative; top: -1px; }
+            .rc-home .rc-veg::after { content: ""; position: absolute; inset: 2px; border-radius: 50%; background: #4caf6a; }
+
+            /* ---------- events and shop ---------- */
+            .rc-home .rc-feature { background: var(--rc-ink); }
+            .rc-home .rc-event-card {
+                display: flex; gap: 24px; align-items: center; padding: 22px; border-radius: 10px; color: var(--rc-cream);
+                background: var(--rc-espresso); border: 1px solid rgba(201,161,93,.15); transition: all .35s ease; margin-bottom: 18px;
+            }
+            .rc-home .rc-event-card:hover { border-color: var(--rc-gold); transform: translateX(6px); }
+            .rc-home .rc-event-date { min-width: 78px; text-align: center; background: var(--rc-gold); color: var(--rc-ink); border-radius: 8px; padding: 10px 6px; }
+            .rc-home .rc-event-date strong { display: block; font-family: 'Playfair Display', serif; font-size: 1.9rem; line-height: 1; }
+            .rc-home .rc-event-date span { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
+            .rc-home .rc-event-card h4 { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.25rem; margin: 0 0 4px; }
+            .rc-home .rc-event-card p { color: var(--rc-muted); margin: 0; font-size: .9rem; }
+            .rc-home .rc-shop-panel {
+                border-radius: 12px; padding: 48px 42px; height: 100%; position: relative; overflow: hidden;
+                background: radial-gradient(circle at 85% 20%, rgba(201,161,93,.35), transparent 55%), var(--rc-bean);
+                border: 1px solid rgba(201,161,93,.25);
+            }
+            .rc-home .rc-shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px 0; }
+            .rc-home .rc-shop-grid a { display: block; background: var(--rc-cream); border-radius: 10px; padding: 8px; transition: transform .35s ease; }
+            .rc-home .rc-shop-grid a:hover { transform: translateY(-6px) rotate(-1deg); }
+            .rc-home .rc-shop-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
+
+            /* ---------- reviews ---------- */
+            .rc-home .rc-reviews { background: var(--rc-cream); color: var(--rc-bean); }
+            .rc-home .rc-reviews .rc-title { color: var(--rc-ink); }
+            .rc-home .rc-review { background: #fff; border-radius: 12px; padding: 34px; height: 100%; border: 1px solid #eadfcd; position: relative; }
+            .rc-home .rc-review::before { content: "\201C"; position: absolute; right: 26px; top: 6px; font-family: 'Playfair Display', serif; font-size: 6rem; color: #f0e3cc; line-height: 1; }
+            .rc-home .rc-stars { color: var(--rc-gold); letter-spacing: 3px; margin-bottom: 14px; }
+            .rc-home .rc-review p { color: #5d5145; line-height: 1.75; font-size: .98rem; }
+            .rc-home .rc-review .rc-who { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
+            .rc-home .rc-review .rc-who img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+            .rc-home .rc-review .rc-who strong { display: block; color: var(--rc-ink); }
+            .rc-home .rc-review .rc-who span { color: #9a8b78; font-size: .85rem; }
+            .rc-home .rc-rating-summary { font-family: 'Playfair Display', serif; font-size: 4.2rem; color: var(--rc-ink); line-height: 1; }
+
+            /* ---------- gallery ---------- */
+            .rc-home .rc-gallery { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 210px; gap: 0; }
+            .rc-home .rc-gallery a { position: relative; overflow: hidden; display: block; }
+            .rc-home .rc-gallery a:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+            .rc-home .rc-gallery a:nth-child(4) { grid-column: span 2; }
+            .rc-home .rc-gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease, filter .6s ease; filter: saturate(.9); }
+            .rc-home .rc-gallery a:hover img { transform: scale(1.08); filter: saturate(1.15); }
+
+            /* ---------- reservation ---------- */
+            .rc-home .rc-reserve {
+                background: linear-gradient(115deg, rgba(21,17,14,.95) 40%, rgba(21,17,14,.55)), url('/theme_bistro/static/src/img/configurator/set_1_landscape_md_2.webp') center/cover;
+            }
+            .rc-home .rc-hours { background: rgba(31,24,19,.85); border: 1px solid rgba(201,161,93,.3); border-radius: 12px; padding: 38px; backdrop-filter: blur(6px); }
+            .rc-home .rc-hours h3 { color: var(--rc-gold); font-size: 1.5rem; margin-bottom: 18px; }
+            .rc-home .rc-hours li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(246,239,228,.08); color: #e7dccb; }
+            .rc-home .rc-hours li span:last-child { color: #fff; font-weight: 500; }
+            .rc-home .rc-contact-line { color: #d9cfbf; margin: 8px 0; display: flex; gap: 12px; align-items: center; }
+            .rc-home .rc-contact-line i { color: var(--rc-gold); width: 18px; }
+
+            /* ---------- website header (menu) on this page ---------- */
+            /* The header floats over the dark hero, so give it a dark glass background and light links. */
+            header#top {
+                background: rgba(21,17,14,.62) !important;
+                backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(201,161,93,.22);
+                transition: background .35s ease;
+            }
+            header#top.o_header_is_scrolled, header#top.o_header_affixed, header#top.o_top_fixed_element {
+                background: rgba(21,17,14,.94) !important;
+            }
+            header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+            header#top .navbar .nav-link,
+            header#top .navbar a:not(.dropdown-item):not(.btn-primary),
+            header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+            header#top .navbar .navbar-brand,
+            header#top .navbar .fa, header#top .navbar .oi {
+                color: #f6efe4 !important;
+            }
+            header#top .navbar .nav-link { font-family: 'Inter', sans-serif; font-weight: 500; letter-spacing: .02em; }
+            header#top .navbar .nav-link:hover,
+            header#top .navbar .nav-link.active,
+            header#top .navbar .nav-item.active > .nav-link { color: #c9a15d !important; }
+            header#top .navbar .nav-link.active { box-shadow: inset 0 -2px 0 #c9a15d; }
+            header#top .o_navlink_background, header#top .navbar .btn-light, header#top .navbar .o_wsale_my_cart .btn {
+                background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important;
+            }
+            header#top .navbar-toggler { border-color: rgba(246,239,228,.4) !important; }
+            header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+            header#top .offcanvas { background: #1f1813 !important; color: #f6efe4; }
+            header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item), header#top .offcanvas .btn-close { color: #f6efe4 !important; }
+            header#top .offcanvas .btn-close { filter: invert(1); }
+            header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
+
+            /* ---------- motion ---------- */
+            @keyframes rc-fade-up { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+            @keyframes rc-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+            @keyframes rc-spin-in { from { opacity: 0; transform: rotate(-90deg) scale(.6); } to { opacity: 1; transform: none; } }
+            .rc-home .rc-reveal { animation: rc-fade-up 1s cubic-bezier(.2,.7,.2,1) both; }
+            .rc-home .rc-d1 { animation-delay: .15s; } .rc-home .rc-d2 { animation-delay: .3s; } .rc-home .rc-d3 { animation-delay: .45s; }
+            @media (prefers-reduced-motion: reduce) {
+                .rc-home *, .rc-home *::before { animation: none !important; transition: none !important; }
+            }
+
+            /* ---------- responsive ---------- */
+            @media (max-width: 991px) {
+                .rc-home .rc-section { padding: 84px 0; }
+                .rc-home .rc-hero-badge { display: none; }
+                .rc-home .rc-hero .container { padding-bottom: 260px; }
+                .rc-home .rc-collage { min-height: 440px; margin-bottom: 50px; }
+                .rc-home .rc-gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 170px; }
+                .rc-home .rc-gallery a:nth-child(1), .rc-home .rc-gallery a:nth-child(4) { grid-column: span 2; grid-row: span 1; }
+                .rc-home .rc-quote { background-attachment: scroll; }
+            }
+            @media (max-width: 575px) {
+                .rc-home .rc-stats { grid-template-columns: 1fr; }
+                .rc-home .rc-menu-card, .rc-home .rc-shop-panel { padding: 32px 22px; }
+                .rc-home .rc-shop-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+        </style>
+    </t>
+    <t t-call="website.layout" pageName.f="homepage" head="head">
+
+        <div id="wrap" class="oe_structure rc-home">
+
+            <!-- ===================== HERO ===================== -->
+            <section class="rc-hero o_colored_level" data-name="Hero">
+                <div class="container">
+                    <span class="rc-eyebrow rc-reveal">Marine Drive · Kochi · Since 2014</span>
+                    <h1 class="rc-reveal rc-d1">Where Kerala's flavours meet <em>modern dining</em></h1>
+                    <p class="rc-reveal rc-d2">Slow-cooked heritage recipes, single-estate filter coffee and a warm table by the backwaters. Breakfast to late-night, every day.</p>
+                    <div class="rc-hero-actions rc-reveal rc-d3">
+                        <a href="/appointment" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve a Table</a>
+                        <a href="#rc-menu" class="rc-btn rc-btn-ghost">Explore the Menu <i class="fa fa-arrow-right"/></a>
+                    </div>
+                </div>
+                <div class="rc-hero-badge">
+                    <strong>4.8</strong>
+                    <span>★ Google<br/>2,400+ reviews</span>
+                </div>
+                <div class="rc-infobar">
+                    <div class="container">
+                        <div class="row g-0">
+                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-clock-o"/><div><small>Open today</small><b>7:00 AM – 11:00 PM</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-map-marker"/><div><small>Find us</small><b>Marine Drive, Kochi</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-phone"/><div><small>Reservations</small><b>+91 484 235 0000</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-qrcode"/><div><small>At your table</small><b>Scan &amp; order instantly</b></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== MARQUEE ===================== -->
+            <section class="rc-marquee o_colored_level" data-name="Dish Marquee">
+                <div class="rc-marquee-track">
+                    <span>Appam &amp; Stew</span><span>Malabar Biryani</span><span>Karimeen Pollichathu</span><span>Filter Coffee</span><span>Beef Ularthiyathu</span><span>Kozhikode Halwa</span><span>Onam Sadya</span><span>Plum Cake</span>
+                    <span>Appam &amp; Stew</span><span>Malabar Biryani</span><span>Karimeen Pollichathu</span><span>Filter Coffee</span><span>Beef Ularthiyathu</span><span>Kozhikode Halwa</span><span>Onam Sadya</span><span>Plum Cake</span>
+                </div>
+            </section>
+
+            <!-- ===================== STORY ===================== -->
+            <section class="rc-section rc-story o_colored_level" data-name="Our Story">
+                <div class="container">
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-6">
+                            <div class="rc-collage">
+                                <img class="rc-img-a" src="/theme_bistro/static/src/img/configurator/set_doers_portrait_lg_1.webp" alt="Our head chef at work"/>
+                                <img class="rc-img-b" src="/theme_bistro/static/src/img/content/s_images_constellation_default_image.webp" alt="Signature plated dish"/>
+                                <div class="rc-stamp"><strong>12</strong>years of<br/>flavour</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="rc-eyebrow">Our Story</span>
+                            <h2 class="rc-title">A family kitchen that grew into <em>Kochi's favourite table</em></h2>
+                            <p class="rc-lead">What began as a twelve-table café on Marine Drive is today a restaurant, bakery and café loved by families, food lovers and travellers. Our recipes come from grandmother's notebooks; our ingredients come from farmers we know by name.</p>
+                            <p class="rc-lead">Every curry is ground fresh each morning, every appam is made to order and every cup of coffee starts with beans we roast ourselves.</p>
+                            <div class="rc-stats">
+                                <div><strong>45+</strong><span>Signature dishes</span></div>
+                                <div><strong>25k</strong><span>Happy guests a year</span></div>
+                                <div><strong>18</strong><span>Local farm partners</span></div>
+                            </div>
+                            <div class="rc-signature">— Chef Joseph Antony, Founder</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== SIGNATURE DISHES ===================== -->
+            <section class="rc-section rc-dishes o_colored_level" data-name="Signature Dishes">
+                <div class="container">
+                    <div class="row align-items-end mb-5">
+                        <div class="col-lg-7">
+                            <span class="rc-eyebrow">Chef's Signatures</span>
+                            <h2 class="rc-title">Plates our guests <em>come back for</em></h2>
+                        </div>
+                        <div class="col-lg-5 text-lg-end">
+                            <a href="#rc-menu" class="rc-btn rc-btn-ghost">View full menu <i class="fa fa-arrow-right"/></a>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3">
+                            <a href="#rc-menu" class="rc-dish">
+                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_5.webp" alt="Malabar steak"/>
+                                <div class="rc-dish-body">
+                                    <span class="rc-dish-tag">Bestseller</span>
+                                    <h3>Pepper Fry Platter</h3>
+                                    <p>Black pepper from Wayanad, curry leaves and coconut slivers, served with Malabar parotta.</p>
+                                    <span class="rc-price">$ 14.50</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="#rc-menu" class="rc-dish">
+                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_4.webp" alt="Garden salad"/>
+                                <div class="rc-dish-body">
+                                    <span class="rc-dish-tag">Vegan</span>
+                                    <h3>Kochi Garden Bowl</h3>
+                                    <p>Millets, sprouts, raw mango and toasted coconut with a tamarind-jaggery dressing.</p>
+                                    <span class="rc-price">$ 9.90</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="#rc-menu" class="rc-dish">
+                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_3.webp" alt="Pasta"/>
+                                <div class="rc-dish-body">
+                                    <span class="rc-dish-tag">New</span>
+                                    <h3>Coconut Seafood Linguine</h3>
+                                    <p>A coastal twist: prawns and squid in a light moilee cream with curry leaf oil.</p>
+                                    <span class="rc-price">$ 16.00</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="#rc-menu" class="rc-dish">
+                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_6.webp" alt="Chocolate lava cake"/>
+                                <div class="rc-dish-body">
+                                    <span class="rc-dish-tag">Dessert</span>
+                                    <h3>Jaggery Lava Cake</h3>
+                                    <p>Dark chocolate and palm jaggery with a molten heart, cardamom ice cream and berries.</p>
+                                    <span class="rc-price">$ 7.50</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== EXPERIENCES ===================== -->
+            <section class="rc-section rc-experiences o_colored_level" data-name="Experiences">
+                <div class="container">
+                    <div class="text-center mb-5">
+                        <span class="rc-eyebrow">More than a restaurant</span>
+                        <h2 class="rc-title">One place, <em>four experiences</em></h2>
+                        <p class="rc-lead mx-auto">Dine with us, take a little of Kerala home, celebrate with us or let us bring the feast to you.</p>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3">
+                            <a href="/appointment" class="rc-exp">
+                                <div class="rc-icon"><i class="fa fa-cutlery"/></div>
+                                <h3>Fine Dining</h3>
+                                <p>Candle-lit tables, a backwater view and a menu that travels from Malabar to Travancore.</p>
+                                <span class="rc-more">Book a table →</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="/shop" class="rc-exp">
+                                <div class="rc-icon"><i class="fa fa-shopping-bag"/></div>
+                                <h3>Café &amp; Deli Shop</h3>
+                                <p>Banana chips, masalas, pickles, plum cake and our filter coffee, delivered to your door.</p>
+                                <span class="rc-more">Shop online →</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="/event" class="rc-exp">
+                                <div class="rc-icon"><i class="fa fa-glass"/></div>
+                                <h3>Events &amp; Masterclasses</h3>
+                                <p>Sadya cooking classes, latte art workshops, food festivals and live music nights.</p>
+                                <span class="rc-more">See what's on →</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="/contactus" class="rc-exp">
+                                <div class="rc-icon"><i class="fa fa-truck"/></div>
+                                <h3>Catering</h3>
+                                <p>Weddings, office lunches and celebrations from 20 to 2,000 guests, with live counters.</p>
+                                <span class="rc-more">Get a quote →</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== CHEF QUOTE ===================== -->
+            <section class="rc-quote o_colored_level" data-name="Chef Quote">
+                <div class="container">
+                    <img src="/theme_bistro/static/src/img/configurator/portrait_lg_3.webp" alt="Head chef"/>
+                    <blockquote>"We don't cook to impress. We cook the way our mothers did - patiently, generously, with spices ground the same morning."</blockquote>
+                    <cite>Chef Joseph Antony · Founder &amp; Head Chef</cite>
+                </div>
+            </section>
+
+            <!-- ===================== MENU ===================== -->
+            <section id="rc-menu" class="rc-section rc-menu o_colored_level" data-name="Menu">
+                <div class="container">
+                    <div class="text-center mb-5">
+                        <span class="rc-eyebrow">The Menu</span>
+                        <h2 class="rc-title">Taste the <em>season</em></h2>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="rc-menu-card">
+                                <h3>From the Kitchen</h3>
+                                <div class="rc-sub">Lunch &amp; Dinner · 12 PM – 11 PM</div>
+                                <div class="rc-item"><div class="rc-name">Karimeen Pollichathu<small>Pearl spot fish wrapped in banana leaf, kudampuli masala</small></div><span class="rc-dots"/><span class="rc-cost">$ 15.00</span></div>
+                                <div class="rc-item"><div class="rc-name">Malabar Chicken Biryani<small>Jeerakasala rice, fried onions, raita &amp; date pickle</small></div><span class="rc-dots"/><span class="rc-cost">$ 11.50</span></div>
+                                <div class="rc-item"><div class="rc-name">Beef Ularthiyathu<small>Slow-roasted with coconut slivers and black pepper</small></div><span class="rc-dots"/><span class="rc-cost">$ 12.00</span></div>
+                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Kerala Sadya<small>26 dishes on a banana leaf · weekends only</small></div><span class="rc-dots"/><span class="rc-cost">$ 13.00</span></div>
+                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Mushroom &amp; Cashew Roast<small>Shallots, tomato and roasted coconut gravy</small></div><span class="rc-dots"/><span class="rc-cost">$ 9.50</span></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="rc-menu-card">
+                                <h3>Café &amp; Bakery</h3>
+                                <div class="rc-sub">All day · 7 AM – 11 PM</div>
+                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Appam &amp; Vegetable Stew<small>Lacy rice hoppers with mild coconut stew</small></div><span class="rc-dots"/><span class="rc-cost">$ 6.50</span></div>
+                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Ghee Roast Dosa<small>Crisp, golden, with three chutneys &amp; sambar</small></div><span class="rc-dots"/><span class="rc-cost">$ 5.50</span></div>
+                                <div class="rc-item"><div class="rc-name">South Indian Filter Coffee<small>Chikmagalur beans, roasted in-house every Monday</small></div><span class="rc-dots"/><span class="rc-cost">$ 2.75</span></div>
+                                <div class="rc-item"><div class="rc-name">Cardamom Cold Brew<small>18-hour brew, jaggery syrup, oat milk on request</small></div><span class="rc-dots"/><span class="rc-cost">$ 4.25</span></div>
+                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Tender Coconut Pudding<small>Silky set pudding with palm sugar caramel</small></div><span class="rc-dots"/><span class="rc-cost">$ 5.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-5">
+                        <a href="/appointment" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve your table</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== EVENTS & SHOP ===================== -->
+            <section class="rc-section rc-feature o_colored_level" data-name="Events and Shop">
+                <div class="container">
+                    <div class="row g-5">
+                        <div class="col-lg-6">
+                            <span class="rc-eyebrow">Upcoming at Resto Cafe</span>
+                            <h2 class="rc-title">Gather, learn &amp; <em>celebrate</em></h2>
+                            <a href="/event" class="rc-event-card">
+                                <div class="rc-event-date"><strong>19</strong><span>Nov</span></div>
+                                <div><h4>Latte Art Workshop</h4><p>Heart, tulip &amp; rosetta with our baristas · 4 PM</p></div>
+                            </a>
+                            <a href="/event" class="rc-event-card">
+                                <div class="rc-event-date"><strong>26</strong><span>Nov</span></div>
+                                <div><h4>Kerala Sadya Masterclass</h4><p>Cook 8 classic Sadya dishes with our head chef · 10 AM</p></div>
+                            </a>
+                            <a href="/event" class="rc-event-card">
+                                <div class="rc-event-date"><strong>24</strong><span>Dec</span></div>
+                                <div><h4>Christmas Food &amp; Wine Festival</h4><p>Cake mixing, live counters, carols &amp; wine pairing · 3 days</p></div>
+                            </a>
+                            <a href="/event" class="rc-btn rc-btn-ghost mt-3">All events <i class="fa fa-arrow-right"/></a>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="rc-shop-panel">
+                                <span class="rc-eyebrow">The Deli Shop</span>
+                                <h2 class="rc-title">Take <em>Kerala</em> home</h2>
+                                <p class="rc-lead">Small-batch snacks, masalas, pickles and our filter coffee, packed fresh in our kitchen and shipped across India.</p>
+                                <div class="rc-shop-grid">
+                                    <a href="/shop"><img src="/hudson_pos_demo_data/static/src/img/packaged_food/banana_chips.png" alt="Banana chips"/></a>
+                                    <a href="/shop"><img src="/hudson_pos_demo_data/static/src/img/packaged_food/filter_coffee.png" alt="Filter coffee"/></a>
+                                    <a href="/shop"><img src="/hudson_pos_demo_data/static/src/img/packaged_food/mango_pickle.png" alt="Mango pickle"/></a>
+                                </div>
+                                <a href="/shop" class="rc-btn rc-btn-gold"><i class="fa fa-shopping-bag"/> Visit the shop</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== REVIEWS ===================== -->
+            <section class="rc-section rc-reviews o_colored_level" data-name="Reviews">
+                <div class="container">
+                    <div class="row align-items-end mb-5">
+                        <div class="col-lg-8">
+                            <span class="rc-eyebrow">Guest Love</span>
+                            <h2 class="rc-title">Words from <em>our tables</em></h2>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <div class="rc-rating-summary">4.8<small style="font-size:1.4rem;color:#9a8b78">/5</small></div>
+                            <div class="rc-stars">★★★★★</div>
+                            <small style="color:#9a8b78">from 2,400+ Google reviews</small>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="rc-review">
+                                <div class="rc-stars">★★★★★</div>
+                                <p>The appam and stew tasted exactly like my grandmother's. Warm staff, beautiful sunset view, and the filter coffee is the best in Kochi.</p>
+                                <div class="rc-who"><img src="/theme_bistro/static/src/img/content/company_team_03.webp" alt="Guest"/><div><strong>Ananya Pillai</strong><span>Food blogger</span></div></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="rc-review">
+                                <div class="rc-stars">★★★★★</div>
+                                <p>They catered our 400-guest wedding reception without a single hiccup. The live counters were the talk of the night.</p>
+                                <div class="rc-who"><img src="/theme_bistro/static/src/img/content/company_team_02.webp" alt="Guest"/><div><strong>Rohan Thomas</strong><span>Catering client</span></div></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="rc-review">
+                                <div class="rc-stars">★★★★★</div>
+                                <p>Ordering from the QR code at our table was so easy, and we could follow our food from the kitchen in real time. Brilliant.</p>
+                                <div class="rc-who"><img src="/theme_bistro/static/src/img/content/company_team_04.webp" alt="Guest"/><div><strong>Meera Nambiar</strong><span>Regular guest</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== GALLERY ===================== -->
+            <section class="rc-gallery-wrap o_colored_level" data-name="Gallery">
+                <div class="rc-gallery">
+                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_catalog_landscape_lg_1.webp" alt="Dinner spread"/></a>
+                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_1_landscape_md_2.webp" alt="Cheers"/></a>
+                    <a href="/event"><img src="/theme_bistro/static/src/img/backgrounds/15.webp" alt="Spices"/></a>
+                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/ultrawide_lg_6.webp" alt="Friends at dinner"/></a>
+                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_catalog_landscape_lg_3.webp" alt="Breakfast"/></a>
+                    <a href="/event"><img src="/theme_bistro/static/src/img/content/s_image_hexagonal_1.webp" alt="Coffee"/></a>
+                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_1_landscape_md_3.webp" alt="Mocktails"/></a>
+                </div>
+            </section>
+
+            <!-- ===================== RESERVATION ===================== -->
+            <section class="rc-section rc-reserve o_colored_level" data-name="Reservation">
+                <div class="container">
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-6">
+                            <span class="rc-eyebrow">Reservations</span>
+                            <h2 class="rc-title">Your table by the <em>backwaters</em> is waiting</h2>
+                            <p class="rc-lead">Book in seconds online, or call us for private dining, birthdays and corporate lunches. Walk-ins are always welcome.</p>
+                            <div class="rc-hero-actions">
+                                <a href="/appointment" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve a Table</a>
+                                <a href="tel:+914842350000" class="rc-btn rc-btn-ghost"><i class="fa fa-phone"/> +91 484 235 0000</a>
+                            </div>
+                            <div class="mt-4">
+                                <p class="rc-contact-line"><i class="fa fa-map-marker"/> Marine Drive, Ernakulam, Kochi, Kerala 682031</p>
+                                <p class="rc-contact-line"><i class="fa fa-envelope"/> hello@restocafe.example.com</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 offset-lg-1">
+                            <div class="rc-hours">
+                                <h3>Opening Hours</h3>
+                                <ul class="list-unstyled mb-0">
+                                    <li><span>Monday – Thursday</span><span>7:00 AM – 11:00 PM</span></li>
+                                    <li><span>Friday – Saturday</span><span>7:00 AM – 12:00 AM</span></li>
+                                    <li><span>Sunday Brunch</span><span>8:00 AM – 4:00 PM</span></li>
+                                    <li><span>Sunday Dinner</span><span>6:00 PM – 11:00 PM</span></li>
+                                    <li><span>Kitchen last order</span><span>45 min before close</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </t>
+</t>

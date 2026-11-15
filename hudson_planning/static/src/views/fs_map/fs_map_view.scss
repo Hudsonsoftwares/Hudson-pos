@@ -1,0 +1,71 @@
+.o_fs_map_view {
+    .o_fs_map_layout .o_content {
+        overflow: hidden;
+    }
+    // not .o_fs_map: the class of the view switcher's Map button
+    .o_fs_map_body {
+        min-height: 400px;
+    }
+    .o_fs_map_leaflet {
+        z-index: 0;
+    }
+    .o_fs_map_panel {
+        width: 320px;
+        flex-shrink: 0;
+        background: $o-view-background-color;
+    }
+    .o_fs_map_group_header {
+        cursor: pointer;
+        user-select: none;
+        &:hover {
+            background: $gray-100;
+        }
+    }
+    .o_fs_map_record {
+        cursor: pointer;
+        &:hover {
+            background: $gray-100;
+        }
+        &.o_fs_map_unlocated {
+            opacity: 0.6;
+        }
+    }
+    @include media-breakpoint-down(md) {
+        .o_fs_map_body {
+            flex-direction: column;
+        }
+        .o_fs_map_canvas {
+            min-height: 60vh;
+        }
+        .o_fs_map_panel {
+            width: 100%;
+        }
+    }
+}
+
+// Pins are added by Leaflet outside the component
+.o_fs_map_pin {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    span {
+        transform: rotate(45deg);
+        color: #fff;
+        font-weight: 700;
+        font-size: 12px;
+    }
+}
+
+.o_fs_map_popup {
+    min-width: 200px;
+    .o_fs_map_popup_record {
+        border-top: 1px solid $gray-200;
+        padding: 4px 0;
+    }
+}

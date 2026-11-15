@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- ROOT MENU                                                     -->
+    <!-- ============================================================ -->
+
+    <menuitem
+        name="Planning"
+        id="menu_planning_root"
+        groups="hudson_planning.group_planning_user"
+        web_icon="hudson_planning,static/description/icon.png"
+        sequence="56"
+    />
+
+    <!-- ============================================================ -->
+    <!-- SCHEDULE                                                      -->
+    <!-- ============================================================ -->
+
+    <record id="action_fs_planning_slot_list" model="ir.actions.act_window">
+        <field name="name">All Shifts</field>
+        <field name="res_model">fs.planning.slot</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="fs_planning_slot_view_search"/>
+    </record>
+
+    <menuitem
+        name="Schedule"
+        id="menu_planning_schedule"
+        parent="menu_planning_root"
+        sequence="5"
+    >
+        <menuitem
+            name="By Resource"
+            id="menu_planning_board"
+            action="action_fs_schedule_by_resource"
+            groups="hudson_planning.group_planning_manager"
+            sequence="1"
+        />
+        <menuitem
+            name="By Role"
+            id="menu_planning_schedule_by_role"
+            action="action_fs_schedule_by_role"
+            groups="hudson_planning.group_planning_manager"
+            sequence="2"
+        />
+        <menuitem
+            name="By Project"
+            id="menu_planning_schedule_by_project"
+            action="action_fs_schedule_by_project"
+            groups="hudson_planning.group_planning_manager"
+            sequence="3"
+        />
+        <menuitem
+            name="By Sales Order"
+            id="menu_planning_schedule_by_sale_order"
+            action="action_fs_schedule_by_sale_order"
+            groups="hudson_planning.group_planning_manager"
+            sequence="3"
+        />
+    </menuitem>
+
+    <!-- ============================================================ -->
+    <!-- PLANNING (My)                                                 -->
+    <!-- ============================================================ -->
+
+    <menuitem
+        name="Planning"
+        id="menu_planning_planning"
+        parent="menu_planning_root"
+        sequence="15"
+    >
+        <menuitem
+            name="My"
+            id="menu_planning_my"
+            sequence="1"
+        >
+            <menuitem
+                name="Planning"
+                id="menu_planning_my_planning"
+                action="action_fs_schedule_my"
+                sequence="1"
+            />
+        </menuitem>
+    </menuitem>
+
+    <!-- ============================================================ -->
+    <!-- REPORTING                                                     -->
+    <!-- ============================================================ -->
+
+    <menuitem
+        name="Reporting"
+        id="menu_planning_reporting"
+        parent="menu_planning_root"
+        sequence="90"
+    >
+        <menuitem
+            name="Planning Analysis"
+            id="menu_planning_analysis"
+            action="action_fs_planning_slot_reporting"
+            groups="hudson_planning.group_planning_manager"
+            sequence="1"
+        />
+    </menuitem>
+
+    <!-- ============================================================ -->
+    <!-- CONFIGURATION                                                 -->
+    <!-- ============================================================ -->
+
+    <menuitem
+        name="Configuration"
+        id="menu_planning_config"
+        parent="menu_planning_root"
+        groups="hudson_planning.group_planning_manager"
+        sequence="100"
+    >
+        <menuitem
+            name="Settings"
+            id="menu_planning_settings"
+            action="action_planning_config_settings"
+            groups="base.group_system"
+            sequence="1"
+        />
+        <menuitem
+            name="Employees"
+            id="menu_planning_employees"
+            action="hr.open_view_employee_list_my"
+            sequence="10"
+        />
+        <menuitem
+            name="Roles"
+            id="menu_fs_planning_roles"
+            action="action_fs_planning_role"
+            sequence="30"
+        />
+        <menuitem
+            name="Shift Templates"
+            id="menu_fs_shift_templates"
+            action="action_fs_shift_template"
+            sequence="40"
+        />
+        <menuitem
+            name="Products"
+            id="menu_planning_products"
+            action="sale.product_template_action"
+            sequence="60"
+        />
+        <menuitem
+            name="Activity Types"
+            id="menu_planning_activity_types"
+            action="mail.mail_activity_type_action"
+            sequence="70"
+        />
+        <menuitem
+            name="Activity Plans"
+            id="menu_planning_activity_plans"
+            action="mail.mail_activity_plan_action"
+            sequence="80"
+        />
+    </menuitem>
+
+    <!-- The schedule is now a view of the shifts: the former client actions are removed -->
+    <delete model="ir.actions.client" search="[('tag', '=', 'hudson_planning.fs_planning_schedule')]"/>
+</odoo>

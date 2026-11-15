@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Demo Rental Products -->
+        <record id="product_rental_camera" model="product.template">
+            <field name="name">Professional Camera</field>
+            <field name="type">consu</field>
+            <field name="rental_periodicity">day</field>
+            <field name="sale_ok">True</field>
+            <field name="is_published">True</field>
+            <field name="list_price">100.0</field>
+            <field name="standard_price">500.0</field>
+            <field name="categ_id" eval="ref('product.product_category_goods', raise_if_not_found=False)"/>
+            <field name="description">High-end professional camera for rent</field>
+            <field name="min_rental_duration">1.0</field>
+            <field name="max_rental_duration">30.0</field>
+            <field name="security_deposit">200.0</field>
+            <field name="late_fee_per_day">25.0</field>
+        </record>
+
+        <record id="product_rental_laptop" model="product.template">
+            <field name="name">Laptop Dell XPS 15</field>
+            <field name="type">consu</field>
+            <field name="rental_periodicity">day</field>
+            <field name="sale_ok">True</field>
+            <field name="is_published">True</field>
+            <field name="list_price">50.0</field>
+            <field name="standard_price">1200.0</field>
+            <field name="categ_id" eval="ref('product.product_category_goods', raise_if_not_found=False)"/>
+            <field name="description">High-performance laptop for rent</field>
+            <field name="min_rental_duration">1.0</field>
+            <field name="max_rental_duration">60.0</field>
+            <field name="security_deposit">300.0</field>
+            <field name="late_fee_per_day">30.0</field>
+        </record>
+
+        <record id="product_rental_projector" model="product.template">
+            <field name="name">HD Projector</field>
+            <field name="type">consu</field>
+            <field name="rental_periodicity">day</field>
+            <field name="sale_ok">True</field>
+            <field name="is_published">True</field>
+            <field name="list_price">75.0</field>
+            <field name="standard_price">800.0</field>
+            <field name="categ_id" eval="ref('product.product_category_goods', raise_if_not_found=False)"/>
+            <field name="description">Full HD projector for events and presentations</field>
+            <field name="min_rental_duration">1.0</field>
+            <field name="max_rental_duration">14.0</field>
+            <field name="security_deposit">150.0</field>
+            <field name="late_fee_per_day">20.0</field>
+        </record>
+
+        <!-- Demo Rental Pricing -->
+        <record id="pricing_camera_daily" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_camera"/>
+            <field name="duration">1</field>
+            <field name="duration_unit">day</field>
+            <field name="price">100.0</field>
+        </record>
+
+        <record id="pricing_camera_weekly" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_camera"/>
+            <field name="duration">7</field>
+            <field name="duration_unit">day</field>
+            <field name="price">600.0</field>
+        </record>
+
+        <record id="pricing_camera_monthly" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_camera"/>
+            <field name="duration">30</field>
+            <field name="duration_unit">day</field>
+            <field name="price">2000.0</field>
+        </record>
+
+        <record id="pricing_laptop_daily" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_laptop"/>
+            <field name="duration">1</field>
+            <field name="duration_unit">day</field>
+            <field name="price">50.0</field>
+        </record>
+
+        <record id="pricing_laptop_weekly" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_laptop"/>
+            <field name="duration">7</field>
+            <field name="duration_unit">day</field>
+            <field name="price">300.0</field>
+        </record>
+
+        <record id="pricing_laptop_monthly" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_laptop"/>
+            <field name="duration">30</field>
+            <field name="duration_unit">day</field>
+            <field name="price">1000.0</field>
+        </record>
+
+        <record id="pricing_projector_daily" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_projector"/>
+            <field name="duration">1</field>
+            <field name="duration_unit">day</field>
+            <field name="price">75.0</field>
+        </record>
+
+        <record id="pricing_projector_weekly" model="rental.pricing">
+            <field name="product_tmpl_id" ref="product_rental_projector"/>
+            <field name="duration">7</field>
+            <field name="duration_unit">day</field>
+            <field name="price">450.0</field>
+        </record>
+
+    </data>
+</odoo>

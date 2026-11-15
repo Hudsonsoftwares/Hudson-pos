@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Settings > Confirmation Email -->
+        <record id="mail_template_fs_shift_confirmation" model="mail.template">
+            <field name="name">Field Service: Shift Scheduled</field>
+            <field name="model_id" ref="hudson_field_service.model_field_service_order"/>
+            <field name="subject">Your intervention {{ object.name }} is scheduled</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="description">Sent to the customer when a field service shift is published</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear <t t-out="object.partner_id.name or 'Customer'"></t>,<br/><br/>
+        Your intervention <strong t-out="object.title or object.name"></strong> is scheduled.<br/><br/>
+        <strong>Date:</strong> <t t-out="format_datetime(object.date_planned, tz=object.partner_id.tz, dt_format='medium') or 'TBD'"></t><br/>
+        <t t-if="object.employee_id"><strong>Technician:</strong> <t t-out="object.employee_id.name"></t><br/></t>
+        <t t-if="object.partner_address"><strong>Address:</strong> <t t-out="object.partner_address"></t><br/></t>
+        <br/>
+        Do not hesitate to contact us if you have any questions.<br/><br/>
+        Best regards,<br/>
+        <t t-out="object.company_id.name"></t>
+    </p>
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

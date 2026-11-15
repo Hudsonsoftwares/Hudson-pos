@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequence for Field Service Orders -->
+        <record id="seq_field_service_order" model="ir.sequence">
+            <field name="name">Field Service Order</field>
+            <field name="code">field.service.order</field>
+            <field name="prefix">FS-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Service product used for time-based invoicing -->
+        <record id="product_field_service_time" model="product.template">
+            <field name="name">Field Service - Labor</field>
+            <field name="type">service</field>
+            <field name="list_price">50.0</field>
+            <field name="uom_id" ref="uom.product_uom_hour"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="description_sale">Labor charges for field service work</field>
+        </record>
+
+    </data>
+</odoo>

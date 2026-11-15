@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_eco_type_view_form" model="ir.ui.view">
+        <field name="name">mrp.eco.type.view.form</field>
+        <field name="model">mrp.eco.type</field>
+        <field name="arch" type="xml">
+            <form string="ECO Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="alias_id" invisible="1"/>
+                            <label for="alias_name" string="Email Alias"/>
+                            <div class="d-flex align-items-baseline" name="alias_def">
+                                <field name="alias_name" placeholder="alias"/>@<field name="alias_domain_id"
+                                    options="{'no_create': True, 'no_open': True}"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_eco_type_view_tree" model="ir.ui.view">
+        <field name="name">mrp.eco.type.view.tree</field>
+        <field name="model">mrp.eco.type</field>
+        <field name="arch" type="xml">
+            <list string="ECO Types">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="alias_email" string="Email Alias" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mrp_eco_type_view_kanban" model="ir.ui.view">
+        <field name="name">mrp.eco.type.view.kanban</field>
+        <field name="model">mrp.eco.type</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard o_mrp_eco_kanban" create="0" highlight_color="color">
+                <templates>
+                    <t t-name="menu" groups="hudson_plm.group_plm_manager">
+                        <a role="menuitem" type="open" class="dropdown-item">Configuration</a>
+                        <div role="separator" class="dropdown-divider"/>
+                        <field name="color" widget="kanban_color_picker"/>
+                    </t>
+                    <t t-name="card">
+                        <div class="p-3" style="height: 230px;">
+                            <field name="name" class="d-block fs-4 fw-bold mb-3"/>
+                            <button class="btn btn-primary" name="action_open_ecos" type="object">
+                                <field name="eco_count"/> Engineering Changes
+                            </button>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="mrp_eco_type_action_config" model="ir.actions.act_window">
+        <field name="name">ECO Types</field>
+        <field name="res_model">mrp.eco.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="mrp_eco_type_action_dashboard" model="ir.actions.act_window">
+        <field name="name">PLM Overview</field>
+        <field name="res_model">mrp.eco.type</field>
+        <field name="view_mode">kanban,form</field>
+    </record>
+
+    <menuitem id="menu_mrp_eco_types_config"
+              name="ECO Types"
+              parent="menu_mrp_eco_types"
+              action="mrp_eco_type_action_config"
+              sequence="10"/>
+
+    <menuitem id="menu_plm_overview_action"
+              name="Overview"
+              parent="menu_plm_overview"
+              action="mrp_eco_type_action_dashboard"
+              sequence="10"/>
+</odoo>

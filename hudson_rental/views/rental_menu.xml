@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Rental Root Menu -->
+        <menuitem id="menu_rental_root"
+                  name="Rental"
+                  sequence="45"
+                  web_icon="hudson_rental,static/description/icon.png"
+                  groups="group_rental_user"/>
+
+        <!-- Orders Menu -->
+        <menuitem id="menu_rental_orders"
+                  name="Orders"
+                  parent="menu_rental_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_rental_order_all"
+                  name="Rental Orders"
+                  parent="menu_rental_orders"
+                  action="action_rental_order"
+                  sequence="10"/>
+
+        <!-- Schedule Menu -->
+        <menuitem id="menu_rental_schedule"
+                  name="Schedule"
+                  parent="menu_rental_root"
+                  sequence="20"/>
+
+        <menuitem id="menu_rental_schedule_gantt"
+                  name="Scheduled Rentals"
+                  parent="menu_rental_schedule"
+                  action="action_rental_order_line_schedule"
+                  sequence="10"/>
+
+        <!-- Products Menu -->
+        <menuitem id="menu_rental_products"
+                  name="Products"
+                  parent="menu_rental_root"
+                  action="action_rental_products"
+                  sequence="30"/>
+
+        <!-- Reporting Menu -->
+        <menuitem id="menu_rental_reporting"
+                  name="Reporting"
+                  parent="menu_rental_root"
+                  sequence="90"/>
+
+        <menuitem id="menu_rental_report"
+                  name="Rental Analysis"
+                  parent="menu_rental_reporting"
+                  action="action_rental_report"
+                  sequence="10"/>
+
+        <!-- Configuration Menu -->
+        <menuitem id="menu_rental_configuration"
+                  name="Configuration"
+                  parent="menu_rental_root"
+                  sequence="100"
+                  groups="group_rental_manager"/>
+
+        <menuitem id="menu_rental_settings"
+                  name="Settings"
+                  parent="menu_rental_configuration"
+                  action="action_rental_config_settings"
+                  sequence="1"/>
+
+        <menuitem id="menu_rental_pricing"
+                  name="Pricing Rules"
+                  parent="menu_rental_configuration"
+                  action="action_rental_pricing"
+                  sequence="20"/>
+
+    </data>
+</odoo>

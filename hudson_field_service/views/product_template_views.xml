@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Product: Worksheet of the field service jobs of a service, under Plan Services -->
+    <record id="product_template_form_view_worksheet" model="ir.ui.view">
+        <field name="name">product.template.form.worksheet</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="hudson_planning.product_template_form_view_planning"/>
+        <field name="arch" type="xml">
+            <div name="planning_services" position="after">
+                <field name="worksheet_template_id" invisible="type != 'service'"
+                       options="{'no_quick_create': True}" placeholder="No field service job"/>
+            </div>
+        </field>
+    </record>
+
+</odoo>

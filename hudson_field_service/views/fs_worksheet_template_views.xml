@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="fs_worksheet_template_view_list" model="ir.ui.view">
+        <field name="name">fs.worksheet.template.list</field>
+        <field name="model">fs.worksheet.template</field>
+        <field name="arch" type="xml">
+            <list string="Worksheet Templates">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="field_count"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show" placeholder="Visible to all"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Like Online: the worksheet fields are added and arranged on the template -->
+    <record id="fs_worksheet_template_view_form" model="ir.ui.view">
+        <field name="name">fs.worksheet.template.form</field>
+        <field name="model">fs.worksheet.template</field>
+        <field name="arch" type="xml">
+            <form string="Worksheet Template">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <!-- The fields editor edits the definition of this template -->
+                    <field name="id" invisible="1"/>
+                    <group>
+                        <field name="name" placeholder="e.g. Device installation"/>
+                        <field name="company_id" placeholder="Visible to all" groups="base.group_multi_company"/>
+                    </group>
+                    <separator string="Worksheet Fields"/>
+                    <p class="text-muted fst-italic">Add the fields technicians will fill out for this worksheet.</p>
+                    <field name="worksheet_definition" nolabel="1" widget="fs_worksheet_definition" class="o_fs_worksheet_definition" columns="2" editMode="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="fs_worksheet_template_view_search" model="ir.ui.view">
+        <field name="name">fs.worksheet.template.search</field>
+        <field name="model">fs.worksheet.template</field>
+        <field name="arch" type="xml">
+            <search string="Worksheet Templates">
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fs_worksheet_template" model="ir.actions.act_window">
+        <field name="name">Worksheet Templates</field>
+        <field name="res_model">fs.worksheet.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Worksheet Template
+            </p>
+            <p>
+                Add the fields technicians fill out during field service jobs:
+                texts, checkboxes, selections, dates, signatures...
+            </p>
+        </field>
+    </record>
+
+    <!-- Shift templates can preset the worksheet of field service jobs -->
+    <record id="fs_shift_template_view_form_inherit_field_service" model="ir.ui.view">
+        <field name="name">fs.shift.template.form.inherit.field.service</field>
+        <field name="model">fs.shift.template</field>
+        <field name="inherit_id" ref="hudson_planning.fs_shift_template_view_form"/>
+        <field name="arch" type="xml">
+            <field name="task_id" position="after">
+                <field name="worksheet_template_id" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="fs_shift_template_view_tree_inherit_field_service" model="ir.ui.view">
+        <field name="name">fs.shift.template.tree.inherit.field.service</field>
+        <field name="model">fs.shift.template</field>
+        <field name="inherit_id" ref="hudson_planning.fs_shift_template_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="task_id" position="after">
+                <field name="worksheet_template_id" options="{'no_create': True}" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Timer Widget: renders Start/Resume/Pause/Stop buttons with auto-geolocation -->
+    <t t-name="hudson_field_service.FieldServiceTimerWidget">
+        <div class="d-inline-flex gap-1">
+            <!-- Start Button -->
+            <button t-if="this.showStart"
+                    class="btn btn-primary"
+                    t-on-click="this.onClickStart"
+                    t-att-disabled="this.state.loading">
+                <t t-if="this.state.loadingAction === 'start'">
+                    <i class="fa fa-spinner fa-spin"/> Starting...
+                </t>
+                <t t-else="">
+                    <i class="fa fa-play"/> Start
+                </t>
+            </button>
+
+            <!-- Resume Button -->
+            <button t-if="this.showResume"
+                    class="btn btn-primary"
+                    t-on-click="this.onClickResume"
+                    t-att-disabled="this.state.loading">
+                <t t-if="this.state.loadingAction === 'resume'">
+                    <i class="fa fa-spinner fa-spin"/> Resuming...
+                </t>
+                <t t-else="">
+                    <i class="fa fa-play"/> Resume
+                </t>
+            </button>
+
+            <!-- Stop Button -->
+            <button t-if="this.showStop"
+                    class="btn btn-success"
+                    t-on-click="this.onClickStop"
+                    t-att-disabled="this.state.loading">
+                <t t-if="this.state.loadingAction === 'stop'">
+                    <i class="fa fa-spinner fa-spin"/> Stopping...
+                </t>
+                <t t-else="">
+                    <i class="fa fa-stop"/> Stop
+                </t>
+            </button>
+        </div>
+    </t>
+
+</templates>

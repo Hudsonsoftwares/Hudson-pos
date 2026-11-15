@@ -1,0 +1,94 @@
+<t name="Events" t-name="website_event.index">
+    <t t-set="head">
+        <meta t-if="search_tags" name="robots" content="none"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <style>
+#wrap.o_wevent_index { background: #fbf7f0; font-family: 'Inter', system-ui, sans-serif; color: #3d332a; }
+.o_wevent_index h1, .o_wevent_index h2, .o_wevent_index h3, .o_wevent_index h5, .o_wevent_index .card-title { font-family: 'Playfair Display', Georgia, serif; }
+.rc-ev-hero { position: relative; padding: 170px 0 120px; color: #f6efe4;
+  background: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.78) 55%, rgba(21,17,14,.4) 100%),
+              url('/theme_bistro/static/src/img/configurator/ultrawide_lg_6.webp') center/cover no-repeat; }
+.rc-ev-hero .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: #c9a15d; }
+.rc-ev-hero .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
+.rc-ev-hero h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.05; color: #fff; margin: 22px 0; max-width: 780px; }
+.rc-ev-hero h1 em { color: #c9a15d; }
+.rc-ev-hero p { color: #d9cfbf; font-size: 1.12rem; line-height: 1.8; max-width: 580px; }
+.rc-ev-hero .rc-ev-stats { display: flex; flex-wrap: wrap; gap: 40px; margin-top: 38px; }
+.rc-ev-hero .rc-ev-stats strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #c9a15d; line-height: 1; }
+.rc-ev-hero .rc-ev-stats span { font-size: .85rem; color: #cbbfae; }
+.rc-ev-hero .rc-ev-btn { display: inline-flex; align-items: center; gap: .55rem; margin-top: 34px; padding: 14px 28px; border-radius: 999px; background: #c9a15d; color: #15110e !important; font-weight: 600; text-decoration: none; box-shadow: 0 12px 30px -12px rgba(201,161,93,.7); transition: all .3s ease; }
+.rc-ev-hero .rc-ev-btn:hover { background: #e0c38c; transform: translateY(-2px); }
+.o_wevent_index .o_wevent_search input { border-radius: 999px; border-color: #e0d2bb; }
+.o_wevent_index .btn-primary { background: #15110e !important; border-color: #15110e !important; color: #c9a15d !important; border-radius: 999px; }
+.o_wevent_index .btn-primary:hover { background: #c9a15d !important; color: #15110e !important; }
+.o_wevent_index .badge { border-radius: 999px; }
+.o_wevent_events_list { padding: 30px 0 90px; }
+.o_wevent_events_list article.card { border: 1px solid #efe5d5 !important; border-radius: 18px !important; overflow: hidden; background: #fff; transition: all .35s ease; }
+.o_wevent_events_list article.card:hover { transform: translateY(-6px); box-shadow: 0 30px 50px -30px rgba(43,33,26,.5); border-color: #e3d2b4 !important; }
+.o_wevent_events_list .o_record_cover_container { transition: transform .8s ease; }
+.o_wevent_events_list article.card:hover .o_record_cover_container { transform: scale(1.05); }
+.o_wevent_events_list .card-header { border: 0 !important; overflow: hidden; }
+.o_wevent_events_list .card-title { font-size: 1.3rem; color: #15110e; }
+.o_wevent_events_list .card-body { padding: 20px 22px; }
+.o_wevent_events_list .o_wevent_event_date { background: #15110e !important; color: #c9a15d !important; border-radius: 12px !important; box-shadow: 0 10px 20px -10px rgba(0,0,0,.6); }
+.o_wevent_events_list .o_wevent_event_day { font-family: 'Playfair Display', serif; color: #fff !important; }
+.o_wevent_events_list .o_wevent_event_month { color: #c9a15d !important; letter-spacing: .12em; text-transform: uppercase; }
+.o_wevent_events_list .o_wevent_cta, .o_wevent_events_list .btn-primary { background: #c9a15d !important; border-color: #c9a15d !important; color: #15110e !important; border-radius: 999px; font-weight: 600; }
+
+/* website header: dark glass, same as the homepage */
+header#top { background: rgba(21,17,14,.92) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
+header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary), header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+header#top .navbar .navbar-brand, header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
+header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
+header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
+header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+header#top .offcanvas { background: #1f1813 !important; }
+header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
+header#top .offcanvas .btn-close { filter: invert(1); }
+header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
+        </style>
+    </t>
+    <t t-call="website.layout" head="head">
+        <div id="wrap" class="o_wevent_index">
+            <!-- Options -->
+            <t t-set="opt_events_list_columns" t-value="is_view_active('website_event.opt_events_list_columns')"/>
+            <!-- Drag/Drop Area -->
+            <div id="oe_structure_we_index_0" class="oe_structure">
+                <section class="rc-ev-hero o_colored_level" data-name="Events Hero">
+                    <div class="container">
+                        <span class="rc-eyebrow">Events at Resto Cafe</span>
+                        <h1>Gather, learn &amp; <em>celebrate</em> with us</h1>
+                        <p>Cooking masterclasses with our chefs, latte art workshops, food festivals and live music nights by the backwaters. Book your seat in seconds.</p>
+                        <div class="rc-ev-stats">
+                            <div><strong>40+</strong><span>events a year</span></div>
+                            <div><strong>8</strong><span>signature masterclasses</span></div>
+                            <div><strong>4.9★</strong><span>guest rating</span></div>
+                        </div>
+                        <a href="#o_wevent_index_main_col" class="rc-ev-btn"><i class="fa fa-calendar"/> See upcoming events</a>
+                    </div>
+                </section>
+            </div>
+            <!-- Topbar -->
+            <t t-call="website_event.index_topbar" search="original_search or search or searches['search']"/>
+            <!-- Drag/Drop Area -->
+            <div id="oe_structure_we_index_1" class="oe_structure oe_empty"/>
+            <!-- Content -->
+            <div class="o_wevent_events_list">
+                <div class="container">
+                    <div class="row">
+                        <div id="o_wevent_index_main_col" t-attf-class="col-md mb-3 #{opt_events_list_columns and 'opt_events_list_columns' or 'opt_events_list_rows'}">
+                            <div class="row g-4 g-lg-3 g-xxl-4">
+                                <!-- Events List -->
+                                <t t-call="website_event.events_list"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Drag/Drop Area -->
+            <div id="oe_structure_we_index_2" class="oe_structure oe_empty"/>
+        </div>
+    </t>
+</t>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_mrp_eco" model="ir.actions.report">
+        <field name="name">Engineering Change Order</field>
+        <field name="model">mrp.eco</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_plm.report_mrp_eco</field>
+        <field name="print_report_name">'ECO - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_mrp_eco"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_mrp_eco_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2><t t-esc="eco.name"/></h2>
+                <div class="row mt-3 mb-3">
+                    <div class="col-6">
+                        <div><strong>Type: </strong><span t-field="eco.type_id"/></div>
+                        <div><strong>Apply on: </strong><span t-field="eco.type"/></div>
+                        <div><strong>Product: </strong><span t-field="eco.product_tmpl_id"/></div>
+                        <div t-if="eco.bom_id"><strong>Bill of Materials: </strong><span t-field="eco.bom_id"/>
+                            (V<span t-esc="eco.bom_id.version"/>)</div>
+                        <div t-if="eco.new_bom_id"><strong>Revision: </strong>V<span t-esc="eco.new_bom_id.version"/></div>
+                    </div>
+                    <div class="col-6">
+                        <div><strong>Responsible: </strong><span t-field="eco.user_id"/></div>
+                        <div><strong>Stage: </strong><span t-field="eco.stage_id"/></div>
+                        <div><strong>Status: </strong><span t-field="eco.state"/></div>
+                        <div><strong>Effective: </strong>
+                            <span t-if="eco.effectivity == 'asap'">As soon as possible</span>
+                            <span t-else="" t-field="eco.effectivity_date"/>
+                        </div>
+                        <div><strong>Created on: </strong><span t-field="eco.create_date"/></div>
+                        <div t-if="eco.date_done"><strong>Completed on: </strong><span t-field="eco.date_done"/></div>
+                    </div>
+                </div>
+
+                <div t-if="eco.note" class="mb-3">
+                    <h5>Note</h5>
+                    <div t-field="eco.note"/>
+                </div>
+
+                <t t-if="eco.bom_change_ids">
+                    <h5>BoM Changes</h5>
+                    <table class="table table-sm o_main_table mb-3">
+                        <thead>
+                            <tr>
+                                <th>Change</th>
+                                <th>Component</th>
+                                <th class="text-end">Old Qty</th>
+                                <th class="text-end">New Qty</th>
+                                <th>Unit</th>
+                                <th class="text-end">Cost Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="eco.bom_change_ids" t-as="change">
+                                <td><span t-field="change.change_type"/></td>
+                                <td><span t-field="change.product_id"/></td>
+                                <td class="text-end"><span t-field="change.old_qty"/></td>
+                                <td class="text-end"><span t-field="change.new_qty"/></td>
+                                <td><span t-field="change.uom_id"/></td>
+                                <td class="text-end"><span t-field="change.cost_diff"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <t t-if="eco.routing_change_ids">
+                    <h5>Operation Changes</h5>
+                    <table class="table table-sm o_main_table mb-3">
+                        <thead>
+                            <tr>
+                                <th>Change</th>
+                                <th>Operation</th>
+                                <th>Work Center</th>
+                                <th class="text-end">Old Duration (min)</th>
+                                <th class="text-end">New Duration (min)</th>
+                                <th class="text-end">Cost Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="eco.routing_change_ids" t-as="change">
+                                <td><span t-field="change.change_type"/></td>
+                                <td><span t-field="change.operation_name"/></td>
+                                <td><span t-field="change.workcenter_id"/></td>
+                                <td class="text-end"><span t-field="change.old_duration"/></td>
+                                <td class="text-end"><span t-field="change.new_duration"/></td>
+                                <td class="text-end"><span t-field="change.cost_diff"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <t t-if="eco.approval_ids">
+                    <h5>Approvals</h5>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>Role</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>By</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="eco.approval_ids" t-as="approval">
+                                <td><span t-field="approval.stage_id"/></td>
+                                <td><span t-field="approval.name"/></td>
+                                <td><span t-field="approval.approval_type"/></td>
+                                <td><span t-field="approval.status"/></td>
+                                <td><span t-field="approval.user_id"/></td>
+                                <td><span t-field="approval.approval_date"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_mrp_eco">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="eco">
+                <t t-call="hudson_plm.report_mrp_eco_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Subscription Report Pivot View -->
+    <record id="view_sale_subscription_report_pivot" model="ir.ui.view">
+        <field name="name">sale.subscription.report.pivot</field>
+        <field name="model">sale.subscription.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Subscriptions Analysis" sample="1">
+                <field name="start_date" interval="month" type="row"/>
+                <field name="plan_id" type="col"/>
+                <field name="recurring_monthly" type="measure"/>
+                <field name="recurring_yearly" type="measure"/>
+                <field name="subscription_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Subscription Report Graph View -->
+    <record id="view_sale_subscription_report_graph" model="ir.ui.view">
+        <field name="name">sale.subscription.report.graph</field>
+        <field name="model">sale.subscription.report</field>
+        <field name="arch" type="xml">
+            <graph string="Subscriptions Analysis" type="bar" sample="1">
+                <field name="start_date" interval="month"/>
+                <field name="recurring_monthly" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Subscription Report Search View -->
+    <record id="view_sale_subscription_report_search" model="ir.ui.view">
+        <field name="name">sale.subscription.report.search</field>
+        <field name="model">sale.subscription.report</field>
+        <field name="arch" type="xml">
+            <search string="Subscriptions Analysis">
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="plan_id"/>
+                <field name="subscription_state"/>
+                <filter string="In Progress" name="filter_in_progress" domain="[('subscription_state', '=', '3_progress')]"/>
+                <filter string="Churned" name="filter_churned" domain="[('subscription_state', '=', '6_churn')]"/>
+                <filter string="To Renew" name="filter_to_renew" domain="[('subscription_state', '=', '5_renew')]"/>
+                <separator/>
+                <group>
+                    <filter string="Plan" name="group_by_plan" context="{'group_by': 'plan_id'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by': 'subscription_state'}"/>
+                    <filter string="Salesperson" name="group_by_salesperson" context="{'group_by': 'user_id'}"/>
+                    <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                    <filter string="Start Month" name="group_by_start_month" context="{'group_by': 'start_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 1. Subscriptions Analysis Action -->
+    <record id="action_subscription_report_subscriptions" model="ir.actions.act_window">
+        <field name="name">Subscriptions Analysis</field>
+        <field name="res_model">sale.subscription.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_sale_subscription_report_search"/>
+        <field name="context">{'search_default_filter_in_progress': 1, 'search_default_group_by_plan': 1}</field>
+    </record>
+
+    <!-- Retention List View for Subscriptions matching Enterprise reference -->
+    <record id="view_subscription_retention_list" model="ir.ui.view">
+        <field name="name">sale.order.retention.list</field>
+        <field name="model">sale.order</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <list string="Subscription" sample="1">
+                <field name="currency_id" column_invisible="True"/>
+                <field name="name" string="Number" readonly="1" decoration-bf="1"/>
+                <field name="date_order" string="Order Date" widget="datetime"/>
+                <field name="partner_id" string="Customer" readonly="1"/>
+                <field name="website_id" string="Website" optional="show"/>
+                <field name="user_id" string="Salesperson" widget="many2one_avatar_user" optional="show"/>
+                <field name="activity_ids" string="Activities" widget="list_activity" optional="show"/>
+                <field name="company_id" string="Company" groups="base.group_multi_company" optional="show"/>
+                <field name="amount_total" string="Total" sum="Total" widget="monetary" decoration-bf="1"/>
+                <field name="invoice_status" string="Invoice Status" widget="badge"
+                       decoration-success="invoice_status == 'invoiced'"
+                       decoration-info="invoice_status == 'to invoice'"
+                       decoration-muted="invoice_status == 'no'"
+                       decoration-warning="invoice_status == 'upselling'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 2. Retention Analysis Client Action -->
+    <record id="action_subscription_retention_cohort" model="ir.actions.client">
+        <field name="name">Retention Analysis</field>
+        <field name="tag">hudson_subscriptions.retention_analysis</field>
+    </record>
+
+    <!-- 3. MRR Breakdown Action -->
+    <record id="action_subscription_report_mrr_breakdown" model="ir.actions.act_window">
+        <field name="name">MRR Breakdown</field>
+        <field name="res_model">sale.subscription.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_sale_subscription_report_search"/>
+        <field name="context">{'pivot_measures': ['mrr_new', 'mrr_expansion', 'mrr_churn', 'recurring_monthly'], 'graph_measure': 'recurring_monthly', 'search_default_group_by_plan': 1}</field>
+    </record>
+
+    <!-- 4. MRR Timeline Action -->
+    <record id="action_subscription_report_mrr_timeline" model="ir.actions.act_window">
+        <field name="name">MRR Timeline</field>
+        <field name="res_model">sale.subscription.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_sale_subscription_report_search"/>
+        <field name="context">{'graph_type': 'line', 'graph_measure': 'recurring_monthly', 'search_default_group_by_start_month': 1}</field>
+    </record>
+</odoo>
