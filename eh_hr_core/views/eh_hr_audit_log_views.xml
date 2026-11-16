@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_audit_log_list" model="ir.ui.view">
+        <field name="name">eh.hr.audit.log.list</field>
+        <field name="model">eh.hr.audit.log</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false" edit="false">
+                <field name="occurred_at"/>
+                <field name="model"/>
+                <field name="record_id"/>
+                <field name="action"/>
+                <field name="actor_id"/>
+                <field name="correlation_id" optional="hide"/>
+                <field name="row_hash" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_audit_log_search" model="ir.ui.view">
+        <field name="name">eh.hr.audit.log.search</field>
+        <field name="model">eh.hr.audit.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="model"/>
+                <field name="action"/>
+                <field name="actor_id"/>
+                <field name="correlation_id"/>
+                <filter name="last_24h" string="Last 24h"
+                        domain="[('occurred_at','&gt;=', (context_today() - relativedelta(days=1)).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <group>
+                    <filter name="grp_model" string="Model" context="{'group_by':'model'}"/>
+                    <filter name="grp_action" string="Action" context="{'group_by':'action'}"/>
+                    <filter name="grp_actor" string="Actor" context="{'group_by':'actor_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_audit_log" model="ir.actions.act_window">
+        <field name="name">Audit Log</field>
+        <field name="res_model">eh.hr.audit.log</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_hr_audit_log_search"/>
+    </record>
+</odoo>

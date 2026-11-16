@@ -1,0 +1,828 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_visitor
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Thai\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: eh_hr_visitor
+#: model:mail.template,body_html:eh_hr_visitor.email_template_visitor_arrived
+msgid ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>Hi <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        Your visitor <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            from <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        has arrived.\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        Purpose: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        Visit number: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        Signed in at: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>Please head to reception when you are ready.</p>\n"
+"                </div>\n"
+"            "
+msgstr ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>สวัสดี <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        ผู้มาเยือนของคุณ <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            จาก <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        ได้มาถึงแล้ว\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        วัตถุประสงค์: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        หมายเลขการเยี่ยม: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        ลงชื่อเข้าเมื่อ: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>กรุณาไปที่แผนกต้อนรับเมื่อคุณพร้อม</p>\n"
+"                </div>"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "Action Needed"
+msgstr "จำเป็นต้องดำเนินการ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__active
+msgid "Active"
+msgstr "เปิดใช้งาน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_ids
+msgid "Activities"
+msgstr "กิจกรรม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "การตกแต่งข้อยกเว้นกิจกรรม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid "Activity State"
+msgstr "สถานะกิจกรรม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "ไอคอนประเภทกิจกรรม"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Ask an administrator for a 6-digit pairing PIN."
+msgstr "ขอ PIN สำหรับจับคู่ 6 หลักจากผู้ดูแลระบบ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_attachment_count
+msgid "Attachment Count"
+msgstr "จำนวนสิ่งที่แนบมา"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_enabled
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_enabled
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out at end of day"
+msgstr "เช็คเอาต์อัตโนมัติเมื่อสิ้นสุดวัน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid "Auto check-out hour"
+msgstr "เวลาเช็คเอาต์อัตโนมัติ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out hour (24h)"
+msgstr "เวลาเช็คเอาต์อัตโนมัติ (24 ชม.)"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__auto_signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Auto-signed out"
+msgstr "ออกจากระบบอัตโนมัติ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Back"
+msgstr "กลับ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Capture"
+msgstr "การตัดวงเงิน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "Code"
+msgstr "โค้ด"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_company
+msgid "Companies"
+msgstr "บริษัท"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__company_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__company_id
+msgid "Company"
+msgstr "บริษัท"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_config_settings
+msgid "Config Settings"
+msgstr "ตั้งค่าการกำหนดค่า"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Continue"
+msgstr "ต่อไป"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_contractor
+msgid "Contractor"
+msgstr "ผู้รับเหมา"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_uid
+msgid "Created by"
+msgstr "สร้างโดย"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_date
+msgid "Created on"
+msgstr "สร้างเมื่อ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Day"
+msgstr "วัน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid ""
+"Default NDA prose displayed at the visitor kiosk when the chosen purpose "
+"requires acceptance. Snapshotted onto each visitor record at sign-in time so"
+" the audit trail cannot drift."
+msgstr ""
+"ข้อความ NDA "
+"เริ่มต้นที่แสดงที่ตู้บริการผู้มาเยือนเมื่อวัตถุประสงค์ที่เลือกต้องการการยอมรับ"
+" มีการบันทึกสแนปช็อตลงในบันทึกผู้มาเยือนแต่ละรายการเมื่อลงชื่อเข้าใช้ "
+"เพื่อไม่ให้เส้นทางการตรวจสอบเบี่ยงเบน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Default NDA text"
+msgstr "ข้อความ NDA เริ่มต้น"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_delivery
+msgid "Delivery"
+msgstr "การจัดส่ง"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "แสดงชื่อ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Done"
+msgstr "เสร็จสิ้น"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__duration_minutes
+msgid "Duration (min)"
+msgstr "ระยะเวลา (นาที)"
+
+#. module: eh_hr_visitor
+#: model:mail.template,name:eh_hr_visitor.email_template_visitor_arrived
+msgid "EH Visitor: arrival notification"
+msgstr "EH ผู้มาเยือน: การแจ้งเตือนการมาถึง"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_auto_sign_out_ir_actions_server
+msgid "ERP Heritage: Visitor end-of-day auto sign-out"
+msgstr "ERP Heritage: ลงชื่อออกอัตโนมัติของผู้มาเยือนเมื่อสิ้นวัน"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Visitor retention sweep"
+msgstr "ERP Heritage: การกวาดล้างการเก็บรักษาข้อมูลผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Enter your visit number"
+msgstr "กรอกหมายเลขการเยี่ยมของคุณ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_follower_ids
+msgid "Followers"
+msgstr "ผู้ติดตาม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "ผู้ติดตาม (พาร์ทเนอร์)"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "ไอคอนแบบฟอนต์ที่ยอดเยี่ยมเช่น fa-tasks"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__has_message
+msgid "Has Message"
+msgstr "มีข้อความ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__host_employee_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Host"
+msgstr "โฮสต์"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Host %s has no work email; could not notify by email."
+msgstr "โฮสต์ %s ไม่มีอีเมลที่ทำงาน; ไม่สามารถแจ้งเตือนทางอีเมลได้"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid ""
+"Hour of day (24h) past which any visitor still signed in is automatically "
+"signed out by the daily cron."
+msgstr ""
+"เวลาของวัน (แบบ 24 ชั่วโมง) "
+"ที่หลังจากนั้นผู้เยี่ยมชมที่ยังลงชื่อเข้าอยู่จะถูกลงชื่อออกโดยอัตโนมัติด้วย "
+"cron รายวัน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "I have read and accept these terms"
+msgstr "ฉันได้อ่านและยอมรับข้อกำหนดเหล่านี้แล้ว"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__id
+msgid "ID"
+msgstr "ไอดี"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon"
+msgstr "ไอคอน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "ไอคอนเพื่อระบุการยกเว้นกิจกรรม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "ถ้าเลือก ข้อความใหม่จะต้องการความสนใจจากคุณ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "ถ้าเลือก ข้อความบางข้อความมีข้อผิดพลาดในการส่ง"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_interview
+msgid "Interview"
+msgstr "สัมภาษณ์"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_is_follower
+msgid "Is Follower"
+msgstr "เป็นผู้ติดตาม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__device_id
+msgid "Kiosk device"
+msgstr "อุปกรณ์คีออสก์"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__site_id
+msgid "Kiosk site"
+msgstr "ไซต์คีออสก์"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Last 7 days"
+msgstr "7 วันล่าสุด"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_uid
+msgid "Last Updated by"
+msgstr "อัปเดตครั้งล่าสุดโดย"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_date
+msgid "Last Updated on"
+msgstr "อัปเดตครั้งล่าสุดเมื่อ"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_meeting
+msgid "Meeting"
+msgstr "การประชุม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+msgid "Message Delivery error"
+msgstr "เกิดข้อผิดพลาดในการส่งข้อความ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_ids
+msgid "Messages"
+msgstr "ข้อความ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "วันครบกำหนดกิจกรรมของฉัน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "NDA"
+msgstr ""
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_accepted
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "NDA accepted"
+msgstr "ยอมรับ NDA แล้ว"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "NDA must be accepted before sign-in."
+msgstr "ต้องยอมรับ NDA ก่อนลงชื่อเข้าใช้"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_required
+msgid "NDA required"
+msgstr "ต้องมี NDA"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_text
+msgid "NDA text shown"
+msgstr "แสดงข้อความ NDA"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "ปฏิทินอีเวนต์กิจกรรมถัดไป"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "วันครบกำหนดกิจกรรมถัดไป"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_summary
+msgid "Next Activity Summary"
+msgstr "สรุปกิจกรรมถัดไป"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_id
+msgid "Next Activity Type"
+msgstr "ประเภทกิจกรรมถัดไป"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "No active kiosk site exists for"
+msgstr "ไม่มีไซต์คีออสก์ที่ใช้งานอยู่สำหรับ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid "No visitors yet."
+msgstr "ยังไม่มีผู้เยี่ยมชม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__notes
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Notes"
+msgstr "โน้ต"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of Actions"
+msgstr "จํานวนการดําเนินการ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of errors"
+msgstr "จํานวนข้อผิดพลาด"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "จำนวนข้อความที่ต้องดำเนินการ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "จํานวนข้อความที่มีข้อผิดพลาดในการส่ง"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair"
+msgstr "จับคู่"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair this device"
+msgstr "จับคู่อุปกรณ์นี้"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__pending
+msgid "Pending"
+msgstr "รอดำเนินการ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Photo"
+msgstr "รูปภาพ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Photo consent text"
+msgstr "ข้อความยินยอมถ่ายรูปภาพ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo_filename
+msgid "Photo filename"
+msgstr "ชื่อไฟล์รูปภาพ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Please choose"
+msgstr "กรุณาเลือก"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__purpose_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__name
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Purpose"
+msgstr "เสนอ"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor_purpose.py:0
+msgid ""
+"Purpose code must be a non-empty string of letters, digits, dashes and "
+"underscores."
+msgstr ""
+"รหัสวัตถุประสงค์ต้องเป็นสตริงที่ไม่ว่างเปล่าซึ่งประกอบด้วยตัวอักษร ตัวเลข "
+"ขีดกลาง และขีดล่าง"
+
+#. module: eh_hr_visitor
+#: model:ir.model.constraint,message:eh_hr_visitor.constraint_eh_hr_visitor_purpose_unique_code_per_company
+msgid "Purpose code must be unique per company."
+msgstr "รหัสวัตถุประสงค์ต้องไม่ซ้ำกันในแต่ละบริษัท"
+
+#. module: eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_purpose
+msgid "Purposes"
+msgstr "วัตถุประสงค์"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__rating_ids
+msgid "Ratings"
+msgstr "การให้คะแนน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Reception iPad"
+msgstr "iPad แผนกต้อนรับ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__nda_required
+msgid "Require NDA"
+msgstr "กำหนดให้มี NDA"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__photo_required
+msgid "Require photo"
+msgstr "กำหนดให้มีรูปถ่าย"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_user_id
+msgid "Responsible User"
+msgstr "ผู้ใช้ที่รับผิดชอบ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "ข้อผิดพลาดในการส่ง SMS"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__sequence
+msgid "Sequence"
+msgstr "ลำดับ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+msgid ""
+"Shown above the camera button on the visitor kiosk when the chosen purpose "
+"requires a photo. Snapshotted with the visitor record."
+msgstr ""
+"แสดงเหนือปุ่มกล้องบนตู้บริการผู้เยี่ยมชมเมื่อวัตถุประสงค์ที่เลือกต้องการรูปถ่าย"
+" บันทึกเป็นภาพนิ่งพร้อมกับระเบียนผู้เยี่ยมชม"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown above the camera on the visitor kiosk when the purpose requires a "
+"photo."
+msgstr "แสดงเหนือกล้องบนตู้บริการผู้เยี่ยมชมเมื่อวัตถุประสงค์ต้องการรูปถ่าย"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown at the visitor kiosk when the chosen purpose requires NDA acceptance. "
+"Snapshotted onto each visitor record at sign-in time."
+msgstr ""
+"แสดงที่ตู้บริการผู้เยี่ยมชมเมื่อวัตถุประสงค์ที่เลือกต้องการการยอมรับ NDA "
+"บันทึกเป็นภาพนิ่งลงในระเบียนผู้เยี่ยมชมแต่ละรายเมื่อเช็คอิน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign in"
+msgstr "ลงชื่อเข้าใช้"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign out"
+msgstr "ลงชื่อออก"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__arrived_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_in
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed in"
+msgstr "ลงชื่อเข้า"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__signed_out_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed out"
+msgstr "ลงชื่อออก"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Signed-out visitor rows are deleted after this many days. NDA snapshot and "
+"photo go with the row."
+msgstr ""
+"แถวของผู้เยี่ยมชมที่ลงชื่อออกจะถูกลบหลังจากจำนวนวันนี้ สแนปช็อต NDA "
+"และรูปภาพจะถูกลบไปพร้อมกับแถว"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site not configured"
+msgstr "ไซต์ยังไม่ได้กำหนดค่า"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site terms"
+msgstr "ข้อกำหนดของไซต์"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site:"
+msgstr "ไซต์:"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Skip"
+msgstr "ข้าม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__state
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Status"
+msgstr "สถานะ"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"สถานะตามกิจกรรม\n"
+"เกินกำหนด: วันที่ครบกำหนดผ่านไปแล้ว\n"
+"วันนี้: วันที่จัดกิจกรรมคือวันนี้\n"
+"วางแผน: กิจกรรมในอนาคต"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "This visit requires NDA acceptance before sign-in is complete."
+msgstr "การเยี่ยมชมนี้ต้องยอมรับ NDA ก่อนที่การลงชื่อเข้าจะเสร็จสมบูรณ์"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Today"
+msgstr "วันนี้"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "ประเภทกิจกรรมข้อยกเว้นบนบันทึก"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Type the host's name"
+msgstr "พิมพ์ชื่อผู้จัด"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "URL-safe identifier. Letters, digits, dashes and underscores only."
+msgstr ""
+"ตัวระบุที่ปลอดภัยสำหรับ URL อนุญาตเฉพาะตัวอักษร ตัวเลข ขีดกลาง "
+"และขีดล่างเท่านั้น"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor_purpose
+msgid "Visit Purpose"
+msgstr "วัตถุประสงค์การเยี่ยม"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visit_number
+msgid "Visit number"
+msgstr "หมายเลขการเยี่ยม"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor_purpose
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_purpose_list
+msgid "Visit purposes"
+msgstr "วัตถุประสงค์การเยี่ยม"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor"
+msgstr "ผู้เยี่ยมชม"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Visitor %s arrived to see %s. Purpose: %s"
+msgstr "ผู้มาเยือน %s มาถึงเพื่อพบ %s วัตถุประสงค์: %s"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid "Visitor NDA text"
+msgstr "ข้อความ NDA สำหรับผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor
+msgid "Visitor Sign-in Record"
+msgstr "บันทึกการลงชื่อเข้าของผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_email
+msgid "Visitor email"
+msgstr "อีเมลของผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor full name"
+msgstr "ชื่อเต็มของผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor management"
+msgstr "การจัดการผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__name
+msgid "Visitor name"
+msgstr "ชื่อผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_company
+msgid "Visitor organisation"
+msgstr "องค์กรของผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_phone
+msgid "Visitor phone"
+msgstr "โทรศัพท์ของผู้มาเยือน"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor retention (days)"
+msgstr "การเก็บรักษาข้อมูลผู้มาเยือน (วัน)"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_root
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Visitors"
+msgstr "ผู้เยี่ยมชม"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid ""
+"Visitors sign themselves in at the front-desk kiosk at "
+"<code>/eh_hr/visitor/&lt;site_code&gt;</code>. The host receives an email "
+"when their visitor arrives."
+msgstr ""
+"ผู้มาเยือนลงชื่อเข้าด้วยตนเองที่คีออสก์แผนกต้อนรับที่ "
+"<code>/eh_hr/visitor/&lt;site_code&gt;</code> "
+"ผู้เป็นเจ้าภาพจะได้รับอีเมลเมื่อผู้มาเยือนของตนมาถึง"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website Messages"
+msgstr "ข้อความเว็บไซต์"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website communication history"
+msgstr "ประวัติการสื่อสารของเว็บไซต์"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome"
+msgstr "ยินดีต้อนรับ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome!"
+msgstr "ยินดีต้อนรับ!"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your email (optional)"
+msgstr "อีเมลของคุณ (ไม่บังคับ)"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your full name"
+msgstr "ชื่อ-นามสกุลของคุณ"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your host has been notified."
+msgstr "แจ้งเจ้าภาพของคุณแล้ว"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your organisation"
+msgstr "องค์กรของคุณ"
+
+#. module: eh_hr_visitor
+#: model:mail.template,subject:eh_hr_visitor.email_template_visitor_arrived
+msgid "Your visitor {{ object.name }} has arrived"
+msgstr "ผู้มาเยือนของคุณ {{ object.name }} มาถึงแล้ว"

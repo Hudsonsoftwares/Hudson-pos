@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hr_appraisal_root" name="Appraisals" sequence="90" web_icon="eh_hr_appraisal,static/description/icon.png"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_hr_appraisal_main" name="Appraisals" parent="menu_hr_appraisal_root" action="action_hr_appraisal" sequence="1"/>
+    <menuitem id="menu_hr_appraisal_goals" name="Goals" parent="menu_hr_appraisal_root" action="action_hr_appraisal_goal" sequence="2"/>
+
+    <menuitem id="menu_hr_appraisal_report" name="Reporting" parent="menu_hr_appraisal_root" sequence="90"
+              groups="eh_hr_appraisal.group_hr_appraisal_user"/>
+    <menuitem id="menu_hr_appraisal_analysis_report" name="Appraisal Analysis" parent="menu_hr_appraisal_report"
+              action="action_hr_appraisal_analysis_report" sequence="10"/>
+    <menuitem id="menu_hr_appraisal_skills_evolution" name="Skills Evolution" parent="menu_hr_appraisal_report"
+              action="action_hr_appraisal_skills_evolution" sequence="20"/>
+
+    <menuitem id="menu_hr_appraisal_config" name="Configuration" parent="menu_hr_appraisal_root" sequence="100"
+              groups="eh_hr_appraisal.group_hr_appraisal_manager"/>
+    <menuitem id="menu_hr_appraisal_configuration_settings" name="Settings" parent="menu_hr_appraisal_config"
+              action="action_hr_appraisal_configuration" sequence="0" groups="base.group_system"/>
+    <menuitem id="menu_hr_appraisal_template" name="Appraisal Templates" parent="menu_hr_appraisal_config"
+              action="action_hr_appraisal_template" sequence="10"/>
+    <menuitem id="menu_hr_appraisal_scale" name="Evaluation Scale" parent="menu_hr_appraisal_config"
+              action="action_hr_appraisal_scale" sequence="20"/>
+    <menuitem id="menu_hr_appraisal_360_feedback" name="360 Feedback" parent="menu_hr_appraisal_config"
+              action="action_hr_appraisal_360_feedback" sequence="25"/>
+    <menuitem id="menu_hr_appraisal_goal_template" name="Library" parent="menu_hr_appraisal_config"
+              action="action_hr_appraisal_goal_template" sequence="30"/>
+    <menuitem id="menu_hr_appraisal_goal_tag" name="Tags" parent="menu_hr_appraisal_config"
+              action="action_hr_appraisal_goal_tag" sequence="35"/>
+    <menuitem id="menu_hr_appraisal_skills" name="Skill Types" parent="menu_hr_appraisal_config"
+              action="hr_skills.hr_skill_type_action" sequence="40"/>
+
+    <!-- Activities -->
+    <record id="action_hr_appraisal_activity_type" model="ir.actions.act_window">
+        <field name="name">Activity Types</field>
+        <field name="res_model">mail.activity.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', ('res_model', '=', 'hr.appraisal'), ('res_model', '=', False)]</field>
+        <field name="context">{'default_res_model': 'hr.appraisal'}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('hr_appraisal_mail_activity_type_view_form')})]"/>
+    </record>
+
+    <record id="action_hr_appraisal_activity_plan" model="ir.actions.act_window">
+        <field name="name">Activity Plans</field>
+        <field name="res_model">mail.activity.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', ('res_model', '=', 'hr.appraisal'), ('res_model', '=', False)]</field>
+        <field name="context">{'default_res_model': 'hr.appraisal'}</field>
+    </record>
+
+    <menuitem id="menu_hr_appraisal_activities_config" name="Activities" parent="menu_hr_appraisal_config" sequence="50"/>
+    <menuitem id="menu_hr_appraisal_activity_types" name="Activity Types" parent="menu_hr_appraisal_activities_config"
+              action="action_hr_appraisal_activity_type" sequence="10"/>
+    <menuitem id="menu_hr_appraisal_activity_plans" name="Activity Plans" parent="menu_hr_appraisal_activities_config"
+              action="action_hr_appraisal_activity_plan" sequence="20"/>
+</odoo>

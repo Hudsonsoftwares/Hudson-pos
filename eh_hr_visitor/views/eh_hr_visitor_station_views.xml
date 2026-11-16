@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="view_eh_hr_visitor_station_list" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.station.list</field>
+            <field name="model">eh.hr.visitor.station</field>
+            <field name="arch" type="xml">
+                <list string="Frontdesk Stations">
+                    <field name="name"/>
+                    <field name="responsible_employee_ids" widget="many2many_tags" string="Responsibles"/>
+                    <field name="kiosk_url"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_visitor_station_form" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.station.form</field>
+            <field name="model">eh.hr.visitor.station</field>
+            <field name="arch" type="xml">
+                <form string="Frontdesk Station">
+                    <header>
+                        <button name="action_open_kiosk" type="object" string="Open Kiosk" class="oe_highlight" icon="fa-external-link"/>
+                        <button name="action_regenerate_token" type="object" string="Regenerate URL" confirm="This will invalidate the current kiosk URL. Are you sure?"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                        <field name="station_image" widget="image" class="oe_avatar" options="{'size': [90, 90]}"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Main Reception"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="responsible_employee_ids" widget="many2many_tags" string="Responsibles"/>
+                                <field name="allowed_host_employee_ids" widget="many2many_tags" string="Hosts" invisible="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="kiosk_url" widget="url" readonly="1"/>
+                                <field name="active" invisible="1"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Options">
+                                <group>
+                                    <group string="Host">
+                                        <field name="host_selection"/>
+                                        <field name="default_host_employee_id" invisible="host_selection"/>
+                                    </group>
+                                    <group string="Guest Authentication">
+                                        <field name="authenticate_guest"/>
+                                        <field name="field_email" invisible="not authenticate_guest"/>
+                                        <field name="field_phone" invisible="not authenticate_guest"/>
+                                        <field name="field_organization" invisible="not authenticate_guest"/>
+                                    </group>
+                                    <group string="Self Check-In">
+                                        <field name="self_checkin"/>
+                                        <field name="qr_code" widget="image" invisible="not self_checkin" options="{'size': [150, 150]}"/>
+                                    </group>
+                                    <group string="Drinks">
+                                        <field name="offer_drinks"/>
+                                        <field name="drink_ids" widget="many2many_tags" invisible="not offer_drinks"/>
+                                    </group>
+                                    <group string="Notifications">
+                                        <field name="notify_email"/>
+                                        <field name="notify_discuss"/>
+                                        <field name="notify_sms"/>
+                                    </group>
+                                    <group string="Display">
+                                        <field name="theme"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Side Message">
+                                <field name="side_message" placeholder="e.g. Welcome to our office..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_visitor_station_kanban" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.station.kanban</field>
+            <field name="model">eh.hr.visitor.station</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="station_image"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click d-flex align-items-center">
+                                <div class="o_kanban_image me-3">
+                                    <field name="station_image" widget="image" class="o_kanban_image"/>
+                                </div>
+                                <div class="oe_kanban_details w-100">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_bottom mt-3">
+                                        <div class="oe_kanban_bottom_left">
+                                            <button name="action_open_kiosk" type="object" class="btn btn-primary btn-sm">Open Kiosk</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_visitor_station_dashboard" model="ir.actions.act_window">
+            <field name="name">Stations</field>
+            <field name="res_model">eh.hr.visitor.station</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create your first Frontdesk Station in Configuration</p>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_visitor_station" model="ir.actions.act_window">
+            <field name="name">Frontdesk Stations</field>
+            <field name="res_model">eh.hr.visitor.station</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create your first Frontdesk Station</p>
+                <p>Configure kiosks to welcome visitors, capture details, and notify hosts.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

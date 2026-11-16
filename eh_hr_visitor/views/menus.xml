@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_visitor_management_root"
+                  name="Visitor Management"
+                  web_icon="eh_hr_visitor,static/description/icon.png"
+                  sequence="50"/>
+
+        <menuitem id="menu_eh_hr_visitor_dashboard"
+                  name="Dashboard"
+                  parent="menu_visitor_management_root"
+                  action="action_visitor_dashboard"
+                  sequence="5"/>
+
+        <menuitem id="menu_eh_hr_visitors_tab"
+                  name="Visitors"
+                  parent="menu_visitor_management_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_eh_hr_visitor_invitations"
+                  name="Visitor Invitations"
+                  parent="menu_eh_hr_visitors_tab"
+                  action="action_eh_hr_visitor_invitations"
+                  sequence="11"/>
+
+        <menuitem id="menu_eh_hr_visitor_expected"
+                  name="Expected Visitors"
+                  parent="menu_eh_hr_visitors_tab"
+                  action="action_eh_hr_visitor_expected"
+                  sequence="12"/>
+
+        <menuitem id="menu_eh_hr_visitor"
+                  name="Walk-in Registration"
+                  parent="menu_eh_hr_visitors_tab"
+                  action="action_eh_hr_visitor"
+                  sequence="13"/>
+
+
+
+
+        <menuitem id="menu_eh_hr_visitor_station_dashboard"
+                  name="Stations"
+                  parent="menu_visitor_management_root"
+                  action="action_eh_hr_visitor_station_dashboard"
+                  sequence="20"
+                  groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+
+        <menuitem id="menu_eh_hr_visitor_config_root"
+                  name="Configuration"
+                  parent="menu_visitor_management_root"
+                  sequence="100"
+                  groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+
+        <menuitem id="menu_eh_hr_visitor_station"
+                  name="Frontdesk Stations"
+                  parent="menu_eh_hr_visitor_config_root"
+                  action="action_eh_hr_visitor_station"
+                  sequence="5"
+                  groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+
+        <menuitem id="menu_eh_hr_visitor_purpose"
+                  name="Visit Purposes"
+                  parent="menu_eh_hr_visitor_config_root"
+                  action="action_eh_hr_visitor_purpose"
+                  sequence="10"
+                  groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+
+        <menuitem id="menu_eh_hr_visitor_drink"
+                  name="Drinks"
+                  parent="menu_eh_hr_visitor_config_root"
+                  action="action_eh_hr_visitor_drink"
+                  sequence="20"
+                  groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+
+    </data>
+</odoo>

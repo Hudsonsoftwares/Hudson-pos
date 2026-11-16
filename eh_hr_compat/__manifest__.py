@@ -1,0 +1,20 @@
+# -*- coding: utf-8 -*-
+{
+    'post_init_hook': 'post_init_hook',
+    'name': 'EH HR Compatibility',
+    'summary': 'A small, stateless compatibility layer that resolves the Odoo API renames between versions 16, 17, 18 and 19 in one place, so the EH HR Platform feature modules stay version-agnostic, covering the res.users group field rename (groups_id to group_ids), the res.groups members rename (users to user_ids), the access-level dropdown that moved from category_id to privilege_id on 19, the hr.contract to hr.version model rename, the list and tree view-mode vocabulary change, and idempotent column renames for migration scripts, Odoo HR version compatibility shim, cross-version add-on, hr.version rename, group_ids migration, self-hosted LGPL-3.',
+    'description': 'Version compatibility shims for the EH HR Platform. A tiny, stateless Python module that resolves the Odoo API differences between 16, 17, 18 and 19 in one place so feature modules never branch on the running version themselves. No models, no business logic, no stored state.',
+    'version': '1.0.0',
+    'author': 'ERP Heritage',
+    'maintainer': 'ERP Heritage',
+    'website': 'https://erpheritage.com.au',
+    'license': 'LGPL-3',
+    'category': 'Human Resources/Platform',
+    'depends': ['base'],
+    'data': [],
+    'images': ['static/description/banner.gif'],
+    'support': 'info@erpheritage.com.au',
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+}

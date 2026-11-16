@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="view_res_config_settings_eh_hr" model="ir.ui.view">
+            <field name="name">res.config.settings.eh.hr</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Attendance Suite" string="Attendance Suite" name="eh_hr_attendance_base" groups="eh_hr_attendance_base.group_eh_hr_admin">
+                        <block title="Consent and retention" name="eh_hr_consent_block">
+                            <setting id="eh_hr_consent_validity" string="Consent validity (months)" help="Period after which an active consent expires and the employee is asked to re-consent.">
+                                <field name="eh_hr_consent_validity_months"/>
+                            </setting>
+                            <setting id="eh_hr_consent_retention" string="Withdrawn or expired retention (months)" help="How long withdrawn or expired consent records are kept for audit before deletion.">
+                                <field name="eh_hr_consent_retention_months"/>
+                            </setting>
+                            <setting id="eh_hr_audit_retention" string="Kiosk audit log retention (months)" help="How long every kiosk match attempt, success, failure and exception event is retained.">
+                                <field name="eh_hr_audit_retention_months"/>
+                            </setting>
+                            <setting id="eh_hr_consent_text_face" string="Default face consent text" help="The exact prose displayed at the kiosk when an employee enrols for face recognition. Snapshotted onto each consent record at grant time.">
+                                <field name="eh_hr_consent_text_face" widget="text"/>
+                            </setting>
+                        </block>
+                        <block title="Kiosk and matching" name="eh_hr_kiosk_block">
+                            <setting id="eh_hr_match_threshold" string="Face match threshold" help="Cosine distance threshold below which a face is considered a match. Lower is stricter. Typical 0.45 (very strict) to 0.65 (lenient).">
+                                <field name="eh_hr_match_threshold"/>
+                            </setting>
+                            <setting id="eh_hr_kiosk_idle" string="Kiosk idle reset (seconds)" help="The kiosk shell returns to the welcome screen after this many seconds of inactivity.">
+                                <field name="eh_hr_kiosk_idle_seconds"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_settings" model="ir.actions.act_window">
+            <field name="name">Attendance Suite settings</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="context">{'module': 'eh_hr_attendance_base'}</field>
+        </record>
+
+        <menuitem id="menu_eh_hr_settings"
+                  name="Settings"
+                  parent="menu_eh_hr_config_root"
+                  action="action_eh_hr_settings"
+                  sequence="10"/>
+
+    </data>
+</odoo>

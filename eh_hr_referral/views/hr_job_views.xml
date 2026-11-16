@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_job_tree_referral" model="ir.ui.view">
+        <field name="name">hr.job.tree.referral</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="referral_target" string="Target" optional="show"/>
+                <field name="referral_recruiter_id" string="Recruiter" widget="many2one_avatar_user" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_job_search_referral" model="ir.ui.view">
+        <field name="name">hr.job.search.referral</field>
+        <field name="model">hr.job</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <searchpanel>
+                    <field name="company_id" icon="business" enable_counters="1"/>
+                    <field name="department_id" icon="group" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_hr_job_kanban_referral" model="ir.ui.view">
+        <field name="name">hr.job.kanban.referral</field>
+        <field name="model">hr.job</field>
+        <field name="arch" type="xml">
+            <kanban js_class="eh_referral_kanban" class="o_kanban_mobile" type="object" action="action_dummy">
+                <field name="name"/>
+                <field name="no_of_recruitment"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_eh_referral_job_card">
+                            <div class="oe_kanban_content p-3">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <strong class="o_eh_referral_job_title"><field name="name"/></strong>
+                                    <span class="badge rounded-pill text-warning flex-shrink-0" style="background-color: rgba(255, 193, 7, 0.2);"><i class="oi oi-filled" data-icon="star"/> 100 Points</span>
+                                </div>
+                                <div class="o_eh_referral_job_positions mt-1 mb-2">
+                                    <i class="oi me-1" data-icon="group"/><field name="no_of_recruitment"/> Open Positions
+                                </div>
+                                <div class="o_eh_referral_job_description">
+                                    <t t-if="record.description.raw_value">
+                                        <t t-out="record.description.raw_value"/>
+                                    </t>
+                                    <t t-else="">
+                                        We are looking for a candidate to provide expert advice and strategic solutions.
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom p-2 d-flex justify-content-around" style="background-color: rgba(0,0,0,0.1); border-top: 1px solid rgba(255,255,255,0.1); overflow: visible;">
+                                <button type="object" name="action_open_job_page" class="btn btn-sm btn-link text-white"><i class="oi" data-icon="public"/> Job Page</button>
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-link text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="oi" data-icon="send"/> Send
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li role="menuitem"><a class="dropdown-item" href="#" type="object" name="action_send_email"><i class="oi me-2" data-icon="mail"/> Send by Email</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#" type="object" name="action_send_whatsapp"><i class="oi me-2" data-icon="oi_whatsapp"/> Send by WhatsApp</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#" type="object" name="action_send_sms"><i class="oi me-2" data-icon="smartphone"/> Send by SMS</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-link text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="oi" data-icon="share"/> Share
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li role="menuitem"><a class="dropdown-item" href="#" type="object" name="action_share_facebook"><i class="oi me-2" data-icon="oi_facebook"/> Share on Facebook</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#" type="object" name="action_share_linkedin"><i class="oi me-2" data-icon="oi_linkedin"/> Share on LinkedIn</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#" type="object" name="action_share_x"><i class="oi me-2" data-icon="oi_x"/> Share on X</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#" type="object" name="action_copy_link"><i class="oi me-2" data-icon="content_copy"/> Copy Link</a></li>
+                                    </ul>
+                                </div>
+
+                                <button type="object" name="action_promote_job" class="btn btn-sm btn-link text-white" groups="hr_recruitment.group_hr_recruitment_user"><i class="oi" data-icon="campaign"/> Promote</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_job_positions_kanban" model="ir.actions.act_window">
+        <field name="name">Job Positions</field>
+        <field name="res_model">hr.job</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_hr_job_search_referral"/>
+        <field name="view_id" ref="view_hr_job_kanban_referral"/>
+        <field name="help" type="html">
+            <div class="eh_referral_empty_state d-flex flex-column align-items-center justify-content-end" style="height: 100vh; width: 100%; position: absolute; top: 0; left: 0; padding-bottom: 20px;">
+                <img src="/eh_hr_referral/static/src/img/superhero.jpg" style="max-height: 40vh; mix-blend-mode: multiply; margin-bottom: 10px;"/>
+                <p style="color: white; font-weight: bold; font-family: monospace; font-size: 1.2rem; letter-spacing: 1px; text-transform: uppercase;">
+                    NO JOB POSITIONS ARE AVAILABLE TO SHARE.
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_job_positions" model="ir.actions.act_window">
+        <field name="name">Job Positions</field>
+        <field name="res_model">hr.job</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

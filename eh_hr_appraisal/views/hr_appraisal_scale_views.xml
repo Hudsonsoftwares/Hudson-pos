@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_appraisal_scale_tree" model="ir.ui.view">
+        <field name="name">hr.appraisal.scale.tree</field>
+        <field name="model">hr.appraisal.scale</field>
+        <field name="arch" type="xml">
+            <list string="Evaluation Scale" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_scale" model="ir.actions.act_window">
+        <field name="name">Evaluation Scale</field>
+        <field name="res_model">hr.appraisal.scale</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

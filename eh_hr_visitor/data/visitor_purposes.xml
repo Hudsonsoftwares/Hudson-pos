@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_eh_hr_visitor" model="ir.sequence">
+            <field name="name">Visitor visit number</field>
+            <field name="code">eh.hr.visitor</field>
+            <field name="prefix">V</field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="purpose_meeting" model="eh.hr.visitor.purpose">
+            <field name="name">Meeting</field>
+            <field name="code">meeting</field>
+            <field name="sequence">10</field>
+            <field name="nda_required" eval="False"/>
+            <field name="photo_required" eval="False"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="purpose_delivery" model="eh.hr.visitor.purpose">
+            <field name="name">Delivery</field>
+            <field name="code">delivery</field>
+            <field name="sequence">20</field>
+            <field name="nda_required" eval="False"/>
+            <field name="photo_required" eval="False"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="purpose_contractor" model="eh.hr.visitor.purpose">
+            <field name="name">Contractor</field>
+            <field name="code">contractor</field>
+            <field name="sequence">30</field>
+            <field name="nda_required" eval="True"/>
+            <field name="photo_required" eval="True"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="purpose_interview" model="eh.hr.visitor.purpose">
+            <field name="name">Interview</field>
+            <field name="code">interview</field>
+            <field name="sequence">40</field>
+            <field name="nda_required" eval="True"/>
+            <field name="photo_required" eval="False"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

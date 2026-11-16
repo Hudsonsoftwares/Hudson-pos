@@ -1,0 +1,828 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_visitor
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Swedish\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#. module: eh_hr_visitor
+#: model:mail.template,body_html:eh_hr_visitor.email_template_visitor_arrived
+msgid ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>Hi <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        Your visitor <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            from <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        has arrived.\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        Purpose: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        Visit number: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        Signed in at: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>Please head to reception when you are ready.</p>\n"
+"                </div>\n"
+"            "
+msgstr ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>Hej <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        Din besökare <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            från <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        har anlänt.\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        Syfte: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        Besöksnummer: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        Incheckad kl.: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>Gå till receptionen när du är redo.</p>\n"
+"                </div>"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "Action Needed"
+msgstr "Åtgärd krävs"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__active
+msgid "Active"
+msgstr "Aktiv"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_ids
+msgid "Activities"
+msgstr "Aktiviteter"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Undantagsaktiviteter dekoration"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid "Activity State"
+msgstr "Aktivitetsstatus"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Ikon för aktivitetstyp"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Ask an administrator for a 6-digit pairing PIN."
+msgstr "Be en administratör om en 6-siffrig parkopplings-PIN."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_attachment_count
+msgid "Attachment Count"
+msgstr "Antal bilagor"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_enabled
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_enabled
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out at end of day"
+msgstr "Automatisk utcheckning vid dagens slut"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid "Auto check-out hour"
+msgstr "Timme för automatisk utcheckning"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out hour (24h)"
+msgstr "Automatisk utcheckningstid (24h)"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__auto_signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Auto-signed out"
+msgstr "Automatiskt utloggad"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Back"
+msgstr "Tillbaka"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Capture"
+msgstr "Fångst"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "Code"
+msgstr "Kod"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_company
+msgid "Companies"
+msgstr "Företag"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__company_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__company_id
+msgid "Company"
+msgstr "Företag"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_config_settings
+msgid "Config Settings"
+msgstr "Inställningar"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Continue"
+msgstr "Fortsätt"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_contractor
+msgid "Contractor"
+msgstr "Entreprenör"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_uid
+msgid "Created by"
+msgstr "Skapad av"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_date
+msgid "Created on"
+msgstr "Skapad den"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Day"
+msgstr "Dag"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid ""
+"Default NDA prose displayed at the visitor kiosk when the chosen purpose "
+"requires acceptance. Snapshotted onto each visitor record at sign-in time so"
+" the audit trail cannot drift."
+msgstr ""
+"Standardtext för NDA som visas i besökskiosken när det valda syftet kräver "
+"godkännande. Registreras som en ögonblicksbild på varje besökspost vid "
+"incheckning så att verifieringskedjan inte kan avvika."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Default NDA text"
+msgstr "Standard-NDA-text"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_delivery
+msgid "Delivery"
+msgstr "Leverans"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Visningsnamn"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Done"
+msgstr "Klar"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__duration_minutes
+msgid "Duration (min)"
+msgstr "Varaktighet (min)"
+
+#. module: eh_hr_visitor
+#: model:mail.template,name:eh_hr_visitor.email_template_visitor_arrived
+msgid "EH Visitor: arrival notification"
+msgstr "EH Besökare: ankomstavisering"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_auto_sign_out_ir_actions_server
+msgid "ERP Heritage: Visitor end-of-day auto sign-out"
+msgstr "ERP Heritage: Automatisk utcheckning av besökare vid dagens slut"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Visitor retention sweep"
+msgstr "ERP Heritage: Rensning av lagringstid för besökare"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Enter your visit number"
+msgstr "Ange ditt besöksnummer"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_follower_ids
+msgid "Followers"
+msgstr "Följare"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Följare (Partners)"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font Awesome-ikon t.ex. fa-tasks"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__has_message
+msgid "Has Message"
+msgstr "Har meddelande"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__host_employee_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Host"
+msgstr "Värd"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Host %s has no work email; could not notify by email."
+msgstr ""
+"Värden %s har ingen arbets-e-postadress; kunde inte aviseras via e-post."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid ""
+"Hour of day (24h) past which any visitor still signed in is automatically "
+"signed out by the daily cron."
+msgstr ""
+"Tid på dygnet (24-timmars) efter vilken varje besökare som fortfarande är "
+"incheckad automatiskt checkas ut av den dagliga cron."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "I have read and accept these terms"
+msgstr "Jag har läst och accepterar dessa villkor"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__id
+msgid "ID"
+msgstr ""
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon"
+msgstr "Ikon"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ikon för att indikera en undantagsaktivitet."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+"Om ikryssad, så finns det nya meddelanden som kräver din uppmärksamhet."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Om ikryssad, så finns det meddelanden med leveransfel."
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_interview
+msgid "Interview"
+msgstr "Intervju"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_is_follower
+msgid "Is Follower"
+msgstr "Är Följare"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__device_id
+msgid "Kiosk device"
+msgstr "Kioskenhet"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__site_id
+msgid "Kiosk site"
+msgstr "Kioskplats"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Last 7 days"
+msgstr "Senaste 7 dagarna"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_uid
+msgid "Last Updated by"
+msgstr "Senast uppdaterad av"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_date
+msgid "Last Updated on"
+msgstr "Senast uppdaterad den"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_meeting
+msgid "Meeting"
+msgstr "Möte"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+msgid "Message Delivery error"
+msgstr "Leveransfel för meddelanden"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_ids
+msgid "Messages"
+msgstr "Meddelanden"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Tidsgräns för mina aktiviteter"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "NDA"
+msgstr ""
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_accepted
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "NDA accepted"
+msgstr "NDA accepterat"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "NDA must be accepted before sign-in."
+msgstr "NDA måste accepteras innan inloggning."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_required
+msgid "NDA required"
+msgstr "NDA krävs"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_text
+msgid "NDA text shown"
+msgstr "NDA-text visad"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Nästa aktivitetshändelse i kalendern"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Nästa tidsgräns för en aktivitet"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_summary
+msgid "Next Activity Summary"
+msgstr "Nästa aktivitetssammanfattning"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_id
+msgid "Next Activity Type"
+msgstr "Nästa aktivitetstyp"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "No active kiosk site exists for"
+msgstr "Det finns ingen aktiv kioskplats för"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid "No visitors yet."
+msgstr "Inga besökare ännu."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__notes
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Notes"
+msgstr "Anteckningar"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Antal åtgärder"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of errors"
+msgstr "Antal fel"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Antal meddelanden som kräver åtgärder"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Antal meddelanden med leveransfel"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair"
+msgstr "Para"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair this device"
+msgstr "Para den här enheten"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__pending
+msgid "Pending"
+msgstr "Avvaktande"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Photo"
+msgstr "Foto"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Photo consent text"
+msgstr "Text för fotosamtycke"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo_filename
+msgid "Photo filename"
+msgstr "Filnamn för foto"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Please choose"
+msgstr "Välj"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__purpose_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__name
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Purpose"
+msgstr "Syfte"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor_purpose.py:0
+msgid ""
+"Purpose code must be a non-empty string of letters, digits, dashes and "
+"underscores."
+msgstr ""
+"Syfteskoden måste vara en icke-tom sträng med bokstäver, siffror, "
+"bindestreck och understreck."
+
+#. module: eh_hr_visitor
+#: model:ir.model.constraint,message:eh_hr_visitor.constraint_eh_hr_visitor_purpose_unique_code_per_company
+msgid "Purpose code must be unique per company."
+msgstr "Syfteskoden måste vara unik per företag."
+
+#. module: eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_purpose
+msgid "Purposes"
+msgstr "Syften"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__rating_ids
+msgid "Ratings"
+msgstr "Omdömen"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Reception iPad"
+msgstr "Receptions-iPad"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__nda_required
+msgid "Require NDA"
+msgstr "Kräv NDA"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__photo_required
+msgid "Require photo"
+msgstr "Kräv foto"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_user_id
+msgid "Responsible User"
+msgstr "Ansvarig användare"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Leveransfel för SMS"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__sequence
+msgid "Sequence"
+msgstr "Sekvens"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+msgid ""
+"Shown above the camera button on the visitor kiosk when the chosen purpose "
+"requires a photo. Snapshotted with the visitor record."
+msgstr ""
+"Visas ovanför kameraknappen på besökskiosken när det valda ändamålet kräver "
+"ett foto. Sparas som en ögonblicksbild med besöksposten."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown above the camera on the visitor kiosk when the purpose requires a "
+"photo."
+msgstr "Visas ovanför kameran på besökskiosken när ändamålet kräver ett foto."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown at the visitor kiosk when the chosen purpose requires NDA acceptance. "
+"Snapshotted onto each visitor record at sign-in time."
+msgstr ""
+"Visas vid besökskiosken när det valda ändamålet kräver godkännande av ett "
+"NDA. Sparas som en ögonblicksbild i varje besökspost vid incheckning."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign in"
+msgstr "Logga in"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign out"
+msgstr "Logga ut"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__arrived_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_in
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed in"
+msgstr "Incheckad"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__signed_out_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed out"
+msgstr "Utcheckad"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Signed-out visitor rows are deleted after this many days. NDA snapshot and "
+"photo go with the row."
+msgstr ""
+"Rader för utcheckade besökare tas bort efter så här många dagar. NDA-"
+"ögonblicksbild och foto tas bort tillsammans med raden."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site not configured"
+msgstr "Plats inte konfigurerad"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site terms"
+msgstr "Platsvillkor"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site:"
+msgstr "Plats:"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Skip"
+msgstr "Hoppa över"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__state
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Status"
+msgstr ""
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status baserad på aktiviteter\n"
+"Försenade: Leveranstidpunkten har passerat\n"
+"Idag: Aktivitetsdatum är idag\n"
+"Kommande: Framtida aktiviteter."
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "This visit requires NDA acceptance before sign-in is complete."
+msgstr "Detta besök kräver att NDA accepteras innan incheckningen är klar."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Today"
+msgstr "Idag"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Typ av undantagsaktivitet som har registrerats."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Type the host's name"
+msgstr "Skriv värdens namn"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "URL-safe identifier. Letters, digits, dashes and underscores only."
+msgstr ""
+"URL-säker identifierare. Endast bokstäver, siffror, bindestreck och "
+"understreck."
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor_purpose
+msgid "Visit Purpose"
+msgstr "Syfte med besöket"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visit_number
+msgid "Visit number"
+msgstr "Besöksnummer"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor_purpose
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_purpose_list
+msgid "Visit purposes"
+msgstr "Besökssyften"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor"
+msgstr "Besökare"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Visitor %s arrived to see %s. Purpose: %s"
+msgstr "Besökaren %s har anlänt för att träffa %s. Syfte: %s"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid "Visitor NDA text"
+msgstr "NDA-text för besökare"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor
+msgid "Visitor Sign-in Record"
+msgstr "Incheckningspost för besökare"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_email
+msgid "Visitor email"
+msgstr "Besökarens e-post"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor full name"
+msgstr "Besökarens fullständiga namn"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor management"
+msgstr "Besökshantering"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__name
+msgid "Visitor name"
+msgstr "Besökarens namn"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_company
+msgid "Visitor organisation"
+msgstr "Besökarens organisation"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_phone
+msgid "Visitor phone"
+msgstr "Besökarens telefon"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor retention (days)"
+msgstr "Bevarande av besökare (dagar)"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_root
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Visitors"
+msgstr "Besökare"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid ""
+"Visitors sign themselves in at the front-desk kiosk at "
+"<code>/eh_hr/visitor/&lt;site_code&gt;</code>. The host receives an email "
+"when their visitor arrives."
+msgstr ""
+"Besökare checkar in själva vid receptionens kiosk på "
+"<code>/eh_hr/visitor/&lt;site_code&gt;</code>. Värden får ett "
+"e-postmeddelande när besökaren anländer."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website Messages"
+msgstr "Hemsidesmeddelanden"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website communication history"
+msgstr "Hemsidans kommunikationshistorik"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome"
+msgstr "Välkommen"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome!"
+msgstr "Välkommen!"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your email (optional)"
+msgstr "Din e-postadress (valfritt)"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your full name"
+msgstr "Ditt fullständiga namn"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your host has been notified."
+msgstr "Din värd har meddelats."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your organisation"
+msgstr "Din organisation"
+
+#. module: eh_hr_visitor
+#: model:mail.template,subject:eh_hr_visitor.email_template_visitor_arrived
+msgid "Your visitor {{ object.name }} has arrived"
+msgstr "Din besökare {{ object.name }} har anlänt"

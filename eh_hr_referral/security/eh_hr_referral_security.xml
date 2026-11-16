@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Record Rule for Points (Employee sees only their own) -->
+        <record id="rule_eh_hr_referral_points_employee" model="ir.access">
+            <field name="name">Employee Referral Points</field>
+            <field name="model_id" ref="model_eh_hr_referral_points"/>
+            <field name="domain">[('user_id', '=', user.id)]</field>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="operation">crud</field>
+        </record>
+
+        <!-- Record Rule for Points (HR sees all) -->
+        <record id="rule_eh_hr_referral_points_hr" model="ir.access">
+            <field name="name">HR Referral Points</field>
+            <field name="model_id" ref="model_eh_hr_referral_points"/>
+            <field name="domain">[(1, '=', 1)]</field>
+            <field name="group_id" ref="hr_recruitment.group_hr_recruitment_user"/>
+            <field name="operation">crud</field>
+        </record>
+
+        <!-- Record Rule for Reward Logs (Employee sees only their own) -->
+        <record id="rule_eh_hr_referral_reward_log_employee" model="ir.access">
+            <field name="name">Employee Referral Reward Logs</field>
+            <field name="model_id" ref="model_eh_hr_referral_reward_log"/>
+            <field name="domain">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="operation">crud</field>
+        </record>
+
+        <!-- Record Rule for Reward Logs (HR sees all) -->
+        <record id="rule_eh_hr_referral_reward_log_hr" model="ir.access">
+            <field name="name">HR Referral Reward Logs</field>
+            <field name="model_id" ref="model_eh_hr_referral_reward_log"/>
+            <field name="domain">[(1, '=', 1)]</field>
+            <field name="group_id" ref="hr_recruitment.group_hr_recruitment_user"/>
+            <field name="operation">crud</field>
+        </record>
+    </data>
+</odoo>

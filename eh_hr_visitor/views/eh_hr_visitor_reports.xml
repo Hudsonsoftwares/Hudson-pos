@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- Reporting Graph View -->
+        <record id="view_eh_hr_visitor_graph" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.graph</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <graph string="Visitors Analysis" sample="1">
+                    <field name="arrived_on" interval="day"/>
+                    <field name="state"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Reporting Pivot View -->
+        <record id="view_eh_hr_visitor_pivot" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.pivot</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <pivot string="Visitors Analysis" sample="1">
+                    <field name="arrived_on" type="row" interval="day"/>
+                    <field name="state" type="col"/>
+                    <field name="duration_minutes" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Menus -->
+        <menuitem id="menu_visitor_reporting_root"
+                  name="Reporting"
+                  parent="menu_visitor_management_root"
+                  sequence="30"
+                  groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+
+        <!-- Unified Reporting Action -->
+        <record id="action_report_visitor_analysis" model="ir.actions.act_window">
+            <field name="name">Visitor Analysis</field>
+            <field name="res_model">eh.hr.visitor</field>
+            <field name="view_mode">graph,pivot,list</field>
+            <field name="search_view_id" ref="view_eh_hr_visitor_search"/>
+            <field name="context">{'search_default_f_today': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No visitor data to analyze yet.
+                </p>
+                <p>
+                    Use this report to analyze visitor trends, peak hours, top hosts, and average visit durations using the grouping and filtering options.
+                </p>
+            </field>
+        </record>
+        
+        <menuitem id="menu_report_visitor_analysis" name="Visitor Analysis" parent="menu_visitor_reporting_root" action="action_report_visitor_analysis" sequence="10"/>
+
+    </data>
+</odoo>

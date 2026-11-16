@@ -364,6 +364,27 @@ def load_pos_demo_data(env, pos_config_ids=None):
     except Exception as e:
         _logger.warning("Could not load Field Service demo data: %s", e)
 
+    # 35. Visitor Management: front desks, meeting rooms and visitors in every status
+    try:
+        from .demo_visitor_suite import load_visitor_suite_demo_data
+        load_visitor_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Visitor Management demo data: %s", e)
+
+    # 36. Employee Referral: referred applicants, points, rewards and alerts
+    try:
+        from .demo_referral_suite import load_referral_suite_demo_data
+        load_referral_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Employee Referral demo data: %s", e)
+
+    # 37. Appraisals: review cycles, goals, ratings and feedback
+    try:
+        from .demo_appraisal_suite import load_appraisal_suite_demo_data
+        load_appraisal_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Appraisal demo data: %s", e)
+
     _logger.info("Hudson POS: Restaurant & Cafe demo data loaded successfully.")
     return True
 

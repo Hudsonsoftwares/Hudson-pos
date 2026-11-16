@@ -1,0 +1,829 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_visitor
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: eh_hr_visitor
+#: model:mail.template,body_html:eh_hr_visitor.email_template_visitor_arrived
+msgid ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>Hi <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        Your visitor <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            from <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        has arrived.\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        Purpose: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        Visit number: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        Signed in at: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>Please head to reception when you are ready.</p>\n"
+"                </div>\n"
+"            "
+msgstr ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>Merhaba <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        Ziyaretçiniz <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            şu şirketten: <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        geldi.\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        Amaç: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        Ziyaret numarası: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        Giriş zamanı: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>Hazır olduğunuzda lütfen resepsiyona geliniz.</p>\n"
+"                </div>"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "Action Needed"
+msgstr "Aksiyon Gerekiyor"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__active
+msgid "Active"
+msgstr "Etkin"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_ids
+msgid "Activities"
+msgstr "Aktiviteler"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Etkinlik İstisna Dekorasyonu"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid "Activity State"
+msgstr "Aktivite Durumu"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivite Türü İmgesi"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Ask an administrator for a 6-digit pairing PIN."
+msgstr "Bir yöneticiden 6 haneli bir eşleştirme PIN'i isteyin."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_attachment_count
+msgid "Attachment Count"
+msgstr "Ek Sayısı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_enabled
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_enabled
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out at end of day"
+msgstr "Gün sonunda otomatik çıkış"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid "Auto check-out hour"
+msgstr "Otomatik çıkış saati"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out hour (24h)"
+msgstr "Otomatik çıkış saati (24s)"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__auto_signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Auto-signed out"
+msgstr "Otomatik oturum kapatıldı"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Back"
+msgstr "Geri"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Capture"
+msgstr "Yakalama"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "Code"
+msgstr "Kod"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_company
+msgid "Companies"
+msgstr "Şirketler"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__company_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__company_id
+msgid "Company"
+msgstr "Firma"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_config_settings
+msgid "Config Settings"
+msgstr "Yapılandırma Ayarları"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Continue"
+msgstr "Devam edin"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_contractor
+msgid "Contractor"
+msgstr "Sözleşmeli"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_uid
+msgid "Created by"
+msgstr "Tarafından oluşturuldu"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_date
+msgid "Created on"
+msgstr "Oluşturuldu"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Day"
+msgstr "Gün"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid ""
+"Default NDA prose displayed at the visitor kiosk when the chosen purpose "
+"requires acceptance. Snapshotted onto each visitor record at sign-in time so"
+" the audit trail cannot drift."
+msgstr ""
+"Seçilen amaç kabul gerektirdiğinde ziyaretçi kiosk'unda gösterilen "
+"varsayılan NDA metni. Denetim izinin sapmaması için giriş sırasında her "
+"ziyaretçi kaydına anlık görüntü olarak kaydedilir."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Default NDA text"
+msgstr "Varsayılan NDA Metni"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_delivery
+msgid "Delivery"
+msgstr "Teslimat"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "İsim Göster"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Done"
+msgstr "Yapıldı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__duration_minutes
+msgid "Duration (min)"
+msgstr "Süre (dakika)"
+
+#. module: eh_hr_visitor
+#: model:mail.template,name:eh_hr_visitor.email_template_visitor_arrived
+msgid "EH Visitor: arrival notification"
+msgstr "EH Ziyaretçi: varış bildirimi"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_auto_sign_out_ir_actions_server
+msgid "ERP Heritage: Visitor end-of-day auto sign-out"
+msgstr "ERP Heritage: Ziyaretçilerin gün sonu otomatik çıkışı"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Visitor retention sweep"
+msgstr "ERP Heritage: Ziyaretçi saklama temizliği"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Enter your visit number"
+msgstr "Ziyaret numaranızı girin"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_follower_ids
+msgid "Followers"
+msgstr "Takipçiler"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Takipçiler (İş ortakları)"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Yazı tipi harika simgesi ör. fa-görevler"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__has_message
+msgid "Has Message"
+msgstr "Mesaj Var"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__host_employee_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Host"
+msgstr "Ev sahibi"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Host %s has no work email; could not notify by email."
+msgstr "Ana bilgisayar %s için iş e-postası yok; e-posta ile bildirilemedi."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid ""
+"Hour of day (24h) past which any visitor still signed in is automatically "
+"signed out by the daily cron."
+msgstr ""
+"Günün saati (24 saat), bu saatten sonra hâlâ giriş yapmış durumdaki her "
+"ziyaretçi günlük cron tarafından otomatik olarak çıkış yaptırılır."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "I have read and accept these terms"
+msgstr "Bu koşulları okudum ve kabul ediyorum"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__id
+msgid "ID"
+msgstr "İD"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon"
+msgstr "Simge"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "İstisnai bir etkinliği belirtmek için kullanılan simge."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "İşaretliyse, yeni mesajlar dikkatinize sunulacak."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "İşaretliyse, bazı mesajlar gönderi hatası içermektedir."
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_interview
+msgid "Interview"
+msgstr "Görüşme"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_is_follower
+msgid "Is Follower"
+msgstr "Takipçi mi"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__device_id
+msgid "Kiosk device"
+msgstr "Kiosk cihazı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__site_id
+msgid "Kiosk site"
+msgstr "Kiosk sitesi"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Last 7 days"
+msgstr "Son 7 gün"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_meeting
+msgid "Meeting"
+msgstr "Toplantı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+msgid "Message Delivery error"
+msgstr "Mesaj Teslim hatası"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_ids
+msgid "Messages"
+msgstr "Mesajlar"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Aktivite Son Tarihim"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "NDA"
+msgstr "Gizlilik Sözleşmesi (NDA)"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_accepted
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "NDA accepted"
+msgstr "NDA kabul edildi"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "NDA must be accepted before sign-in."
+msgstr "Oturum açmadan önce NDA kabul edilmelidir."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_required
+msgid "NDA required"
+msgstr "NDA gerekli"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_text
+msgid "NDA text shown"
+msgstr "NDA metni gösterildi"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Sonraki Aktivite Takvimi Etkinliği"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Sonraki Aktivite Son Tarihi"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_summary
+msgid "Next Activity Summary"
+msgstr "Sonraki Aktivite Özeti"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_id
+msgid "Next Activity Type"
+msgstr "Sonraki Aktivitie Türü"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "No active kiosk site exists for"
+msgstr "Şunun için etkin kiosk konumu yok:"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid "No visitors yet."
+msgstr "Henüz ziyaretçi yok."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__notes
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Notes"
+msgstr "Notlar"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Aksiyon Sayısı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of errors"
+msgstr "Hata adedi"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "İşlem gerektiren mesaj sayısı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Teslimat hatası olan mesaj adedi"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair"
+msgstr "Çift"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair this device"
+msgstr "Bu cihazı eşleştir"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__pending
+msgid "Pending"
+msgstr "Beklemede"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Photo"
+msgstr "Fotoğraf"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Photo consent text"
+msgstr "Fotoğraf onay metni"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo_filename
+msgid "Photo filename"
+msgstr "Fotoğraf dosya adı"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Please choose"
+msgstr "Lütfen seçin"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__purpose_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__name
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Purpose"
+msgstr "Amaç"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor_purpose.py:0
+msgid ""
+"Purpose code must be a non-empty string of letters, digits, dashes and "
+"underscores."
+msgstr ""
+"Amaç kodu; harflerden, rakamlardan, tirelerden ve alt çizgilerden oluşan boş"
+" olmayan bir dize olmalıdır."
+
+#. module: eh_hr_visitor
+#: model:ir.model.constraint,message:eh_hr_visitor.constraint_eh_hr_visitor_purpose_unique_code_per_company
+msgid "Purpose code must be unique per company."
+msgstr "Amaç kodu her şirket için benzersiz olmalıdır."
+
+#. module: eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_purpose
+msgid "Purposes"
+msgstr "Amaçlar"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__rating_ids
+msgid "Ratings"
+msgstr "Değerlendirmeler"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Reception iPad"
+msgstr "Resepsiyon iPad"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__nda_required
+msgid "Require NDA"
+msgstr "NDA iste"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__photo_required
+msgid "Require photo"
+msgstr "Fotoğraf iste"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_user_id
+msgid "Responsible User"
+msgstr "Sorumlu Kullanıcı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS İleti hatası"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__sequence
+msgid "Sequence"
+msgstr "Sıralama"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+msgid ""
+"Shown above the camera button on the visitor kiosk when the chosen purpose "
+"requires a photo. Snapshotted with the visitor record."
+msgstr ""
+"Seçilen amaç bir fotoğraf gerektirdiğinde ziyaretçi kioskundaki kamera "
+"düğmesinin üzerinde gösterilir. Ziyaretçi kaydıyla birlikte anlık görüntü "
+"olarak kaydedilir."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown above the camera on the visitor kiosk when the purpose requires a "
+"photo."
+msgstr ""
+"Amaç bir fotoğraf gerektirdiğinde ziyaretçi kioskundaki kameranın üzerinde "
+"gösterilir."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown at the visitor kiosk when the chosen purpose requires NDA acceptance. "
+"Snapshotted onto each visitor record at sign-in time."
+msgstr ""
+"Seçilen amaç bir NDA kabulü gerektirdiğinde ziyaretçi kioskunda gösterilir. "
+"Giriş sırasında her ziyaretçi kaydına anlık görüntü olarak kaydedilir."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign in"
+msgstr "Giriş"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign out"
+msgstr "Çıkış"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__arrived_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_in
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed in"
+msgstr "Giriş yapıldı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__signed_out_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed out"
+msgstr "Çıkış yapıldı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Signed-out visitor rows are deleted after this many days. NDA snapshot and "
+"photo go with the row."
+msgstr ""
+"Çıkış yapan ziyaretçi satırları bu kadar gün sonra silinir. NDA anlık "
+"görüntüsü ve fotoğraf satırla birlikte silinir."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site not configured"
+msgstr "Saha yapılandırılmadı"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site terms"
+msgstr "Saha koşulları"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site:"
+msgstr "Saha:"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Skip"
+msgstr "Atla"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__state
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Status"
+msgstr "Durumu"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Aktivitelere göre durum \n"
+"Gecikmiş\\: Son tarih geçmiş\n"
+"Bugün\\: Aktivite tarihi bugün\n"
+"Planlanmış\\: Gelecek Aktiviteler."
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "This visit requires NDA acceptance before sign-in is complete."
+msgstr "Bu ziyaret, giriş işlemi tamamlanmadan önce NDA kabulünü gerektirir."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Today"
+msgstr "Bugün"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Kayıtlardaki istisna etkinliğinin türü."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Type the host's name"
+msgstr "Ana bilgisayarın adını yazın"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "URL-safe identifier. Letters, digits, dashes and underscores only."
+msgstr ""
+"URL için güvenli tanımlayıcı. Yalnızca harfler, rakamlar, tireler ve alt "
+"çizgiler."
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor_purpose
+msgid "Visit Purpose"
+msgstr "Ziyaret Amacı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visit_number
+msgid "Visit number"
+msgstr "Ziyaret numarası"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor_purpose
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_purpose_list
+msgid "Visit purposes"
+msgstr "Ziyaret amaçları"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor"
+msgstr "Ziyaretçi"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Visitor %s arrived to see %s. Purpose: %s"
+msgstr "Ziyaretçi %s, %s ile görüşmek üzere geldi. Amaç: %s"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid "Visitor NDA text"
+msgstr "Ziyaretçi NDA metni"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor
+msgid "Visitor Sign-in Record"
+msgstr "Ziyaretçi Giriş Kaydı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_email
+msgid "Visitor email"
+msgstr "Ziyaretçi e-postası"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor full name"
+msgstr "Ziyaretçinin tam adı"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor management"
+msgstr "Ziyaretçi yönetimi"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__name
+msgid "Visitor name"
+msgstr "Ziyaretçi adı"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_company
+msgid "Visitor organisation"
+msgstr "Ziyaretçi kuruluşu"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_phone
+msgid "Visitor phone"
+msgstr "Ziyaretçi telefonu"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor retention (days)"
+msgstr "Ziyaretçi verisi saklama süresi (gün)"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_root
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Visitors"
+msgstr "Ziyaretçiler"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid ""
+"Visitors sign themselves in at the front-desk kiosk at "
+"<code>/eh_hr/visitor/&lt;site_code&gt;</code>. The host receives an email "
+"when their visitor arrives."
+msgstr ""
+"Ziyaretçiler <code>/eh_hr/visitor/&lt;site_code&gt;</code> adresindeki "
+"resepsiyon kiosk'unda kendi kayıtlarını yapar. Ziyaretçisi geldiğinde ev "
+"sahibine bir e-posta gönderilir."
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website Messages"
+msgstr "Websitesi Mesajları"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website communication history"
+msgstr "Websitesi iletişim geçmişi"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome"
+msgstr "Hoş Geldiniz"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome!"
+msgstr "Hoşgeldiniz!"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your email (optional)"
+msgstr "E-postanız (isteğe bağlı)"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your full name"
+msgstr "Tam adınız"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your host has been notified."
+msgstr "Ev sahibiniz bilgilendirildi."
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your organisation"
+msgstr "Kuruluşunuz"
+
+#. module: eh_hr_visitor
+#: model:mail.template,subject:eh_hr_visitor.email_template_visitor_arrived
+msgid "Your visitor {{ object.name }} has arrived"
+msgstr "Ziyaretçiniz {{ object.name }} geldi"

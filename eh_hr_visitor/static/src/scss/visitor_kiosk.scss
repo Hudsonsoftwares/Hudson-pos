@@ -1,0 +1,205 @@
+/*
+ * Visitor kiosk shell styles. Same dark + mint palette as the
+ * attendance kiosk, with reception-specific layout: large touch
+ * targets, plenty of breathing room, multiple short screens.
+ */
+
+$bg: #0d1117;
+$surface: #161b22;
+$surface-2: #1f242c;
+$mint: #7ee8b8;
+$text: #e6edf3;
+$text-muted: #8b949e;
+$danger: #ff6b6b;
+
+* { box-sizing: border-box; }
+
+html,
+body.eh-visitor-body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: $bg;
+    color: $text;
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-y: auto;
+}
+
+#eh-visitor-root {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.eh-screen {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.eh-hidden { display: none; }
+}
+
+.eh-card {
+    background: $surface;
+    border-radius: 16px;
+    padding: 36px 32px;
+    width: 100%;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+
+    &.eh-card-large { padding: 44px 36px; }
+    &.eh-card-success { border-top: 4px solid $mint; }
+    &.eh-card-fail { border-top: 4px solid $danger; }
+}
+
+.eh-h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+}
+
+.eh-p {
+    margin: 0 0 16px;
+    font-size: 17px;
+    line-height: 1.5;
+
+    &.eh-p-large { font-size: 22px; font-weight: 500; }
+    &.eh-p-muted { color: $text-muted; }
+}
+
+.eh-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.eh-label {
+    font-size: 12px;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 8px;
+}
+
+.eh-input {
+    background: $surface-2;
+    color: $text;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 17px;
+    font-family: inherit;
+    width: 100%;
+
+    &:focus { outline: none; border-color: $mint; }
+
+    &.eh-input-pin {
+        font-family: "DM Mono", "SF Mono", Menlo, Consolas, monospace;
+        letter-spacing: 0.4em;
+        text-align: center;
+        font-size: 26px;
+    }
+}
+
+.eh-button {
+    background: $surface-2;
+    color: $text;
+    border: 0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+
+    &.eh-button-primary { background: $mint; color: $bg; }
+    &.eh-button-large { padding: 22px; font-size: 22px; }
+    &:active { transform: translateY(1px); }
+}
+
+.eh-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+
+    > .eh-button { flex: 1; }
+}
+
+.eh-error {
+    color: $danger;
+    font-size: 13px;
+    margin: 6px 0 0;
+    min-height: 1em;
+}
+
+.eh-checkbox {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 12px 0;
+    font-size: 15px;
+    color: $text-muted;
+}
+
+.eh-nda-text {
+    background: $surface-2;
+    border-radius: 8px;
+    padding: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.eh-photo-video {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 12px;
+    background: #000;
+    margin: 16px auto;
+}
+
+body.eh-theme-light {
+    background: #f8f9fa;
+    color: #212529;
+    .eh-card { background: #ffffff; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1); }
+    .eh-input { background: #ffffff; color: #212529; border: 1px solid #ced4da; }
+    .eh-button { background: #e9ecef; color: #212529; }
+    .eh-button-primary { background: $mint; color: $bg; }
+    .eh-label, .eh-p-muted { color: #6c757d; }
+    .eh-nda-text { background: #f8f9fa; color: #212529; border: 1px solid #ced4da; }
+    .eh-drink-card { background: #ffffff; color: #212529; border: 2px solid #ced4da; }
+    .eh-drink-card.selected { border-color: $mint; background: rgba(126, 232, 184, 0.2); }
+}
+
+body.eh-theme-dark {
+    .eh-drink-card { background: $surface-2; color: $text; border: 2px solid transparent; }
+    .eh-drink-card.selected { border-color: $mint; background: rgba(126, 232, 184, 0.2); }
+}
+
+.eh-drinks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.eh-drink-card {
+    padding: 24px 16px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    &:active { transform: scale(0.95); }
+}

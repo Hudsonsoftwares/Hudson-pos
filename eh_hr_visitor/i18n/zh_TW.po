@@ -1,0 +1,810 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_visitor
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Chinese (Traditional)\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: eh_hr_visitor
+#: model:mail.template,body_html:eh_hr_visitor.email_template_visitor_arrived
+msgid ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>Hi <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        Your visitor <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            from <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        has arrived.\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        Purpose: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        Visit number: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        Signed in at: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>Please head to reception when you are ready.</p>\n"
+"                </div>\n"
+"            "
+msgstr ""
+"<div style=\"font-family: Arial, sans-serif;\">\n"
+"                    <p>您好 <t t-out=\"object.host_employee_id.name or 'there'\"/>,</p>\n"
+"                    <p>\n"
+"                        您的訪客 <strong t-out=\"object.name\"/>\n"
+"                        <t t-if=\"object.visitor_company\">\n"
+"                            來自 <t t-out=\"object.visitor_company\"/>\n"
+"                        </t>\n"
+"                        已抵達。\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        目的: <strong t-out=\"object.purpose_id.name\"/><br/>\n"
+"                        訪問編號: <strong t-out=\"object.visit_number\"/><br/>\n"
+"                        簽到時間: <t t-out=\"object.arrived_on\"/>\n"
+"                    </p>\n"
+"                    <p>準備好後請前往接待處。</p>\n"
+"                </div>"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "Action Needed"
+msgstr "需要採取行動"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__active
+msgid "Active"
+msgstr "啟用"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_ids
+msgid "Activities"
+msgstr "活動"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "活動異常圖示"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid "Activity State"
+msgstr "活動狀態"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "活動類型圖示"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Ask an administrator for a 6-digit pairing PIN."
+msgstr "向管理員索取 6 位配對 PIN 碼。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_attachment_count
+msgid "Attachment Count"
+msgstr "附件數目"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_enabled
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_enabled
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out at end of day"
+msgstr "在一天結束時自動簽退"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid "Auto check-out hour"
+msgstr "自動簽退時間"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Auto check-out hour (24h)"
+msgstr "自動簽退時間（24小時制）"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__auto_signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Auto-signed out"
+msgstr "已自動登出"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Back"
+msgstr "返回"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Capture"
+msgstr "捕捉"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "Code"
+msgstr "程式碼"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_company
+msgid "Companies"
+msgstr "公司"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__company_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__company_id
+msgid "Company"
+msgstr "公司"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_res_config_settings
+msgid "Config Settings"
+msgstr "配置設定"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Continue"
+msgstr "繼續"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_contractor
+msgid "Contractor"
+msgstr "承包人"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_uid
+msgid "Created by"
+msgstr "建立人員"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__create_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__create_date
+msgid "Created on"
+msgstr "建立於"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Day"
+msgstr "日"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid ""
+"Default NDA prose displayed at the visitor kiosk when the chosen purpose "
+"requires acceptance. Snapshotted onto each visitor record at sign-in time so"
+" the audit trail cannot drift."
+msgstr "當所選目的需要接受時，於訪客自助終端顯示的預設 NDA 文字。在簽到時對每筆訪客記錄進行快照，以確保稽核軌跡不會偏移。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Default NDA text"
+msgstr "預設 NDA 文字"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_delivery
+msgid "Delivery"
+msgstr "送貨"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__display_name
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "顯示名稱"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Done"
+msgstr "完成"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__duration_minutes
+msgid "Duration (min)"
+msgstr "持續時間（分鐘）"
+
+#. module: eh_hr_visitor
+#: model:mail.template,name:eh_hr_visitor.email_template_visitor_arrived
+msgid "EH Visitor: arrival notification"
+msgstr "EH 訪客：到達通知"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_auto_sign_out_ir_actions_server
+msgid "ERP Heritage: Visitor end-of-day auto sign-out"
+msgstr "ERP Heritage：訪客日終自動簽退"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.server,name:eh_hr_visitor.cron_eh_hr_visitor_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Visitor retention sweep"
+msgstr "ERP Heritage：訪客資料保留清理"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Enter your visit number"
+msgstr "請輸入您的訪問編號"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_follower_ids
+msgid "Followers"
+msgstr "關注人"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "關注人（業務夥伴）"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome 圖示，例如，fa-task"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__has_message
+msgid "Has Message"
+msgstr "有訊息"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__host_employee_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Host"
+msgstr "接待人"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Host %s has no work email; could not notify by email."
+msgstr "主機 %s 沒有工作電子郵件；無法透過電子郵件通知。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_auto_checkout_hour
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_auto_checkout_hour
+msgid ""
+"Hour of day (24h) past which any visitor still signed in is automatically "
+"signed out by the daily cron."
+msgstr "一天中的時刻（24 小時制），超過此時刻後，任何仍處於簽到狀態的訪客將由每日 cron 自動簽退。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "I have read and accept these terms"
+msgstr "我已閱讀並接受這些條款"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__id
+msgid "ID"
+msgstr "識別號"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon"
+msgstr "圖示"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "用於指示異常活動的圖示。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "勾選代表有新訊息需要您留意。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "勾選代表有訊息發生傳送錯誤。"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_interview
+msgid "Interview"
+msgstr "面試"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_is_follower
+msgid "Is Follower"
+msgstr "是關注人"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__device_id
+msgid "Kiosk device"
+msgstr "自助終端裝置"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__site_id
+msgid "Kiosk site"
+msgstr "自助終端站點"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Last 7 days"
+msgstr "最近7天"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_uid
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_uid
+msgid "Last Updated by"
+msgstr "最後更新者"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__write_date
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__write_date
+msgid "Last Updated on"
+msgstr "最後更新於"
+
+#. module: eh_hr_visitor
+#: model:eh.hr.visitor.purpose,name:eh_hr_visitor.purpose_meeting
+msgid "Meeting"
+msgstr "會議"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error
+msgid "Message Delivery error"
+msgstr "訊息遞送錯誤"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_ids
+msgid "Messages"
+msgstr "訊息"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "我的活動截止時間"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "NDA"
+msgstr "保密協議"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_accepted
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "NDA accepted"
+msgstr "已接受 NDA"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "NDA must be accepted before sign-in."
+msgstr "登入前必須接受 NDA。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_required
+msgid "NDA required"
+msgstr "需要 NDA"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__nda_text
+msgid "NDA text shown"
+msgstr "已顯示 NDA 文字"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "下一個活動日曆事件"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "下一活動截止日期"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_summary
+msgid "Next Activity Summary"
+msgstr "下一活動摘要"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_type_id
+msgid "Next Activity Type"
+msgstr "下一活動類型"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "No active kiosk site exists for"
+msgstr "不存在有效的自助終端站點，對應於"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid "No visitors yet."
+msgstr "尚無訪客。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__notes
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Notes"
+msgstr "備註"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of Actions"
+msgstr "動作數量"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of errors"
+msgstr "錯誤數量"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "需要採取行動的訊息數目"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "有發送錯誤的郵件數量"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair"
+msgstr "配對"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Pair this device"
+msgstr "配對此裝置"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__pending
+msgid "Pending"
+msgstr "暫停"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Photo"
+msgstr "照片"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Photo consent text"
+msgstr "照片同意書文字"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__photo_filename
+msgid "Photo filename"
+msgstr "照片檔名"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Please choose"
+msgstr "請選擇"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__purpose_id
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__name
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Purpose"
+msgstr "用途"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor_purpose.py:0
+msgid ""
+"Purpose code must be a non-empty string of letters, digits, dashes and "
+"underscores."
+msgstr "用途代碼必須是由字母、數字、連字號和底線組成的非空字串。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.constraint,message:eh_hr_visitor.constraint_eh_hr_visitor_purpose_unique_code_per_company
+msgid "Purpose code must be unique per company."
+msgstr "用途代碼在每個公司內必須唯一。"
+
+#. module: eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_purpose
+msgid "Purposes"
+msgstr "用途"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__rating_ids
+msgid "Ratings"
+msgstr "評分"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Reception iPad"
+msgstr "前台 iPad"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__nda_required
+msgid "Require NDA"
+msgstr "要求簽署 NDA"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__photo_required
+msgid "Require photo"
+msgstr "要求照片"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__activity_user_id
+msgid "Responsible User"
+msgstr "責任使用者"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "簡訊發送錯誤"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor_purpose__sequence
+msgid "Sequence"
+msgstr "序列號"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_photo_consent_text
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_photo_consent_text
+msgid ""
+"Shown above the camera button on the visitor kiosk when the chosen purpose "
+"requires a photo. Snapshotted with the visitor record."
+msgstr "當所選目的需要拍照時，顯示在訪客自助終端相機按鈕上方。與訪客記錄一同存檔。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown above the camera on the visitor kiosk when the purpose requires a "
+"photo."
+msgstr "當目的需要拍照時，顯示在訪客自助終端相機上方。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Shown at the visitor kiosk when the chosen purpose requires NDA acceptance. "
+"Snapshotted onto each visitor record at sign-in time."
+msgstr "當所選目的需要接受 NDA 時，顯示在訪客自助終端。簽到時以快照形式記錄到每筆訪客記錄上。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign in"
+msgstr "登入"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Sign out"
+msgstr "登出"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__arrived_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_in
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed in"
+msgstr "已簽到"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__signed_out_on
+#: model:ir.model.fields.selection,name:eh_hr_visitor.selection__eh_hr_visitor__state__signed_out
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Signed out"
+msgstr "已簽退"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,help:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid ""
+"Signed-out visitor rows are deleted after this many days. NDA snapshot and "
+"photo go with the row."
+msgstr "已簽退的訪客記錄將在此天數後刪除。NDA 快照與照片會隨記錄一併刪除。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site not configured"
+msgstr "站點未設定"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site terms"
+msgstr "站點條款"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Site:"
+msgstr "站點："
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Skip"
+msgstr "跳過"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__state
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Status"
+msgstr "狀態"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"根據活動的狀態 \n"
+" 逾期：已經超過截止日期 \n"
+" 現今：活動日期是當天 \n"
+" 計劃：未來活動。"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "This visit requires NDA acceptance before sign-in is complete."
+msgstr "此訪問需要在完成簽到之前接受 NDA。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Today"
+msgstr "今天"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "記錄的異常活動的類型。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Type the host's name"
+msgstr "輸入主機名稱"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor_purpose__code
+msgid "URL-safe identifier. Letters, digits, dashes and underscores only."
+msgstr "URL 安全識別碼。僅限字母、數字、連字號和底線。"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor_purpose
+msgid "Visit Purpose"
+msgstr "來訪目的"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visit_number
+msgid "Visit number"
+msgstr "來訪編號"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor_purpose
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_purpose_list
+msgid "Visit purposes"
+msgstr "來訪目的"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor"
+msgstr "訪客"
+
+#. module: eh_hr_visitor
+#. odoo-python
+#: code:addons/eh_hr_visitor/models/eh_hr_visitor.py:0
+msgid "Visitor %s arrived to see %s. Purpose: %s"
+msgstr "訪客 %s 已到達，前來會見 %s。目的：%s"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_nda_text
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_nda_text
+msgid "Visitor NDA text"
+msgstr "訪客 NDA 文字"
+
+#. module: eh_hr_visitor
+#: model:ir.model,name:eh_hr_visitor.model_eh_hr_visitor
+msgid "Visitor Sign-in Record"
+msgstr "訪客簽到記錄"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_email
+msgid "Visitor email"
+msgstr "訪客電子郵件"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_form
+msgid "Visitor full name"
+msgstr "訪客全名"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor management"
+msgstr "訪客管理"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__name
+msgid "Visitor name"
+msgstr "訪客姓名"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_company
+msgid "Visitor organisation"
+msgstr "訪客所屬組織"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__visitor_phone
+msgid "Visitor phone"
+msgstr "訪客電話"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_company__eh_hr_visitor_retention_days
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_res_config_settings__eh_hr_visitor_retention_days
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_res_config_settings_eh_visitor
+msgid "Visitor retention (days)"
+msgstr "訪客資料保留期（天）"
+
+#. module: eh_hr_visitor
+#: model:ir.actions.act_window,name:eh_hr_visitor.action_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor
+#: model:ir.ui.menu,name:eh_hr_visitor.menu_eh_hr_visitor_root
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.view_eh_hr_visitor_search
+msgid "Visitors"
+msgstr "訪客"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.actions.act_window,help:eh_hr_visitor.action_eh_hr_visitor
+msgid ""
+"Visitors sign themselves in at the front-desk kiosk at "
+"<code>/eh_hr/visitor/&lt;site_code&gt;</code>. The host receives an email "
+"when their visitor arrives."
+msgstr ""
+"訪客在前台自助終端 <code>/eh_hr/visitor/&lt;site_code&gt;</code> "
+"自行簽到。訪客到達時，接待人會收到一封電子郵件。"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,field_description:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website Messages"
+msgstr "網站資訊"
+
+#. module: eh_hr_visitor
+#: model:ir.model.fields,help:eh_hr_visitor.field_eh_hr_visitor__website_message_ids
+msgid "Website communication history"
+msgstr "網站溝通記錄"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome"
+msgstr "歡迎"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Welcome!"
+msgstr "歡迎！"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your email (optional)"
+msgstr "您的電子郵件（選填）"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your full name"
+msgstr "您的全名"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your host has been notified."
+msgstr "已通知您的接待人。"
+
+#. module: eh_hr_visitor
+#: model_terms:ir.ui.view,arch_db:eh_hr_visitor.visitor_kiosk_shell
+msgid "Your organisation"
+msgstr "您的組織"
+
+#. module: eh_hr_visitor
+#: model:mail.template,subject:eh_hr_visitor.email_template_visitor_arrived
+msgid "Your visitor {{ object.name }} has arrived"
+msgstr "您的訪客 {{ object.name }} 已抵達"

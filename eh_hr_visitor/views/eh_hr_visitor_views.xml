@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- ============================ Purposes ============================ -->
+
+        <record id="view_eh_hr_visitor_purpose_list" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.purpose.list</field>
+            <field name="model">eh.hr.visitor.purpose</field>
+            <field name="arch" type="xml">
+                <list string="Visit purposes" sample="1" editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="nda_required"/>
+                    <field name="photo_required"/>
+                    <field name="active"/>
+                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_visitor_purpose" model="ir.actions.act_window">
+            <field name="name">Visit purposes</field>
+            <field name="res_model">eh.hr.visitor.purpose</field>
+            <field name="view_mode">list</field>
+        </record>
+
+        <!-- ============================ Visitors ============================ -->
+
+        <record id="view_eh_hr_visitor_list" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.list</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <list string="Visitors" sample="1" decoration-success="state == 'signed_in'" decoration-muted="state == 'signed_out'">
+                    <field name="visit_number"/>
+                    <field name="name"/>
+                    <field name="visitor_company"/>
+                    <field name="host_employee_id"/>
+                    <field name="purpose_id"/>
+                    <field name="arrived_on"/>
+                    <field name="signed_out_on" optional="hide"/>
+                    <field name="duration_minutes" optional="hide"/>
+                    <field name="is_vip" optional="hide"/>
+                    <field name="station_id" optional="hide"/>
+                    <field name="drink_id" optional="hide"/>
+                    <field name="agreement_status" widget="badge" decoration-info="agreement_status == 'pending'" decoration-success="agreement_status == 'completed'" decoration-muted="agreement_status == 'not_required'"/>
+                    <field name="state"/>
+                    <field name="auto_signed_out" optional="hide"/>
+                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_visitor_form" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.form</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <form string="Visitor" create="false">
+                    <header>
+                        <button name="action_sign_out" type="object" string="Sign out" invisible="state != 'signed_in'" class="oe_highlight"/>
+                        <button name="action_regenerate_agreement_pdf" type="object" string="Regenerate PDF" groups="base.group_system,hr.group_hr_manager" invisible="not digital_signature or agreement_status != 'completed'"/>
+                        <button name="action_reset_agreements" type="object" string="Reset Agreements" groups="base.group_system,hr.group_hr_manager" invisible="agreement_status == 'not_required'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="pending,signed_in,signed_out"/>
+                    </header>
+                    <sheet>
+                        <field name="auto_signed_out" invisible="1"/>
+                        <widget name="web_ribbon" title="Auto-signed out" bg_color="bg-warning" invisible="not auto_signed_out"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Visitor full name"/>
+                            </h1>
+                            <h2>
+                                <field name="visit_number" readonly="1"/>
+                            </h2>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="visitor_company"/>
+                                <field name="visitor_email"/>
+                                <field name="visitor_phone"/>
+                                <field name="host_employee_id"/>
+                                <field name="purpose_id"/>
+                            </group>
+                            <group>
+                                <field name="arrived_on"/>
+                                <field name="signed_out_on"/>
+                                <field name="duration_minutes"/>
+                                <field name="is_vip"/>
+                                <field name="site_id"/>
+                                <field name="device_id"/>
+                                <field name="station_id"/>
+                                <field name="drink_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="registration_type" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Agreements">
+                                <group>
+                                    <group string="Required Agreements">
+                                        <field name="nda_required"/>
+                                        <field name="visitor_agreement_required"/>
+                                        <field name="safety_declaration_required"/>
+                                        <field name="privacy_consent_required"/>
+                                    </group>
+                                    <group string="Agreement Acceptance">
+                                        <field name="nda_accepted"/>
+                                        <field name="visitor_agreement_accepted"/>
+                                        <field name="safety_declaration_accepted"/>
+                                        <field name="accept_privacy_policy"/>
+                                        <field name="agreement_accepted_date"/>
+                                        <field name="agreement_status" widget="badge" decoration-info="agreement_status == 'pending'" decoration-success="agreement_status == 'completed'" decoration-muted="agreement_status == 'not_required'"/>
+                                    </group>
+                                </group>
+                                <group string="Documents">
+                                    <field name="digital_signature" widget="signature"/>
+                                    <field name="signed_pdf" filename="signed_pdf_filename" widget="pdf_viewer"/>
+                                    <field name="signed_pdf_filename" invisible="1"/>
+                                </group>
+                            </page>
+                            <page string="Photo">
+                                <field name="photo" widget="image" filename="photo_filename"/>
+                                <field name="photo_filename" invisible="1"/>
+                            </page>
+                            <page string="Notes">
+                                <field name="notes"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_visitor_search" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.search</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <search string="Visitors">
+                    <field name="name"/>
+                    <field name="visitor_company"/>
+                    <field name="host_employee_id"/>
+                    <field name="purpose_id"/>
+                    <field name="visit_number"/>
+                    <filter string="Pending" name="f_pending" domain="[('state', '=', 'pending')]"/>
+                    <filter string="Signed in" name="f_signed_in" domain="[('state', '=', 'signed_in')]"/>
+                    <filter string="Signed out" name="f_signed_out" domain="[('state', '=', 'signed_out')]"/>
+                    <separator/>
+                    <filter string="Today" name="f_today" domain="[('arrived_on', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Yesterday" name="f_yesterday" domain="[('arrived_on', '&gt;=', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')), ('arrived_on', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" name="f_week" domain="[('arrived_on', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month" name="f_month" domain="[('arrived_on', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                    <filter string="This Year" name="f_year" domain="[('arrived_on', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
+                    <separator/>
+                    <filter string="VIP Visitors" name="f_vip" domain="[('is_vip', '=', True)]"/>
+                    <separator/>
+                    <filter string="Date" name="f_date" date="arrived_on"/>
+                    <separator/>
+                    <filter string="NDA accepted" name="f_nda" domain="[('nda_accepted', '=', True)]"/>
+                    <filter string="Auto-signed out" name="f_auto" domain="[('auto_signed_out', '=', True)]"/>
+                    <group>
+                        <filter string="Host" name="g_host" context="{'group_by': 'host_employee_id'}"/>
+                        <filter string="Department" name="g_department" context="{'group_by': 'host_department_id'}"/>
+                        <filter string="Purpose" name="g_purpose" context="{'group_by': 'purpose_id'}"/>
+                        <filter string="Company" name="g_company" context="{'group_by': 'visitor_company'}"/>
+                        <filter string="Drink" name="g_drink" context="{'group_by': 'drink_id'}"/>
+                        <filter string="Hour" name="g_hour" context="{'group_by': 'arrived_on:hour'}"/>
+                        <filter string="Day" name="g_day" context="{'group_by': 'arrived_on:day'}"/>
+                        <filter string="Week" name="g_week" context="{'group_by': 'arrived_on:week'}"/>
+                        <filter string="Month" name="g_month" context="{'group_by': 'arrived_on:month'}"/>
+                        <filter string="Visitor" name="g_visitor_name" context="{'group_by': 'name'}"/>
+                        <filter string="Status" name="g_state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_visitor_walkin_list" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.walkin.list</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <list string="Visitors" create="false" sample="1" decoration-success="state == 'signed_in'" decoration-muted="state == 'signed_out'">
+                    <field name="visit_number"/>
+                    <field name="name"/>
+                    <field name="visitor_company"/>
+                    <field name="host_employee_id"/>
+                    <field name="purpose_id"/>
+                    <field name="arrived_on"/>
+                    <field name="signed_out_on" optional="hide"/>
+                    <field name="duration_minutes" optional="hide"/>
+                    <field name="is_vip" optional="hide"/>
+                    <field name="station_id" optional="hide"/>
+                    <field name="drink_id" optional="hide"/>
+                    <field name="agreement_status" widget="badge" decoration-info="agreement_status == 'pending'" decoration-success="agreement_status == 'completed'" decoration-muted="agreement_status == 'not_required'"/>
+                    <field name="state"/>
+                    <field name="auto_signed_out" optional="hide"/>
+                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_visitor" model="ir.actions.act_window">
+            <field name="name">Visitors</field>
+            <field name="res_model">eh.hr.visitor</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_eh_hr_visitor_search"/>
+            <field name="domain">[('registration_type', '=', 'walk-in')]</field>
+            <field name="context">{'search_default_f_today': 1, 'default_registration_type': 'walk-in'}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('eh_hr_visitor.view_eh_hr_visitor_walkin_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('eh_hr_visitor.view_eh_hr_visitor_form')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No visitors yet.</p>
+                <p>Visitors sign themselves in at the front-desk kiosk at <code>/eh_hr/visitor/&lt;site_code&gt;</code>. The host receives an email when their visitor arrives.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

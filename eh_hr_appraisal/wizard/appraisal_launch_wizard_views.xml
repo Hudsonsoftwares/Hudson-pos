@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_appraisal_launch_wizard_form" model="ir.ui.view">
+        <field name="name">hr.appraisal.launch.wizard.form</field>
+        <field name="model">hr.appraisal.launch.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Appraisal Campaign">
+                <group>
+                    <field name="employee_ids" widget="many2many_tags_avatar" placeholder="All employees"/>
+                    <field name="template_id" placeholder="Template of the department, or Default" options="{'no_create': True}"/>
+                    <field name="date_appraisal"/>
+                </group>
+                <div invisible="not no_manager_warning" class="alert alert-warning mt-3 mb-0" role="alert">
+                    <field name="no_manager_warning" nolabel="1"/>
+                </div>
+                <footer>
+                    <button string="Schedule" name="action_launch" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_appraisal_launch_wizard" model="ir.actions.act_window">
+        <field name="name">Appraisal Campaign</field>
+        <field name="res_model">hr.appraisal.launch.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

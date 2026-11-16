@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="visitor_preregistration_form" name="Visitor Pre-registration Form">
+            <t t-call="web.layout">
+                <t t-set="head">
+                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+                    <link rel="stylesheet" href="/web/static/lib/bootstrap/css/bootstrap.css"/>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+                    <style>
+                        :root {
+                            --primary-color: #556ee6;
+                            --primary-hover: #485ec4;
+                            --bg-color: #f4f5f8;
+                            --card-radius: 12px;
+                        }
+                        body { 
+                            background-color: var(--bg-color); 
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                            color: #495057;
+                        }
+                        .main-container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
+                        
+                        /* Progress Bar */
+                        .stepper-wrapper {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 40px;
+                        }
+                        .stepper-item {
+                            position: relative;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            flex: 1;
+                        }
+                        .stepper-item::before {
+                            position: absolute;
+                            content: "";
+                            border-bottom: 2px solid #dee2e6;
+                            width: 100%;
+                            top: 15px;
+                            left: -50%;
+                            z-index: 2;
+                        }
+                        .stepper-item::after {
+                            position: absolute;
+                            content: "";
+                            border-bottom: 2px solid #dee2e6;
+                            width: 100%;
+                            top: 15px;
+                            left: 50%;
+                            z-index: 2;
+                        }
+                        .stepper-item .step-counter {
+                            position: relative;
+                            z-index: 5;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            background: #dee2e6;
+                            color: white;
+                            font-weight: bold;
+                            margin-bottom: 6px;
+                        }
+                        .stepper-item.completed .step-counter, .stepper-item.active .step-counter {
+                            background-color: var(--primary-color);
+                        }
+                        .stepper-item.completed::after { border-bottom: 2px solid var(--primary-color); }
+                        .stepper-item:first-child::before { content: none; }
+                        .stepper-item:last-child::after { content: none; }
+                        .step-name { font-size: 0.85rem; color: #6c757d; font-weight: 500; }
+                        .stepper-item.active .step-name, .stepper-item.completed .step-name { color: var(--primary-color); }
+                        
+                        /* Cards */
+                        .corporate-card {
+                            background: white;
+                            border-radius: var(--card-radius);
+                            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+                            margin-bottom: 30px;
+                            border: 1px solid rgba(0,0,0,0.05);
+                            overflow: hidden;
+                            transition: transform 0.2s ease, box-shadow 0.2s ease;
+                        }
+                        .corporate-card:hover {
+                            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+                        }
+                        .corporate-card .card-header {
+                            background-color: #fff;
+                            border-bottom: 1px solid rgba(0,0,0,0.05);
+                            padding: 1.5rem;
+                            font-weight: 700;
+                            font-size: 1.25rem;
+                            color: #2b3445;
+                            display: flex;
+                            align-items: center;
+                        }
+                        .corporate-card .card-header i { margin-right: 12px; color: var(--primary-color); font-size: 1.3rem; background: rgba(85, 110, 230, 0.1); padding: 10px; border-radius: 8px; }
+                        .corporate-card .card-body { padding: 1.75rem; }
+                        
+                        /* Forms */
+                        .form-label { font-weight: 600; font-size: 0.9rem; color: #4b5563; margin-bottom: 0.5rem; }
+                        .form-control, .form-select {
+                            border-radius: 8px;
+                            border: 1px solid #e5e7eb;
+                            padding: 0.75rem 1rem;
+                            font-size: 0.95rem;
+                            background-color: #f9fafb;
+                            transition: all 0.2s;
+                        }
+                        .form-control:focus, .form-select:focus {
+                            background-color: #fff;
+                            border-color: var(--primary-color);
+                            box-shadow: 0 0 0 4px rgba(85, 110, 230, 0.15);
+                        }
+                        .form-group { margin-bottom: 1.5rem; }
+                        
+                        /* File Upload */
+                        .upload-zone {
+                            border: 2px dashed #d1d5db;
+                            border-radius: 12px;
+                            padding: 30px 20px;
+                            text-align: center;
+                            background: #f9fafb;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            position: relative;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                        .upload-zone:hover { border-color: var(--primary-color); background: rgba(85, 110, 230, 0.05); }
+                        .upload-zone i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 12px; opacity: 0.8; }
+                        .upload-zone input[type="file"] {
+                            position: absolute;
+                            top: 0; left: 0; width: 100%; height: 100%;
+                            opacity: 0;
+                            cursor: pointer;
+                        }
+                        .upload-text { font-size: 0.95rem; color: #4b5563; font-weight: 500; }
+                        .upload-preview { margin-top: 12px; font-size: 0.9rem; color: #10b981; font-weight: 600; display: none; background: #ecfdf5; padding: 6px 12px; border-radius: 6px; }
+                        
+                        /* Buttons */
+                        .btn-primary {
+                            background-color: var(--primary-color);
+                            border-color: var(--primary-color);
+                            border-radius: 10px;
+                            padding: 0.85rem 3rem;
+                            font-weight: 600;
+                            font-size: 1.1rem;
+                            box-shadow: 0 4px 14px rgba(85, 110, 230, 0.4);
+                            transition: all 0.3s;
+                        }
+                        .btn-primary:hover {
+                            background-color: var(--primary-hover);
+                            transform: translateY(-2px);
+                            box-shadow: 0 6px 20px rgba(85, 110, 230, 0.5);
+                        }
+                        .btn-outline-secondary { border-radius: 10px; font-weight: 600; padding: 0.85rem 2rem; }
+                        
+                        /* Meeting Summary */
+                        .meeting-summary { background: linear-gradient(135deg, #2b3445 0%, #1e2532 100%); color: white; border: none; }
+                        .meeting-summary .card-header { background: transparent; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
+                        .meeting-summary .card-header i { color: white; background: rgba(255,255,255,0.1); }
+                        .summary-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; margin-bottom: 0.3rem; font-weight: 600; }
+                        .summary-value { font-weight: 600; font-size: 1.1rem; margin-bottom: 1.25rem; color: #f3f4f6; }
+                        
+                        /* Success Page */
+                        .success-icon { font-size: 4rem; color: #34c38f; margin-bottom: 1rem; }
+                        .qr-container { background: white; padding: 15px; border-radius: 12px; display: inline-block; margin: 20px 0; border: 1px solid #eee; }
+                        .ticket-card { border-left: 5px solid var(--primary-color); }
+                    </style>
+                </t>
+                <body>
+                    <!-- Header -->
+                    <div style="background-color: white; border-bottom: 1px solid #e9ecef; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div class="container d-flex justify-content-between align-items-center py-3">
+                            <div class="d-flex align-items-center">
+                                <t t-if="company.logo">
+                                    <img t-att-src="'data:image/png;base64,' + company.logo.decode('utf-8')" style="max-height: 40px; margin-right: 15px;"/>
+                                </t>
+                                <h4 class="mb-0 fw-bold" style="color: var(--primary-color);">Visitor Registration</h4>
+                            </div>
+                            <div class="text-end d-none d-md-block">
+                                <span class="text-muted"><i class="fas fa-building mr-1"></i> <t t-out="company.name"/></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container main-container mt-5">
+                        
+                        <!-- Progress Indicator -->
+                        <t t-if="not success">
+                            <div class="stepper-wrapper">
+                                <div class="stepper-item completed">
+                                    <div class="step-counter"><i class="fas fa-check"></i></div>
+                                    <div class="step-name">Invitation Sent</div>
+                                </div>
+                                <div class="stepper-item active">
+                                    <div class="step-counter">2</div>
+                                    <div class="step-name">Registration</div>
+                                </div>
+                                <div class="stepper-item">
+                                    <div class="step-counter">3</div>
+                                    <div class="step-name">Confirmation</div>
+                                </div>
+                                <div class="stepper-item">
+                                    <div class="step-counter">4</div>
+                                    <div class="step-name">Visit Day</div>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="stepper-wrapper">
+                                <div class="stepper-item completed">
+                                    <div class="step-counter"><i class="fas fa-check"></i></div>
+                                    <div class="step-name">Invitation Sent</div>
+                                </div>
+                                <div class="stepper-item completed">
+                                    <div class="step-counter"><i class="fas fa-check"></i></div>
+                                    <div class="step-name">Registration</div>
+                                </div>
+                                <div class="stepper-item active">
+                                    <div class="step-counter">3</div>
+                                    <div class="step-name">Confirmation</div>
+                                </div>
+                                <div class="stepper-item">
+                                    <div class="step-counter">4</div>
+                                    <div class="step-name">Visit Day</div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Welcome & Intro -->
+                        <div class="text-center mb-5">
+                            <t t-if="not success">
+                                <h2 class="fw-bold mb-2">Welcome <t t-out="visitor.name"/>!</h2>
+                                <p class="text-muted" style="font-size: 1.1rem;">Please complete your registration before your visit.</p>
+                            </t>
+                        </div>
+                        
+                        <t t-if="error">
+                            <div class="alert alert-danger rounded-3 shadow-sm mb-4" role="alert">
+                                <i class="fas fa-exclamation-circle mr-2"></i> <t t-out="error"/>
+                            </div>
+                        </t>
+
+                        <!-- Success Screen -->
+                        <t t-if="success">
+                            <div class="corporate-card ticket-card text-center p-5">
+                                <i class="fas fa-check-circle success-icon"></i>
+                                <h2 class="fw-bold mb-3">Registration Completed Successfully</h2>
+                                <p class="text-muted mb-4" style="font-size: 1.1rem;">Thank you <t t-out="visitor.name"/>. Your registration has been completed.</p>
+                                
+                                <div class="row justify-content-center mb-4 text-start">
+                                    <div class="col-md-8">
+                                        <div class="bg-light p-4 rounded-3">
+                                            <div class="row">
+                                                <div class="col-6 mb-3">
+                                                    <div class="text-muted small text-uppercase">Visitor ID</div>
+                                                    <div class="fw-bold"><t t-out="visitor.visit_number"/></div>
+                                                </div>
+                                                <div class="col-6 mb-3">
+                                                    <div class="text-muted small text-uppercase">Meeting</div>
+                                                    <div class="fw-bold"><t t-out="visitor.meeting_title or visitor.purpose_id.name"/></div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="text-muted small text-uppercase">Date</div>
+                                                    <div class="fw-bold"><t t-out="visitor.expected_arrival and visitor.expected_arrival.strftime('%d %B %Y') or 'N/A'"/></div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="text-muted small text-uppercase">Time</div>
+                                                    <div class="fw-bold"><t t-out="visitor.expected_arrival and visitor.expected_arrival.strftime('%I:%M %p') or 'N/A'"/></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <p class="mb-1 fw-bold">Your QR Code has been generated.</p>
+                                <p class="text-muted small">Please present this QR Code at reception during check-in.</p>
+                                
+                                <t t-if="visitor.qr_code">
+                                    <div class="qr-container shadow-sm">
+                                        <img t-att-src="'data:image/png;base64,' + visitor.qr_code.decode('utf-8')" style="width: 150px; height: 150px;"/>
+                                    </div>
+                                </t>
+                                
+                                <div class="mt-4">
+                                    <a href="#" class="btn btn-outline-primary mx-2"><i class="fas fa-download mr-1"></i> Download QR Code</a>
+                                    <a href="#" class="btn btn-outline-secondary mx-2"><i class="fas fa-id-badge mr-1"></i> Download Visitor Pass</a>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            
+                            <!-- Meeting Summary Card (Read-Only) -->
+                            <div class="card corporate-card meeting-summary mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-calendar-alt"></i> Meeting Summary
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="summary-label">Host</div>
+                                            <div class="summary-value"><t t-out="visitor.host_employee_id.name"/></div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="summary-label">Meeting</div>
+                                            <div class="summary-value"><t t-out="visitor.meeting_title or visitor.purpose_id.name"/></div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="summary-label">Department</div>
+                                            <div class="summary-value"><t t-out="visitor.host_department_id.name or 'N/A'"/></div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="summary-label">Meeting Room</div>
+                                            <div class="summary-value"><t t-out="visitor.meeting_room_id.name or 'TBD'"/></div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="summary-label">Date</div>
+                                            <div class="summary-value"><t t-out="visitor.expected_arrival and visitor.expected_arrival.strftime('%d %B %Y') or 'N/A'"/></div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="summary-label">Time</div>
+                                            <div class="summary-value"><t t-out="visitor.expected_arrival and visitor.expected_arrival.strftime('%I:%M %p') or 'N/A'"/></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <form method="post" t-att-action="'/visitor/register/' + visitor.registration_token" enctype="multipart/form-data" id="registrationForm" class="needs-validation" novalidate="1">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <!-- Card 1: Personal Information -->
+                                <div class="card corporate-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-user-circle"></i> Personal Information
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="name">Full Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="name" id="name" t-att-value="visitor.name" required="1"/>
+                                                <div class="invalid-feedback">Please enter your full name.</div>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="visitor_company">Company</label>
+                                                <input type="text" class="form-control" name="visitor_company" id="visitor_company" t-att-value="visitor.visitor_company"/>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="visitor_email">Email Address <span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" name="visitor_email" id="visitor_email" t-att-value="visitor.visitor_email" required="1"/>
+                                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="visitor_phone">Phone Number <span class="text-danger">*</span></label>
+                                                <input type="tel" class="form-control" name="visitor_phone" id="visitor_phone" t-att-value="visitor.visitor_phone" required="1"/>
+                                                <div class="invalid-feedback">Please enter your phone number.</div>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="designation">Designation</label>
+                                                <input type="text" class="form-control" name="designation" id="designation" t-att-value="visitor.designation"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card 2: Address Information -->
+                                <div class="card corporate-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-map-marker-alt"></i> Address Information
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12 form-group">
+                                                <label class="form-label" for="visitor_address">Address</label>
+                                                <input type="text" class="form-control" name="visitor_address" id="visitor_address" t-att-value="visitor.visitor_address"/>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="visitor_city">City</label>
+                                                <input type="text" class="form-control" name="visitor_city" id="visitor_city" t-att-value="visitor.visitor_city"/>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="visitor_country">Country</label>
+                                                <input type="text" class="form-control" name="visitor_country" id="visitor_country" t-att-value="visitor.visitor_country"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card 3: Identity Verification -->
+                                <div class="card corporate-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-id-card"></i> Identity Verification
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="identity_type">Identity Type</label>
+                                                <select class="form-control" name="identity_type" id="identity_type">
+                                                    <option value="id_card" t-att-selected="visitor.identity_type == 'id_card'">ID Card</option>
+                                                    <option value="passport" t-att-selected="visitor.identity_type == 'passport'">Passport</option>
+                                                    <option value="driver_license" t-att-selected="visitor.identity_type == 'driver_license'">Driver License</option>
+                                                    <option value="other" t-att-selected="visitor.identity_type == 'other'">Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="identity_number">Identity Number</label>
+                                                <input type="text" class="form-control" name="identity_number" id="identity_number" t-att-value="visitor.identity_number"/>
+                                            </div>
+                                            
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label">Upload Identity Proof</label>
+                                                <div class="upload-zone" onclick="document.getElementById('identity_proof').click()">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <div class="upload-text">Drag &amp; drop file or click to browse</div>
+                                                    <input type="file" name="identity_proof" id="identity_proof" accept="image/*,application/pdf" onchange="previewFileName(this, 'proof_preview')"/>
+                                                    <div id="proof_preview" class="upload-preview"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label">Upload Visitor Photo</label>
+                                                <div class="upload-zone" onclick="document.getElementById('photo').click()">
+                                                    <i class="fas fa-camera"></i>
+                                                    <div class="upload-text">Drag &amp; drop image or click to capture</div>
+                                                    <input type="file" name="photo" id="photo" accept="image/*" onchange="previewFileName(this, 'photo_preview')"/>
+                                                    <div id="photo_preview" class="upload-preview"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card 4: Vehicle Information -->
+                                <t t-if="visitor.parking_required">
+                                    <div class="card corporate-card">
+                                        <div class="card-header">
+                                            <i class="fas fa-car"></i> Vehicle Details
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="text-muted small mb-3">Since parking has been requested for your visit, please provide your vehicle details.</p>
+                                            <div class="row">
+
+                                                <!-- Mock Fields for UX since backend model is not changing -->
+                                                <div class="col-md-6 form-group">
+                                                    <label class="form-label" for="dummy_vehicle_type">Vehicle Type</label>
+                                                    <select class="form-control" id="dummy_vehicle_type" name="dummy_vehicle_type">
+                                                        <option value="sedan">Sedan</option>
+                                                        <option value="suv">SUV</option>
+                                                        <option value="hatchback">Hatchback</option>
+                                                        <option value="twowheeler">Two-Wheeler</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label" for="dummy_parking_notes">Parking Notes</label>
+                                                    <input type="text" class="form-control" id="dummy_parking_notes" name="dummy_parking_notes" placeholder="e.g. Needs EV Charging station"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                
+                                <!-- Card 5: Emergency Contact -->
+                                <div class="card corporate-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-heartbeat"></i> Emergency Contact
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="emergency_contact_name">Contact Name</label>
+                                                <input type="text" class="form-control" name="emergency_contact_name" id="emergency_contact_name" t-att-value="visitor.emergency_contact_name"/>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="dummy_relationship">Relationship</label>
+                                                <input type="text" class="form-control" name="dummy_relationship" id="dummy_relationship"/>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label class="form-label" for="emergency_contact_number">Contact Phone</label>
+                                                <input type="tel" class="form-control" name="emergency_contact_number" id="emergency_contact_number" t-att-value="visitor.emergency_contact_number"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card 6: Declaration & Privacy -->
+                                <div class="card corporate-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-shield-alt"></i> Declaration &amp; Privacy
+                                    </div>
+                                    <div class="card-body">
+                                        
+                                        <t t-if="visitor.nda_required">
+                                            <h6 class="fw-bold mb-2 mt-3">Non-Disclosure Agreement (NDA)</h6>
+                                            <div class="bg-light p-3 rounded-3 mb-3 border" style="max-height: 150px; overflow-y: auto; font-size: 0.85rem; color: #6c757d;">
+                                                <t t-out="visitor.company_id.eh_hr_visitor_nda_text or 'No NDA text provided.'"/>
+                                            </div>
+                                            <div class="form-check mb-4">
+                                                <input class="form-check-input agreement-checkbox" type="checkbox" name="nda_accepted" id="nda_accepted" required="1"/>
+                                                <label class="form-check-label fw-bold text-dark" for="nda_accepted">
+                                                    I agree to the NDA terms and conditions <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="invalid-feedback">You must agree before submitting.</div>
+                                            </div>
+                                        </t>
+                                        
+                                        <t t-if="visitor.visitor_agreement_required">
+                                            <h6 class="fw-bold mb-2 mt-3">Visitor Agreement</h6>
+                                            <div class="bg-light p-3 rounded-3 mb-3 border" style="max-height: 150px; overflow-y: auto; font-size: 0.85rem; color: #6c757d;">
+                                                <t t-out="visitor.company_id.eh_hr_visitor_visitor_agreement_text or 'No Visitor Agreement provided.'"/>
+                                            </div>
+                                            <div class="form-check mb-4">
+                                                <input class="form-check-input agreement-checkbox" type="checkbox" name="visitor_agreement_accepted" id="visitor_agreement_accepted" required="1"/>
+                                                <label class="form-check-label fw-bold text-dark" for="visitor_agreement_accepted">
+                                                    I accept the Visitor Agreement <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="invalid-feedback">You must agree before submitting.</div>
+                                            </div>
+                                        </t>
+
+                                        <t t-if="visitor.safety_declaration_required">
+                                            <h6 class="fw-bold mb-2 mt-3">Safety Declaration</h6>
+                                            <div class="bg-light p-3 rounded-3 mb-3 border" style="max-height: 150px; overflow-y: auto; font-size: 0.85rem; color: #6c757d;">
+                                                <t t-out="visitor.company_id.eh_hr_visitor_safety_declaration_text or 'No Safety Declaration provided.'"/>
+                                            </div>
+                                            <div class="form-check mb-4">
+                                                <input class="form-check-input agreement-checkbox" type="checkbox" name="safety_declaration_accepted" id="safety_declaration_accepted" required="1"/>
+                                                <label class="form-check-label fw-bold text-dark" for="safety_declaration_accepted">
+                                                    I accept the Safety Declaration <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="invalid-feedback">You must agree before submitting.</div>
+                                            </div>
+                                        </t>
+
+                                        <t t-if="visitor.privacy_consent_required">
+                                            <h6 class="fw-bold mb-2 mt-3">Privacy Consent</h6>
+                                            <div class="bg-light p-3 rounded-3 mb-3 border" style="max-height: 150px; overflow-y: auto; font-size: 0.85rem; color: #6c757d;">
+                                                <t t-out="visitor.company_id.eh_hr_visitor_privacy_consent_text or 'No Privacy Consent provided.'"/>
+                                            </div>
+                                            <div class="form-check mb-4">
+                                                <input class="form-check-input agreement-checkbox" type="checkbox" name="accept_privacy_policy" id="accept_privacy_policy" required="1"/>
+                                                <label class="form-check-label fw-bold text-dark" for="accept_privacy_policy">
+                                                    I agree to the Privacy Consent <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="invalid-feedback">You must agree before submitting.</div>
+                                            </div>
+                                        </t>
+                                        
+                                        <h6 class="fw-bold mb-2">Digital Signature <span class="text-danger">*</span></h6>
+                                        <div class="border rounded-3 bg-white" style="position: relative; max-width: 500px;">
+                                            <canvas id="signature-pad" style="width: 100%; height: 200px; touch-action: none; border-radius: 8px;"></canvas>
+                                            <button type="button" class="btn btn-sm btn-light position-absolute border shadow-sm" style="bottom: 10px; right: 10px;" onclick="signaturePad.clear()">
+                                                <i class="fas fa-eraser mr-1"></i> Clear
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="digital_signature_b64" id="digital_signature_b64"/>
+                                        
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="d-flex flex-column align-items-center mt-5 pt-4 border-top">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5 mb-4" id="submitBtn" style="min-width: 250px; font-size: 1.25rem;"><i class="fas fa-paper-plane mr-2"></i> Submit Registration</button>
+                                    <div class="d-flex justify-content-center w-100">
+                                        <button type="button" class="btn btn-outline-secondary px-4 mx-2"><i class="fas fa-arrow-left mr-2"></i> Previous</button>
+                                        <button type="button" class="btn btn-outline-secondary px-4 mx-2"><i class="fas fa-save mr-2"></i> Save Draft</button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+                            <script>
+                                function previewFileName(input, previewId) {
+                                    var preview = document.getElementById(previewId);
+                                    if (input.files &amp;&amp; input.files[0]) {
+                                        preview.innerHTML = '<i class="fas fa-check-circle mr-1"></i> ' + input.files[0].name;
+                                        preview.style.display = 'block';
+                                    } else {
+                                        preview.style.display = 'none';
+                                    }
+                                }
+
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // Signature Pad
+                                    var canvas = document.getElementById('signature-pad');
+                                    if (canvas) {
+                                        var signaturePad = new SignaturePad(canvas, {
+                                            backgroundColor: 'rgb(255, 255, 255)'
+                                        });
+                                        
+                                        function resizeCanvas() {
+                                            var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+                                            canvas.width = canvas.offsetWidth * ratio;
+                                            canvas.height = canvas.offsetHeight * ratio;
+                                            canvas.getContext("2d").scale(ratio, ratio);
+                                            signaturePad.clear();
+                                        }
+                                        window.addEventListener("resize", resizeCanvas);
+                                        resizeCanvas();
+                                        
+                                        window.signaturePad = signaturePad;
+                                    }
+                                    
+                                    // Bootstrap Validation
+                                    var form = document.getElementById('registrationForm');
+                                    var submitBtn = document.getElementById('submitBtn');
+                                    var privacyCheck = document.getElementById('accept_privacy_policy');
+                                    var ndaCheck = document.getElementById('nda_accepted');
+                                    
+                                    function checkAgreements() {
+                                        var checkboxes = document.querySelectorAll('.agreement-checkbox');
+                                        var isValid = true;
+                                        checkboxes.forEach(function(cb) {
+                                            if (!cb.checked) {
+                                                isValid = false;
+                                            }
+                                        });
+                                        if (submitBtn) submitBtn.disabled = !isValid;
+                                    }
+                                    
+                                    var checkboxes = document.querySelectorAll('.agreement-checkbox');
+                                    checkboxes.forEach(function(cb) {
+                                        cb.addEventListener('change', checkAgreements);
+                                    });
+                                    checkAgreements();
+
+                                    if (form) {
+                                        form.addEventListener('submit', function(event) {
+                                            if (!form.checkValidity()) {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                            } else {
+                                                if (window.signaturePad &amp;&amp; !window.signaturePad.isEmpty()) {
+                                                    document.getElementById('digital_signature_b64').value = window.signaturePad.toDataURL();
+                                                } else {
+                                                    // Require signature
+                                                    event.preventDefault();
+                                                    event.stopPropagation();
+                                                    alert("Please provide your digital signature.");
+                                                }
+                                            }
+                                            form.classList.add('was-validated');
+                                        }, false);
+                                    }
+                                });
+                            </script>
+                        </t>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="mt-5 text-center text-muted small py-4" style="background-color: white; border-top: 1px solid #e9ecef;">
+                        <p class="mb-0">© <t t-out="company.name"/>. All rights reserved.</p>
+                        <p class="mb-0">Powered by Odoo Visitor Management System</p>
+                    </div>
+                </body>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Survey form: "Appraisal" survey type and Feedbacks button -->
+    <record id="survey_survey_view_form_inherit_appraisal" model="ir.ui.view">
+        <field name="name">survey.survey.form.inherit.appraisal</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='survey_type']" position="attributes">
+                <attribute name="options">{
+                    'allowed_selection_field': 'allowed_survey_types',
+                    'icon_mapping': {
+                        'survey': 'edit',
+                        'live_session': 'bar_chart',
+                        'assessment': 'school',
+                        'custom': 'design_services',
+                        'appraisal': 'groups',
+                    },
+                }</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_appraisal_feedbacks" type="object" class="oe_stat_button" icon="fa-commenting-o"
+                        invisible="survey_type != 'appraisal'">
+                    <field name="appraisal_feedback_count" widget="statinfo" string="Feedbacks"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Configuration > 360 Feedback -->
+    <record id="survey_survey_view_list_appraisal" model="ir.ui.view">
+        <field name="name">survey.survey.list.appraisal</field>
+        <field name="model">survey.survey</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <list string="360 Feedback">
+                <field name="title" string="Survey Name"/>
+                <field name="user_id" string="Responsible" widget="many2one_avatar_user"/>
+                <field name="create_date" string="Since" widget="date" optional="show"/>
+                <field name="question_count" string="Questions"/>
+                <field name="answer_done_count" string="Completed"/>
+                <field name="question_ids" column_invisible="True"/>
+                <field name="active" column_invisible="True"/>
+                <button name="action_test_survey" string="Test" type="object" class="btn-link" icon="fa-eye"
+                        invisible="not active or not question_ids"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_360_feedback" model="ir.actions.act_window">
+        <field name="name">360 Feedback</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('survey_type', '=', 'appraisal')]</field>
+        <field name="context">{'default_survey_type': 'appraisal', 'default_access_mode': 'token', 'default_questions_layout': 'one_page'}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('survey_survey_view_list_appraisal')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('survey.survey_survey_view_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a 360 feedback survey</p>
+            <p>Appraisers send these surveys to colleagues with the <strong>Ask Feedback</strong> button of a confirmed appraisal.</p>
+        </field>
+    </record>
+
+    <!-- Feedback Surveys: the requests sent to colleagues -->
+    <record id="survey_user_input_view_list_appraisal" model="ir.ui.view">
+        <field name="name">survey.user_input.list.appraisal</field>
+        <field name="model">survey.user_input</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <list string="Feedback Surveys" create="false" edit="false">
+                <field name="appraisal_employee_id" widget="many2one_avatar_employee"/>
+                <field name="appraised_employee_id" string="Appraisal of" optional="show"/>
+                <field name="state" string="Status" widget="badge"
+                       decoration-success="state == 'done'" decoration-info="state == 'new'" decoration-warning="state == 'in_progress'"/>
+                <field name="deadline"/>
+                <field name="survey_id" string="Survey"/>
+                <button name="action_print_answers" string="See Answers" type="object" class="btn-link" icon="fa-file-text-o"
+                        invisible="state != 'done'"/>
+                <button name="action_appraisal_resend" string="Resend" type="object" class="btn-link" icon="fa-envelope-o"
+                        invisible="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="survey_user_input_view_search_appraisal" model="ir.ui.view">
+        <field name="name">survey.user_input.search.appraisal</field>
+        <field name="model">survey.user_input</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="appraisal_employee_id"/>
+                <field name="appraised_employee_id"/>
+                <field name="survey_id"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'done')]"/>
+                <filter string="New" name="new" domain="[('state', '!=', 'done')]"/>
+                <group>
+                    <filter string="Survey" name="group_by_survey" context="{'group_by': 'survey_id'}"/>
+                    <filter string="Appraisal" name="group_by_appraisal" context="{'group_by': 'appraisal_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_feedback_inputs" model="ir.actions.act_window">
+        <field name="name">Feedback Surveys</field>
+        <field name="res_model">survey.user_input</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('appraisal_id', '!=', False)]</field>
+        <field name="context">{'create': False}</field>
+        <field name="search_view_id" ref="survey_user_input_view_search_appraisal"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('survey_user_input_view_list_appraisal')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No feedback requested yet</p>
+            <p>Use <strong>Ask Feedback</strong> on a confirmed appraisal to ask colleagues for 360 feedback.</p>
+        </field>
+    </record>
+</odoo>

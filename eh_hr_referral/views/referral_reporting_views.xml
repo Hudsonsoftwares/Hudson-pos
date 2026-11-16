@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_applicant_referral_graph" model="ir.ui.view">
+        <field name="name">hr.applicant.referral.graph</field>
+        <field name="model">hr.applicant</field>
+        <field name="arch" type="xml">
+            <graph string="Employees Referral Analysis" type="bar" stacked="True">
+                <field name="ref_user_id"/>
+                <field name="job_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_analysis" model="ir.actions.act_window">
+        <field name="name">Employees Referral Analysis</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_id" ref="view_hr_applicant_referral_graph"/>
+    </record>
+</odoo>

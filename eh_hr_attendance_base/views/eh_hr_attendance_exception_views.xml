@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="view_eh_hr_attendance_exception_list" model="ir.ui.view">
+            <field name="name">eh.hr.attendance.exception.list</field>
+            <field name="model">eh.hr.attendance.exception</field>
+            <field name="arch" type="xml">
+                <list string="Attendance exceptions" sample="1" decoration-danger="severity == 'critical' and not resolved" decoration-warning="severity == 'warning' and not resolved" decoration-muted="resolved">
+                    <field name="occurred_on"/>
+                    <field name="employee_id"/>
+                    <field name="exception_type"/>
+                    <field name="severity"/>
+                    <field name="resolved"/>
+                    <field name="resolved_by" optional="hide"/>
+                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_attendance_exception_form" model="ir.ui.view">
+            <field name="name">eh.hr.attendance.exception.form</field>
+            <field name="model">eh.hr.attendance.exception</field>
+            <field name="arch" type="xml">
+                <form string="Attendance exception">
+                    <header>
+                        <button name="action_resolve" type="object" string="Mark resolved" class="oe_highlight" invisible="resolved"/>
+                        <button name="action_reopen" type="object" string="Re-open" invisible="not resolved"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Resolved" bg_color="bg-success" invisible="not resolved"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id"/>
+                                <field name="exception_type"/>
+                                <field name="severity"/>
+                                <field name="occurred_on"/>
+                            </group>
+                            <group>
+                                <field name="attendance_id"/>
+                                <field name="resolved"/>
+                                <field name="resolved_by" readonly="1"/>
+                                <field name="resolved_on" readonly="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description"/>
+                            </page>
+                            <page string="Resolution">
+                                <field name="resolution_notes"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_attendance_exception_search" model="ir.ui.view">
+            <field name="name">eh.hr.attendance.exception.search</field>
+            <field name="model">eh.hr.attendance.exception</field>
+            <field name="arch" type="xml">
+                <search string="Attendance exceptions">
+                    <field name="employee_id"/>
+                    <field name="exception_type"/>
+                    <filter string="Open" name="f_open" domain="[('resolved', '=', False)]"/>
+                    <filter string="Resolved" name="f_resolved" domain="[('resolved', '=', True)]"/>
+                    <separator/>
+                    <filter string="Critical" name="f_critical" domain="[('severity', '=', 'critical')]"/>
+                    <filter string="Warning" name="f_warning" domain="[('severity', '=', 'warning')]"/>
+                    <separator/>
+                    <filter string="Today" name="f_today" domain="[('occurred_on', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last 7 days" name="f_week" domain="[('occurred_on', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <group>
+                        <filter string="Employee" name="g_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Type" name="g_type" context="{'group_by': 'exception_type'}"/>
+                        <filter string="Severity" name="g_severity" context="{'group_by': 'severity'}"/>
+                        <filter string="Day" name="g_day" context="{'group_by': 'occurred_on:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_attendance_exception" model="ir.actions.act_window">
+            <field name="name">Attendance exceptions</field>
+            <field name="res_model">eh.hr.attendance.exception</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_eh_hr_attendance_exception_search"/>
+            <field name="context">{'search_default_f_open': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No exceptions raised.</p>
+                <p>Exceptions are raised automatically by the kiosk and detection crons (late, no-show, low confidence, geofence violation), and can also be added manually by a manager.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

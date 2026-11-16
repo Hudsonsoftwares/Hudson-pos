@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="view_res_config_settings_eh_visitor" model="ir.ui.view">
+            <field name="name">res.config.settings.eh.visitor</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="eh_hr_attendance_base.view_res_config_settings_eh_hr"/>
+            <field name="arch" type="xml">
+                <xpath expr="//app[@name='eh_hr_attendance_base']" position="inside">
+                    <block title="Visitor management" name="eh_hr_visitor_block">
+                        <setting id="eh_hr_visitor_nda_text" string="Default NDA text" help="Shown at the visitor kiosk when the chosen purpose requires NDA acceptance. Snapshotted onto each visitor record at sign-in time.">
+                            <field name="eh_hr_visitor_nda_text" widget="text"/>
+                        </setting>
+                        <setting id="eh_hr_visitor_visitor_agreement_text" string="Default Visitor Agreement text">
+                            <field name="eh_hr_visitor_visitor_agreement_text" widget="text"/>
+                        </setting>
+                        <setting id="eh_hr_visitor_safety_declaration_text" string="Default Safety Declaration text">
+                            <field name="eh_hr_visitor_safety_declaration_text" widget="text"/>
+                        </setting>
+                        <setting id="eh_hr_visitor_privacy_consent_text" string="Default Privacy Consent text">
+                            <field name="eh_hr_visitor_privacy_consent_text" widget="text"/>
+                        </setting>
+                        <setting id="eh_hr_visitor_photo_consent_text" string="Photo consent text" help="Shown above the camera on the visitor kiosk when the purpose requires a photo.">
+                            <field name="eh_hr_visitor_photo_consent_text" widget="text"/>
+                        </setting>
+                        <setting id="eh_hr_visitor_auto_checkout_enabled" string="Auto check-out at end of day">
+                            <field name="eh_hr_visitor_auto_checkout_enabled"/>
+                        </setting>
+                        <setting id="eh_hr_visitor_auto_checkout_hour" string="Auto check-out hour (24h)">
+                            <field name="eh_hr_visitor_auto_checkout_hour"/>
+                        </setting>
+                        <setting id="eh_hr_visitor_retention_days" string="Visitor retention (days)" help="Signed-out visitor rows are deleted after this many days. NDA snapshot and photo go with the row.">
+                            <field name="eh_hr_visitor_retention_days"/>
+                        </setting>
+                    </block>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="visitor_qr_scanner_embed" name="Visitor QR Scanner Embed">
+            <html>
+                <head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+                    <title>QR Scanner</title>
+                    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+                    <style>
+                        body { margin: 0; padding: 0; background: #1a1a2e; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; }
+                        #reader { width: 300px; border-radius: 8px; overflow: hidden; border: 2px solid #556ee6; }
+                        #result { margin-top: 16px; font-size: 1rem; text-align: center; color: #10b981; font-weight: bold; background: rgba(16,185,129,0.1); padding: 8px 16px; border-radius: 6px; min-height: 36px; }
+                    </style>
+                </head>
+                <body>
+                    <div id="reader"></div>
+                    <div id="result">Waiting for scan...</div>
+                    <script type="text/javascript">
+                        //<![CDATA[
+                        function onScanSuccess(decodedText) {
+                            document.getElementById('result').innerText = 'Scanned: ' + decodedText;
+                            window.parent.postMessage({ type: 'qr_scanned', value: decodedText }, '*');
+                        }
+                        var scanner = new Html5QrcodeScanner('reader', { fps: 10, qrbox: { width: 250, height: 250 } }, false);
+                        scanner.render(onScanSuccess, function(){});
+                        //]]>
+                    </script>
+                </body>
+            </html>
+        </template>
+    </data>
+</odoo>

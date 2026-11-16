@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_eh_hr_referral_send_mail_form" model="ir.ui.view">
+        <field name="name">eh.hr.referral.send.mail.form</field>
+        <field name="model">eh.hr.referral.send.mail</field>
+        <field name="arch" type="xml">
+            <form string="Send Job Opportunity by Mail">
+                <group>
+                    <field name="friend_name"/>
+                    <field name="email"/>
+                    <field name="subject"/>
+                    <field name="body"/>
+                </group>
+                <footer>
+                    <button name="action_send_mail" string="Send Mail" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_send_mail" model="ir.actions.act_window">
+        <field name="name">Send Job Opportunity by Mail</field>
+        <field name="res_model">eh.hr.referral.send.mail</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_eh_hr_referral_alert_form" model="ir.ui.view">
+        <field name="name">eh.hr.referral.alert.form</field>
+        <field name="model">eh.hr.referral.alert</field>
+        <field name="arch" type="xml">
+            <form string="Alert">
+                <header>
+                    <button name="%(mail.action_view_mail_mail)d" string="Send Mail" type="action" class="btn-primary" invisible="1"/> <!-- Dummy button to match screenshot UI loosely if needed -->
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="on_click" widget="radio"/>
+                            <field name="url" invisible="on_click != 'url'"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eh_hr_referral_alert_tree" model="ir.ui.view">
+        <field name="name">eh.hr.referral.alert.tree</field>
+        <field name="model">eh.hr.referral.alert</field>
+        <field name="arch" type="xml">
+            <list string="Alerts">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_alert" model="ir.actions.act_window">
+        <field name="name">Alerts</field>
+        <field name="res_model">eh.hr.referral.alert</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

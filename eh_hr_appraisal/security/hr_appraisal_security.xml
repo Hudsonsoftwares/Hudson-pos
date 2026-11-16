@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Access levels, as in the user form (Human Resources > Appraisals):
+           No                              : every internal user. Sees their own appraisals and goals, and
+                                             manages those of the employees below them (appraiser or manager).
+           Officer: Access all appraisals  : sees and manages every appraisal, goal and 360 feedback; reporting.
+           Administrator                   : officer + configuration. -->
+    <record model="res.groups.privilege" id="res_groups_privilege_appraisal">
+        <field name="name">Appraisals</field>
+        <field name="sequence">15</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="group_hr_appraisal_user" model="res.groups">
+        <field name="name">Officer: Access all appraisals</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_appraisal"/>
+        <field name="implied_ids" eval="[(6, 0, [ref('base.group_user')])]"/>
+        <field name="comment">Sees and manages every appraisal, goal and 360 feedback of the selected companies, and the reporting. Still cannot read an employee's self-assessment before it is shared, nor appraise themselves.</field>
+    </record>
+
+    <record id="group_hr_appraisal_manager" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_appraisal"/>
+        <field name="implied_ids" eval="[(6, 0, [ref('group_hr_appraisal_user')])]"/>
+        <field name="comment">Officer rights plus the configuration: settings, appraisal templates, evaluation scale, 360 feedback surveys and the goals library.</field>
+    </record>
+
+    <record id="base.user_admin" model="res.users">
+        <field name="group_ids" eval="[(4, ref('group_hr_appraisal_manager'))]"/>
+    </record>
+</odoo>

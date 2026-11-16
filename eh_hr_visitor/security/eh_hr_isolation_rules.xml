@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="0">
+    <data>
+
+        <record id="rule_eh_hr_visitor_company" model="ir.access">
+            <field name="name">EH Visitor: per company</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="domain">[('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_visitor_employee" model="ir.access">
+            <field name="name">EH Visitor: employees see own</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="domain">[('host_employee_id.user_id', '=', user.id)]</field>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_visitor_receptionist" model="ir.access">
+            <field name="name">EH Visitor: receptionists see all</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="domain">[(1, '=', 1)]</field>
+            <field name="group_id" ref="eh_hr_attendance_base.group_eh_hr_user"/>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_visitor_manager" model="ir.access">
+            <field name="name">EH Visitor: managers see all</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="domain">[(1, '=', 1)]</field>
+            <field name="group_id" ref="eh_hr_attendance_base.group_eh_hr_manager"/>
+            <field name="operation">crud</field>
+        </record>
+
+
+        <record id="rule_eh_hr_visitor_purpose_company" model="ir.access">
+            <field name="name">EH Visitor Purpose: per company</field>
+            <field name="model_id" ref="model_eh_hr_visitor_purpose"/>
+            <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_visitor_station_company" model="ir.access">
+            <field name="name">EH Visitor Station: per company</field>
+            <field name="model_id" ref="model_eh_hr_visitor_station"/>
+            <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_meeting_room_company" model="ir.access">
+            <field name="name">EH Meeting Room: per company</field>
+            <field name="model_id" ref="model_eh_hr_meeting_room"/>
+            <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_visitor_drink_company" model="ir.access">
+            <field name="name">EH Visitor Drink: per company</field>
+            <field name="model_id" ref="model_eh_hr_visitor_drink"/>
+            <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+    </data>
+</odoo>

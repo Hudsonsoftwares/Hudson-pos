@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="email_template_visitor_arrived" model="mail.template">
+            <field name="name">EH Visitor: arrival notification</field>
+            <field name="model_id" ref="eh_hr_visitor.model_eh_hr_visitor"/>
+            <field name="subject">Your visitor {{ object.name }} has arrived</field>
+            <field name="email_to">{{ object.host_employee_id.work_email }}</field>
+            <field name="email_from">{{ object.company_id.email or 'noreply@yourcompany.com' }}</field>
+            <field name="use_default_to">False</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif;">
+                    <p>Hi <t t-out="object.host_employee_id.name or 'there'"/>,</p>
+                    <p>
+                        Your visitor <strong t-out="object.name"/>
+                        <t t-if="object.visitor_company">
+                            from <t t-out="object.visitor_company"/>
+                        </t>
+                        has arrived<t t-if="object.station_id"> at <strong t-out="object.station_id.name"/></t>.
+                    </p>
+                    <p>
+                        Purpose: <strong t-out="object.purpose_id.name"/><br/>
+                        <t t-if="object.drink_id">
+                            Drink requested: <strong t-out="object.drink_id.name"/><br/>
+                        </t>
+                        Visit number: <strong t-out="object.visit_number"/><br/>
+                        Signed in at: <t t-out="object.arrived_on"/>
+                    </p>
+                    <p>Please head to reception when you are ready.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_visitor_invitation" model="mail.template">
+            <field name="name">EH Visitor: Pre-registration Invitation</field>
+            <field name="model_id" ref="eh_hr_visitor.model_eh_hr_visitor"/>
+            <field name="subject">Invitation to visit {{ object.company_id.name }}</field>
+            <field name="email_to">{{ object.visitor_email }}</field>
+            <field name="email_from">{{ object.company_id.email or 'noreply@yourcompany.com' }}</field>
+            <field name="use_default_to">False</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif;">
+                    <t t-set="url" t-value="object.get_base_url() + '/visitor/register/' + (object.registration_token or '')"/>
+                    <p>Hi <t t-out="object.name or 'Visitor'"/>,</p>
+                    <p>
+                        You have been invited by <strong t-out="object.host_employee_id.name"/> for a visit at <strong t-out="object.company_id.name"/>.
+                    </p>
+                    <p>
+                        Meeting Title: <strong t-out="object.meeting_title or 'General Visit'"/><br/>
+                        Meeting Date/Time: <strong t-out="object.expected_arrival or ''"/>
+                    </p>
+                    <div style="margin: 20px 0;">
+                        <a t-att-href="url" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                            Complete Registration
+                        </a>
+                    </div>
+                    <p>
+                        Please complete your registration before arrival to receive your Visitor QR Code.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_visitor_confirmation" model="mail.template">
+            <field name="name">EH Visitor: Pre-registration Confirmation</field>
+            <field name="model_id" ref="eh_hr_visitor.model_eh_hr_visitor"/>
+            <field name="subject">Your Visitor Registration is Confirmed</field>
+            <field name="email_to">{{ object.visitor_email }}</field>
+            <field name="email_from">{{ object.company_id.email or 'noreply@yourcompany.com' }}</field>
+            <field name="use_default_to">False</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif;">
+                    <p>Hi <t t-out="object.name or 'Visitor'"/>,</p>
+                    <p>
+                        Your visitor registration for <strong t-out="object.company_id.name"/> is confirmed.
+                    </p>
+                    <p>
+                        Host: <strong t-out="object.host_employee_id.name"/><br/>
+                        Meeting Date/Time: <strong t-out="object.expected_arrival or ''"/><br/>
+                    </p>
+                    <p>Please present the QR code below at reception upon arrival:</p>
+                    <t t-if="object.qr_code">
+                        <img t-att-src="'data:image/png;base64,' + object.qr_code.decode('utf-8')" style="width: 200px; height: 200px;"/>
+                    </t>
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_visitor_preregistration_host_notification" model="mail.template">
+            <field name="name">EH Visitor: Host Pre-registration Notification</field>
+            <field name="model_id" ref="eh_hr_visitor.model_eh_hr_visitor"/>
+            <field name="subject">Visitor Registration Completed: {{ object.name }}</field>
+            <field name="email_to">{{ object.host_employee_id.work_email }}</field>
+            <field name="email_from">{{ object.company_id.email or 'noreply@yourcompany.com' }}</field>
+            <field name="use_default_to">False</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif;">
+                    <p>Hi <t t-out="object.host_employee_id.name"/>,</p>
+                    <p>
+                        Your visitor <strong t-out="object.name"/> has successfully completed their visitor registration for the upcoming meeting.
+                    </p>
+                    <p>
+                        Expected Arrival: <strong t-out="object.expected_arrival or ''"/>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Optional templates that extend website_hr_recruitment page layouts.
+
+    Load this file only when website_hr_recruitment is installed (Enterprise or
+    custom). If you need these banners add the path below to the 'data' list in
+    __manifest__.py:
+
+        'views/referral_templates_recruitment.xml',
+
+    Do NOT include it by default; doing so will break module installation on
+    systems where website_hr_recruitment is not available.
+-->
+<odoo>
+    <data>
+
+        <!-- Banner on the job detail page when visiting through a share link -->
+        <template id="detail_referral_banner" inherit_id="website_hr_recruitment.detail" name="Job Detail: Referral Banner">
+            <xpath expr="//div[@id='wrap']" position="before">
+                <div t-if="referral_employee" class="container o_eh_referral_banner mt-3">
+                    <div class="alert alert-info mb-0 d-flex align-items-center" role="status">
+                        <i class="oi me-2" data-icon="handshake"/>
+                        <span>
+                            You are browsing through <strong t-out="referral_employee.name"/>'s referral link.
+                            If you apply, your application will be credited to them.
+                        </span>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+        <!-- Banner on the application form when applying through a share link -->
+        <template id="apply_referral_banner" inherit_id="website_hr_recruitment.apply" name="Apply: Referral Banner">
+            <xpath expr="//div[@id='wrap']" position="before">
+                <div t-if="referral_employee" class="container o_eh_referral_banner mt-3">
+                    <div class="alert alert-info mb-0 d-flex align-items-center" role="status">
+                        <i class="oi me-2" data-icon="handshake"/>
+                        <span>
+                            You have been referred by <strong t-out="referral_employee.name"/>.
+                            Your application will be credited to them.
+                        </span>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!--
+            Top-level "People Operations" menu.
+
+            Sits next to the standard Attendances app rather than under
+            it. Reason: the suite covers more than just clock-in (kiosk
+            sites, devices, consent, exceptions, audit log), and HR
+            managers expect a single landing page for the whole
+            people-ops surface.
+        -->
+
+        <menuitem id="menu_eh_hr_root"
+                  name="People Operations"
+                  sequence="55"
+                  groups="eh_hr_attendance_base.group_eh_hr_user,eh_hr_attendance_base.group_eh_hr_auditor"
+                  web_icon="eh_hr_attendance_base,static/description/icon.png"/>
+
+        <menuitem id="menu_eh_hr_kiosk_root"
+                  name="Kiosks"
+                  parent="menu_eh_hr_root"
+                  sequence="10"
+                  groups="eh_hr_attendance_base.group_eh_hr_manager,eh_hr_attendance_base.group_eh_hr_auditor"/>
+
+        <menuitem id="menu_eh_hr_kiosk_sites"
+                  name="Sites"
+                  parent="menu_eh_hr_kiosk_root"
+                  action="action_eh_hr_kiosk_site"
+                  sequence="10"/>
+
+        <menuitem id="menu_eh_hr_kiosk_devices"
+                  name="Devices"
+                  parent="menu_eh_hr_kiosk_root"
+                  action="action_eh_hr_kiosk_device"
+                  sequence="20"/>
+
+        <menuitem id="menu_eh_hr_kiosk_events"
+                  name="Audit log"
+                  parent="menu_eh_hr_kiosk_root"
+                  action="action_eh_hr_kiosk_event"
+                  sequence="30"/>
+
+        <menuitem id="menu_eh_hr_consent_root"
+                  name="Consent"
+                  parent="menu_eh_hr_root"
+                  sequence="20"/>
+
+        <menuitem id="menu_eh_hr_consent"
+                  name="Consent records"
+                  parent="menu_eh_hr_consent_root"
+                  action="action_eh_hr_consent"
+                  sequence="10"/>
+
+        <menuitem id="menu_eh_hr_exceptions_root"
+                  name="Exceptions"
+                  parent="menu_eh_hr_root"
+                  sequence="30"
+                  groups="eh_hr_attendance_base.group_eh_hr_manager,eh_hr_attendance_base.group_eh_hr_auditor"/>
+
+        <menuitem id="menu_eh_hr_exceptions"
+                  name="Attendance exceptions"
+                  parent="menu_eh_hr_exceptions_root"
+                  action="action_eh_hr_attendance_exception"
+                  sequence="10"/>
+
+        <menuitem id="menu_eh_hr_config_root"
+                  name="Configuration"
+                  parent="menu_eh_hr_root"
+                  sequence="90"
+                  groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+
+    </data>
+</odoo>

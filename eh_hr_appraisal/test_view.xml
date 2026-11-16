@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_appraisal_search" model="ir.ui.view">
+        <field name="name">hr.appraisal.search</field>
+        <field name="model">hr.appraisal</field>
+        <field name="arch" type="xml">
+            <search string="Search Appraisals">
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <filter string="To Confirm" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="ongoing" domain="[('state', '=', 'ongoing')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <group string="Group By">
+                    <filter string="Employee" name="group_by_employee" context="{'group_by':'employee_id'}"/>
+                    <filter string="Manager" name="group_by_manager" context="{'group_by':'manager_id'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

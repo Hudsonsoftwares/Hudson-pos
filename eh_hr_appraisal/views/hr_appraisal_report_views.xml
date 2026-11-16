@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Appraisal Analysis -->
+    <record id="view_hr_appraisal_graph" model="ir.ui.view">
+        <field name="name">hr.appraisal.graph</field>
+        <field name="model">hr.appraisal</field>
+        <field name="arch" type="xml">
+            <graph string="Appraisal Analysis" sample="1" type="bar" stacked="1">
+                <field name="department_id" type="row"/>
+                <field name="rating_id" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_pivot" model="ir.ui.view">
+        <field name="name">hr.appraisal.pivot</field>
+        <field name="model">hr.appraisal</field>
+        <field name="arch" type="xml">
+            <pivot string="Appraisal Analysis" sample="1">
+                <field name="department_id" type="row"/>
+                <field name="rating_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_analysis_list" model="ir.ui.view">
+        <field name="name">hr.appraisal.analysis.list</field>
+        <field name="model">hr.appraisal</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <list string="Appraisals" create="false">
+                <field name="employee_id" string="Name" widget="many2one_avatar_employee"/>
+                <field name="department_id"/>
+                <field name="date_appraisal"/>
+                <field name="rating_id" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'" decoration-warning="state == 'ongoing'"
+                       decoration-success="state == 'done'" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_analysis_report" model="ir.actions.act_window">
+        <field name="name">Appraisal Analysis</field>
+        <field name="res_model">hr.appraisal</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="search_view_id" ref="view_hr_appraisal_search"/>
+        <field name="context">{'search_default_last_year': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_hr_appraisal_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_hr_appraisal_pivot')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_hr_appraisal_analysis_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_hr_appraisal_form')})]"/>
+    </record>
+
+    <!-- Skills Evolution (Appraisal Skills Report) -->
+    <record id="view_hr_appraisal_skill_report_list" model="ir.ui.view">
+        <field name="name">hr.appraisal.skill.report.list</field>
+        <field name="model">hr.appraisal.skill.report</field>
+        <field name="arch" type="xml">
+            <list string="Appraisal Skills Report" create="false" edit="false" delete="false"
+                  decoration-success="evolution == 'improvement'" decoration-danger="evolution == 'regression'">
+                <field name="date" optional="hide"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="skill_type_id"/>
+                <field name="skill_id"/>
+                <field name="skill_level_id"/>
+                <field name="previous_level_progress" widget="progressbar"/>
+                <field name="current_level_progress" widget="progressbar"/>
+                <field name="justification"/>
+                <field name="evolution" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_skill_report_pivot" model="ir.ui.view">
+        <field name="name">hr.appraisal.skill.report.pivot</field>
+        <field name="model">hr.appraisal.skill.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Appraisal Skills Report" sample="1">
+                <field name="employee_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_skill_report_graph" model="ir.ui.view">
+        <field name="name">hr.appraisal.skill.report.graph</field>
+        <field name="model">hr.appraisal.skill.report</field>
+        <field name="arch" type="xml">
+            <graph string="Appraisal Skills Report" sample="1">
+                <field name="employee_id"/>
+                <field name="evolution"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_skill_report_search" model="ir.ui.view">
+        <field name="name">hr.appraisal.skill.report.search</field>
+        <field name="model">hr.appraisal.skill.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="skill_id"/>
+                <field name="skill_type_id"/>
+                <field name="skill_level_id"/>
+                <field name="department_id"/>
+                <filter string="Improvement" name="improvement" domain="[('evolution', '=', 'improvement')]"/>
+                <filter string="Regression" name="regression" domain="[('evolution', '=', 'regression')]"/>
+                <separator/>
+                <filter string="Create Date" name="filter_date" date="date"/>
+                <group>
+                    <filter string="Month" name="group_by_month" context="{'group_by': 'date:month'}"/>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Skill Type" name="group_by_skill_type" context="{'group_by': 'skill_type_id'}"/>
+                    <filter string="Skill" name="group_by_skill" context="{'group_by': 'skill_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_skills_evolution" model="ir.actions.act_window">
+        <field name="name">Appraisal Skills Report</field>
+        <field name="res_model">hr.appraisal.skill.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="search_view_id" ref="view_hr_appraisal_skill_report_search"/>
+        <field name="context">{'search_default_group_by_month': 1, 'search_default_group_by_employee': 1, 'search_default_group_by_skill_type': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No skill evolution yet</p>
+            <p>The skills of an employee appear here once one of their appraisals is marked as done.</p>
+        </field>
+    </record>
+</odoo>

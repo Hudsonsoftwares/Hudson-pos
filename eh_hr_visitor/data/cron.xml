@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_eh_hr_visitor_auto_sign_out" model="ir.cron">
+            <field name="name">ERP Heritage: Visitor end-of-day auto sign-out</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_sign_out()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <record id="cron_eh_hr_visitor_retention_sweep" model="ir.cron">
+            <field name="name">ERP Heritage: Visitor retention sweep</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_retention_sweep()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <record id="cron_eh_hr_visitor_expire_invitations" model="ir.cron">
+            <field name="name">ERP Heritage: Expire old visitor invitations</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_expire_invitations()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <record id="cron_eh_hr_visitor_generate_pdfs" model="ir.cron">
+            <field name="name">ERP Heritage: Generate missing visitor agreement PDFs</field>
+            <field name="model_id" ref="model_eh_hr_visitor"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_generate_agreement_pdfs()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>

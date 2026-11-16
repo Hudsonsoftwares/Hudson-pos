@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <data>
+
+        <!-- Multi company read isolation. Each record belongs to one
+             company; records with no company are visible to all. -->
+
+        <record id="rule_eh_hr_settings_entry_company" model="ir.access">
+            <field name="name">eh.hr.settings.entry: per company</field>
+            <field name="model_id" ref="model_eh_hr_settings_entry"/>
+            <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+    </data>
+</odoo>

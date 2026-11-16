@@ -1,0 +1,457 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_core
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+
+#. module: eh_hr_core
+#: model:res.groups,comment:eh_hr_core.group_hr_kiosk_device
+msgid ""
+"\n"
+"                Granted to dedicated kiosk service users only.  Members cannot\n"
+"                see the Odoo UI; they may only POST attendance events via the\n"
+"                kiosk REST endpoint.  Never grant to humans.\n"
+"            "
+msgstr ""
+"\n"
+"केवल समर्पित kiosk सेवा उपयोगकर्ताओं को प्रदान किया जाता है।  सदस्य\n"
+"                Odoo UI नहीं देख सकते; वे केवल kiosk REST एंडपॉइंट के माध्यम से\n"
+"                उपस्थिति इवेंट POST कर सकते हैं।  इसे कभी भी मनुष्यों को न दें।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_feature_flag__rollout_percent
+msgid "0-100. Deterministic on uid."
+msgstr "0-100। uid पर नियतात्मक।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__action
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Action"
+msgstr "कार्रवाई"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__active
+msgid "Active"
+msgstr "ऐक्टिव"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__actor_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Actor"
+msgstr "कर्ता"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_approvals
+msgid "Approvals"
+msgstr "अप्रूवल"
+
+#. module: eh_hr_core
+#: model:ir.actions.act_window,name:eh_hr_core.action_hr_audit_log
+#: model:ir.ui.menu,name:eh_hr_core.menu_hr_platform_audit
+msgid "Audit Log"
+msgstr "ऑडिट लॉग"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__hr_audit_retention_days
+msgid "Audit log retention (days)"
+msgstr "ऑडिट लॉग प्रतिधारण (दिन)"
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__bool
+msgid "Boolean"
+msgstr "बूलियन"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__code
+msgid "Code"
+msgstr "कोड"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__company_ids
+msgid "Companies (empty = all)"
+msgstr "कंपनियाँ (खाली = सभी)"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__company_id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_company_aware_mixin__company_id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__company_id
+msgid "Company"
+msgstr "कंपनी"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_res_config_settings
+msgid "Config Settings"
+msgstr "कॉन्फ़िगरेशन सेटिंग"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_config
+msgid "Configuration"
+msgstr "कॉन्फ़िगरेशन"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__correlation_id
+msgid "Correlation"
+msgstr "सहसंबंध"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_platform_mixin__correlation_id
+msgid "Correlation ID"
+msgstr "सहसंबंध ID"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__create_uid
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__create_uid
+msgid "Created by"
+msgstr "इन्होंने बनाया"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__create_date
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__create_date
+msgid "Created on"
+msgstr "इस तारीख को बनाया गया"
+
+#. module: eh_hr_core
+#. odoo-python
+#: code:addons/eh_hr_core/models/company_aware_mixin.py:0
+msgid ""
+"Cross-company write rejected. User is not allowed to write records into "
+"company id=%s without an audited override."
+msgstr ""
+"क्रॉस-कंपनी लेखन अस्वीकृत। उपयोगकर्ता को ऑडिट किए गए ओवरराइड के बिना कंपनी "
+"id=%s में रिकॉर्ड लिखने की अनुमति नहीं है।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__description
+msgid "Description"
+msgstr "विवरण"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audited_mixin__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_company_aware_mixin__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_platform_mixin__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "डिस्प्ले का नाम"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_settings_entry__key
+msgid "Dotted key, e.g. attendance.kiosk.idle_timeout_s"
+msgstr "डॉटेड कुंजी, उदा. attendance.kiosk.idle_timeout_s"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_audited_mixin
+msgid "EH HR Platform - audited record mixin"
+msgstr "EH HR प्लेटफ़ॉर्म - ऑडिटेड रिकॉर्ड mixin"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_platform_mixin
+msgid "EH HR Platform - base mixin"
+msgstr "EH HR प्लेटफ़ॉर्म - बेस mixin"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_feature_flag
+msgid "EH HR Platform - feature flag"
+msgstr "EH HR Platform - फ़ीचर फ़्लैग"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_settings_entry
+msgid "EH HR Platform - settings entry"
+msgstr "EH HR प्लेटफ़ॉर्म - सेटिंग प्रविष्टि"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_company_aware_mixin
+msgid "EH HR Platform - strict company-scope mixin"
+msgstr "EH HR प्लेटफ़ॉर्म - सख्त कंपनी-स्कोप mixin"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_audit_log
+msgid "EH HR Platform audit log"
+msgstr "EH HR प्लेटफ़ॉर्म ऑडिट लॉग"
+
+#. module: eh_hr_core
+#: model:ir.module.category,description:eh_hr_core.module_category_hr_platform
+msgid "EH HR Platform groups."
+msgstr "EH HR प्लेटफ़ॉर्म समूह।"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_rate_limit
+msgid "EH HR fixed-window rate-limit counter"
+msgstr "EH HR फ़िक्स्ड-विंडो रेट-लिमिट काउंटर"
+
+#. module: eh_hr_core
+#: model:ir.actions.server,name:eh_hr_core.cron_eh_hr_rate_limit_gc_ir_actions_server
+msgid "EH HR: vacuum rate-limit counters"
+msgstr "EH HR: रेट-लिमिट काउंटर साफ़ करें"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_requests
+msgid "Employee Requests"
+msgstr "कर्मचारी अनुरोध"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__enabled
+msgid "Enabled"
+msgstr "चालू किया गया"
+
+#. module: eh_hr_core
+#: model:ir.model.constraint,message:eh_hr_core.constraint_eh_hr_feature_flag_uniq_code
+msgid "Flag code must be unique."
+msgstr "फ़्लैग कोड अद्वितीय होना चाहिए।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__float
+msgid "Float"
+msgstr "फ्लोट"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__group_ids
+msgid "Groups (empty = all)"
+msgstr "समूह (खाली = सभी)"
+
+#. module: eh_hr_core
+#: model:ir.module.category,name:eh_hr_core.module_category_hr_platform
+#: model:ir.ui.menu,name:eh_hr_core.menu_hr_platform_root
+msgid "HR Platform"
+msgstr "HR प्लेटफ़ॉर्म"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_admin
+msgid "HR Platform: Admin (All Companies, audited)"
+msgstr "HR प्लेटफ़ॉर्म: व्यवस्थापक (सभी कंपनियां, ऑडिट किया गया)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_auditor
+msgid "HR Platform: Auditor (Read-only)"
+msgstr "HR प्लेटफ़ॉर्म: ऑडिटर (केवल पढ़ने योग्य)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_employee_self
+msgid "HR Platform: Employee (Self)"
+msgstr "HR प्लेटफ़ॉर्म: कर्मचारी (स्वयं)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_kiosk_device
+msgid "HR Platform: Kiosk Device (no UI)"
+msgstr "HR प्लेटफ़ॉर्म: कियोस्क डिवाइस (कोई UI नहीं)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_manager
+msgid "HR Platform: Manager (Team)"
+msgstr "HR प्लेटफ़ॉर्म: प्रबंधक (टीम)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_officer
+msgid "HR Platform: Officer (Company)"
+msgstr "HR प्लेटफ़ॉर्म: अधिकारी (कंपनी)"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__hits
+msgid "Hits"
+msgstr "हिट्स"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audited_mixin__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_company_aware_mixin__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_platform_mixin__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__id
+msgid "ID"
+msgstr "आईडी"
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__int
+msgid "Integer"
+msgstr "पूर्णांक"
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__json
+msgid "JSON"
+msgstr ""
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__key
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__key
+msgid "Key"
+msgstr "कुंजी"
+
+#. module: eh_hr_core
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Last 24h"
+msgstr "पिछले 24 घंटे"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__write_uid
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__write_uid
+msgid "Last Updated by"
+msgstr "इन्होंने आखिरी बार अपडेट किया"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__write_date
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__write_date
+msgid "Last Updated on"
+msgstr "आखिरी बार अपडेट हुआ"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_rate_limit__scope
+msgid "Logical bucket, e.g. \"mobile.pair\"."
+msgstr "तार्किक बकेट, जैसे \"mobile.pair\"।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__model
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Model"
+msgstr "मॉडल"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__occurred_at
+msgid "Occurred At"
+msgstr "घटित हुआ"
+
+#. module: eh_hr_core
+#: model:ir.model.constraint,message:eh_hr_core.constraint_eh_hr_rate_limit_unique_window
+msgid "One rate-limit counter row per (scope, key, window)."
+msgstr "प्रति (स्कोप, कुंजी, विंडो) एक रेट-लिमिट काउंटर पंक्ति।"
+
+#. module: eh_hr_core
+#: model:ir.model.constraint,message:eh_hr_core.constraint_eh_hr_settings_entry_uniq_active_per_company_key
+msgid "Only one active settings entry per (company, key) is allowed."
+msgstr "प्रति (company, key) केवल एक सक्रिय सेटिंग प्रविष्टि की अनुमति है।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_company_aware_mixin__company_id
+msgid "Owning company. Cross-company access is forbidden by default."
+msgstr "स्वामी कंपनी। क्रॉस-कंपनी एक्सेस डिफ़ॉल्ट रूप से निषिद्ध है।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__payload
+msgid "Payload"
+msgstr "पेलोड"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_rate_limit__key
+msgid "Per-caller discriminator, e.g. client IP or token."
+msgstr "प्रति कॉलर विभेदक, जैसे क्लाइंट IP या टोकन।"
+
+#. module: eh_hr_core
+#: model:ir.actions.act_window,name:eh_hr_core.action_hr_settings_entry
+#: model:ir.ui.menu,name:eh_hr_core.menu_hr_platform_settings
+msgid "Platform Settings"
+msgstr "प्लेटफ़ॉर्म सेटिंग्स"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__prev_hash
+msgid "Prev Hash"
+msgstr "पिछला Hash"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_settings_entry__value
+msgid "Raw stored value; use :py:meth:`typed` to read."
+msgstr "कच्चा संग्रहीत मान; पढ़ने के लिए :py:meth:`typed` का उपयोग करें।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__record_id
+msgid "Record"
+msgstr "रिकॉर्ड करें"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_records
+msgid "Records and Compliance"
+msgstr "रिकॉर्ड और अनुपालन"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__hr_pii_redact_in_exports
+msgid "Redact PII in exports"
+msgstr "निर्यात में PII को गोपनीय करें"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__rollout_percent
+msgid "Rollout Percent"
+msgstr "रोलआउट प्रतिशत"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__row_hash
+msgid "Row Hash"
+msgstr "पंक्ति हैश"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__scope
+msgid "Scope"
+msgstr "स्कोप"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_platform_mixin__correlation_id
+msgid ""
+"Stable identifier used for tracing across services, audit log, webhooks, and"
+" outbound events. Auto-generated on create."
+msgstr ""
+"सेवाओं, ऑडिट लॉग, webhooks और आउटबाउंड इवेंट्स में ट्रेसिंग के लिए उपयोग "
+"किया जाने वाला स्थिर पहचानकर्ता। बनाते समय स्वतः जनरेट होता है।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__str
+msgid "String"
+msgstr "स्ट्रिंग"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__superseded_by
+msgid "Superseded By"
+msgstr "द्वारा अधिक्रमित"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_talent
+msgid "Talent"
+msgstr "प्रतिभा"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_rate_limit__window_start
+msgid "Unix epoch second the window starts at."
+msgstr "Unix epoch सेकंड जिस पर विंडो शुरू होती है।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__valid_from
+msgid "Valid From"
+msgstr "इससे मान्य"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__valid_to
+msgid "Valid To"
+msgstr "इस तक मान्य"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__value
+msgid "Value"
+msgstr "वैल्यू"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__value_type
+msgid "Value Type"
+msgstr "वैल्यू टाइप"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_settings_entry__superseded_by
+msgid "Versioning pointer."
+msgstr "संस्करण नियंत्रण सूचक।"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__window_start
+msgid "Window Start"
+msgstr "विंडो प्रारंभ"

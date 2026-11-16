@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_eh_hr_referral_level_form" model="ir.ui.view">
+        <field name="name">eh.hr.referral.level.form</field>
+        <field name="model">eh.hr.referral.level</field>
+        <field name="arch" type="xml">
+            <form string="Level">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar" options="{'size': [90, 90]}"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="points"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eh_hr_referral_level_tree" model="ir.ui.view">
+        <field name="name">eh.hr.referral.level.tree</field>
+        <field name="model">eh.hr.referral.level</field>
+        <field name="arch" type="xml">
+            <list string="Levels" default_order="points">
+                <field name="image" string="Image" widget="image" options="{'size': [88, 88]}"/>
+                <field name="name"/>
+                <field name="points" string="Points"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_levels" model="ir.actions.act_window">
+        <field name="name">Levels</field>
+        <field name="res_model">eh.hr.referral.level</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -3,7 +3,7 @@
 
 {
     'name': 'POS Demo Data (Restaurant, Cafe, Loyalty & Inventory)',
-    'version': '20.0.1.0.17',
+    'version': '20.0.1.0.18',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
     'summary': 'Declarative XML & Python Demo Data for POS (Restaurant, Cafe, Loyalty & Inventory) loaded on manual module activation',
@@ -53,6 +53,10 @@
           wire transfer / COD providers and a UPI QR payment method in POS
         - Field Service: coffee-equipment AMC jobs, a breakdown repair, an installation, wedding venue set-up and outlet
           repairs, each linked to a project task, with technicians' planning shifts, timesheets and spare-part quotations
+        - Visitor Management (when installed): MG Road reception & Central Kitchen gate front desks, meeting rooms,
+          18 visitors (inspectors, suppliers, wedding & corporate clients, candidates) in every status
+        - Employee Referral (when installed): staff referrals for kitchen, bar, service & delivery jobs with points, rewards and alerts
+        - Appraisals (when installed): review cycles in every state with goals, ratings and manager/employee feedback
         - Automatically loads demo data on module activation via post_init_hook and cleans up on uninstall.
     """,
     'depends': ['point_of_sale', 'pos_restaurant', 'pos_loyalty', 'stock'],

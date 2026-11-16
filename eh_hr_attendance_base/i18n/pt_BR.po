@@ -1,0 +1,1586 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_attendance_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Portuguese (Brazil)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : ((n != 0 && n % 1000000 == 0) ? 1 : 2);\n"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "A granted consent must have a granted-on date."
+msgstr "Um consentimento concedido deve ter uma data de concessão."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_site
+msgid ""
+"A site represents a physical clock-in location: a head office, a shopfloor, "
+"a warehouse. Devices register against a site."
+msgstr ""
+"Um local representa um ponto físico de registro de entrada: uma sede, um "
+"chão de fábrica, um armazém. Os dispositivos são registrados em um local."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "A withdrawn consent must have a withdrawn-on date."
+msgstr "Um consentimento retirado deve ter uma data de retirada."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_needaction
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction
+msgid "Action Needed"
+msgstr "Requer ação"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__active
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__active
+msgid "Active"
+msgstr "Ativo"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__address
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Address"
+msgstr "Endereço"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_attendance_exception.py:0
+msgid "An employee is required to raise an exception."
+msgstr "É necessário um funcionário para gerar uma exceção."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Archived"
+msgstr "Arquivado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_attachment_count
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_attachment_count
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_attachment_count
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_attachment_count
+msgid "Attachment Count"
+msgstr "Total de anexos"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_attendance_exception
+msgid "Attendance Exception"
+msgstr "Exceção de presença"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Attendance Suite"
+msgstr "Suíte de presença"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_settings
+msgid "Attendance Suite settings"
+msgstr "Configurações da suíte de presença"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_employee_form_eh_hr_attendance
+msgid "Attendance and consent"
+msgstr "Presença e consentimento"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__attendance_in
+msgid "Attendance check-in"
+msgstr "Registro de entrada de presença"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__attendance_out
+msgid "Attendance check-out"
+msgstr "Registro de saída de presença"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Attendance exception"
+msgstr "Exceção de presença"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_attendance_exception
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_exceptions
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Attendance exceptions"
+msgstr "Exceções de presença"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_events
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Audit log"
+msgstr "Registro de auditoria"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_event
+msgid "Audit log is empty."
+msgstr "O registro de auditoria está vazio."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_consent
+msgid "Biometric and Location Consent Record"
+msgstr "Registro de consentimento biométrico e de localização"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__granted_via
+msgid "Captured via"
+msgstr "Capturado via"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__code
+msgid "Code"
+msgstr "Código"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__expires_on
+msgid ""
+"Computed from the company validity setting at grant time. The daily "
+"retention cron moves the row to expired after this date."
+msgstr ""
+"Calculado a partir da configuração de validade da empresa no momento da "
+"concessão. O cron de retenção diário move a linha para expirado após esta "
+"data."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_res_config_settings
+msgid "Config Settings"
+msgstr "Configurações"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_config_root
+msgid "Configuration"
+msgstr "Configuração"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_consent_root
+msgid "Consent"
+msgstr "Consentimento"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Consent and retention"
+msgstr "Consentimento e retenção"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__consent_grant
+msgid "Consent granted"
+msgstr "Consentimento concedido"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Consent record"
+msgstr "Registro de consentimento"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_consent
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_consent_ids
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_consent
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_employee_form_eh_hr_attendance
+msgid "Consent records"
+msgstr "Registros de consentimento"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Consent text"
+msgstr "Texto de consentimento"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__consent_text
+msgid "Consent text shown"
+msgstr "Texto de consentimento exibido"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_consent_validity_months
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_validity_months
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Consent validity (months)"
+msgstr "Validade do consentimento (meses)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__consent_withdraw
+msgid "Consent withdrawn"
+msgstr "Consentimento retirado"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"Cosine distance threshold below which a face is considered a match. Lower is"
+" stricter. Typical 0.45 (very strict) to 0.65 (lenient)."
+msgstr ""
+"Limite de distância de cosseno abaixo do qual um rosto é considerado uma "
+"correspondência. Quanto menor, mais rigoroso. Normalmente de 0,45 (muito "
+"rigoroso) a 0,65 (tolerante)."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_match_threshold
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_match_threshold
+msgid ""
+"Cosine distance threshold below which a face is considered a match. Lower "
+"values are stricter. Typical range 0.45 (very strict) to 0.65 (lenient)."
+msgstr ""
+"Limite de distância de cosseno abaixo do qual um rosto é considerado uma "
+"correspondência. Valores mais baixos são mais rigorosos. Faixa típica de "
+"0,45 (muito rigoroso) a 0,65 (tolerante)."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__severity__critical
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Critical"
+msgstr "Crítico"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Day"
+msgstr "Dia"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_consent_text_face
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_text_face
+msgid ""
+"Default consent prose displayed at the kiosk when an employee enrols. "
+"Snapshotted onto each consent record at grant time so audit trail is "
+"immutable. Customise to match your jurisdiction."
+msgstr ""
+"Texto de consentimento padrão exibido no totem quando um funcionário se "
+"inscreve. Registrado como snapshot em cada registro de consentimento no "
+"momento da concessão, para que a trilha de auditoria seja imutável. "
+"Personalize para corresponder à sua jurisdição."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Default face consent text"
+msgstr "Texto de consentimento facial padrão"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_kiosk_site_default_id
+msgid "Default kiosk site"
+msgstr "Local de quiosque padrão"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__description
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Description"
+msgstr "Descrição"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__device_id
+msgid "Device"
+msgstr "Dispositivo"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__device_count
+msgid "Device count"
+msgstr "Contagem de dispositivos"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__device_heartbeat
+msgid "Device heartbeat"
+msgstr "Heartbeat do dispositivo"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__name
+msgid "Device name"
+msgstr "Nome do dispositivo"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__device_register
+msgid "Device registered"
+msgstr "Dispositivo registrado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__device_revoke
+msgid "Device revoked"
+msgstr "Dispositivo revogado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__device_token
+msgid "Device token"
+msgstr "Token do dispositivo"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.constraint,message:eh_hr_attendance_base.constraint_eh_hr_kiosk_terminal_unique_device_token
+msgid "Device token collision detected."
+msgstr "Colisão de token do dispositivo detectada."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_device.py:0
+msgid "Device token is required."
+msgstr "O token do dispositivo é obrigatório."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__device_ids
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_devices
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Devices"
+msgstr "Dispositivos"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Devices for %s"
+msgstr "Dispositivos para %s"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_device
+msgid ""
+"Devices register themselves the first time a site code and a one-time "
+"pairing PIN are entered on the device. The server then issues an opaque "
+"token that the device sends with every subsequent request."
+msgstr ""
+"Os dispositivos se registram automaticamente na primeira vez que um código "
+"de site e um PIN de pareamento de uso único são inseridos no dispositivo. O "
+"servidor então emite um token opaco que o dispositivo envia a cada "
+"solicitação subsequente."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__duplicate_check_in
+msgid "Duplicate check-in"
+msgstr "Check-in duplicado"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_admin
+msgid "EH Attendance Admin"
+msgstr "Administrador de Presença EH"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_auditor
+msgid "EH Attendance Auditor (read-only)"
+msgstr "Auditor de Presença EH (somente leitura)"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_manager
+msgid "EH Attendance Manager"
+msgstr "Gerente de Presença EH"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_user
+msgid "EH Attendance User"
+msgstr "Usuário de Presença EH"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.server,name:eh_hr_attendance_base.cron_eh_hr_consent_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Consent retention sweep"
+msgstr "ERP Heritage: Limpeza de retenção de consentimentos"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.server,name:eh_hr_attendance_base.cron_eh_hr_audit_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Kiosk audit log retention sweep"
+msgstr "ERP Heritage: Limpeza de retenção do log de auditoria do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__early_in
+msgid "Early check-in"
+msgstr "Registro de entrada antecipado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_hr_employee
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__employee_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__employee_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__employee_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Employee"
+msgstr "Funcionário"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_enabled
+msgid "Enforce geofence"
+msgstr "Aplicar geofence"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__error
+msgid "Error"
+msgstr "Erro"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Errors"
+msgstr "Erros"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_event.py:0
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__event_type
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Event"
+msgstr "Evento"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_event
+msgid ""
+"Every kiosk event lands here automatically. Read-only by design: managers "
+"and auditors can inspect, no one (including admins) can edit a row, and the "
+"daily retention cron trims rows past the configured horizon."
+msgstr ""
+"Cada evento de quiosque chega aqui automaticamente. Somente leitura por "
+"design: gerentes e auditores podem inspecionar, ninguém (incluindo "
+"administradores) pode editar uma linha, e o cron de retenção diário apara as"
+" linhas além do horizonte configurado."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__evidence
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Evidence"
+msgstr "Evidência"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__evidence_filename
+msgid "Evidence filename"
+msgstr "Nome do arquivo de evidência"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_attendance_exception.py:0
+msgid "Exception"
+msgstr "Exceção"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__exception_raised
+msgid "Exception raised"
+msgstr "Exceção levantada"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_exceptions_root
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Exceptions"
+msgstr "Exceções"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_attendance_exception
+msgid ""
+"Exceptions are raised automatically by the kiosk and detection crons (late, "
+"no-show, low confidence, geofence violation), and can also be added manually"
+" by a manager."
+msgstr ""
+"As exceções são levantadas automaticamente pelo quiosque e pelos crons de "
+"detecção (atraso, ausência, baixa confiança, violação de geofence) e também "
+"podem ser adicionadas manualmente por um gerente."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__expired
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__expired
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Expired"
+msgstr "Expirado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__expires_on
+msgid "Expires on"
+msgstr "Expira em"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Face"
+msgstr "Rosto"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_face_consent_state
+msgid "Face consent"
+msgstr "Consentimento facial"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_consent_text_face
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_text_face
+msgid "Face consent text (default)"
+msgstr "Texto de consentimento facial (padrão)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_face_enrolled
+msgid "Face enrolled"
+msgstr "Rosto registrado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_match_threshold
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_match_threshold
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Face match threshold"
+msgstr "Limite de correspondência facial"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__face
+msgid "Face recognition"
+msgstr "Reconhecimento facial"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__fingerprint
+msgid "Fingerprint"
+msgstr "Impressão digital"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_follower_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_follower_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_follower_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_partner_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_partner_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_partner_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (usuários)"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Front desk iPad, Warehouse tablet..."
+msgstr "iPad da recepção, tablet do depósito..."
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_admin
+msgid ""
+"Full configuration access: device token rotation and revoke, retention "
+"horizons, consent text, match threshold, kiosk audit log purge."
+msgstr ""
+"Acesso completo à configuração: rotação e revogação de token de dispositivo,"
+" horizontes de retenção, texto de consentimento, limite de correspondência, "
+"limpeza do log de auditoria do quiosque."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__geofence_fail
+msgid "Geofence failed"
+msgstr "Geofence falhou"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__geofence_pass
+msgid "Geofence passed"
+msgstr "Geofence aprovado"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Geofence radius must be positive."
+msgstr "O raio do geofence deve ser positivo."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__geofence_violation
+msgid "Geofence violation"
+msgstr "Violação de geofence"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__geolocation
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Geolocation"
+msgstr "Geolocalização"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Grant"
+msgstr "Conceder"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__granted
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__granted
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Granted"
+msgstr "Garantido"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__granted_on
+msgid "Granted on"
+msgstr "Concedido em"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__hr_admin
+msgid "HR administrator entry"
+msgstr "Entrada de administrador de RH"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__has_message
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__has_message
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__has_message
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__has_message
+msgid "Has Message"
+msgstr "Tem uma mensagem"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Head office, Warehouse 2, Site B..."
+msgstr "Sede, Armazém 2, Site B..."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"How long every kiosk match attempt, success, failure and exception event is "
+"retained."
+msgstr ""
+"Por quanto tempo cada tentativa de correspondência do quiosque, sucesso, "
+"falha e evento de exceção é retido."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"How long withdrawn or expired consent records are kept for audit before "
+"deletion."
+msgstr ""
+"Por quanto tempo os registros de consentimento retirados ou expirados são "
+"mantidos para auditoria antes da exclusão."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__id
+msgid "ID"
+msgstr "Id."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__ip_address
+msgid "IP"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_needaction
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Se marcado, há novas mensagens precisando de sua atenção."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_sms_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_has_sms_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_sms_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Se marcado, há mensagens com erros de entrega."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__severity__info
+msgid "Info"
+msgstr "Informações"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__iris
+msgid "Iris"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_is_follower
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_is_follower
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_is_follower
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_is_follower
+msgid "Is Follower"
+msgstr "É um seguidor"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Issue pairing PIN"
+msgstr "Emitir PIN de pareamento"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_employee_form_eh_hr_attendance
+msgid "Kiosk"
+msgstr "Quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_kiosk_event
+msgid "Kiosk Audit Event"
+msgstr "Evento de auditoria do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_kiosk_pin
+msgid "Kiosk PIN"
+msgstr "PIN do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_kiosk_site
+msgid "Kiosk Site"
+msgstr "Local do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Kiosk and matching"
+msgstr "Quiosque e correspondência"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_kiosk_event
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_list
+msgid "Kiosk audit log"
+msgstr "Log de auditoria do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_audit_retention_months
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_audit_retention_months
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Kiosk audit log retention (months)"
+msgstr "Retenção do log de auditoria do quiosque (meses)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__kiosk_close
+msgid "Kiosk closed"
+msgstr "Quiosque fechado"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Kiosk device"
+msgstr "Dispositivo do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_kiosk_device
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_list
+msgid "Kiosk devices"
+msgstr "Dispositivos do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_form
+msgid "Kiosk event"
+msgstr "Evento do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_kiosk_idle_seconds
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_kiosk_idle_seconds
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Kiosk idle reset (seconds)"
+msgstr "Redefinição por inatividade do quiosque (segundos)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__kiosk_open
+msgid "Kiosk opened"
+msgstr "Quiosque aberto"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Kiosk pairing PIN"
+msgstr "PIN de emparelhamento do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__kiosk_screen
+msgid "Kiosk screen capture"
+msgstr "Captura de tela do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Kiosk site"
+msgstr "Site do quiosque"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_kiosk_site
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_list
+msgid "Kiosk sites"
+msgstr "Sites dos quiosques"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_root
+msgid "Kiosks"
+msgstr "Quiosques"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Last 7 days"
+msgstr "Últimos 7 dias"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__last_ip
+msgid "Last IP"
+msgstr "Último IP"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__last_seen
+msgid "Last seen"
+msgstr "Visto por último"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__late
+msgid "Late check-in"
+msgstr "Check-in tardio"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_lat
+msgid "Latitude"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Latitude must be between -90 and 90."
+msgstr "A latitude deve estar entre -90 e 90."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__ref_model
+msgid "Linked model"
+msgstr "Modelo vinculado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__ref_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_form
+msgid "Linked record"
+msgstr "Registro vinculado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__liveness_fail
+msgid "Liveness failed"
+msgstr "Falha na verificação de vivacidade"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__liveness_fail
+msgid "Liveness failure"
+msgstr "Falha de vivacidade"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__liveness_pass
+msgid "Liveness passed"
+msgstr "Verificação de vivacidade aprovada"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__location_mismatch
+msgid "Location mismatch"
+msgstr "Localização divergente"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_lng
+msgid "Longitude"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Longitude must be between -180 and 180."
+msgstr "A longitude deve estar entre -180 e 180."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__identity_low_confidence
+msgid "Low match confidence"
+msgstr "Baixa confiança na correspondência"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_manager
+msgid ""
+"Manager access: kiosk sites, devices, exceptions, team consent records. Sees"
+" but does not edit the audit log. Implies the standard HR Manager role."
+msgstr ""
+"Acesso de gerente: locais de quiosque, dispositivos, exceções, registros de "
+"consentimento da equipe. Visualiza, mas não edita o log de auditoria. "
+"Implica a função padrão de Gerente de RH."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__manual
+msgid "Manual"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Mark resolved"
+msgstr "Marcar como resolvido"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__attempt_match
+msgid "Match attempt"
+msgstr "Tentativa de correspondência"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__confidence
+msgid "Match confidence"
+msgstr "Confiança da correspondência"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__match_fail
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Match failure"
+msgstr "Falha de correspondência"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__match_success
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Match success"
+msgstr "Conciliação bem-sucedida"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_has_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error
+msgid "Message Delivery error"
+msgstr "Erro na entrega da mensagem"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_ids
+msgid "Messages"
+msgstr "Mensagens"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__missed_check_out
+msgid "Missed check-out"
+msgstr "Saída não registrada"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "New consent"
+msgstr "Novo consentimento"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_consent
+msgid "No consent records yet."
+msgstr "Nenhum registro de consentimento ainda."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "No employee"
+msgstr "Nenhum funcionário"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_attendance_exception
+msgid "No exceptions raised."
+msgstr "Nenhuma exceção gerada."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_device
+msgid "No kiosk devices registered yet."
+msgstr "Ainda não há dispositivos de quiosque registrados."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_site
+msgid "No kiosk sites yet."
+msgstr "Ainda não há locais de quiosque."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__no_show
+msgid "No-show"
+msgstr "Não comparecimento"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__not_set
+msgid "Not set"
+msgstr "Não definido"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__notes
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__notes
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__notes
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__notes
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Notes"
+msgstr "Notas"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_needaction_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de ações"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_has_error_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de erros"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_needaction_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Número de mensagens que requerem ação"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_has_error_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensagens com erro de entrega"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__occurred_on
+msgid "Occurred on"
+msgstr "Ocorrido em"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Open"
+msgstr "Aberto"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_hr_employee__eh_kiosk_pin
+msgid ""
+"Optional fallback PIN used at the kiosk when face match is unavailable. "
+"Manager-only field."
+msgstr ""
+"PIN de fallback opcional usado no quiosque quando o reconhecimento facial "
+"não está disponível. Campo somente para gerentes."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__evidence
+msgid ""
+"Optional. Photo of the kiosk consent screen, scanned signed form, or other "
+"supporting artefact."
+msgstr ""
+"Opcional. Foto da tela de consentimento do quiosque, formulário assinado "
+"digitalizado ou outro documento de apoio."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Pairing PIN for site %(site)s: %(pin)s. Valid for 5 minutes, one-shot."
+msgstr ""
+"PIN de pareamento para o site %(site)s: %(pin)s. Válido por 5 minutos, uso "
+"único."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__paper
+msgid "Paper signature, scanned"
+msgstr "Assinatura em papel, digitalizada"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__pending
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__pending
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Pending"
+msgstr "Pendente"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_root
+msgid "People Operations"
+msgstr "Operações de RH"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"Period after which an active consent expires and the employee is asked to "
+"re-consent."
+msgstr ""
+"Período após o qual um consentimento ativo expira e o funcionário é "
+"solicitado a consentir novamente."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_consent_validity_months
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_validity_months
+msgid ""
+"Period for which a granted consent remains valid. After this the daily "
+"retention cron moves the consent to expired and the employee is asked to re-"
+"consent."
+msgstr ""
+"Período durante o qual um consentimento concedido permanece válido. Após "
+"isso, o cron de retenção diário move o consentimento para expirado e o "
+"funcionário é solicitado a consentir novamente."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_audit_retention_months
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_audit_retention_months
+msgid ""
+"Period for which kiosk audit events (match attempts, attendance posts, "
+"exceptions) are retained. Used by fair-work or labour-dispute defence; "
+"longer is generally safer."
+msgstr ""
+"Período durante o qual os eventos de auditoria do quiosque (tentativas de "
+"correspondência, registros de presença, exceções) são retidos. Usado para "
+"defesa em trabalho justo ou disputas trabalhistas; mais longo é geralmente "
+"mais seguro."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_consent_retention_months
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_retention_months
+msgid ""
+"Period for which withdrawn or expired consent records are kept for audit "
+"before deletion. Match this to your local privacy law's documentation "
+"requirement."
+msgstr ""
+"Período durante o qual os registros de consentimento retirados ou expirados "
+"são mantidos para auditoria antes da exclusão. Ajuste-o ao requisito de "
+"documentação da sua legislação local de privacidade."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__photo
+msgid "Photo capture"
+msgstr "Captura de foto"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_radius_m
+msgid "Radius (m)"
+msgstr "Raio (m)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__rating_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__rating_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__rating_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__rating_ids
+msgid "Ratings"
+msgstr "Avaliações"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Re-open"
+msgstr "Reabrir"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_user
+msgid ""
+"Read and operational access to ERP Heritage attendance modules: own "
+"attendance, own consent, kiosk site listing. Implies the standard HR User "
+"role."
+msgstr ""
+"Acesso de leitura e operacional aos módulos de presença da ERP Heritage: "
+"própria presença, próprio consentimento, listagem de locais de quiosque. "
+"Implica a função padrão de Usuário de RH."
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_auditor
+msgid ""
+"Read-only auditor: visibility on every ERP Heritage attendance audit log "
+"without write access. Cannot edit consent, register devices, or post "
+"attendance."
+msgstr ""
+"Auditor somente leitura: visibilidade sobre cada log de auditoria de "
+"presença da ERP Heritage sem acesso de escrita. Não pode editar "
+"consentimento, registrar dispositivos ou lançar presenças."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_consent
+msgid ""
+"Records are created automatically when an employee enrols at a kiosk, or "
+"manually by an HR administrator from the employee's profile."
+msgstr ""
+"Os registros são criados automaticamente quando um funcionário se inscreve "
+"em um quiosque, ou manualmente por um administrador de RH a partir do perfil"
+" do funcionário."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__display_name
+msgid "Reference"
+msgstr "Referência"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_kiosk_terminal
+msgid "Registered Kiosk Terminal"
+msgstr "Terminal de quiosque registrado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__registered_on
+msgid "Registered on"
+msgstr "Registrado em"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__attendance_id
+msgid "Related attendance"
+msgstr "Presença relacionada"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Resolution"
+msgstr "Resolução"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolution_notes
+msgid "Resolution notes"
+msgstr "Notas de resolução"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolved
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Resolved"
+msgstr "Resolvido"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolved_by
+msgid "Resolved by"
+msgstr "Resolvido por"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolved_on
+msgid "Resolved on"
+msgstr "Resolvido em"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Revoke"
+msgstr "Revogar"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Revoked"
+msgstr "Revogado"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid ""
+"Revoking the device prevents it from making any further kiosk requests. "
+"Continue?"
+msgstr ""
+"Revogar o dispositivo impede que ele faça novas solicitações de quiosque. "
+"Continuar?"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Rotate token"
+msgstr "Rotacionar token"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid ""
+"Rotating the token immediately invalidates the kiosk's current credentials. "
+"The device must be re-paired. Continue?"
+msgstr ""
+"Rotacionar o token invalida imediatamente as credenciais atuais do quiosque."
+" O dispositivo precisa ser reemparelhado. Continuar?"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_sms_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_has_sms_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_sms_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erro no envio de SMS"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__portal
+msgid "Self-service portal"
+msgstr "Portal de autoatendimento"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__device_token
+msgid ""
+"Server-issued opaque token. The kiosk includes this in every request to "
+"authenticate itself."
+msgstr ""
+"Token opaco emitido pelo servidor. O quiosque o inclui em cada solicitação "
+"para se autenticar."
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_settings
+msgid "Settings"
+msgstr "Definições"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__severity
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Severity"
+msgstr "Gravidade"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__code
+msgid ""
+"Short URL-safe identifier, used in the kiosk shell URL. Letters, digits, "
+"dash, underscore only."
+msgstr ""
+"Identificador curto seguro para URL, usado na URL do shell do quiosque. "
+"Somente letras, dígitos, hífen e sublinhado."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__site_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__site_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Site"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Site code is required."
+msgstr "O código do site é obrigatório."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Site code may contain letters, digits, dashes and underscores only."
+msgstr ""
+"O código do site pode conter apenas letras, dígitos, traços e sublinhados."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.constraint,message:eh_hr_attendance_base.constraint_eh_hr_kiosk_site_unique_code_per_company
+msgid "Site code must be unique per company."
+msgstr "O código do site deve ser único por empresa."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__name
+msgid "Site name"
+msgstr "Nome do site"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_sites
+msgid "Sites"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Snapshot of the consent prose displayed to the employee at grant time."
+msgstr ""
+"Snapshot do texto de consentimento exibido ao funcionário no momento da "
+"concessão."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__consent_text
+msgid ""
+"Snapshot of the exact consent prose displayed when the employee granted "
+"consent. Frozen at grant time so the audit record cannot drift if the "
+"company default text is later changed."
+msgstr ""
+"Snapshot do texto exato de consentimento exibido quando o funcionário "
+"concedeu o consentimento. Congelado no momento da concessão para que o "
+"registro de auditoria não se altere caso o texto padrão da empresa seja "
+"modificado posteriormente."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "State"
+msgstr "Estado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__state
+msgid "Status"
+msgstr "Estado"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Street, suburb, postcode, country..."
+msgstr "Rua, bairro, CEP, país..."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_hr_employee__eh_kiosk_site_default_id
+msgid ""
+"Suggested site for this employee. Other sites still accept this employee "
+"unless their record rules forbid it."
+msgstr ""
+"Local sugerido para este funcionário. Outros locais ainda aceitam este "
+"funcionário, a menos que suas regras de registro proíbam."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"The exact prose displayed at the kiosk when an employee enrols for face "
+"recognition. Snapshotted onto each consent record at grant time."
+msgstr ""
+"O texto exato exibido no quiosque quando um funcionário se inscreve no "
+"reconhecimento facial. Capturado como snapshot em cada registro de "
+"consentimento no momento da concessão."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_kiosk_idle_seconds
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_kiosk_idle_seconds
+msgid ""
+"The kiosk shell resets to the welcome screen after this many seconds of "
+"inactivity."
+msgstr ""
+"O shell do quiosque volta à tela de boas-vindas após esse número de segundos"
+" de inatividade."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"The kiosk shell returns to the welcome screen after this many seconds of "
+"inactivity."
+msgstr ""
+"O shell do quiosque volta à tela de boas-vindas após esse número de segundos"
+" de inatividade."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__timestamp
+msgid "Timestamp"
+msgstr "Data/hora"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__timezone
+msgid "Timezone"
+msgstr "Fuso horário"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Today"
+msgstr "Hoje"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_hr_employee__eh_face_enrolled
+msgid ""
+"True when at least one active face template exists for this employee. "
+"Computed from eh_face_template_ids."
+msgstr ""
+"True quando existe pelo menos um modelo de rosto ativo para este "
+"funcionário. Calculado a partir de eh_face_template_ids."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__exception_type
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__consent_type
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Type"
+msgstr "Tipo"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/controllers/kiosk.py:0
+msgid "Unnamed kiosk"
+msgstr "Quiosque sem nome"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__timezone
+msgid "Used to interpret kiosk timestamps for late and no-show evaluation."
+msgstr ""
+"Usado para interpretar os carimbos de data/hora do quiosque na avaliação de "
+"atrasos e faltas."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__user_agent
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__user_agent
+msgid "User agent"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__voice
+msgid "Voice"
+msgstr "Voz"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__severity__warning
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Warning"
+msgstr "Aviso"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__website_message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__website_message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__website_message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__website_message_ids
+msgid "Website Messages"
+msgstr "Mensagens do site"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__website_message_ids
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__website_message_ids
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__website_message_ids
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__website_message_ids
+msgid "Website communication history"
+msgstr "Histórico de comunicação do site"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Withdraw"
+msgstr "Anular"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "Withdrawal date cannot be before grant date."
+msgstr "A data de retirada não pode ser anterior à data de concessão."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__withdrawn
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__withdrawn
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Withdrawn"
+msgstr "Retirado"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__withdrawn_on
+msgid "Withdrawn on"
+msgstr "Retirado em"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_consent_retention_months
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_retention_months
+msgid "Withdrawn or expired consent retention (months)"
+msgstr "Retenção de consentimento retirado ou expirado (meses)"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Withdrawn or expired retention (months)"
+msgstr "Retenção de itens retirados ou expirados (meses)"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "hq-melbourne"
+msgstr ""

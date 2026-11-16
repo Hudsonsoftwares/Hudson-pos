@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <template id="visitor_kiosk_shell" name="EH Visitor Kiosk Shell">
+            <html>
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+                    <title t-out="'Visitor sign-in - ' + (site_name or site_code)"/>
+                    <link rel="stylesheet" href="/eh_hr_visitor/static/src/scss/visitor_kiosk.css"/>
+                    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+                    <script src="/eh_hr_visitor/static/src/js/visitor_kiosk.js" defer="defer"></script>
+                </head>
+                <body class="eh-visitor-body" t-att-data-site-code="site_code" t-att-data-site-found="site_found and 'true' or 'false'">
+                    <div id="eh-visitor-root">
+                        <section class="eh-screen eh-screen-pair" data-screen="pair">
+                            <div class="eh-card">
+                                <h1 class="eh-h1">Pair this device</h1>
+                                <p class="eh-p">Site: <strong t-out="site_name or site_code"/></p>
+                                <p class="eh-p">Ask an administrator for a 6-digit pairing PIN.</p>
+                                <div class="eh-form">
+                                    <input class="eh-input" id="eh-pair-name" type="text" placeholder="Reception iPad"/>
+                                    <input class="eh-input eh-input-pin" id="eh-pair-pin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6"/>
+                                    <button class="eh-button eh-button-primary" id="eh-pair-submit">Pair</button>
+                                    <p class="eh-error" id="eh-pair-error"></p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="eh-screen eh-screen-home eh-hidden" data-screen="home">
+                            <div class="eh-card eh-card-large">
+                                <h1 class="eh-h1">Welcome</h1>
+                                <p class="eh-p eh-p-muted">Please choose</p>
+                                <div class="eh-row">
+                                    <button class="eh-button eh-button-primary eh-button-large" id="eh-home-signin">Sign in</button>
+                                    <button class="eh-button eh-button-large" id="eh-home-signout">Sign out</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="eh-screen eh-screen-form eh-hidden" data-screen="form">
+                            <div class="eh-card eh-card-large">
+                                <h1 class="eh-h1">Sign in</h1>
+                                <div class="eh-form">
+                                    <label class="eh-label">Your full name</label>
+                                    <input class="eh-input" id="eh-vis-name" type="text"/>
+                                    <label class="eh-label">Your organisation</label>
+                                    <input class="eh-input" id="eh-vis-company" type="text"/>
+                                    <label class="eh-label">Your email (optional)</label>
+                                    <input class="eh-input" id="eh-vis-email" type="email"/>
+                                    <label class="eh-label">Host</label>
+                                    <input class="eh-input" id="eh-vis-host-search" type="text" autocomplete="off" placeholder="Type the host's name"/>
+                                    <div class="eh-host-results" id="eh-vis-host-results"></div>
+                                    <input type="hidden" id="eh-vis-host"/>
+                                    <label class="eh-label">Purpose</label>
+                                    <select class="eh-input" id="eh-vis-purpose"></select>
+                                </div>
+                                <div class="eh-row">
+                                    <button class="eh-button eh-button-primary" id="eh-form-next">Continue</button>
+                                    <button class="eh-button" id="eh-form-back">Back</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="eh-screen eh-screen-nda eh-hidden" data-screen="nda">
+                            <div class="eh-card eh-card-large">
+                                <h1 class="eh-h1">Site terms</h1>
+                                <div class="eh-nda-text" id="eh-nda-text"></div>
+                                <label class="eh-checkbox">
+                                    <input type="checkbox" id="eh-nda-accept"/>
+                                    I have read and accept these terms
+                                </label>
+                                <h6 style="font-weight: 600; margin-bottom: 10px; margin-top: 20px; color: #374151;">Digital Signature <span style="color: #875A7B;">*</span></h6>
+                                <div style="border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; position: relative; width: 100%; margin-bottom: 20px;">
+                                    <canvas id="signature-pad" style="width: 100%; height: 200px; touch-action: none; border-radius: 8px;"></canvas>
+                                    <button type="button" id="clear-signature" style="position: absolute; bottom: 10px; right: 10px; background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer;">Clear</button>
+                                </div>
+                                <input type="hidden" id="eh-nda-signature" />
+                                <div class="eh-row">
+                                    <button class="eh-button eh-button-primary" id="eh-nda-next">Continue</button>
+                                    <button class="eh-button" id="eh-nda-back">Back</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="eh-screen eh-screen-photo eh-hidden" data-screen="photo">
+                            <div class="eh-card eh-card-large">
+                                <h1 class="eh-h1">Photo</h1>
+                                <p class="eh-p" id="eh-photo-consent"></p>
+                                <video id="eh-photo-video" class="eh-photo-video" autoplay="autoplay" muted="muted" playsinline="playsinline"></video>
+                                <canvas id="eh-photo-canvas" class="eh-hidden"></canvas>
+                                <div class="eh-row">
+                                    <button class="eh-button eh-button-primary" id="eh-photo-capture">Capture</button>
+                                    <button class="eh-button" id="eh-photo-skip">Skip</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="eh-screen eh-screen-result eh-hidden" data-screen="result">
+                            <div class="eh-card eh-card-large eh-card-success">
+                                <h1 class="eh-h1" id="eh-result-title">Welcome!</h1>
+                                <p class="eh-p eh-p-large" id="eh-result-detail"></p>
+                                <p class="eh-p eh-p-muted">Your host has been notified.</p>
+                                <button class="eh-button" id="eh-result-back">Done</button>
+                            </div>
+                        </section>
+
+                        <section class="eh-screen eh-screen-signout eh-hidden" data-screen="signout">
+                            <div class="eh-card">
+                                <h1 class="eh-h1">Sign out</h1>
+                                <p class="eh-p">Enter your visit number</p>
+                                <input class="eh-input eh-input-pin" id="eh-signout-number" type="text"/>
+                                <div class="eh-row">
+                                    <button class="eh-button eh-button-primary" id="eh-signout-submit">Sign out</button>
+                                    <button class="eh-button" id="eh-signout-back">Back</button>
+                                </div>
+                                <p class="eh-error" id="eh-signout-error"></p>
+                            </div>
+                        </section>
+
+                        <section class="eh-screen eh-screen-error eh-hidden" data-screen="error" t-if="not site_found">
+                            <div class="eh-card eh-card-large eh-card-fail">
+                                <h1 class="eh-h1">Site not configured</h1>
+                                <p class="eh-p">No active kiosk site exists for <code t-out="site_code"/>.</p>
+                            </div>
+                        </section>
+                    </div>
+                </body>
+            </html>
+        </template>
+
+    </data>
+</odoo>

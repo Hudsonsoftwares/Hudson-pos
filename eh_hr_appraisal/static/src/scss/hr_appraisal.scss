@@ -1,0 +1,32 @@
+// Feedback panels of the appraisal and appraisal template forms.
+// Built on theme variables so they follow light and dark mode.
+
+.o_hr_appraisal_feedback {
+    .o_hr_appraisal_feedback_card {
+        padding: map-get($spacers, 3) map-get($spacers, 4);
+        border: $border-width solid $border-color;
+        border-radius: $border-radius-lg;
+        background-color: $o-view-background-color;
+    }
+
+    .o_hr_appraisal_feedback_manager {
+        background-color: mix($o-view-background-color, $o-gray-200, 50%);
+    }
+
+    .o_hr_appraisal_feedback_body {
+        display: block;
+        min-height: 12rem;
+    }
+
+    .o_hr_appraisal_feedback_locked {
+        padding: map-get($spacers, 5) map-get($spacers, 3);
+        border: $border-width dashed $border-color;
+        border-radius: $border-radius;
+        color: $text-muted;
+        text-align: center;
+
+        .oi {
+            font-size: 2rem;
+        }
+    }
+}

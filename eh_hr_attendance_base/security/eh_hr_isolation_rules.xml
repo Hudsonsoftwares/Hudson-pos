@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="0">
+    <data>
+
+        <!--
+            Multi-company record rules for the EH attendance suite.
+
+            Every EH attendance model is company-scoped. A user only
+            sees rows belonging to one of their currently active
+            companies. These rules apply to all groups; groups govern
+            CRUD permission per model, while these rules govern row
+            visibility per company.
+        -->
+
+        <record id="rule_eh_hr_consent_company" model="ir.access">
+            <field name="name">EH Consent: per company</field>
+            <field name="model_id" ref="model_eh_hr_consent"/>
+            <field name="domain">[('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_kiosk_site_company" model="ir.access">
+            <field name="name">EH Kiosk Site: per company</field>
+            <field name="model_id" ref="model_eh_hr_kiosk_site"/>
+            <field name="domain">[('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_kiosk_terminal_company" model="ir.access">
+            <field name="name">EH Kiosk Terminal: per company</field>
+            <field name="model_id" ref="model_eh_hr_kiosk_terminal"/>
+            <field name="domain">[('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_kiosk_event_company" model="ir.access">
+            <field name="name">EH Kiosk Event: per company</field>
+            <field name="model_id" ref="model_eh_hr_kiosk_event"/>
+            <field name="domain">[('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_attendance_exception_company" model="ir.access">
+            <field name="name">EH Attendance Exception: per company</field>
+            <field name="model_id" ref="model_eh_hr_attendance_exception"/>
+            <field name="domain">[('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+        <!--
+            Employee-scoped consent visibility.
+
+            A regular EH user sees only their own consent records. A
+            manager sees all consent records within their accessible
+            companies (governed by the company rule above). The user
+            rule is implied by adding it for the user group only and
+            relying on the manager group's broader access.
+        -->
+        <record id="rule_eh_hr_consent_user_own" model="ir.access">
+            <field name="name">EH Consent: own only (user)</field>
+            <field name="model_id" ref="model_eh_hr_consent"/>
+            <field name="domain">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="group_id" ref="group_eh_hr_user"/>
+            <field name="operation">r</field>
+        </record>
+
+        <record id="rule_eh_hr_consent_manager_full" model="ir.access">
+            <field name="name">EH Consent: full (manager)</field>
+            <field name="model_id" ref="model_eh_hr_consent"/>
+            <field name="domain">[(1, '=', 1)]</field>
+            <field name="group_id" ref="group_eh_hr_manager"/>
+            <field name="operation">crud</field>
+        </record>
+
+        <record id="rule_eh_hr_attendance_exception_user_own" model="ir.access">
+            <field name="name">EH Attendance Exception: own only (user)</field>
+            <field name="model_id" ref="model_eh_hr_attendance_exception"/>
+            <field name="domain">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="group_id" ref="group_eh_hr_user"/>
+            <field name="operation">r</field>
+        </record>
+
+        <record id="rule_eh_hr_attendance_exception_manager_full" model="ir.access">
+            <field name="name">EH Attendance Exception: full (manager)</field>
+            <field name="model_id" ref="model_eh_hr_attendance_exception"/>
+            <field name="domain">[(1, '=', 1)]</field>
+            <field name="group_id" ref="group_eh_hr_manager"/>
+            <field name="operation">crud</field>
+        </record>
+
+    </data>
+</odoo>

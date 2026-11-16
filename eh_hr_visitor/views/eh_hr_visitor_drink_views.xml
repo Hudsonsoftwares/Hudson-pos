@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="view_eh_hr_visitor_drink_list" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.drink.list</field>
+            <field name="model">eh.hr.visitor.drink</field>
+            <field name="arch" type="xml">
+                <list string="Drinks" sample="1" editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="image" widget="image" class="oe_avatar" options="{'size': [50, 50]}"/>
+                    <field name="name"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_visitor_drink_form" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.drink.form</field>
+            <field name="model">eh.hr.visitor.drink</field>
+            <field name="arch" type="xml">
+                <form string="Drink">
+                    <sheet>
+                        <field name="image" widget="image" class="oe_avatar"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Coffee"/></h1>
+                        </div>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_visitor_drink" model="ir.actions.act_window">
+            <field name="name">Drinks</field>
+            <field name="res_model">eh.hr.visitor.drink</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+    </data>
+</odoo>

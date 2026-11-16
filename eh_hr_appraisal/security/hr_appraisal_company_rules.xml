@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi company isolation. These restrictions have no group, so they
+         are AND-ed with every group permission (Administrator included): a record
+         is only visible in the companies currently selected in the switcher.
+         Records with no company are shared. -->
+
+    <record id="hr_appraisal_rule_company" model="ir.access">
+        <field name="name">Appraisal: multi company</field>
+        <field name="model_id" ref="model_hr_appraisal"/>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="operation">crud</field>
+    </record>
+
+    <record id="hr_appraisal_goal_rule_company" model="ir.access">
+        <field name="name">Appraisal Goal: multi company</field>
+        <field name="model_id" ref="model_hr_appraisal_goal"/>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="operation">crud</field>
+    </record>
+
+    <record id="hr_appraisal_skill_rule_company" model="ir.access">
+        <field name="name">Appraisal Skill: multi company</field>
+        <field name="model_id" ref="model_hr_appraisal_skill"/>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="operation">crud</field>
+    </record>
+
+    <record id="hr_appraisal_skill_report_rule_company" model="ir.access">
+        <field name="name">Appraisal Skills Report: multi company</field>
+        <field name="model_id" ref="model_hr_appraisal_skill_report"/>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="operation">r</field>
+    </record>
+
+    <record id="hr_appraisal_template_rule_company" model="ir.access">
+        <field name="name">Appraisal Template: multi company</field>
+        <field name="model_id" ref="model_hr_appraisal_template"/>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="operation">crud</field>
+    </record>
+
+    <record id="hr_appraisal_scale_rule_company" model="ir.access">
+        <field name="name">Evaluation Scale: multi company</field>
+        <field name="model_id" ref="model_hr_appraisal_scale"/>
+        <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="operation">crud</field>
+    </record>
+</odoo>

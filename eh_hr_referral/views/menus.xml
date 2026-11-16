@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions -->
+    <record id="action_eh_hr_referral_dashboard_client" model="ir.actions.client">
+        <field name="name">Referral Dashboard</field>
+        <field name="tag">eh_hr_referral_dashboard_client_action</field>
+    </record>
+
+    <!-- Main Menus -->
+    <menuitem id="menu_eh_hr_referral_root"
+              name="Referrals"
+              sequence="200"/>
+
+    <menuitem id="menu_eh_hr_referral_dashboard"
+              name="Dashboard"
+              parent="menu_eh_hr_referral_root"
+              action="action_eh_hr_referral_dashboard_client"
+              sequence="10"/>
+              
+    <!-- Reporting Menu -->
+    <menuitem id="menu_eh_hr_referral_reporting"
+              name="Reporting"
+              parent="menu_eh_hr_referral_root"
+              sequence="20"/>
+              
+    <menuitem id="menu_eh_hr_referral_analysis"
+              name="Referral Analysis"
+              parent="menu_eh_hr_referral_reporting"
+              action="action_eh_hr_referral_analysis"
+              sequence="10"/>
+              
+    <menuitem id="menu_eh_hr_referral_reporting_rewards"
+              name="Rewards"
+              parent="menu_eh_hr_referral_reporting"
+              action="action_eh_hr_referral_reward_log_analysis"
+              sequence="20"/>
+              
+    <menuitem id="menu_eh_hr_referral_reporting_points"
+              name="Points"
+              parent="menu_eh_hr_referral_reporting"
+              action="action_eh_hr_referral_points"
+              sequence="30"/>
+              
+    <menuitem id="menu_eh_hr_referral_reporting_link_tracker"
+              name="Link Tracker"
+              parent="menu_eh_hr_referral_reporting"
+              action="link_tracker.link_tracker_action"
+              sequence="40"/>
+              
+    <!-- Configuration Menu -->
+    <menuitem id="menu_eh_hr_referral_configuration"
+              name="Configuration"
+              parent="menu_eh_hr_referral_root"
+              sequence="30"/>
+
+    <!-- Configuration -> Settings -->
+    <menuitem id="menu_eh_hr_referral_settings"
+              name="Settings"
+              parent="menu_eh_hr_referral_configuration"
+              action="action_eh_hr_referral_configuration"
+              sequence="10"/>
+
+    <!-- Configuration -> Recruitment -->
+    <menuitem id="menu_eh_hr_referral_recruitment"
+              name="Recruitment"
+              parent="menu_eh_hr_referral_configuration"
+              sequence="20"/>
+              
+    <menuitem id="menu_eh_hr_referral_job_positions"
+              name="Job Positions"
+              parent="menu_eh_hr_referral_recruitment"
+              action="action_eh_hr_referral_job_positions"
+              sequence="10"/>
+
+    <!-- Configuration -> Referrals -->
+    <menuitem id="menu_eh_hr_referral_referrals_categ"
+              name="Referrals"
+              parent="menu_eh_hr_referral_configuration"
+              sequence="30"/>
+              
+    <menuitem id="menu_eh_hr_referral_alerts"
+              name="Alerts"
+              parent="menu_eh_hr_referral_referrals_categ"
+              action="action_eh_hr_referral_alert"
+              sequence="10"/>
+              
+    <menuitem id="menu_eh_hr_referral_rewards"
+              name="Rewards"
+              parent="menu_eh_hr_referral_referrals_categ"
+              action="action_eh_hr_referral_reward"
+              sequence="20"/>
+
+    <!-- Configuration -> Dashboard -->
+    <menuitem id="menu_eh_hr_referral_dashboard_categ"
+              name="Dashboard"
+              parent="menu_eh_hr_referral_configuration"
+              sequence="40"/>
+              
+    <menuitem id="menu_eh_hr_referral_levels"
+              name="Levels"
+              parent="menu_eh_hr_referral_dashboard_categ"
+              action="action_eh_hr_referral_levels"
+              sequence="10"/>
+              
+    <menuitem id="menu_eh_hr_referral_friends"
+              name="Friends"
+              parent="menu_eh_hr_referral_dashboard_categ"
+              action="action_eh_hr_referral_friends"
+              sequence="20"/>
+              
+    <menuitem id="menu_eh_hr_referral_onboarding"
+              name="Onboarding"
+              parent="menu_eh_hr_referral_dashboard_categ"
+              action="action_eh_hr_referral_onboarding"
+              sequence="30"/>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="eh_hr_core.HrCard">
+        <div t-att-class="toneClass">
+            <div class="o_hrp_card__header" t-if="this.props.slots and this.props.slots.header">
+                <t t-slot="header"/>
+            </div>
+            <div class="o_hrp_card__body">
+                <t t-if="!this.props.loading"><t t-slot="default"/></t>
+                <t t-else=""><div class="o_hrp_skeleton"/></t>
+            </div>
+            <div class="o_hrp_card__footer" t-if="this.props.slots and this.props.slots.footer">
+                <t t-slot="footer"/>
+            </div>
+        </div>
+    </t>
+</templates>

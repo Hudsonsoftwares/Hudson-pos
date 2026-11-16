@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_appraisal_goal_template_form" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.template.form</field>
+        <field name="model">hr.appraisal.goal.template</field>
+        <field name="arch" type="xml">
+            <form string="Goals Template">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Factory Safety Training"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="parent_id" invisible="context.get('hide_parent_goal')"/>
+                            <field name="skill_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <label for="timing"/>
+                            <div class="o_row">
+                                <field name="timing" class="oe_inline"/> months
+                            </div>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" nolabel="1" widget="html"
+                                   placeholder="Steps to take, benefits of reaching the goal, who to contact... This text is visible to the employee."/>
+                        </page>
+                        <page string="Sub-Goals" name="sub_goals" invisible="context.get('hide_parent_goal')">
+                            <field name="sub_goal_ids" nolabel="1" context="{'hide_parent_goal': True}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="skill_ids" string="Recommended for" widget="many2many_tags"/>
+                                    <field name="timing"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_goal_template_tree" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.template.list</field>
+        <field name="model">hr.appraisal.goal.template</field>
+        <field name="arch" type="xml">
+            <list string="Goals Templates">
+                <field name="name"/>
+                <field name="skill_ids" string="Recommended for" widget="many2many_tags"/>
+                <field name="sub_goal_ids" string="Sub Goals" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Library opened from the Goals dashboard: select goals, then Continue -->
+    <record id="view_hr_appraisal_goal_template_library" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.template.library</field>
+        <field name="model">hr.appraisal.goal.template</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list string="Goals Template Library" create="false" delete="false">
+                <header>
+                    <button name="action_select_employees" string="Continue" type="object" class="btn-primary"/>
+                </header>
+                <field name="name"/>
+                <field name="skill_ids" string="Recommended for" widget="many2many_tags"/>
+                <field name="sub_goal_ids" string="Sub Goals" widget="many2many_tags"/>
+                <field name="timing" optional="hide"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_goal_template_search" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.template.search</field>
+        <field name="model">hr.appraisal.goal.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="skill_ids" string="Recommended for"/>
+                <field name="tag_ids"/>
+                <filter string="Main Goals" name="main_goals" domain="[('parent_id', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Configuration > Library -->
+    <record id="action_hr_appraisal_goal_template" model="ir.actions.act_window">
+        <field name="name">Goals Library</field>
+        <field name="res_model">hr.appraisal.goal.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_hr_appraisal_goal_template_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_hr_appraisal_goal_template_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new goal template
+            </p><p>
+                Goals of the library can be assigned to several employees at once from the Goals dashboard.
+            </p>
+        </field>
+    </record>
+
+    <!-- Goals > Open Library -->
+    <record id="action_hr_appraisal_goal_library" model="ir.actions.act_window">
+        <field name="name">Goals Template Library</field>
+        <field name="res_model">hr.appraisal.goal.template</field>
+        <field name="view_mode">list</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_hr_appraisal_goal_template_library"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                The goals library is empty
+            </p><p>
+                Administrators add goals in Configuration &gt; Library.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_appraisal_confirm" model="mail.template">
+            <field name="name">Appraisal: Confirmation</field>
+            <field name="model_id" ref="model_hr_appraisal"/>
+            <field name="subject">Appraisal of {{ object.employee_id.name }} confirmed</field>
+            <field name="partner_to">{{ object._get_confirmation_partner_ids() }}</field>
+            <field name="description">Sent to the employee and the appraisers when an appraisal is confirmed</field>
+            <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>
+        The appraisal of <strong t-out="object.employee_id.name or ''">Marc Demo</strong> is confirmed and must be completed by
+        <strong t-out="format_date(object.date_appraisal) or ''">05/05/2026</strong>.
+    </p>
+    <ul>
+        <li><strong t-out="object.employee_id.name or ''">Marc Demo</strong>: fill in the <em>Employee's Feedback</em> section, update your skills,
+            then switch the section to <em>Shared to Appraisers</em>.</li>
+        <li>Appraisers: fill in the <em>Manager's Feedback</em> section and schedule the appraisal meeting.</li>
+    </ul>
+    <p>Thank you!</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="mail_template_appraisal_ask_feedback" model="mail.template">
+            <field name="name">Appraisal: Ask Feedback</field>
+            <field name="model_id" ref="survey.model_survey_user_input"/>
+            <field name="subject">Take part in {{ object.appraised_employee_id.name }} appraisal</field>
+            <field name="partner_to">{{ object.partner_id.id or '' }}</field>
+            <field name="description">Sent to colleagues asked for 360 feedback</field>
+            <field name="body_html" type="html">
+<div>
+    <p>Hello <t t-out="object.partner_id.name or ''">Audrey Peterson</t>,</p>
+    <p>
+        <t t-out="ctx.get('appraisal_feedback_sender') or ''">Mitchell Admin</t> would like your feedback on
+        <strong t-out="object.appraised_employee_id.name or ''">Marc Demo</strong> for their appraisal.
+        Your answers are only shared with the appraisers.
+    </p>
+    <div t-if="ctx.get('appraisal_feedback_comment')" t-out="ctx.get('appraisal_feedback_comment')"/>
+    <div style="margin: 16px 0px 16px 0px;">
+        <a t-att-href="object.get_start_url()"
+           style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+            Give my feedback
+        </a>
+    </div>
+    <p t-if="object.deadline">Please answer before <strong t-out="format_date(object.deadline) or ''">05/05/2026</strong>.</p>
+    <p>Thank you!</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

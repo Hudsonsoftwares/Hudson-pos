@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr.appraisal</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Appraisals" string="Appraisals" name="hr_appraisal" groups="eh_hr_appraisal.group_hr_appraisal_manager">
+                    <block title="Appraisals" name="appraisals_plans_setting_container">
+                        <setting id="appraisal_plan_setting" string="Appraisals Plans" company_dependent="1"
+                                 help="Schedule the appraisals of the employees. Changing it updates the employees without Next Appraisal Date.">
+                            <field name="appraisal_plan"/>
+                            <div class="content-group" invisible="not appraisal_plan">
+                                <div class="mt-2 d-flex flex-wrap align-items-center gap-1">
+                                    <span class="o_form_label mb-0">First appraisal</span>
+                                    <field name="appraisal_plan_first_month" class="text-center oe_inline" style="width: 3rem;"/>
+                                    <span class="o_form_label mb-0">months after recruitment,</span>
+                                </div>
+                                <div class="mt-2 d-flex flex-wrap align-items-center gap-1">
+                                    <span class="o_form_label mb-0">then after</span>
+                                    <field name="appraisal_plan_next_month" class="text-center oe_inline" style="width: 3rem;"/>
+                                    <span class="o_form_label mb-0">months, then every</span>
+                                    <field name="appraisal_plan_recurring_month" class="text-center oe_inline" style="width: 3rem;"/>
+                                    <span class="o_form_label mb-0">months.</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="appraisal_automation_setting" string="Appraisals Automation" company_dependent="1"
+                                 help="Automatically schedule and confirm the appraisals according to the appraisals plans."
+                                 invisible="not appraisal_plan">
+                            <field name="appraisal_automation"/>
+                        </setting>
+                    </block>
+                    <block title="Feedback" name="appraisal_feedback_setting_container">
+                        <setting id="appraisal_360_feedback_setting" string="360 Feedback" company_dependent="1"
+                                 help="Ask colleagues to fill in a survey about the appraised employee.">
+                            <field name="appraisal_360_feedback"/>
+                            <div class="content-group mt-2" invisible="not appraisal_360_feedback">
+                                <div class="row">
+                                    <label for="appraisal_survey_template_id" string="Default Survey" class="col-lg-4 o_light_label"/>
+                                    <field name="appraisal_survey_template_id" class="col-lg-8" options="{'no_create': True}"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_configuration" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module' : 'hr_appraisal', 'bin_size': False}</field>
+    </record>
+</odoo>

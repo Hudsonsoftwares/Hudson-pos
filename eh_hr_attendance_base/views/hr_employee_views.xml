@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="view_employee_form_eh_hr_attendance" model="ir.ui.view">
+            <field name="name">hr.employee.form.eh.attendance</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Attendance and consent" name="page_eh_hr_attendance" groups="eh_hr_attendance_base.group_eh_hr_user,eh_hr_attendance_base.group_eh_hr_auditor">
+                        <group>
+                            <group string="Kiosk">
+                                <field name="eh_kiosk_site_default_id"/>
+                                <field name="eh_kiosk_pin" password="True" groups="eh_hr_attendance_base.group_eh_hr_manager"/>
+                                <field name="eh_face_enrolled" readonly="1"/>
+                                <field name="eh_face_consent_state" readonly="1"/>
+                            </group>
+                        </group>
+                        <separator string="Consent records"/>
+                        <field name="eh_consent_ids" mode="list">
+                            <list>
+                                <field name="consent_type"/>
+                                <field name="state"/>
+                                <field name="granted_on"/>
+                                <field name="expires_on"/>
+                                <field name="withdrawn_on"/>
+                                <field name="granted_via"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_visitor_agreement_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2 class="text-center mt-4 mb-4">Visitor Agreements</h2>
+                            
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <strong>Visitor Name:</strong> <span t-field="o.name"/><br/>
+                                    <strong>Company:</strong> <span t-field="o.visitor_company"/><br/>
+                                    <strong>Visit ID:</strong> <span t-field="o.visit_number"/><br/>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>Host:</strong> <span t-field="o.host_employee_id.name"/><br/>
+                                    <strong>Purpose:</strong> <span t-field="o.purpose_id.name"/><br/>
+                                    <strong>Date:</strong> <span t-field="o.agreement_accepted_date" t-options='{"widget": "datetime"}'/><br/>
+                                </div>
+                            </div>
+                            
+                            <hr/>
+                            
+                            <t t-if="o.nda_required">
+                                <h4 class="mt-4">Non-Disclosure Agreement (NDA)</h4>
+                                <div class="p-3 bg-light border rounded">
+                                    <p t-out="o.nda_text"/>
+                                </div>
+                                <p class="mt-2 text-success">
+                                    <i class="fa fa-check-square-o"></i> Accepted
+                                </p>
+                            </t>
+                            
+                            <t t-if="o.visitor_agreement_required">
+                                <h4 class="mt-4">Visitor Agreement</h4>
+                                <div class="p-3 bg-light border rounded">
+                                    <p t-out="o.visitor_agreement_text"/>
+                                </div>
+                                <p class="mt-2 text-success">
+                                    <i class="fa fa-check-square-o"></i> Accepted
+                                </p>
+                            </t>
+                            
+                            <t t-if="o.safety_declaration_required">
+                                <h4 class="mt-4">Safety Declaration</h4>
+                                <div class="p-3 bg-light border rounded">
+                                    <p t-out="o.safety_declaration_text"/>
+                                </div>
+                                <p class="mt-2 text-success">
+                                    <i class="fa fa-check-square-o"></i> Accepted
+                                </p>
+                            </t>
+                            
+                            <t t-if="o.privacy_consent_required">
+                                <h4 class="mt-4">Privacy Consent</h4>
+                                <div class="p-3 bg-light border rounded">
+                                    <p t-out="o.privacy_consent_text"/>
+                                </div>
+                                <p class="mt-2 text-success">
+                                    <i class="fa fa-check-square-o"></i> Accepted
+                                </p>
+                            </t>
+                            
+                            <hr class="mt-5"/>
+                            
+                            <div class="row mt-4">
+                                <div class="col-6 text-center">
+                                    <h5>Digital Signature</h5>
+                                    <t t-if="o.digital_signature">
+                                        <img t-att-src="image_data_uri(o.digital_signature)" style="max-height: 100px; max-width: 250px; border-bottom: 1px solid black;" alt="Signature"/>
+                                    </t>
+                                    <t t-else="">
+                                        <div style="height: 100px; border-bottom: 1px solid black; margin-bottom: 10px;"></div>
+                                    </t>
+                                    <p class="mt-2"><span t-field="o.name"/></p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <h5>QR Code</h5>
+                                    <t t-if="o.qr_code">
+                                        <img t-att-src="image_data_uri(o.qr_code)" style="height: 120px; width: 120px;" alt="QR Code"/>
+                                    </t>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="report_visitor_agreement" model="ir.actions.report">
+            <field name="name">Visitor Agreement</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">eh_hr_visitor.report_visitor_agreement_document</field>
+            <field name="print_report_name">'Agreement - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="model_eh_hr_visitor"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

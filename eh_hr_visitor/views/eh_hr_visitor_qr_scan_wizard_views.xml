@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_eh_hr_visitor_qr_scan_wizard_form" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.qr.scan.wizard.form</field>
+            <field name="model">eh.hr.visitor.qr.scan.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Simulate QR Scan">
+                    <div class="row">
+                        <div class="col-md-6 border-end">
+                            <h3 class="text-center mb-3"><i class="fa fa-camera mr-2"></i>Scan QR Pass</h3>
+                            <div class="text-center w-100">
+                                <iframe src="/eh_hr/visitor/scanner_embed" width="100%" height="300" style="border: 2px dashed #ccc; border-radius: 8px; background: #f8f9fa;"></iframe>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pl-4">
+                            <h3 class="mb-3"><i class="fa fa-keyboard-o mr-2"></i>Manual Input</h3>
+                            <group>
+                                <field name="scan_input" placeholder="e.g. V000114" widget="char" options="{'autocomplete': 'off'}"/>
+                                <field name="visitor_id" options="{'no_create': True}" domain="[('state', 'in', ['pending', 'confirmed', 'invitation_sent'])]"/>
+                            </group>
+                            <p class="text-muted mt-3">
+                                <em>Use a physical barcode scanner or manually type the Visit Number. The visitor state will automatically update to <strong>Arrived</strong>.</em>
+                            </p>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Verify &amp; Arrive" name="action_process_scan" type="object" class="btn-primary oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_visitor_qr_scan_wizard" model="ir.actions.act_window">
+            <field name="name">Simulate QR Scan</field>
+            <field name="res_model">eh.hr.visitor.qr.scan.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

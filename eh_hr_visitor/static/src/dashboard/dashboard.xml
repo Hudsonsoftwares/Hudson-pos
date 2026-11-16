@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="eh_hr_visitor.Dashboard" owl="1">
+        <div class="o_action o_view_controller">
+            <div class="o_content bg-view h-100 overflow-auto">
+                <div class="container-fluid py-4">
+                    
+                    <!-- Top Row (Statistics Cards) -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                            <div class="card h-100 shadow-sm border-0 oe_kanban_card cursor-pointer" t-on-click="() => this.openVisitorList([['state', 'in', ['confirmed', 'arrived']], ['expected_arrival', '&gt;=', this.state.todayStart], ['expected_arrival', '&lt;=', this.state.todayEnd]])">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-primary">
+                                        <i class="fa fa-calendar-check-o fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0 fw-bold"><t t-out="this.state.data.expected or 0"/></h3>
+                                        <div class="text-muted small">Today's Expected Visitors</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                            <div class="card h-100 shadow-sm border-0 oe_kanban_card cursor-pointer" t-on-click="() => this.openVisitorList([['arrived_on', '&gt;=', this.state.todayStart], ['registration_token', '=', false]])">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-info">
+                                        <i class="fa fa-users fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0 fw-bold"><t t-out="this.state.data.walkin or 0"/></h3>
+                                        <div class="text-muted small">Today's Walk-in Visitors</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                            <div class="card h-100 shadow-sm border-0 oe_kanban_card cursor-pointer" t-on-click="() => this.openVisitorList([['state', '=', 'signed_in']])">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-success">
+                                        <i class="fa fa-check-circle fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0 fw-bold"><t t-out="this.state.data.checked_in or 0"/></h3>
+                                        <div class="text-muted small">Checked In Visitors</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                            <div class="card h-100 shadow-sm border-0 oe_kanban_card cursor-pointer" t-on-click="() => this.openVisitorList([['state', '=', 'signed_out'], ['arrived_on', '&gt;=', this.state.todayStart]])">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-secondary">
+                                        <i class="fa fa-sign-out fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0 fw-bold"><t t-out="this.state.data.checked_out or 0"/></h3>
+                                        <div class="text-muted small">Checked Out Visitors</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                            <div class="card h-100 shadow-sm border-0 oe_kanban_card cursor-pointer" t-on-click="() => this.openVisitorList([['state', 'in', ['draft', 'invitation_sent', 'confirmed']]])">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-warning">
+                                        <i class="fa fa-clock-o fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0 fw-bold"><t t-out="this.state.data.upcoming or 0"/></h3>
+                                        <div class="text-muted small">Upcoming Meetings</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                            <div class="card h-100 shadow-sm border-0 oe_kanban_card cursor-pointer" t-on-click="() => this.openVisitorList([['state', 'in', ['confirmed', 'arrived']]])">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-danger">
+                                        <i class="fa fa-exclamation-triangle fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0 fw-bold"><t t-out="this.state.data.late or 0"/></h3>
+                                        <div class="text-muted small">Late Arrivals</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                            <div class="card h-100 shadow-sm border-0 oe_kanban_card cursor-pointer" t-on-click="() => this.openVisitorList([['state', '=', 'cancelled'], ['expected_arrival', '&gt;=', this.state.todayStart]])">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-dark">
+                                        <i class="fa fa-times-circle fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0 fw-bold"><t t-out="this.state.data.cancelled or 0"/></h3>
+                                        <div class="text-muted small">Cancelled Visits</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Second Row (Charts) -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-header bg-view border-bottom-0 pt-3 pb-0">
+                                    <h5 class="card-title mb-0">Visitors by Purpose</h5>
+                                </div>
+                                <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 300px;">
+                                    <canvas t-ref="this.purposeChartCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-header bg-view border-bottom-0 pt-3 pb-0">
+                                    <h5 class="card-title mb-0">Peak Hours</h5>
+                                </div>
+                                <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 300px;">
+                                    <canvas t-ref="this.peakHoursChartCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row (Latest Activity Table) -->
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-view border-bottom-0 pt-3 pb-0">
+                                    <h5 class="card-title mb-0">Latest Visitor Activity</h5>
+                                </div>
+                                <div class="card-body table-responsive">
+                                    <table class="table table-hover table-sm mt-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Visitor Name</th>
+                                                <th>Company</th>
+                                                <th>Host</th>
+                                                <th>Purpose</th>
+                                                <th>Check-in Time</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="this.state.data.latest_visitors or []" t-as="visitor" t-key="visitor.id">
+                                                <tr class="cursor-pointer" t-on-click="() => this.openVisitorRecord(visitor.id)">
+                                                    <td><t t-out="visitor.name"/></td>
+                                                    <td><t t-out="visitor.company"/></td>
+                                                    <td><t t-out="visitor.host"/></td>
+                                                    <td><t t-out="visitor.purpose"/></td>
+                                                    <td><t t-out="visitor.check_in_time"/></td>
+                                                    <td>
+                                                        <span t-if="visitor.state == 'signed_in'" class="badge text-bg-success rounded-pill">Checked In</span>
+                                                        <span t-elif="visitor.state == 'signed_out'" class="badge text-bg-secondary rounded-pill">Checked Out</span>
+                                                        <span t-elif="visitor.state == 'pending'" class="badge text-bg-warning rounded-pill">Pending</span>
+                                                        <span t-else="" class="badge text-bg-danger rounded-pill"><t t-out="visitor.state"/></span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="!(this.state.data.latest_visitors and this.state.data.latest_visitors.length)">
+                                                <tr>
+                                                    <td colspan="6" class="text-center text-muted">No visitors found.</td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

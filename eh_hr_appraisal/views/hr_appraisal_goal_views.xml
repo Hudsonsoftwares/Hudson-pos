@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_appraisal_goal_form" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.form</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="arch" type="xml">
+            <form string="Goal">
+                <header>
+                    <button name="action_mark_as_done" string="Mark as Done" type="object" class="oe_highlight"
+                            invisible="progress == '100'" data-hotkey="v"/>
+                    <button name="action_save_as_template" string="Save as Template" type="object"
+                            groups="eh_hr_appraisal.group_hr_appraisal_manager"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="progress != '100'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Improve your English level"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                            <field name="progress" widget="badges_selection"/>
+                            <field name="appraisal_id" options="{'no_create': True}" invisible="not appraisal_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="manager_id" widget="many2one_avatar_employee"/>
+                            <field name="deadline" decoration-danger="is_late"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="is_late" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" widget="html" nolabel="1"
+                                   placeholder="Describe the goal, the steps to reach it and how progress is measured..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_goal_tree" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.list</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="arch" type="xml">
+            <list string="Goals" sample="1">
+                <header>
+                    <button name="%(action_hr_appraisal_goal_library)d" string="Open Library" type="action" display="always"/>
+                </header>
+                <field name="is_late" column_invisible="True"/>
+                <field name="name"/>
+                <field name="progress" widget="badge" decoration-success="progress == '100'" decoration-muted="progress != '100'"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="deadline" decoration-danger="is_late"/>
+                <field name="manager_id" widget="many2one_avatar_employee" optional="hide"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_goal_kanban" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.kanban</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="arch" type="xml">
+            <kanban class="o_hr_appraisal_goal_kanban" sample="1">
+                <header>
+                    <button name="%(action_hr_appraisal_goal_library)d" string="Open Library" type="action" display="always"/>
+                </header>
+                <field name="is_late"/>
+                <templates>
+                    <t t-name="card">
+                        <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="progress != '100'"/>
+                        <field name="name" class="fw-bold fs-5"/>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <div class="mt-1">
+                            <field name="progress" widget="badge" decoration-success="progress == '100'" decoration-muted="progress != '100'"/>
+                        </div>
+                        <footer class="pt-1">
+                            <div t-if="record.deadline.raw_value" t-att-class="record.is_late.raw_value ? 'text-danger' : 'text-muted'">
+                                <i class="fa fa-clock-o me-1" title="Deadline"/>
+                                <field name="deadline"/>
+                            </div>
+                            <div class="ms-auto">
+                                <field name="employee_id" widget="many2one_avatar_employee"/>
+                            </div>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_goal_search" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.search</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="tag_ids"/>
+                <filter string="My Goals" name="my_goals" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="My Team" name="my_team" domain="['|', ('manager_id.user_id', '=', uid), ('employee_id.parent_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="In Progress" name="in_progress" domain="[('progress', '!=', '100')]"/>
+                <filter string="Done" name="done" domain="[('progress', '=', '100')]"/>
+                <separator/>
+                <filter string="Late" name="late" domain="[('progress', '!=', '100'), ('deadline', '&lt;', 'today')]"/>
+                <filter string="Deadline" name="filter_deadline" date="deadline"/>
+                <group>
+                    <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Manager" name="group_by_manager" context="{'group_by': 'manager_id'}"/>
+                    <filter string="Progress" name="group_by_progress" context="{'group_by': 'progress'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_goal_graph" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.graph</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="arch" type="xml">
+            <graph string="Goals" sample="1">
+                <field name="employee_id"/>
+                <field name="progress"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_goal" model="ir.actions.act_window">
+        <field name="name">Goals</field>
+        <field name="res_model">hr.appraisal.goal</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
+        <field name="context">{'search_default_group_by_employee': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_hr_appraisal_goal_tree')}),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_hr_appraisal_goal_kanban')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_hr_appraisal_goal_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Assign goals to your employees
+            </p>
+            <p>
+                Keep track of their objectives between appraisals and measure their progress. Use <strong>Open Library</strong> to assign goals from the library.
+            </p>
+        </field>
+    </record>
+</odoo>

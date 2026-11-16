@@ -1,0 +1,23 @@
+.o_hrp_card {
+    background: #fff;
+    border-radius: var(--hrp-radius-md);
+    box-shadow: var(--hrp-shadow-1);
+    padding: var(--hrp-space-4);
+    color: var(--hrp-color-text);
+
+    &--compact { padding: var(--hrp-space-2); }
+    &__header { font-weight: 600; margin-bottom: var(--hrp-space-2); }
+    &__footer { margin-top: var(--hrp-space-3); color: var(--hrp-color-muted); font-size: var(--hrp-font-size-sm); }
+
+    &--info    { border-left: 4px solid var(--hrp-color-primary); }
+    &--success { border-left: 4px solid var(--hrp-color-success); }
+    &--warning { border-left: 4px solid var(--hrp-color-warning); }
+    &--danger  { border-left: 4px solid var(--hrp-color-danger); }
+}
+.o_hrp_skeleton {
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: hrp-skeleton 1.4s linear infinite;
+    height: 1.2em; border-radius: var(--hrp-radius-sm);
+}
+@keyframes hrp-skeleton { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }

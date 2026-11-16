@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="referral_dashboard" name="Referral Dashboard">
+        <t t-set="no_header" t-value="True"/>
+        <t t-set="no_footer" t-value="True"/>
+        <t t-call="web.frontend_layout">
+            
+            <t t-set="bg_style" t-value="''"/>
+            <t t-if="company and company.referral_background_image">
+                <t t-set="bg_style" t-value="'background: url(\'/web/image?model=res.company&amp;id=%s&amp;field=referral_background_image\') no-repeat center center fixed; background-size: cover;' % company.id"/>
+            </t>
+
+            <div class="o_eh_referral_dashboard" t-att-style="bg_style">
+
+                <!-- Restart onboarding (refresh icon) -->
+                <button type="button" class="eh_tour_btn" onclick="ehRestartOnboarding()" title="Replay Intro Tour" aria-label="Replay Intro Tour">
+                    <i class="oi" data-icon="refresh"></i>
+                </button>
+
+                <!-- Alerts -->
+                <div t-if="alerts" class="o_eh_referral_alerts">
+                    <t t-foreach="alerts" t-as="alert">
+                        <div class="o_eh_referral_alert alert alert-dismissible fade show" role="alert">
+                            <i class="oi me-2" data-icon="campaign"></i>
+                            <t t-if="alert.on_click == 'url' and alert.url">
+                                <a t-att-href="alert.url" t-att-target="iframe and '_top' or '_self'"><t t-out="alert.name"/></a>
+                            </t>
+                            <t t-elif="alert.on_click == 'all_jobs'">
+                                <a href="/web#action=eh_hr_referral.action_eh_hr_referral_job_positions_kanban&amp;model=hr.job&amp;view_type=kanban" t-att-target="iframe and '_top' or '_self'"><t t-out="alert.name"/></a>
+                            </t>
+                            <t t-else="">
+                                <span><t t-out="alert.name"/></span>
+                            </t>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Points header with level avatar -->
+                <div class="o_eh_referral_points">
+                    <div class="o_eh_referral_points_item">
+                        <span class="o_eh_referral_points_label">Total</span>
+                        <span class="o_eh_referral_points_value"><t t-out="total_points"/> <i class="oi oi-filled text-muted" data-icon="star"></i></span>
+                    </div>
+
+                    <div class="o_eh_referral_level_avatar">
+                        <div class="o_eh_referral_level_ring" t-attf-style="--eh-progress: #{level_progress};"
+                             t-att-title="next_level and ('%s / %s points to level %s' % (total_points, next_level.points, next_level.name)) or 'Maximum level reached'">
+                            <t t-if="employee and employee.image_128">
+                                <img t-attf-src="/web/image/hr.employee/#{employee.id}/image_128" alt="Avatar"/>
+                            </t>
+                            <t t-else="">
+                                <img src="/web/static/img/user_placeholder.jpg" alt="Avatar"/>
+                            </t>
+                        </div>
+                        <div class="o_eh_referral_level_badge">Level <t t-out="level"/></div>
+                    </div>
+
+                    <div class="o_eh_referral_points_item">
+                        <span class="o_eh_referral_points_label">To Spend</span>
+                        <span class="o_eh_referral_points_value"><t t-out="to_spend"/> <i class="oi oi-filled text-warning" data-icon="star"></i></span>
+                    </div>
+                </div>
+                <div class="o_eh_referral_level_hint">
+                    <t t-if="next_level">
+                        <t t-out="next_level.points - total_points"/> points to reach level <t t-out="next_level.name"/>
+                    </t>
+                    <t t-else="">Maximum level reached!</t>
+                </div>
+
+                <!-- Hero and friends -->
+                <div class="o_eh_referral_stage">
+                    <t t-foreach="team_left" t-as="friend">
+                        <img t-attf-src="/web/image/eh.hr.referral.friend/#{friend.id}/image"
+                             t-attf-class="o_eh_referral_friend o_eh_referral_friend_#{friend.position}#{' o_eh_referral_friend_far' if friend_index &lt; len(team_left) - 2 else ''}" t-att-alt="friend.name" t-att-title="friend.name"/>
+                    </t>
+                    <t t-if="level_image_id">
+                        <img t-attf-src="/web/image/eh.hr.referral.level/#{level_image_id}/image" class="o_eh_referral_superhero" alt="Your hero"/>
+                    </t>
+                    <t t-else="">
+                        <img src="/eh_hr_referral/static/src/img/superhero.jpg" class="o_eh_referral_superhero" alt="Your hero"/>
+                    </t>
+                    <t t-foreach="team_right" t-as="friend">
+                        <img t-attf-src="/web/image/eh.hr.referral.friend/#{friend.id}/image"
+                             t-attf-class="o_eh_referral_friend o_eh_referral_friend_#{friend.position}#{' o_eh_referral_friend_far' if friend_index &gt;= 2 else ''}" t-att-alt="friend.name" t-att-title="friend.name"/>
+                    </t>
+                </div>
+
+                <!-- Referral counters -->
+                <div class="o_eh_referral_stats">
+                    <div class="o_eh_referral_stat">
+                        <span class="o_eh_referral_stat_value"><t t-out="referrals_count"/></span>
+                        <span class="o_eh_referral_stat_label">Referrals</span>
+                    </div>
+                    <div class="o_eh_referral_stat">
+                        <span class="o_eh_referral_stat_value"><t t-out="ongoing_count"/></span>
+                        <span class="o_eh_referral_stat_label">Ongoing</span>
+                    </div>
+                    <div class="o_eh_referral_stat">
+                        <span class="o_eh_referral_stat_value"><t t-out="successful_count"/></span>
+                        <span class="o_eh_referral_stat_label">Successful</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="o_eh_referral_actions">
+                    <a href="/web#action=eh_hr_referral.action_eh_hr_referral_job_positions_kanban&amp;model=hr.job&amp;view_type=kanban" class="o_eh_referral_btn" t-att-target="iframe and '_top' or '_self'"><i class="oi me-2" data-icon="work"></i>View Jobs</a>
+                    <button type="button" class="o_eh_referral_btn" data-bs-toggle="modal" data-bs-target="#emailFriendModal"><i class="oi me-2" data-icon="mail"></i>Email a friend</button>
+                    <a href="/web#action=eh_hr_referral.action_eh_hr_referral_reward&amp;model=eh.hr.referral.reward&amp;view_type=kanban" class="o_eh_referral_btn_outline" t-att-target="iframe and '_top' or '_self'"><i class="oi me-2" data-icon="card_giftcard"></i>Rewards</a>
+                </div>
+            </div>
+
+            <!-- Choose an avatar for a newly hired friend -->
+            <div t-if="hired_no_avatar and friends" id="eh_referral_friend_chooser" class="o_eh_referral_chooser"
+                 t-att-style="'display: flex;' if onboarding_completed else 'display: none;'" t-att-data-applicant-id="hired_no_avatar.id">
+                <div class="o_eh_referral_chooser_dialog">
+                    <h2>A new hero joins your team!</h2>
+                    <p><strong t-out="hired_no_avatar.partner_name or hired_no_avatar.display_name"/> has been hired. Choose an avatar for your new friend:</p>
+                    <div class="o_eh_referral_chooser_grid">
+                        <t t-foreach="friends" t-as="friend">
+                            <button type="button" class="o_eh_referral_chooser_item" t-att-data-friend-id="friend.id" onclick="ehChooseFriend(this)">
+                                <img t-attf-src="/web/image/eh.hr.referral.friend/#{friend.id}/image" t-att-alt="friend.name"/>
+                                <span t-out="friend.name"/>
+                            </button>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                function ehChooseFriend(btn) {
+                    var chooser = document.getElementById('eh_referral_friend_chooser');
+                    chooser.classList.add('o_eh_referral_chooser_busy');
+                    fetch('/eh/referral/choose_avatar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {
+                            applicant_id: parseInt(chooser.dataset.applicantId),
+                            friend_id: parseInt(btn.dataset.friendId),
+                        } })
+                    }).then(function() { window.location.reload(); })
+                      .catch(function() { chooser.classList.remove('o_eh_referral_chooser_busy'); });
+                }
+            </script>
+
+
+            <!-- Fullscreen Referral Onboarding Overlay -->
+            <div id="eh_referral_onboarding_modal" t-att-style="'display: flex;' if not onboarding_completed else 'display: none;'" class="eh_onboarding_overlay">
+                
+                <!-- Sky Background Rays Overlay -->
+                <div class="eh_onboarding_rays"></div>
+
+                <div class="eh_onboarding_inner">
+                    <!-- Top Halo Ring -->
+                    <div class="eh_onboarding_halo"></div>
+
+                    <!-- Top Titles -->
+                    <h1 class="eh_onboarding_title">GATHER YOUR TEAM!</h1>
+                    <div class="eh_onboarding_subtitle">Job Referral Program</div>
+
+                    <!-- Slides Carousel Container -->
+                    <div class="eh_slides_container">
+                        
+                        <!-- SLIDE 1: Villains Lurking the City (Exact match to screenshot) -->
+                        <div class="eh_slide active" data-slide="0">
+                            <div class="eh_scene_viewport">
+                                <svg class="eh_city_svg" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <!-- Glowing filter for villain eyes -->
+                                        <filter id="glowEyes" x="-50%" y="-50%" width="200%" height="200%">
+                                            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>
+                                            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur2"/>
+                                            <feMerge>
+                                                <feMergeNode in="blur2"/>
+                                                <feMergeNode in="blur1"/>
+                                                <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                        </filter>
+
+                                        <!-- Fog Glow Radial Gradient -->
+                                        <radialGradient id="fogRadial" cx="50%" cy="60%" r="55%">
+                                            <stop offset="0%" stop-color="#fff1fa" stop-opacity="0.95"/>
+                                            <stop offset="30%" stop-color="#f8a2dc" stop-opacity="0.75"/>
+                                            <stop offset="60%" stop-color="#a42880" stop-opacity="0.35"/>
+                                            <stop offset="90%" stop-color="#460d5b" stop-opacity="0.05"/>
+                                            <stop offset="100%" stop-color="#220536" stop-opacity="0"/>
+                                        </radialGradient>
+                                    </defs>
+
+                                    <!-- Distant Layer City Skyline (Deep Indigo) -->
+                                    <g fill="#240b3b">
+                                        <rect x="20" y="110" width="45" height="270"/>
+                                        <rect x="75" y="70" width="55" height="310"/>
+                                        <polygon points="102,30 92,70 112,70"/>
+                                        <rect x="140" y="130" width="50" height="250"/>
+                                        <rect x="200" y="90" width="60" height="290"/>
+                                        
+                                        <rect x="740" y="100" width="50" height="280"/>
+                                        <rect x="800" y="60" width="55" height="320"/>
+                                        <polygon points="827,20 817,60 837,60"/>
+                                        <rect x="865" y="120" width="60" height="260"/>
+                                        <rect x="935" y="80" width="50" height="300"/>
+                                    </g>
+
+                                    <!-- Mid Layer City Skyline -->
+                                    <g fill="#2f0f4b">
+                                        <rect x="0" y="160" width="70" height="220"/>
+                                        <rect x="60" y="140" width="75" height="240"/>
+                                        <rect x="125" y="180" width="80" height="200"/>
+                                        <polygon points="165,130 145,180 185,180"/>
+                                        <rect x="195" y="150" width="65" height="230"/>
+                                        
+                                        <rect x="730" y="170" width="60" height="210"/>
+                                        <rect x="780" y="140" width="70" height="240"/>
+                                        <polygon points="815,100 795,140 835,140"/>
+                                        <rect x="840" y="170" width="85" height="210"/>
+                                        <rect x="915" y="150" width="85" height="230"/>
+                                    </g>
+
+                                    <!-- Radiant Center Fog / Cloud Bank -->
+                                    <ellipse cx="500" cy="230" rx="380" ry="115" fill="url(#fogRadial)"/>
+
+                                    <!-- Soft Cloud Puff Silhouette Shapes -->
+                                    <path d="M 120 310 C 150 210, 230 190, 280 230 C 330 170, 420 150, 480 190 C 530 130, 660 140, 710 210 C 760 170, 840 200, 890 310 Z" fill="#ffd4f1" fill-opacity="0.3"/>
+                                    <path d="M 170 330 C 210 240, 300 230, 340 260 C 390 200, 490 190, 540 230 C 600 180, 700 200, 740 250 C 790 230, 850 260, 880 340 Z" fill="#ffffff" fill-opacity="0.45"/>
+
+                                    <!-- Foreground Dark City Skyline Layer -->
+                                    <g fill="#1a062c">
+                                        <rect x="0" y="240" width="90" height="140"/>
+                                        <rect x="80" y="210" width="60" height="170"/>
+                                        <rect x="130" y="260" width="75" height="120"/>
+                                        <rect x="235" y="235" width="55" height="145"/>
+                                        
+                                        <rect x="715" y="250" width="65" height="130"/>
+                                        <rect x="770" y="220" width="70" height="160"/>
+                                        <rect x="830" y="250" width="90" height="130"/>
+                                        <rect x="910" y="230" width="90" height="150"/>
+                                    </g>
+
+                                    <!-- Foreground Gentle Valley Ground Slope -->
+                                    <path d="M 0 320 Q 500 375 1000 320 L 1000 380 L 0 380 Z" fill="#140424"/>
+
+                                    <!-- GLOWING VILLAIN EYES (Animated pairs scattered across fog & buildings) -->
+                                    <!-- Pair 1: Low-Left (Bright) -->
+                                    <g class="eh_eyes eh_eyes_pulse eh_eyes_blink1" transform="translate(260, 240) scale(1.15)" filter="url(#glowEyes)">
+                                        <path d="M 0 8 C 8 2, 22 2, 28 9 C 20 10, 8 9, 0 8 Z" fill="#fffdb3"/>
+                                        <path d="M 36 9 C 42 2, 56 2, 64 8 C 56 9, 44 10, 36 9 Z" fill="#fffdb3"/>
+                                    </g>
+
+                                    <!-- Pair 2: Mid-Left Near Roof -->
+                                    <g class="eh_eyes eh_eyes_pulse2" transform="translate(185, 220) scale(0.95)" filter="url(#glowEyes)">
+                                        <path d="M 0 7 C 7 1, 18 1, 24 8 C 17 9, 7 8, 0 7 Z" fill="#fffebc"/>
+                                        <path d="M 30 8 C 36 1, 47 1, 54 7 C 47 8, 37 9, 30 8 Z" fill="#fffebc"/>
+                                    </g>
+
+                                    <!-- Pair 3: Center-Left in fog -->
+                                    <g class="eh_eyes eh_eyes_pulse" transform="translate(340, 220) scale(1.0)" filter="url(#glowEyes)">
+                                        <path d="M 0 7 C 7 1, 19 2, 26 8 C 18 9, 7 8, 0 7 Z" fill="#fffbc0"/>
+                                        <path d="M 34 8 C 41 2, 53 1, 60 7 C 53 8, 42 9, 34 8 Z" fill="#fffbc0"/>
+                                    </g>
+
+                                    <!-- Pair 4: High-Center (Prominent Dramatic Eyes) -->
+                                    <g class="eh_eyes eh_eyes_pulse eh_eyes_blink2" transform="translate(438, 175) scale(1.45)" filter="url(#glowEyes)">
+                                        <path d="M 0 8 C 8 2, 22 2, 29 10 C 20 11, 8 10, 0 8 Z" fill="#fffbc8"/>
+                                        <path d="M 38 10 C 45 2, 59 2, 67 8 C 59 10, 47 11, 38 10 Z" fill="#fffbc8"/>
+                                    </g>
+
+                                    <!-- Pair 5: Center-Low small -->
+                                    <g class="eh_eyes eh_eyes_pulse2" transform="translate(455, 245) scale(0.75)" filter="url(#glowEyes)">
+                                        <path d="M 0 6 C 6 1, 15 1, 20 7 C 14 8, 6 7, 0 6 Z" fill="#fffeb3"/>
+                                        <path d="M 26 7 C 31 1, 40 1, 46 6 C 40 7, 32 8, 26 7 Z" fill="#fffeb3"/>
+                                    </g>
+
+                                    <!-- Pair 6: Center-Right high -->
+                                    <g class="eh_eyes eh_eyes_pulse" transform="translate(555, 205) scale(0.95)" filter="url(#glowEyes)">
+                                        <path d="M 0 7 C 7 1, 19 1, 25 8 C 18 9, 7 8, 0 7 Z" fill="#fffdb5"/>
+                                        <path d="M 33 8 C 39 1, 51 1, 58 7 C 51 8, 40 9, 33 8 Z" fill="#fffdb5"/>
+                                    </g>
+
+                                    <!-- Pair 7: Center-Right low (Large Bright Pair) -->
+                                    <g class="eh_eyes eh_eyes_pulse2 eh_eyes_blink1" transform="translate(585, 245) scale(1.35)" filter="url(#glowEyes)">
+                                        <path d="M 0 8 C 8 2, 22 2, 28 9 C 20 10, 8 9, 0 8 Z" fill="#fffbb8"/>
+                                        <path d="M 37 9 C 43 2, 57 2, 65 8 C 57 9, 45 10, 37 9 Z" fill="#fffbb8"/>
+                                    </g>
+
+                                    <!-- Pair 8: Far-Right mid -->
+                                    <g class="eh_eyes eh_eyes_pulse" transform="translate(685, 228) scale(0.85)" filter="url(#glowEyes)">
+                                        <path d="M 0 6 C 6 1, 16 1, 22 7 C 15 8, 6 7, 0 6 Z" fill="#fffeb8"/>
+                                        <path d="M 28 7 C 34 1, 44 1, 50 6 C 44 7, 35 8, 28 7 Z" fill="#fffeb8"/>
+                                    </g>
+
+                                    <!-- Pair 9: Far-Right building edge -->
+                                    <g class="eh_eyes eh_eyes_pulse2" transform="translate(738, 192) scale(0.7)" filter="url(#glowEyes)">
+                                        <path d="M 0 6 C 5 1, 14 1, 19 7 C 13 8, 5 7, 0 6 Z" fill="#fffeb0"/>
+                                        <path d="M 24 7 C 29 1, 38 1, 43 6 C 38 7, 30 8, 24 7 Z" fill="#fffeb0"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="eh_slide_desc">
+                                OH NO! VILLAINS ARE LURKING THE CITY! HELP US RECRUIT A TEAM OF SUPERHEROES TO SAVE THE DAY!
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 2: Browse Open Positions & Refer Friends -->
+                        <div class="eh_slide" data-slide="1">
+                            <div class="eh_scene_viewport">
+                                <svg class="eh_city_svg" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="beamGrad" x1="0%" y1="100%" x2="50%" y2="0%">
+                                            <stop offset="0%" stop-color="#fffb99" stop-opacity="0.8"/>
+                                            <stop offset="40%" stop-color="#ffea75" stop-opacity="0.35"/>
+                                            <stop offset="100%" stop-color="#ffd54f" stop-opacity="0"/>
+                                        </linearGradient>
+                                    </defs>
+
+                                    <!-- Distant Buildings -->
+                                    <g fill="#240b3b">
+                                        <rect x="50" y="80" width="70" height="300"/>
+                                        <rect x="150" y="110" width="60" height="270"/>
+                                        <rect x="750" y="90" width="80" height="290"/>
+                                        <rect x="860" y="70" width="70" height="310"/>
+                                    </g>
+
+                                    <!-- Searchlight Beam shining high into sky -->
+                                    <polygon points="500,320 220,10 780,10" fill="url(#beamGrad)"/>
+                                    <ellipse cx="500" cy="90" rx="280" ry="60" fill="#fffac2" fill-opacity="0.2" filter="blur(8px)"/>
+
+                                    <!-- Foreground Skyline & Rooftop -->
+                                    <g fill="#1a062c">
+                                        <rect x="0" y="200" width="130" height="180"/>
+                                        <rect x="110" y="160" width="100" height="220"/>
+                                        <rect x="780" y="170" width="100" height="210"/>
+                                        <rect x="870" y="190" width="130" height="190"/>
+                                        <!-- Central Hero Vantage Building -->
+                                        <rect x="420" y="240" width="160" height="140"/>
+                                        <polygon points="410,240 590,240 500,210"/>
+                                    </g>
+
+                                    <!-- Superhero Standing on Vantage Rooftop -->
+                                    <g transform="translate(485, 140)">
+                                        <!-- Cape -->
+                                        <path d="M 0 35 C -25 50, -40 75, -50 85 C -30 80, -10 65, 5 50 Z" fill="#9c27b0"/>
+                                        <!-- Body & Mask -->
+                                        <circle cx="15" cy="10" r="9" fill="#ffd54f"/>
+                                        <path d="M 10 19 L 20 19 L 24 55 L 6 55 Z" fill="#673ab7"/>
+                                        <polygon points="8,55 4,80 12,80 15,55" fill="#311b92"/>
+                                        <polygon points="17,55 19,80 27,80 24,55" fill="#311b92"/>
+                                    </g>
+
+                                    <!-- Floating Job Badge In Searchlight -->
+                                    <g transform="translate(500, 100)">
+                                        <rect x="-110" y="-35" width="220" height="70" rx="14" fill="#ffffff" fill-opacity="0.95" filter="drop-shadow(0 4px 15px rgba(0,0,0,0.4))"/>
+                                        <circle cx="-75" cy="0" r="20" fill="#e91e63"/>
+                                        <path d="M -83 -4 L -67 -4 L -67 6 L -83 6 Z" fill="#ffffff"/>
+                                        <text x="-45" y="-5" font-family="'Montserrat', sans-serif" font-size="14" font-weight="900" fill="#2c0c45">JOB OPENINGS</text>
+                                        <text x="-45" y="15" font-family="sans-serif" font-size="11" font-weight="700" fill="#9c27b0">Refer Friends &amp; Connect</text>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="eh_slide_desc">
+                                BROWSE THROUGH OPEN JOB POSITIONS, PROMOTE THEM ON SOCIAL MEDIA, OR REFER FRIENDS.
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 3: Compete Against Colleagues & Level Up -->
+                        <div class="eh_slide" data-slide="2">
+                            <div class="eh_scene_viewport">
+                                <svg class="eh_city_svg" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <radialGradient id="shieldGlow" cx="50%" cy="50%" r="50%">
+                                            <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.8"/>
+                                            <stop offset="50%" stop-color="#4facfe" stop-opacity="0.4"/>
+                                            <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+                                        </radialGradient>
+                                    </defs>
+
+                                    <!-- Skyline Backing -->
+                                    <g fill="#240b3b">
+                                        <rect x="80" y="140" width="80" height="240"/>
+                                        <rect x="200" y="170" width="70" height="210"/>
+                                        <rect x="720" y="160" width="80" height="220"/>
+                                        <rect x="840" y="130" width="70" height="250"/>
+                                    </g>
+
+                                    <!-- Pulsing Shield Glow -->
+                                    <circle cx="500" cy="180" r="160" fill="url(#shieldGlow)"/>
+
+                                    <!-- Superhero Level Up Crest / Shield -->
+                                    <g transform="translate(500, 180)">
+                                        <!-- Outer Shield Outline -->
+                                        <polygon points="0,-95 75,-55 75,35 0,95 -75,35 -75,-55" fill="#18042b" stroke="#00f2fe" stroke-width="8" filter="drop-shadow(0 0 20px #00f2fe)"/>
+                                        <!-- Inner Shield Face -->
+                                        <polygon points="0,-80 62,-46 62,28 0,80 -62,28 -62,-46" fill="linear-gradient(135deg, #00c6ff, #0072ff)"/>
+                                        <!-- Giant Star -->
+                                        <polygon points="0,-45 13,-12 45,-12 18,8 28,40 0,20 -28,40 -18,8 -45,-12 -13,-12" fill="#ffd700" filter="drop-shadow(0 0 8px rgba(255,215,0,0.9))"/>
+                                        <!-- Level Text Banner -->
+                                        <rect x="-85" y="45" width="170" height="34" rx="17" fill="#ff007f" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.5))"/>
+                                        <text x="0" y="68" font-family="'Montserrat', sans-serif" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">LEVEL UP!</text>
+                                    </g>
+
+                                    <!-- Floating Golden XP Stars -->
+                                    <polygon points="320,110 326,125 342,125 329,134 334,149 320,139 306,149 311,134 298,125 314,125" fill="#ffd700" filter="drop-shadow(0 0 6px #ffd700)"/>
+                                    <polygon points="680,100 686,115 702,115 689,124 694,139 680,129 666,139 671,124 658,115 674,115" fill="#ffd700" filter="drop-shadow(0 0 6px #ffd700)"/>
+                                    <polygon points="260,220 264,230 275,230 266,236 269,246 260,240 251,246 254,236 245,230 256,230" fill="#ffd700"/>
+                                    <polygon points="740,230 744,240 755,240 746,246 749,256 740,250 731,256 734,246 725,240 736,240" fill="#ffd700"/>
+                                </svg>
+                            </div>
+                            <div class="eh_slide_desc">
+                                COMPETE AGAINST YOUR COLLEAGUES TO BUILD THE BEST JUSTICE LEAGUE!
+                            </div>
+                        </div>
+
+                        <!-- SLIDE 4: Collect Points & Exchange for Awesome Gifts -->
+                        <div class="eh_slide" data-slide="3">
+                            <div class="eh_scene_viewport">
+                                <svg class="eh_city_svg" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <radialGradient id="chestGlow" cx="50%" cy="50%" r="50%">
+                                            <stop offset="0%" stop-color="#ffd54f" stop-opacity="0.9"/>
+                                            <stop offset="45%" stop-color="#ff9800" stop-opacity="0.45"/>
+                                            <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+                                        </radialGradient>
+                                    </defs>
+
+                                    <!-- Skyline Background -->
+                                    <g fill="#240b3b">
+                                        <rect x="60" y="160" width="80" height="220"/>
+                                        <rect x="170" y="190" width="70" height="190"/>
+                                        <rect x="750" y="170" width="70" height="210"/>
+                                        <rect x="850" y="140" width="80" height="240"/>
+                                    </g>
+
+                                    <!-- Chest Radiant Burst Glow -->
+                                    <circle cx="500" cy="210" r="170" fill="url(#chestGlow)"/>
+
+                                    <!-- Sparkling Confetti / Beams -->
+                                    <g stroke="#ffffff" stroke-width="2" opacity="0.6">
+                                        <line x1="500" y1="200" x2="380" y2="80"/>
+                                        <line x1="500" y1="200" x2="620" y2="80"/>
+                                        <line x1="500" y1="200" x2="320" y2="160"/>
+                                        <line x1="500" y1="200" x2="680" y2="160"/>
+                                    </g>
+
+                                    <!-- Golden Treasure Chest of Rewards -->
+                                    <g transform="translate(500, 220)">
+                                        <!-- Open Lid Raised -->
+                                        <path d="M -90 -30 Q 0 -95 90 -30 L 75 -5 Q 0 -60 -75 -5 Z" fill="#b71c1c" stroke="#ffd700" stroke-width="5"/>
+                                        <!-- Treasure Box Base -->
+                                        <rect x="-85" y="-10" width="170" height="95" rx="10" fill="#795548" stroke="#ffd700" stroke-width="6" filter="drop-shadow(0 10px 25px rgba(0,0,0,0.5))"/>
+                                        <!-- Gold Trims and Lock Plate -->
+                                        <rect x="-85" y="15" width="170" height="12" fill="#ffd700"/>
+                                        <rect x="-85" y="60" width="170" height="12" fill="#ffd700"/>
+                                        <rect x="-20" y="10" width="40" height="40" rx="8" fill="#ffd700" stroke="#ffb300" stroke-width="2"/>
+                                        <circle cx="0" cy="28" r="5" fill="#3e2723"/>
+
+                                        <!-- Spilling Jewels, Gold Coins & Gifts -->
+                                        <circle cx="-40" cy="-12" r="12" fill="#ffd700" stroke="#ff8f00" stroke-width="2"/>
+                                        <circle cx="-15" cy="-20" r="14" fill="#ffd700" stroke="#ff8f00" stroke-width="2"/>
+                                        <circle cx="20" cy="-16" r="13" fill="#ffd700" stroke="#ff8f00" stroke-width="2"/>
+                                        <circle cx="45" cy="-8" r="11" fill="#ffd700" stroke="#ff8f00" stroke-width="2"/>
+                                        <polygon points="0,-40 10,-24 0,-14 -10,-24" fill="#00e5ff" stroke="#ffffff" stroke-width="1.5"/>
+                                        <polygon points="-25,-35 -15,-22 -25,-14 -35,-22" fill="#ff1744" stroke="#ffffff" stroke-width="1.5"/>
+                                        <polygon points="25,-32 35,-20 25,-12 15,-20" fill="#76ff03" stroke="#ffffff" stroke-width="1.5"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="eh_slide_desc">
+                                COLLECT POINTS AND EXCHANGE THEM FOR AWESOME GIFTS IN THE SHOP.
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Slide Indicator Dots -->
+                    <div class="eh_onboarding_dots">
+                        <span class="eh_dot active" onclick="ehGoToSlide(0)"></span>
+                        <span class="eh_dot" onclick="ehGoToSlide(1)"></span>
+                        <span class="eh_dot" onclick="ehGoToSlide(2)"></span>
+                        <span class="eh_dot" onclick="ehGoToSlide(3)"></span>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div class="eh_onboarding_buttons">
+                        <button type="button" class="eh_btn_skip" onclick="ehSkipOnboarding()">Skip</button>
+                        <button type="button" class="eh_btn_next" id="eh_btn_next" onclick="ehNextOnboardingSlide()">Next &gt;</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Onboarding Inline Scripts & Styles -->
+            <style>
+                .eh_tour_btn {
+                    position: absolute;
+                    top: 14px;
+                    right: 20px;
+                    background: transparent;
+                    color: #ffffff;
+                    border: none;
+                    padding: 4px;
+                    font-size: 1.6rem;
+                    line-height: 1;
+                    cursor: pointer;
+                    opacity: 0.9;
+                    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+                    transition: transform 0.4s ease, opacity 0.2s ease;
+                    z-index: 100;
+                }
+                .eh_tour_btn:hover {
+                    opacity: 1;
+                    transform: rotate(180deg);
+                }
+
+                .eh_onboarding_overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background: radial-gradient(circle at 50% 12%, #8e2171 0%, #611559 30%, #340945 65%, #150323 100%);
+                    z-index: 99999;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    overflow: hidden;
+                    transition: opacity 0.45s ease, transform 0.45s ease;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                }
+
+                .eh_onboarding_overlay.eh_fade_out {
+                    opacity: 0;
+                    transform: scale(1.03);
+                    pointer-events: none;
+                }
+
+                /* Radiating Sunburst Rays */
+                .eh_onboarding_rays {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    pointer-events: none;
+                    background-image: repeating-conic-gradient(
+                        from 0deg at 50% 15%,
+                        rgba(255, 255, 255, 0.045) 0deg 8deg,
+                        transparent 8deg 16deg
+                    );
+                    opacity: 0.9;
+                }
+
+                .eh_onboarding_inner {
+                    position: relative;
+                    z-index: 2;
+                    width: 100%;
+                    max-width: 1080px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                    padding: 10px 20px;
+                }
+
+                .eh_onboarding_halo {
+                    width: 70px;
+                    height: 70px;
+                    border: 11px solid rgba(255, 255, 255, 0.42);
+                    border-radius: 50%;
+                    margin: 0 auto 12px auto;
+                    box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+                    animation: haloPulse 3s ease-in-out infinite alternate;
+                }
+
+                @keyframes haloPulse {
+                    0% { transform: scale(0.97); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+                    100% { transform: scale(1.03); box-shadow: 0 0 35px rgba(255, 255, 255, 0.45); }
+                }
+
+                .eh_onboarding_title {
+                    font-family: 'Impact', 'Montserrat', Arial, sans-serif;
+                    font-weight: 900;
+                    font-style: italic;
+                    font-size: clamp(2rem, 4vw, 2.8rem);
+                    color: #ffffff;
+                    letter-spacing: 1.5px;
+                    text-transform: uppercase;
+                    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+                    margin: 0 0 4px 0;
+                }
+
+                .eh_onboarding_subtitle {
+                    font-size: clamp(1.1rem, 2vw, 1.4rem);
+                    font-weight: 500;
+                    color: rgba(255, 255, 255, 0.88);
+                    letter-spacing: 0.5px;
+                    margin-bottom: 8px;
+                    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+                }
+
+                .eh_slides_container {
+                    position: relative;
+                    width: 100%;
+                    max-width: 960px;
+                    min-height: 290px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .eh_slide {
+                    display: none;
+                    width: 100%;
+                    flex-direction: column;
+                    align-items: center;
+                    animation: slideFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .eh_slide.active {
+                    display: flex;
+                }
+
+                @keyframes slideFadeIn {
+                    from { opacity: 0; transform: translateY(8px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                .eh_scene_viewport {
+                    width: 100%;
+                    max-height: 260px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    overflow: visible;
+                }
+
+                .eh_city_svg {
+                    width: 100%;
+                    max-height: 250px;
+                    display: block;
+                    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
+                }
+
+                /* Glowing Villain Eyes Animations */
+                .eh_eyes_pulse {
+                    animation: villainPulse 2.8s ease-in-out infinite alternate;
+                }
+                .eh_eyes_pulse2 {
+                    animation: villainPulse 3.5s ease-in-out infinite alternate 0.7s;
+                }
+
+                @keyframes villainPulse {
+                    0% { opacity: 0.75; filter: drop-shadow(0 0 3px rgba(255, 230, 80, 0.6)); }
+                    100% { opacity: 1; filter: drop-shadow(0 0 9px rgba(255, 240, 120, 0.95)) drop-shadow(0 0 16px rgba(255, 210, 50, 0.6)); }
+                }
+
+                .eh_eyes_blink1 {
+                    animation: villainBlink 5.2s infinite;
+                }
+                .eh_eyes_blink2 {
+                    animation: villainBlink 6.8s infinite 2.1s;
+                }
+
+                @keyframes villainBlink {
+                    0%, 94%, 98%, 100% { transform: scaleY(1); }
+                    96% { transform: scaleY(0.08); }
+                }
+
+                .eh_slide_desc {
+                    color: #ffffff;
+                    font-weight: 800;
+                    font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    max-width: 680px;
+                    margin: 10px auto 16px auto;
+                    line-height: 1.45;
+                    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+                    padding: 0 15px;
+                }
+
+                /* Carousel Dots */
+                .eh_onboarding_dots {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 22px;
+                }
+
+                .eh_dot {
+                    width: 7px;
+                    height: 7px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.4);
+                    cursor: pointer;
+                    transition: all 0.25s ease;
+                }
+
+                .eh_dot.active {
+                    width: 20px;
+                    height: 7px;
+                    border-radius: 4px;
+                    background: #ffffff;
+                    box-shadow: 0 0 8px rgba(255, 255, 255, 0.75);
+                }
+
+                /* Control Buttons */
+                .eh_onboarding_buttons {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 16px;
+                }
+
+                .eh_btn_skip {
+                    background: #252438;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 24px;
+                    font-size: 0.95rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+                    transition: all 0.2s ease;
+                }
+                .eh_btn_skip:hover {
+                    background: #383754;
+                    transform: translateY(-1px);
+                }
+
+                .eh_btn_next {
+                    background: linear-gradient(135deg, #a43884 0%, #812569 100%);
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 26px;
+                    font-size: 0.95rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    box-shadow: 0 4px 14px rgba(164, 56, 132, 0.45);
+                    transition: all 0.2s ease;
+                }
+                .eh_btn_next:hover {
+                    background: linear-gradient(135deg, #b94297 0%, #942e7b 100%);
+                    box-shadow: 0 6px 18px rgba(164, 56, 132, 0.6);
+                    transform: translateY(-1px);
+                }
+            </style>
+
+            <script type="text/javascript">
+                var ehCurrentSlide = 0;
+                var ehTotalSlides = 4;
+
+                function ehGoToSlide(n) {
+                    if (n &lt; 0 || n &gt;= ehTotalSlides) return;
+                    ehCurrentSlide = n;
+                    var slides = document.querySelectorAll('.eh_slide');
+                    var dots = document.querySelectorAll('.eh_dot');
+                    for (var i = 0; i &lt; slides.length; i++) {
+                        if (i === ehCurrentSlide) {
+                            slides[i].classList.add('active');
+                            if (dots[i]) dots[i].classList.add('active');
+                        } else {
+                            slides[i].classList.remove('active');
+                            if (dots[i]) dots[i].classList.remove('active');
+                        }
+                    }
+                    var nextBtn = document.getElementById('eh_btn_next');
+                    if (nextBtn) {
+                        if (ehCurrentSlide === ehTotalSlides - 1) {
+                            nextBtn.textContent = 'Start >';
+                        } else {
+                            nextBtn.textContent = 'Next >';
+                        }
+                    }
+                }
+
+                function ehNextOnboardingSlide() {
+                    if (ehCurrentSlide &lt; ehTotalSlides - 1) {
+                        ehGoToSlide(ehCurrentSlide + 1);
+                    } else {
+                        ehSkipOnboarding();
+                    }
+                }
+
+                function ehSkipOnboarding() {
+                    try {
+                        fetch('/eh/referral/onboarding_skip', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {} })
+                        }).catch(function() {
+                            fetch('/eh/referral/onboarding_skip_http', { method: 'POST' });
+                        });
+                    } catch(e) {
+                        // ignore network error
+                    }
+                    var modal = document.getElementById('eh_referral_onboarding_modal');
+                    if (modal) {
+                        modal.classList.add('eh_fade_out');
+                        setTimeout(function() {
+                            modal.style.display = 'none';
+                            modal.classList.remove('eh_fade_out');
+                            var chooser = document.getElementById('eh_referral_friend_chooser');
+                            if (chooser) chooser.style.display = 'flex';
+                        }, 450);
+                    }
+                }
+
+                function ehRestartOnboarding() {
+                    var modal = document.getElementById('eh_referral_onboarding_modal');
+                    if (modal) {
+                        modal.style.display = 'flex';
+                        modal.classList.remove('eh_fade_out');
+                        ehGoToSlide(0);
+                    }
+                }
+
+                // Keyboard arrow navigation
+                window.addEventListener('keydown', function(e) {
+                    var modal = document.getElementById('eh_referral_onboarding_modal');
+                    if (!modal || modal.style.display === 'none') return;
+                    if (e.key === 'ArrowRight') {
+                        ehNextOnboardingSlide();
+                    } else if (e.key === 'ArrowLeft') {
+                        if (ehCurrentSlide &gt; 0) ehGoToSlide(ehCurrentSlide - 1);
+                    } else if (e.key === 'Escape') {
+                        ehSkipOnboarding();
+                    }
+                });
+            </script>
+
+            <!-- Email a Friend Modal -->
+            <div class="modal fade" id="emailFriendModal" tabindex="-1" aria-labelledby="emailFriendModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content text-dark">
+                        <form action="/eh/referral/send_mail" method="POST">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="emailFriendModalLabel">Send Job Opportunity by Mail</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-start">
+                                <div class="mb-3">
+                                    <label for="email_to" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email_to" name="email_to" required="1"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label">Subject</label>
+                                    <input type="text" class="form-control" id="subject" name="subject" value="Job for you" required="1"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="body" class="form-label">Body</label>
+                                    <textarea class="form-control" id="body" name="body" rows="4" required="1">Hello,
+
+There are some amazing job opportunities in my company! Have a look, they can be interesting for you:</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Send Mail</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

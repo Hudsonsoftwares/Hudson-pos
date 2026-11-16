@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_appraisal_ask_feedback_view_form" model="ir.ui.view">
+        <field name="name">hr.appraisal.ask.feedback.form</field>
+        <field name="model">hr.appraisal.ask.feedback</field>
+        <field name="arch" type="xml">
+            <form string="Ask Feedback">
+                <group>
+                    <field name="appraisal_id" invisible="1"/>
+                    <field name="employee_id" invisible="1"/>
+                    <field name="employee_ids" widget="many2many_tags_avatar" placeholder="Colleagues to ask for feedback..."/>
+                    <field name="deadline"/>
+                    <field name="subject"/>
+                    <field name="survey_template_id" options="{'no_create': True, 'no_open': True}"/>
+                </group>
+                <field name="body" nolabel="1" placeholder="Add comments..."/>
+                <footer>
+                    <button name="action_send" string="Send" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_appraisal_goal_assign_view_form" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.assign.form</field>
+        <field name="model">hr.appraisal.goal.assign</field>
+        <field name="arch" type="xml">
+            <form string="Select Employees">
+                <group>
+                    <field name="template_ids" widget="many2many_tags" readonly="1"/>
+                </group>
+                <field name="employee_ids" nolabel="1">
+                    <list>
+                        <field name="name"/>
+                        <field name="job_title"/>
+                        <field name="department_id"/>
+                        <field name="parent_id" widget="many2one_avatar_employee"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_add_goals" string="Add Goals to Employees" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

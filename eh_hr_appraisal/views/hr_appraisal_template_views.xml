@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_appraisal_template_form" model="ir.ui.view">
+        <field name="name">hr.appraisal.template.form</field>
+        <field name="model">hr.appraisal.template</field>
+        <field name="arch" type="xml">
+            <form string="Appraisal Template">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Field Technicians"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="department_ids" widget="many2many_tags" placeholder="All departments"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" placeholder="All companies"/>
+                        </group>
+                    </group>
+                    <div class="row g-3 mt-2 o_hr_appraisal_feedback">
+                        <div class="col-lg-6">
+                            <div class="o_hr_appraisal_feedback_card h-100">
+                                <h4 class="mb-3">Employee's Feedback</h4>
+                                <field name="employee_feedback_template" nolabel="1" widget="html" class="o_hr_appraisal_feedback_body"
+                                       placeholder="Questions the employee answers in their self-assessment..."/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="o_hr_appraisal_feedback_card o_hr_appraisal_feedback_manager h-100">
+                                <h4 class="mb-3">Manager's Feedback</h4>
+                                <field name="manager_feedback_template" nolabel="1" widget="html" class="o_hr_appraisal_feedback_body"
+                                       placeholder="Questions the appraisers answer..."/>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_appraisal_template_tree" model="ir.ui.view">
+        <field name="name">hr.appraisal.template.list</field>
+        <field name="model">hr.appraisal.template</field>
+        <field name="arch" type="xml">
+            <list string="Appraisal Templates">
+                <field name="name"/>
+                <field name="department_ids" widget="many2many_tags"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_appraisal_template" model="ir.actions.act_window">
+        <field name="name">Appraisal Templates</field>
+        <field name="res_model">hr.appraisal.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create an appraisal template</p>
+            <p>Templates pre-fill the Employee's and Manager's Feedback of new appraisals, by department if needed.</p>
+        </field>
+    </record>
+</odoo>

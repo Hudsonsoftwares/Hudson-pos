@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_calendar_event_form_inherit_appraisal" model="ir.ui.view">
+        <field name="name">calendar.event.form.inherit.appraisal</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Invitations Tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Invitations" name="invitations">
+                    <button name="action_sendmail" type="object" string="Send Invitations" icon="mail" class="btn btn-link"/>
+                    <field name="attendee_ids" widget="one2many" mode="list">
+                        <list string="Invitation details" editable="top" create="false" delete="false">
+                            <field name="partner_id" readonly="1"/>
+                            <field name="state" readonly="1"/>
+                            <field name="email" widget="email" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

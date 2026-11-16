@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="eh_hr_core.HrStat">
+        <div class="o_hrp_stat" t-att-class="'o_hrp_stat--' + this.props.tone">
+            <div class="o_hrp_stat__label" t-out="this.props.label"/>
+            <div class="o_hrp_stat__value">
+                <span t-out="this.props.value"/>
+                <span class="o_hrp_stat__unit" t-if="this.props.unit" t-out="this.props.unit"/>
+            </div>
+            <div class="o_hrp_stat__delta" t-att-class="deltaClass" t-if="this.props.delta !== undefined">
+                <span t-out="deltaSign"/> <span t-out="Math.abs(this.props.delta)"/>
+            </div>
+        </div>
+    </t>
+</templates>

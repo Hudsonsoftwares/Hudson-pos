@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_eh_hr_referral_onboarding_form" model="ir.ui.view">
+        <field name="name">eh.hr.referral.onboarding.form</field>
+        <field name="model">eh.hr.referral.onboarding</field>
+        <field name="arch" type="xml">
+            <form string="Onboarding">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" widget="text"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company" placeholder="Visible to all" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="image" widget="image" nolabel="1" class="float-end" options="{'size': [300, 150]}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eh_hr_referral_onboarding_tree" model="ir.ui.view">
+        <field name="name">eh.hr.referral.onboarding.tree</field>
+        <field name="model">eh.hr.referral.onboarding</field>
+        <field name="arch" type="xml">
+            <list string="Onboarding">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="image" widget="image" options="{'size': [150, 50]}"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_onboarding" model="ir.actions.act_window">
+        <field name="name">Onboarding</field>
+        <field name="res_model">eh.hr.referral.onboarding</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

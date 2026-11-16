@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- Form view for Visitor Invitations (Pre-registration) -->
+        <record id="view_eh_hr_visitor_invitation_form" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.invitation.form</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <form string="Visitor Invitation">
+                    <header>
+                        <button name="action_send_invitation" string="Send Invitation" type="object" class="oe_highlight" invisible="state not in ('draft', 'cancelled')"/>
+                        <button name="action_resend_invitation" string="Resend Invitation" type="object" invisible="state != 'invitation_sent'"/>
+                        <button name="%(action_eh_hr_visitor_qr_scan_wizard)d" string="Simulate QR Scan" type="action" class="oe_highlight" invisible="state != 'confirmed'"/>
+                        <button name="action_sign_in" string="Check In" type="object" class="btn-success oe_highlight" invisible="state != 'arrived'"/>
+                        <button name="action_sign_out" string="Check Out" type="object" class="oe_highlight" invisible="state != 'signed_in'"/>
+                        <button name="action_cancel_invitation" string="Cancel Invitation" type="object" invisible="state in ('signed_in', 'signed_out', 'cancelled')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,invitation_sent,confirmed,arrived,signed_in,signed_out"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Visitor full name"/>
+                            </h1>
+                            <h2>
+                                <field name="visit_number" readonly="1"/>
+                            </h2>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="visitor_company"/>
+                                <field name="visitor_email" required="1"/>
+                                <field name="visitor_phone" required="1"/>
+                                <field name="visitor_type"/>
+                                <field name="purpose_id"/>
+                                <field name="host_employee_id"/>
+                                <field name="host_department_id"/>
+                            </group>
+                            <group>
+                                <field name="meeting_title"/>
+                                <field name="meeting_room_id"/>
+                                <field name="expected_arrival"/>
+                                <field name="expected_departure"/>
+                                <field name="parking_required"/>
+
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Instructions &amp; Notes">
+                                <group>
+                                    <field name="special_instructions"/>
+                                    <field name="notes"/>
+                                </group>
+                            </page>
+                            <page string="QR &amp; Arrival" invisible="state in ('draft', 'invitation_sent')">
+                                <group>
+                                    <field name="qr_code" widget="image" readonly="1"/>
+                                    <field name="arrived_on"/>
+                                    <field name="signed_out_on"/>
+                                    <field name="duration_minutes"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Form view for Expected Visitors (Reception view) -->
+        <record id="view_eh_hr_visitor_reception_form" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.reception.form</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <form string="Expected Visitor" create="false" edit="false">
+                    <header>
+                        <button name="%(action_eh_hr_visitor_qr_scan_wizard)d" string="Simulate QR Scan" type="action" class="oe_highlight" invisible="state != 'confirmed'"/>
+                        <button name="action_sign_in" string="Check In" type="object" class="btn-success oe_highlight" invisible="state != 'arrived'"/>
+                        <button name="action_sign_out" string="Check Out" type="object" class="oe_highlight" invisible="state != 'signed_in'"/>
+                        <button name="action_cancel_invitation" string="Cancel Invitation" type="object" invisible="state in ('signed_in', 'signed_out', 'cancelled')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,invitation_sent,confirmed,arrived,signed_in,signed_out"/>
+                    </header>
+                    <sheet>
+                        <field name="photo" widget="image" class="oe_avatar" readonly="1"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                            <h2>
+                                <field name="visit_number" readonly="1"/>
+                            </h2>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="visitor_company" readonly="1"/>
+                                <field name="visitor_email" readonly="1"/>
+                                <field name="visitor_phone" readonly="1"/>
+                                <field name="designation" readonly="1"/>
+                                <field name="visitor_address" readonly="1"/>
+                                <field name="visitor_city" readonly="1"/>
+                                <field name="visitor_country" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="host_employee_id" readonly="1"/>
+                                <field name="host_department_id" readonly="1"/>
+                                <field name="purpose_id" readonly="1"/>
+                                <field name="meeting_title" readonly="1"/>
+                                <field name="meeting_room_id" readonly="1"/>
+                                <field name="expected_arrival" readonly="1"/>
+                                <field name="expected_departure" readonly="1"/>
+                                <field name="visitor_type" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Registration Details">
+                                <group>
+                                    <group string="Identity">
+                                        <field name="identity_type" readonly="1"/>
+                                        <field name="identity_number" readonly="1"/>
+                                        <field name="identity_proof" widget="binary" readonly="1"/>
+                                    </group>
+                                    <group string="Emergency Contact">
+                                        <field name="emergency_contact_name" readonly="1"/>
+                                        <field name="emergency_contact_number" readonly="1"/>
+                                    </group>
+                                </group>
+                                <group string="Legal">
+                                    <field name="accept_privacy_policy" readonly="1"/>
+                                    <field name="digital_signature" widget="signature" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Instructions &amp; Vehicle">
+                                <group>
+                                    <field name="parking_required" readonly="1"/>
+
+                                    <field name="special_instructions" readonly="1"/>
+                                    <field name="notes" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="QR &amp; Arrival">
+                                <group>
+                                    <field name="qr_code" widget="image" readonly="1"/>
+                                    <field name="arrived_on" readonly="1"/>
+                                    <field name="signed_out_on" readonly="1"/>
+                                    <field name="duration_minutes" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Visitor Invitations Action -->
+        <record id="action_eh_hr_visitor_invitations" model="ir.actions.act_window">
+            <field name="name">Visitor Invitations</field>
+            <field name="res_model">eh.hr.visitor</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="domain">[('state', 'in', ['draft', 'invitation_sent', 'cancelled'])]</field>
+            <field name="context">{'default_state': 'draft', 'default_registration_type': 'pre-registered'}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('eh_hr_visitor.view_eh_hr_visitor_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_eh_hr_visitor_invitation_form')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create a new visitor invitation</p>
+                <p>Send an invitation to a visitor. They will receive a link to pre-register.</p>
+            </field>
+        </record>
+
+        <!-- Expected Visitors List View (standalone, with QR Scan control button) -->
+        <record id="view_eh_hr_visitor_expected_list" model="ir.ui.view">
+            <field name="name">eh.hr.visitor.expected.list</field>
+            <field name="model">eh.hr.visitor</field>
+            <field name="arch" type="xml">
+                <list string="Expected Visitors" sample="1"
+                      decoration-success="state == 'arrived'"
+                      decoration-info="state == 'confirmed'">
+                    <header>
+                        <button name="%(eh_hr_visitor.action_eh_hr_visitor_qr_scan_wizard)d" 
+                                string="Simulate QR Scan" 
+                                type="action" 
+                                class="btn-primary" 
+                                display="always"/>
+                    </header>
+                    <field name="visit_number"/>
+                    <field name="name"/>
+                    <field name="visitor_company"/>
+                    <field name="host_employee_id"/>
+                    <field name="purpose_id"/>
+                    <field name="expected_arrival"/>
+                    <field name="state"/>
+                    <field name="registration_type"/>
+                </list>
+            </field>
+        </record>
+
+
+        <!-- Expected Visitors Action -->
+        <record id="action_eh_hr_visitor_expected" model="ir.actions.act_window">
+            <field name="name">Expected Visitors</field>
+            <field name="res_model">eh.hr.visitor</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="domain">[('state', 'in', ['confirmed', 'arrived']), ('registration_type', '=', 'pre-registered')]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_eh_hr_visitor_expected_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_eh_hr_visitor_reception_form')})]"/>
+        </record>
+
+        <!-- Pre-Registered Visitors Action -->
+        <record id="action_eh_hr_visitor_preregistered" model="ir.actions.act_window">
+            <field name="name">Pre-Registered Visitors</field>
+            <field name="res_model">eh.hr.visitor</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="domain">[('registration_type', '=', 'pre-registered')]</field>
+            <field name="context">{'default_registration_type': 'pre-registered'}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('eh_hr_visitor.view_eh_hr_visitor_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_eh_hr_visitor_reception_form')})]"/>
+        </record>
+
+    </data>
+</odoo>

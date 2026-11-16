@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="0">
+    <data>
+
+        <!-- Per-company isolation for the audit log (global: AND-applied to
+             every user). Closes the leak where any officer/auditor could read
+             every company's audit trail. System-wide rows (company_id unset)
+             stay visible to all, since they belong to no single company. -->
+        <record id="rule_eh_hr_audit_log_company" model="ir.access">
+            <field name="name">EH Audit Log: per company</field>
+            <field name="model_id" ref="model_eh_hr_audit_log"/>
+            <field name="domain">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="operation">crud</field>
+        </record>
+
+    </data>
+</odoo>

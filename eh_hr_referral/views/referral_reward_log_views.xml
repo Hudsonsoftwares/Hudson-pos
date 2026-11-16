@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_eh_hr_referral_reward_log_graph" model="ir.ui.view">
+        <field name="name">eh.hr.referral.reward.log.graph</field>
+        <field name="model">eh.hr.referral.reward.log</field>
+        <field name="arch" type="xml">
+            <graph string="Reward Analysis" type="bar" stacked="True">
+                <field name="employee_id"/>
+                <field name="reward_id"/>
+                <field name="points" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_eh_hr_referral_reward_log_analysis" model="ir.actions.act_window">
+        <field name="name">Reward Analysis</field>
+        <field name="res_model">eh.hr.referral.reward.log</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="view_id" ref="view_eh_hr_referral_reward_log_graph"/>
+    </record>
+</odoo>

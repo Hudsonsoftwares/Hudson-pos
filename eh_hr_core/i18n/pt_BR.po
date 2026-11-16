@@ -1,0 +1,458 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_core
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Portuguese (Brazil)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : ((n != 0 && n % 1000000 == 0) ? 1 : 2);\n"
+
+#. module: eh_hr_core
+#: model:res.groups,comment:eh_hr_core.group_hr_kiosk_device
+msgid ""
+"\n"
+"                Granted to dedicated kiosk service users only.  Members cannot\n"
+"                see the Odoo UI; they may only POST attendance events via the\n"
+"                kiosk REST endpoint.  Never grant to humans.\n"
+"            "
+msgstr ""
+"\n"
+"Concedido apenas a usuários de serviço de quiosque dedicados.  Os membros não podem\n"
+"                ver a interface do Odoo; eles podem apenas enviar (POST) eventos de presença por meio do\n"
+"                endpoint REST do quiosque.  Nunca conceda a pessoas."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_feature_flag__rollout_percent
+msgid "0-100. Deterministic on uid."
+msgstr "0-100. Deterministico com base em uid."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__action
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Action"
+msgstr "Ação"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__active
+msgid "Active"
+msgstr "Ativo"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__actor_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Actor"
+msgstr "Ator"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_approvals
+msgid "Approvals"
+msgstr "Aprovações"
+
+#. module: eh_hr_core
+#: model:ir.actions.act_window,name:eh_hr_core.action_hr_audit_log
+#: model:ir.ui.menu,name:eh_hr_core.menu_hr_platform_audit
+msgid "Audit Log"
+msgstr "Registro de auditoria"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__hr_audit_retention_days
+msgid "Audit log retention (days)"
+msgstr "Retenção do registro de auditoria (dias)"
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__bool
+msgid "Boolean"
+msgstr "Boleano"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__code
+msgid "Code"
+msgstr "Código"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__company_ids
+msgid "Companies (empty = all)"
+msgstr "Empresas (vazio = todas)"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__company_id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_company_aware_mixin__company_id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_res_config_settings
+msgid "Config Settings"
+msgstr "Configurações"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_config
+msgid "Configuration"
+msgstr "Configuração"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__correlation_id
+msgid "Correlation"
+msgstr "Correlação"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_platform_mixin__correlation_id
+msgid "Correlation ID"
+msgstr "ID de correlação"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__create_uid
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__create_date
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: eh_hr_core
+#. odoo-python
+#: code:addons/eh_hr_core/models/company_aware_mixin.py:0
+msgid ""
+"Cross-company write rejected. User is not allowed to write records into "
+"company id=%s without an audited override."
+msgstr ""
+"Gravação entre empresas rejeitada. O usuário não tem permissão para gravar "
+"registros na empresa id=%s sem uma substituição auditada."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__description
+msgid "Description"
+msgstr "Descrição"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audited_mixin__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_company_aware_mixin__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_platform_mixin__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__display_name
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_settings_entry__key
+msgid "Dotted key, e.g. attendance.kiosk.idle_timeout_s"
+msgstr "Chave pontilhada, ex. attendance.kiosk.idle_timeout_s"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_audited_mixin
+msgid "EH HR Platform - audited record mixin"
+msgstr "EH HR Platform - mixin de registro auditado"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_platform_mixin
+msgid "EH HR Platform - base mixin"
+msgstr "EH HR Platform - mixin base"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_feature_flag
+msgid "EH HR Platform - feature flag"
+msgstr "EH HR Platform - sinalizador de recurso"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_settings_entry
+msgid "EH HR Platform - settings entry"
+msgstr "EH HR Platform - entrada de configurações"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_company_aware_mixin
+msgid "EH HR Platform - strict company-scope mixin"
+msgstr "EH HR Platform - mixin de escopo estrito da empresa"
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_audit_log
+msgid "EH HR Platform audit log"
+msgstr "Log de auditoria EH HR Platform"
+
+#. module: eh_hr_core
+#: model:ir.module.category,description:eh_hr_core.module_category_hr_platform
+msgid "EH HR Platform groups."
+msgstr "Grupos EH HR Platform."
+
+#. module: eh_hr_core
+#: model:ir.model,name:eh_hr_core.model_eh_hr_rate_limit
+msgid "EH HR fixed-window rate-limit counter"
+msgstr "Contador de limite de taxa de janela fixa EH HR"
+
+#. module: eh_hr_core
+#: model:ir.actions.server,name:eh_hr_core.cron_eh_hr_rate_limit_gc_ir_actions_server
+msgid "EH HR: vacuum rate-limit counters"
+msgstr "EH HR: limpar contadores de limite de taxa"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_requests
+msgid "Employee Requests"
+msgstr "Pedidos dos Funcionários"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__enabled
+msgid "Enabled"
+msgstr "Habilitado"
+
+#. module: eh_hr_core
+#: model:ir.model.constraint,message:eh_hr_core.constraint_eh_hr_feature_flag_uniq_code
+msgid "Flag code must be unique."
+msgstr "O código da bandeira deve ser exclusivo."
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__float
+msgid "Float"
+msgstr "Fracionário"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__group_ids
+msgid "Groups (empty = all)"
+msgstr "Grupos (vazio = todos)"
+
+#. module: eh_hr_core
+#: model:ir.module.category,name:eh_hr_core.module_category_hr_platform
+#: model:ir.ui.menu,name:eh_hr_core.menu_hr_platform_root
+msgid "HR Platform"
+msgstr "Plataforma de RH"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_admin
+msgid "HR Platform: Admin (All Companies, audited)"
+msgstr "Plataforma de RH: Administrador (Todas as Empresas, auditado)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_auditor
+msgid "HR Platform: Auditor (Read-only)"
+msgstr "Plataforma de RH: Auditor (Somente leitura)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_employee_self
+msgid "HR Platform: Employee (Self)"
+msgstr "Plataforma de RH: Funcionário (Próprio)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_kiosk_device
+msgid "HR Platform: Kiosk Device (no UI)"
+msgstr "Plataforma de RH: Dispositivo de Quiosque (sem UI)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_manager
+msgid "HR Platform: Manager (Team)"
+msgstr "Plataforma de RH: Gerente (Equipe)"
+
+#. module: eh_hr_core
+#: model:res.groups,name:eh_hr_core.group_hr_officer
+msgid "HR Platform: Officer (Company)"
+msgstr "Plataforma de RH: Responsável (Empresa)"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__hits
+msgid "Hits"
+msgstr "Acessos"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audited_mixin__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_company_aware_mixin__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_platform_mixin__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__id
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__id
+msgid "ID"
+msgstr "Id."
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__int
+msgid "Integer"
+msgstr "Inteiro"
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__json
+msgid "JSON"
+msgstr ""
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__key
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__key
+msgid "Key"
+msgstr "Chave"
+
+#. module: eh_hr_core
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Last 24h"
+msgstr "Últimas 24h"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__write_uid
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__write_uid
+msgid "Last Updated by"
+msgstr "Última atualização por"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__write_date
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__write_date
+msgid "Last Updated on"
+msgstr "Última atualização em"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_rate_limit__scope
+msgid "Logical bucket, e.g. \"mobile.pair\"."
+msgstr "Bucket lógico, ex. \"mobile.pair\"."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__model
+#: model_terms:ir.ui.view,arch_db:eh_hr_core.view_hr_audit_log_search
+msgid "Model"
+msgstr "Modelo"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__occurred_at
+msgid "Occurred At"
+msgstr "Ocorrido Em"
+
+#. module: eh_hr_core
+#: model:ir.model.constraint,message:eh_hr_core.constraint_eh_hr_rate_limit_unique_window
+msgid "One rate-limit counter row per (scope, key, window)."
+msgstr "Uma linha de contador de limite de taxa por (escopo, chave, janela)."
+
+#. module: eh_hr_core
+#: model:ir.model.constraint,message:eh_hr_core.constraint_eh_hr_settings_entry_uniq_active_per_company_key
+msgid "Only one active settings entry per (company, key) is allowed."
+msgstr ""
+"Apenas uma entrada de configurações ativa por (company, key) é permitida."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_company_aware_mixin__company_id
+msgid "Owning company. Cross-company access is forbidden by default."
+msgstr "Empresa proprietária. O acesso entre empresas é proibido por padrão."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__payload
+msgid "Payload"
+msgstr "Carga útil"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_rate_limit__key
+msgid "Per-caller discriminator, e.g. client IP or token."
+msgstr "Discriminador por chamador, por ex. IP do cliente ou token."
+
+#. module: eh_hr_core
+#: model:ir.actions.act_window,name:eh_hr_core.action_hr_settings_entry
+#: model:ir.ui.menu,name:eh_hr_core.menu_hr_platform_settings
+msgid "Platform Settings"
+msgstr "Configurações da plataforma"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__prev_hash
+msgid "Prev Hash"
+msgstr "Hash anterior"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_settings_entry__value
+msgid "Raw stored value; use :py:meth:`typed` to read."
+msgstr "Valor armazenado bruto; use :py:meth:`typed` para ler."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__record_id
+msgid "Record"
+msgstr "Registro"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_records
+msgid "Records and Compliance"
+msgstr "Registros e conformidade"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_res_config_settings__hr_pii_redact_in_exports
+msgid "Redact PII in exports"
+msgstr "Ocultar PII nas exportações"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__rollout_percent
+msgid "Rollout Percent"
+msgstr "Percentual de implantação"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_audit_log__row_hash
+msgid "Row Hash"
+msgstr "Hash da linha"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__scope
+msgid "Scope"
+msgstr "Escopo"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_platform_mixin__correlation_id
+msgid ""
+"Stable identifier used for tracing across services, audit log, webhooks, and"
+" outbound events. Auto-generated on create."
+msgstr ""
+"Identificador estável usado para rastreamento entre serviços, log de "
+"auditoria, webhooks e eventos de saída. Gerado automaticamente na criação."
+
+#. module: eh_hr_core
+#: model:ir.model.fields.selection,name:eh_hr_core.selection__eh_hr_settings_entry__value_type__str
+msgid "String"
+msgstr "Cadeia de caracteres"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__superseded_by
+msgid "Superseded By"
+msgstr "Substituído por"
+
+#. module: eh_hr_core
+#: model:ir.ui.menu,name:eh_hr_core.menu_sec_talent
+msgid "Talent"
+msgstr "Talento"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_rate_limit__window_start
+msgid "Unix epoch second the window starts at."
+msgstr "Segundo Unix epoch em que a janela começa."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__valid_from
+msgid "Valid From"
+msgstr "Válido a partir de"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_feature_flag__valid_to
+msgid "Valid To"
+msgstr "Válido até"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__value
+msgid "Value"
+msgstr "Valor"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_settings_entry__value_type
+msgid "Value Type"
+msgstr "Tipo de valor"
+
+#. module: eh_hr_core
+#: model:ir.model.fields,help:eh_hr_core.field_eh_hr_settings_entry__superseded_by
+msgid "Versioning pointer."
+msgstr "Ponteiro de versionamento."
+
+#. module: eh_hr_core
+#: model:ir.model.fields,field_description:eh_hr_core.field_eh_hr_rate_limit__window_start
+msgid "Window Start"
+msgstr "Início da janela"

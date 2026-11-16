@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="module_category_hr_platform" model="ir.module.category">
+            <field name="name">HR Platform</field>
+            <field name="description">EH HR Platform groups.</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="group_hr_employee_self" model="res.groups">
+            <field name="name">HR Platform: Employee (Self)</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_hr_manager" model="res.groups">
+            <field name="name">HR Platform: Manager (Team)</field>
+            <field name="implied_ids" eval="[(4, ref('group_hr_employee_self'))]"/>
+        </record>
+
+        <record id="group_hr_officer" model="res.groups">
+            <field name="name">HR Platform: Officer (Company)</field>
+            <field name="implied_ids" eval="[(4, ref('group_hr_manager'))]"/>
+        </record>
+
+        <record id="group_hr_admin" model="res.groups">
+            <field name="name">HR Platform: Admin (All Companies, audited)</field>
+            <field name="implied_ids" eval="[(4, ref('group_hr_officer'))]"/>
+            <!-- The base administrator is granted this group on install by the
+                 module post_init_hook (see __init__.py), not here: Odoo 19
+                 renamed both res.users.groups_id -> group_ids and the inverse
+                 res.groups.users -> user_ids, so a static field name in XML is
+                 not portable. The hook uses the version-agnostic compat helper. -->
+        </record>
+
+        <record id="group_hr_auditor" model="res.groups">
+            <field name="name">HR Platform: Auditor (Read-only)</field>
+        </record>
+
+        <record id="group_hr_kiosk_device" model="res.groups">
+            <field name="name">HR Platform: Kiosk Device (no UI)</field>
+            <field name="comment">
+                Granted to dedicated kiosk service users only.  Members cannot
+                see the Odoo UI; they may only POST attendance events via the
+                kiosk REST endpoint.  Never grant to humans.
+            </field>
+        </record>
+
+    </data>
+</odoo>

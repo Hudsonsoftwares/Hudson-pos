@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- ============================ Kiosk Site ============================ -->
+
+        <record id="view_eh_hr_kiosk_site_list" model="ir.ui.view">
+            <field name="name">eh.hr.kiosk.site.list</field>
+            <field name="model">eh.hr.kiosk.site</field>
+            <field name="arch" type="xml">
+                <list string="Kiosk sites" sample="1">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="device_count"/>
+                    <field name="geofence_enabled"/>
+                    <field name="active"/>
+                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_kiosk_site_form" model="ir.ui.view">
+            <field name="name">eh.hr.kiosk.site.form</field>
+            <field name="model">eh.hr.kiosk.site</field>
+            <field name="arch" type="xml">
+                <form string="Kiosk site">
+                    <header>
+                        <button name="action_issue_pairing_pin" type="object" string="Issue pairing PIN" class="oe_highlight" groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_devices" type="object" class="oe_stat_button" icon="smartphone">
+                                <field name="device_count" widget="statinfo" string="Devices"/>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Head office, Warehouse 2, Site B..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="code" placeholder="hq-melbourne"/>
+                                <field name="active" invisible="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="timezone"/>
+                            </group>
+                            <group>
+                                <field name="geofence_enabled"/>
+                                <field name="geofence_lat" invisible="not geofence_enabled" required="geofence_enabled"/>
+                                <field name="geofence_lng" invisible="not geofence_enabled" required="geofence_enabled"/>
+                                <field name="geofence_radius_m" invisible="not geofence_enabled" required="geofence_enabled"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Address">
+                                <field name="address" placeholder="Street, suburb, postcode, country..."/>
+                            </page>
+                            <page string="Notes">
+                                <field name="notes"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_kiosk_site" model="ir.actions.act_window">
+            <field name="name">Kiosk sites</field>
+            <field name="res_model">eh.hr.kiosk.site</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No kiosk sites yet.</p>
+                <p>A site represents a physical clock-in location: a head office, a shopfloor, a warehouse. Devices register against a site.</p>
+            </field>
+        </record>
+
+        <!-- ============================ Kiosk Device ============================ -->
+
+        <record id="view_eh_hr_kiosk_device_list" model="ir.ui.view">
+            <field name="name">eh.hr.kiosk.terminal.list</field>
+            <field name="model">eh.hr.kiosk.terminal</field>
+            <field name="arch" type="xml">
+                <list string="Kiosk devices" sample="1" decoration-muted="not active">
+                    <field name="name"/>
+                    <field name="site_id"/>
+                    <field name="last_seen"/>
+                    <field name="last_ip" optional="hide"/>
+                    <field name="active"/>
+                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_kiosk_device_form" model="ir.ui.view">
+            <field name="name">eh.hr.kiosk.terminal.form</field>
+            <field name="model">eh.hr.kiosk.terminal</field>
+            <field name="arch" type="xml">
+                <form string="Kiosk device">
+                    <header>
+                        <button name="action_rotate_token" type="object" string="Rotate token" groups="eh_hr_attendance_base.group_eh_hr_admin" confirm="Rotating the token immediately invalidates the kiosk's current credentials. The device must be re-paired. Continue?"/>
+                        <button name="action_revoke" type="object" string="Revoke" groups="eh_hr_attendance_base.group_eh_hr_admin" invisible="not active" confirm="Revoking the device prevents it from making any further kiosk requests. Continue?"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Revoked" bg_color="bg-danger" invisible="active"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Front desk iPad, Warehouse tablet..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="site_id"/>
+                                <field name="active" invisible="1"/>
+                                <field name="device_token" groups="eh_hr_attendance_base.group_eh_hr_admin"/>
+                            </group>
+                            <group>
+                                <field name="registered_on"/>
+                                <field name="last_seen"/>
+                                <field name="last_ip"/>
+                                <field name="user_agent"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_kiosk_device" model="ir.actions.act_window">
+            <field name="name">Kiosk devices</field>
+            <field name="res_model">eh.hr.kiosk.terminal</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No kiosk devices registered yet.</p>
+                <p>Devices register themselves the first time a site code and a one-time pairing PIN are entered on the device. The server then issues an opaque token that the device sends with every subsequent request.</p>
+            </field>
+        </record>
+
+        <!-- ============================ Kiosk Event (Audit) ============================ -->
+
+        <record id="view_eh_hr_kiosk_event_list" model="ir.ui.view">
+            <field name="name">eh.hr.kiosk.event.list</field>
+            <field name="model">eh.hr.kiosk.event</field>
+            <field name="arch" type="xml">
+                <list string="Kiosk audit log" sample="1" create="false" edit="false" delete="false">
+                    <field name="timestamp"/>
+                    <field name="event_type"/>
+                    <field name="employee_id"/>
+                    <field name="site_id"/>
+                    <field name="device_id"/>
+                    <field name="confidence" optional="hide"/>
+                    <field name="ip_address" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_kiosk_event_form" model="ir.ui.view">
+            <field name="name">eh.hr.kiosk.event.form</field>
+            <field name="model">eh.hr.kiosk.event</field>
+            <field name="arch" type="xml">
+                <form string="Kiosk event" create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="timestamp"/>
+                                <field name="event_type"/>
+                                <field name="employee_id"/>
+                                <field name="confidence"/>
+                            </group>
+                            <group>
+                                <field name="device_id"/>
+                                <field name="site_id"/>
+                                <field name="ip_address"/>
+                                <field name="user_agent"/>
+                            </group>
+                        </group>
+                        <group string="Linked record">
+                            <field name="ref_model"/>
+                            <field name="ref_id"/>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_eh_hr_kiosk_event_search" model="ir.ui.view">
+            <field name="name">eh.hr.kiosk.event.search</field>
+            <field name="model">eh.hr.kiosk.event</field>
+            <field name="arch" type="xml">
+                <search string="Audit log">
+                    <field name="employee_id"/>
+                    <field name="device_id"/>
+                    <field name="site_id"/>
+                    <filter string="Match success" name="f_match_ok" domain="[('event_type', '=', 'match_success')]"/>
+                    <filter string="Match failure" name="f_match_fail" domain="[('event_type', '=', 'match_fail')]"/>
+                    <filter string="Exceptions" name="f_exception" domain="[('event_type', '=', 'exception_raised')]"/>
+                    <filter string="Errors" name="f_errors" domain="[('event_type', '=', 'error')]"/>
+                    <separator/>
+                    <filter string="Today" name="f_today" domain="[('timestamp', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <group>
+                        <filter string="Event" name="g_event" context="{'group_by': 'event_type'}"/>
+                        <filter string="Employee" name="g_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Site" name="g_site" context="{'group_by': 'site_id'}"/>
+                        <filter string="Day" name="g_day" context="{'group_by': 'timestamp:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_eh_hr_kiosk_event" model="ir.actions.act_window">
+            <field name="name">Kiosk audit log</field>
+            <field name="res_model">eh.hr.kiosk.event</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_eh_hr_kiosk_event_search"/>
+            <field name="context">{'search_default_f_today': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Audit log is empty.</p>
+                <p>Every kiosk event lands here automatically. Read-only by design: managers and auditors can inspect, no one (including admins) can edit a row, and the daily retention cron trims rows past the configured horizon.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

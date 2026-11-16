@@ -1,0 +1,29 @@
+id,name,model_id:id,group_id/id,operation,domain
+hr_appraisal_rule_user,"Appraisal: own, appraiser or in my team",model_hr_appraisal,base.group_user,ru,"['|', '|', ('employee_id.user_id', '=', user.id), ('appraiser_ids.user_id', '=', user.id), ('employee_id', 'child_of', user.employee_ids.ids)]"
+hr_appraisal_rule_user_create,Appraisal: appraiser or in my team,model_hr_appraisal,base.group_user,cd,"['|', ('appraiser_ids.user_id', '=', user.id), '&', ('employee_id', 'child_of', user.employee_ids.ids), ('employee_id', 'not in', user.employee_ids.ids)]"
+hr_appraisal_rule_officer,Appraisal: officer: all,model_hr_appraisal,group_hr_appraisal_user,crud,
+hr_appraisal_goal_rule_user,"Appraisal Goal: own, managed or in my team",model_hr_appraisal_goal,base.group_user,crud,"['|', '|', ('employee_id.user_id', '=', user.id), ('manager_id.user_id', '=', user.id), ('employee_id', 'child_of', user.employee_ids.ids)]"
+hr_appraisal_goal_rule_officer,Appraisal Goal: officer: all,model_hr_appraisal_goal,group_hr_appraisal_user,crud,
+hr_appraisal_skill_rule_user,Appraisal Skill: readable appraisal,model_hr_appraisal_skill,base.group_user,crud,"['|', '|', ('appraisal_id.employee_id.user_id', '=', user.id), ('appraisal_id.appraiser_ids.user_id', '=', user.id), ('appraisal_id.employee_id', 'child_of', user.employee_ids.ids)]"
+hr_appraisal_skill_rule_officer,Appraisal Skill: officer: all,model_hr_appraisal_skill,group_hr_appraisal_user,crud,
+hr_appraisal_skill_report_officer,Appraisal Skills Report: officer,model_hr_appraisal_skill_report,group_hr_appraisal_user,r,
+hr_appraisal_template_user,Appraisal Template: read,model_hr_appraisal_template,base.group_user,r,
+hr_appraisal_template_admin,Appraisal Template: administrator,model_hr_appraisal_template,group_hr_appraisal_manager,crud,
+hr_appraisal_scale_user,Evaluation Scale: read,model_hr_appraisal_scale,base.group_user,r,
+hr_appraisal_scale_admin,Evaluation Scale: administrator,model_hr_appraisal_scale,group_hr_appraisal_manager,crud,
+hr_appraisal_goal_tag_user,Goal Tag: read,model_hr_appraisal_goal_tag,base.group_user,r,
+hr_appraisal_goal_tag_officer,Goal Tag: officer,model_hr_appraisal_goal_tag,group_hr_appraisal_user,crud,
+hr_appraisal_goal_template_user,Goal Template: read,model_hr_appraisal_goal_template,base.group_user,r,
+hr_appraisal_goal_template_admin,Goal Template: administrator,model_hr_appraisal_goal_template,group_hr_appraisal_manager,crud,
+hr_appraisal_launch_wizard_officer,Appraisal Campaign: officer,model_hr_appraisal_launch_wizard,group_hr_appraisal_user,crud,
+hr_appraisal_ask_feedback_user,Ask Feedback: user,model_hr_appraisal_ask_feedback,base.group_user,crud,
+hr_appraisal_goal_assign_user,Assign Goals: user,model_hr_appraisal_goal_assign,base.group_user,crud,
+survey_survey_appraisal_user,Survey: appraisal surveys: read,survey.model_survey_survey,base.group_user,r,"[('survey_type', '=', 'appraisal')]"
+survey_survey_appraisal_admin,Survey: appraisal surveys: administrator,survey.model_survey_survey,group_hr_appraisal_manager,crud,"[('survey_type', '=', 'appraisal')]"
+survey_question_appraisal_admin,Survey question: appraisal surveys: administrator,survey.model_survey_question,group_hr_appraisal_manager,crud,"[('survey_id.survey_type', '=', 'appraisal')]"
+survey_question_answer_appraisal_admin,Survey question answer: appraisal surveys: administrator,survey.model_survey_question_answer,group_hr_appraisal_manager,crud,"['|', ('question_id.survey_id.survey_type', '=', 'appraisal'), ('matrix_question_id.survey_id.survey_type', '=', 'appraisal')]"
+survey_user_input_appraisal_user,Survey user input: 360 feedback of my appraisals,survey.model_survey_user_input,base.group_user,r,"[('appraisal_id', '!=', False), '|', ('appraisal_id.appraiser_ids.user_id', '=', user.id), '&', ('appraisal_id.employee_id', 'child_of', user.employee_ids.ids), ('appraisal_id.employee_id', 'not in', user.employee_ids.ids)]"
+survey_user_input_appraisal_officer,Survey user input: 360 feedback: officer,survey.model_survey_user_input,group_hr_appraisal_user,r,"[('appraisal_id', '!=', False)]"
+survey_user_input_appraisal_admin,Survey user input: appraisal surveys: administrator,survey.model_survey_user_input,group_hr_appraisal_manager,crud,"[('survey_id.survey_type', '=', 'appraisal')]"
+survey_user_input_line_appraisal_officer,Survey user input line: 360 feedback: officer,survey.model_survey_user_input_line,group_hr_appraisal_user,r,"[('user_input_id.appraisal_id', '!=', False)]"
+survey_user_input_line_appraisal_admin,Survey user input line: appraisal surveys: administrator,survey.model_survey_user_input_line,group_hr_appraisal_manager,crud,"[('survey_id.survey_type', '=', 'appraisal')]"

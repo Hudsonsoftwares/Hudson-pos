@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_settings_entry_list" model="ir.ui.view">
+        <field name="name">eh.hr.settings.entry.list</field>
+        <field name="model">eh.hr.settings.entry</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="company_id"/>
+                <field name="key"/>
+                <field name="value_type"/>
+                <field name="value"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_settings_entry" model="ir.actions.act_window">
+        <field name="name">Platform Settings</field>
+        <field name="res_model">eh.hr.settings.entry</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,1577 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* eh_hr_attendance_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-01 04:33+0000\n"
+"PO-Revision-Date: 2026-07-01 04:33+0000\n"
+"Last-Translator: ERP Heritage <info@erpheritage.com.au>\n"
+"Language-Team: Vietnamese\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "A granted consent must have a granted-on date."
+msgstr "Một sự đồng ý đã được cấp phải có ngày cấp."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_site
+msgid ""
+"A site represents a physical clock-in location: a head office, a shopfloor, "
+"a warehouse. Devices register against a site."
+msgstr ""
+"Một địa điểm đại diện cho một vị trí chấm công thực tế: trụ sở chính, xưởng "
+"sản xuất, kho hàng. Các thiết bị đăng ký theo một địa điểm."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "A withdrawn consent must have a withdrawn-on date."
+msgstr "Một sự đồng ý đã rút lại phải có ngày rút lại."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_needaction
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction
+msgid "Action Needed"
+msgstr "Tác vụ cần thiết"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__active
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__active
+msgid "Active"
+msgstr "Đang hoạt động"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__address
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Address"
+msgstr "Địa chỉ"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_attendance_exception.py:0
+msgid "An employee is required to raise an exception."
+msgstr "Cần có một nhân viên để tạo ngoại lệ."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Archived"
+msgstr "Đã lưu trữ"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_attachment_count
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_attachment_count
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_attachment_count
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_attachment_count
+msgid "Attachment Count"
+msgstr "Số lượng tệp đính kèm"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_attendance_exception
+msgid "Attendance Exception"
+msgstr "Ngoại lệ chấm công"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Attendance Suite"
+msgstr "Bộ chấm công"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_settings
+msgid "Attendance Suite settings"
+msgstr "Cài đặt bộ chấm công"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_employee_form_eh_hr_attendance
+msgid "Attendance and consent"
+msgstr "Chấm công và sự đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__attendance_in
+msgid "Attendance check-in"
+msgstr "Chấm công vào"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__attendance_out
+msgid "Attendance check-out"
+msgstr "Chấm công ra"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Attendance exception"
+msgstr "Ngoại lệ chấm công"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_attendance_exception
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_exceptions
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Attendance exceptions"
+msgstr "Các ngoại lệ chấm công"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_events
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Audit log"
+msgstr "Nhật ký kiểm toán"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_event
+msgid "Audit log is empty."
+msgstr "Nhật ký kiểm toán trống."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_consent
+msgid "Biometric and Location Consent Record"
+msgstr "Bản ghi đồng ý sinh trắc học và vị trí"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__granted_via
+msgid "Captured via"
+msgstr "Chụp qua"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__code
+msgid "Code"
+msgstr "Mã"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_res_company
+msgid "Companies"
+msgstr "Công ty"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__company_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__company_id
+msgid "Company"
+msgstr "Công ty"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__expires_on
+msgid ""
+"Computed from the company validity setting at grant time. The daily "
+"retention cron moves the row to expired after this date."
+msgstr ""
+"Được tính từ thiết lập hiệu lực của công ty tại thời điểm cấp. Cron lưu giữ "
+"hằng ngày chuyển dòng sang hết hạn sau ngày này."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_res_config_settings
+msgid "Config Settings"
+msgstr "Cài đặt cấu hình"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_config_root
+msgid "Configuration"
+msgstr "Cấu hình"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_consent_root
+msgid "Consent"
+msgstr "Sự đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Consent and retention"
+msgstr "Sự đồng ý và lưu giữ"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__consent_grant
+msgid "Consent granted"
+msgstr "Đã cấp sự đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Consent record"
+msgstr "Bản ghi đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_consent
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_consent_ids
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_consent
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_list
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_employee_form_eh_hr_attendance
+msgid "Consent records"
+msgstr "Các bản ghi đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Consent text"
+msgstr "Văn bản đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__consent_text
+msgid "Consent text shown"
+msgstr "Văn bản đồng ý đã hiển thị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_consent_validity_months
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_validity_months
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Consent validity (months)"
+msgstr "Hiệu lực đồng ý (tháng)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__consent_withdraw
+msgid "Consent withdrawn"
+msgstr "Đã rút lại sự đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"Cosine distance threshold below which a face is considered a match. Lower is"
+" stricter. Typical 0.45 (very strict) to 0.65 (lenient)."
+msgstr ""
+"Ngưỡng khoảng cách cosine mà dưới ngưỡng đó khuôn mặt được coi là khớp. Giá "
+"trị càng thấp càng nghiêm ngặt. Thông thường từ 0,45 (rất nghiêm ngặt) đến "
+"0,65 (dễ dãi)."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_match_threshold
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_match_threshold
+msgid ""
+"Cosine distance threshold below which a face is considered a match. Lower "
+"values are stricter. Typical range 0.45 (very strict) to 0.65 (lenient)."
+msgstr ""
+"Ngưỡng khoảng cách cosine mà dưới ngưỡng đó khuôn mặt được coi là khớp. Giá "
+"trị thấp hơn thì nghiêm ngặt hơn. Phạm vi thông thường từ 0,45 (rất nghiêm "
+"ngặt) đến 0,65 (dễ dãi)."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__create_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__create_uid
+msgid "Created by"
+msgstr "Được tạo bởi"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__create_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__create_date
+msgid "Created on"
+msgstr "Được tạo vào"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__severity__critical
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Critical"
+msgstr "Nghiêm trọng"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Day"
+msgstr "Ngày"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_consent_text_face
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_text_face
+msgid ""
+"Default consent prose displayed at the kiosk when an employee enrols. "
+"Snapshotted onto each consent record at grant time so audit trail is "
+"immutable. Customise to match your jurisdiction."
+msgstr ""
+"Văn bản đồng ý mặc định hiển thị tại ki-ốt khi nhân viên đăng ký. Được lưu "
+"ảnh chụp vào mỗi bản ghi đồng ý tại thời điểm cấp để dấu vết kiểm toán không"
+" thể thay đổi. Tùy chỉnh để phù hợp với khu vực pháp lý của bạn."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Default face consent text"
+msgstr "Văn bản đồng ý khuôn mặt mặc định"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_kiosk_site_default_id
+msgid "Default kiosk site"
+msgstr "Địa điểm kiosk mặc định"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__description
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Description"
+msgstr "Mô tả"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__device_id
+msgid "Device"
+msgstr "Thiết bị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__device_count
+msgid "Device count"
+msgstr "Số lượng thiết bị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__device_heartbeat
+msgid "Device heartbeat"
+msgstr "Tín hiệu hoạt động của thiết bị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__name
+msgid "Device name"
+msgstr "Tên thiết bị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__device_register
+msgid "Device registered"
+msgstr "Đã đăng ký thiết bị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__device_revoke
+msgid "Device revoked"
+msgstr "Đã thu hồi thiết bị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__device_token
+msgid "Device token"
+msgstr "Token thiết bị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.constraint,message:eh_hr_attendance_base.constraint_eh_hr_kiosk_terminal_unique_device_token
+msgid "Device token collision detected."
+msgstr "Đã phát hiện xung đột token thiết bị."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_device.py:0
+msgid "Device token is required."
+msgstr "Bắt buộc phải có token thiết bị."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__device_ids
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_devices
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Devices"
+msgstr "Thiết bị"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Devices for %s"
+msgstr "Thiết bị cho %s"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_device
+msgid ""
+"Devices register themselves the first time a site code and a one-time "
+"pairing PIN are entered on the device. The server then issues an opaque "
+"token that the device sends with every subsequent request."
+msgstr ""
+"Thiết bị tự đăng ký trong lần đầu tiên nhập mã địa điểm và mã PIN ghép nối "
+"dùng một lần trên thiết bị. Sau đó máy chủ cấp một token mờ mà thiết bị gửi "
+"kèm theo mỗi yêu cầu tiếp theo."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__display_name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Tên hiển thị"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__duplicate_check_in
+msgid "Duplicate check-in"
+msgstr "Check-in trùng lặp"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_admin
+msgid "EH Attendance Admin"
+msgstr "Quản trị viên Chấm công EH"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_auditor
+msgid "EH Attendance Auditor (read-only)"
+msgstr "Kiểm toán viên Chấm công EH (chỉ đọc)"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_manager
+msgid "EH Attendance Manager"
+msgstr "Quản lý Chấm công EH"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,name:eh_hr_attendance_base.group_eh_hr_user
+msgid "EH Attendance User"
+msgstr "Người dùng Chấm công EH"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.server,name:eh_hr_attendance_base.cron_eh_hr_consent_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Consent retention sweep"
+msgstr "ERP Heritage: Dọn dẹp lưu giữ đồng ý"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.server,name:eh_hr_attendance_base.cron_eh_hr_audit_retention_sweep_ir_actions_server
+msgid "ERP Heritage: Kiosk audit log retention sweep"
+msgstr "ERP Heritage: Dọn dẹp lưu giữ nhật ký kiểm toán kiosk"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__early_in
+msgid "Early check-in"
+msgstr "Check-in sớm"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_hr_employee
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__employee_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__employee_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__employee_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Employee"
+msgstr "Nhân viên"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_enabled
+msgid "Enforce geofence"
+msgstr "Áp dụng geofence"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__error
+msgid "Error"
+msgstr "Lỗi"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Errors"
+msgstr "Lỗi"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_event.py:0
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__event_type
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Event"
+msgstr "Sự kiện"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_event
+msgid ""
+"Every kiosk event lands here automatically. Read-only by design: managers "
+"and auditors can inspect, no one (including admins) can edit a row, and the "
+"daily retention cron trims rows past the configured horizon."
+msgstr ""
+"Mọi sự kiện kiosk đều tự động xuất hiện ở đây. Chỉ đọc theo thiết kế: người "
+"quản lý và kiểm toán viên có thể xem xét, không ai (kể cả quản trị viên) có "
+"thể chỉnh sửa một hàng, và cron lưu giữ hằng ngày cắt bớt các hàng vượt quá "
+"thời hạn đã cấu hình."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__evidence
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Evidence"
+msgstr "Bằng chứng"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__evidence_filename
+msgid "Evidence filename"
+msgstr "Tên tệp bằng chứng"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_attendance_exception.py:0
+msgid "Exception"
+msgstr "Ngoại lệ"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__exception_raised
+msgid "Exception raised"
+msgstr "Đã phát sinh ngoại lệ"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_exceptions_root
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Exceptions"
+msgstr "Các ngoại lệ"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_attendance_exception
+msgid ""
+"Exceptions are raised automatically by the kiosk and detection crons (late, "
+"no-show, low confidence, geofence violation), and can also be added manually"
+" by a manager."
+msgstr ""
+"Các ngoại lệ được phát sinh tự động bởi kiosk và các cron phát hiện (đến "
+"muộn, vắng mặt, độ tin cậy thấp, vi phạm geofence), và cũng có thể được "
+"người quản lý thêm thủ công."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__expired
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__expired
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Expired"
+msgstr "Đã hết hạn"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__expires_on
+msgid "Expires on"
+msgstr "Hết hạn vào"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Face"
+msgstr "Khuôn mặt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_face_consent_state
+msgid "Face consent"
+msgstr "Sự đồng ý về khuôn mặt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_consent_text_face
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_text_face
+msgid "Face consent text (default)"
+msgstr "Văn bản đồng ý về khuôn mặt (mặc định)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_face_enrolled
+msgid "Face enrolled"
+msgstr "Đã đăng ký khuôn mặt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_match_threshold
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_match_threshold
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Face match threshold"
+msgstr "Ngưỡng khớp khuôn mặt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__face
+msgid "Face recognition"
+msgstr "Nhận dạng khuôn mặt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__fingerprint
+msgid "Fingerprint"
+msgstr "Dấu vân tay"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_follower_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_follower_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_follower_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_follower_ids
+msgid "Followers"
+msgstr "Người theo dõi"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_partner_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_partner_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_partner_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Người theo dõi (Đối tác)"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Front desk iPad, Warehouse tablet..."
+msgstr "iPad lễ tân, máy tính bảng kho..."
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_admin
+msgid ""
+"Full configuration access: device token rotation and revoke, retention "
+"horizons, consent text, match threshold, kiosk audit log purge."
+msgstr ""
+"Truy cập cấu hình đầy đủ: xoay vòng và thu hồi token thiết bị, thời hạn lưu "
+"giữ, văn bản đồng ý, ngưỡng khớp, xóa nhật ký kiểm toán kiosk."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__geofence_fail
+msgid "Geofence failed"
+msgstr "Hàng rào địa lý thất bại"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__geofence_pass
+msgid "Geofence passed"
+msgstr "Hàng rào địa lý đạt"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Geofence radius must be positive."
+msgstr "Bán kính hàng rào địa lý phải là số dương."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__geofence_violation
+msgid "Geofence violation"
+msgstr "Vi phạm hàng rào địa lý"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__geolocation
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Geolocation"
+msgstr "Vị trí Địa lý"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Grant"
+msgstr "Trao tặng"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__granted
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__granted
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Granted"
+msgstr "Được trao tặng"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__granted_on
+msgid "Granted on"
+msgstr "Cấp vào"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__hr_admin
+msgid "HR administrator entry"
+msgstr "Mục quản trị viên HR"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__has_message
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__has_message
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__has_message
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__has_message
+msgid "Has Message"
+msgstr "Có tin nhắn"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Head office, Warehouse 2, Site B..."
+msgstr "Trụ sở chính, Kho 2, Địa điểm B..."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"How long every kiosk match attempt, success, failure and exception event is "
+"retained."
+msgstr ""
+"Thời gian lưu giữ mỗi lần thử khớp, sự kiện thành công, thất bại và ngoại lệ"
+" của ki-ốt."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"How long withdrawn or expired consent records are kept for audit before "
+"deletion."
+msgstr ""
+"Thời gian lưu giữ các bản ghi đồng ý đã thu hồi hoặc hết hạn để kiểm toán "
+"trước khi xóa."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__id
+msgid "ID"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__ip_address
+msgid "IP"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_needaction
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Nếu chọn, bạn cần chú ý tới các tin nhắn mới."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_sms_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_has_sms_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_sms_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Nếu chọn, một số tin nhắn sẽ có lỗi gửi."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__severity__info
+msgid "Info"
+msgstr "Thông tin"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__iris
+msgid "Iris"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_is_follower
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_is_follower
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_is_follower
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_is_follower
+msgid "Is Follower"
+msgstr "Là người theo dõi"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Issue pairing PIN"
+msgstr "Phát hành mã PIN ghép nối"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_employee_form_eh_hr_attendance
+msgid "Kiosk"
+msgstr "Ki-ốt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_kiosk_event
+msgid "Kiosk Audit Event"
+msgstr "Sự kiện kiểm toán Kiosk"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_hr_employee__eh_kiosk_pin
+msgid "Kiosk PIN"
+msgstr "PIN ki-ốt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_kiosk_site
+msgid "Kiosk Site"
+msgstr "Địa điểm Kiosk"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Kiosk and matching"
+msgstr "Kiosk và đối chiếu"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_kiosk_event
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_list
+msgid "Kiosk audit log"
+msgstr "Nhật ký kiểm toán Kiosk"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_audit_retention_months
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_audit_retention_months
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Kiosk audit log retention (months)"
+msgstr "Thời gian lưu nhật ký kiểm toán Kiosk (tháng)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__kiosk_close
+msgid "Kiosk closed"
+msgstr "Kiosk đã đóng"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Kiosk device"
+msgstr "Thiết bị Kiosk"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_kiosk_device
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_list
+msgid "Kiosk devices"
+msgstr "Thiết bị Kiosk"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_form
+msgid "Kiosk event"
+msgstr "Sự kiện Kiosk"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_kiosk_idle_seconds
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_kiosk_idle_seconds
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Kiosk idle reset (seconds)"
+msgstr "Đặt lại khi Kiosk rảnh (giây)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__kiosk_open
+msgid "Kiosk opened"
+msgstr "Kiosk đã mở"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Kiosk pairing PIN"
+msgstr "Mã PIN ghép nối Kiosk"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__kiosk_screen
+msgid "Kiosk screen capture"
+msgstr "Chụp màn hình ki-ốt"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Kiosk site"
+msgstr "Địa điểm ki-ốt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.actions.act_window,name:eh_hr_attendance_base.action_eh_hr_kiosk_site
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_list
+msgid "Kiosk sites"
+msgstr "Các địa điểm ki-ốt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_root
+msgid "Kiosks"
+msgstr "Ki-ốt"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Last 7 days"
+msgstr "7 ngày qua"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__last_ip
+msgid "Last IP"
+msgstr "IP gần nhất"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__write_uid
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__write_uid
+msgid "Last Updated by"
+msgstr "Cập nhật lần cuối bởi"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__write_date
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__write_date
+msgid "Last Updated on"
+msgstr "Cập nhật lần cuối vào"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__last_seen
+msgid "Last seen"
+msgstr "Xem lần cuối"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__late
+msgid "Late check-in"
+msgstr "Nhận phòng muộn"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_lat
+msgid "Latitude"
+msgstr "Vĩ độ"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Latitude must be between -90 and 90."
+msgstr "Vĩ độ phải nằm trong khoảng từ -90 đến 90."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__ref_model
+msgid "Linked model"
+msgstr "Mô hình liên kết"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__ref_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_form
+msgid "Linked record"
+msgstr "Bản ghi liên kết"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__liveness_fail
+msgid "Liveness failed"
+msgstr "Kiểm tra tính sống thất bại"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__liveness_fail
+msgid "Liveness failure"
+msgstr "Lỗi kiểm tra tính sống"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__liveness_pass
+msgid "Liveness passed"
+msgstr "Kiểm tra tính sống đạt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__location_mismatch
+msgid "Location mismatch"
+msgstr "Vị trí không khớp"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_lng
+msgid "Longitude"
+msgstr "Kinh độ"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Longitude must be between -180 and 180."
+msgstr "Kinh độ phải nằm trong khoảng từ -180 đến 180."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__identity_low_confidence
+msgid "Low match confidence"
+msgstr "Độ tin cậy khớp thấp"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_manager
+msgid ""
+"Manager access: kiosk sites, devices, exceptions, team consent records. Sees"
+" but does not edit the audit log. Implies the standard HR Manager role."
+msgstr ""
+"Quyền truy cập cấp quản lý: địa điểm kiosk, thiết bị, ngoại lệ, bản ghi đồng"
+" ý của nhóm. Xem nhưng không chỉnh sửa nhật ký kiểm toán. Bao gồm vai trò "
+"Quản lý Nhân sự tiêu chuẩn."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__manual
+msgid "Manual"
+msgstr "Thủ công"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Mark resolved"
+msgstr "Đánh dấu đã giải quyết"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__attempt_match
+msgid "Match attempt"
+msgstr "Lần thử đối chiếu"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__confidence
+msgid "Match confidence"
+msgstr "Độ tin cậy đối chiếu"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__match_fail
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Match failure"
+msgstr "Đối chiếu thất bại"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_kiosk_event__event_type__match_success
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Match success"
+msgstr "Đối chiếu thành công"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_has_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error
+msgid "Message Delivery error"
+msgstr "Lỗi gửi tin nhắn"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_ids
+msgid "Messages"
+msgstr "Tin nhắn"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__missed_check_out
+msgid "Missed check-out"
+msgstr "Bỏ lỡ chấm công ra"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "New consent"
+msgstr "Sự đồng ý mới"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_consent
+msgid "No consent records yet."
+msgstr "Chưa có bản ghi đồng ý nào."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "No employee"
+msgstr "Không có nhân viên"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_attendance_exception
+msgid "No exceptions raised."
+msgstr "Không có ngoại lệ nào phát sinh."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_device
+msgid "No kiosk devices registered yet."
+msgstr "Chưa đăng ký thiết bị ki-ốt nào."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_kiosk_site
+msgid "No kiosk sites yet."
+msgstr "Chưa có địa điểm ki-ốt nào."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__exception_type__no_show
+msgid "No-show"
+msgstr "Vắng mặt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__not_set
+msgid "Not set"
+msgstr "Chưa được thiết lập"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__notes
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__notes
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__notes
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__notes
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Notes"
+msgstr "Ghi chú"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_needaction_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Số lượng tác vụ"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_has_error_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error_counter
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error_counter
+msgid "Number of errors"
+msgstr "Số lượng lỗi"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_needaction_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_needaction_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_needaction_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Số tin nhắn cần xử lý"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_error_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__message_has_error_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_error_counter
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Số tin nhắn bị gửi lỗi"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__occurred_on
+msgid "Occurred on"
+msgstr "Đã xảy ra vào"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Open"
+msgstr "Mở"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_hr_employee__eh_kiosk_pin
+msgid ""
+"Optional fallback PIN used at the kiosk when face match is unavailable. "
+"Manager-only field."
+msgstr ""
+"Mã PIN dự phòng tùy chọn được dùng tại ki-ốt khi không thể so khớp khuôn "
+"mặt. Trường chỉ dành cho quản lý."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__evidence
+msgid ""
+"Optional. Photo of the kiosk consent screen, scanned signed form, or other "
+"supporting artefact."
+msgstr ""
+"Tùy chọn. Ảnh chụp màn hình đồng ý của ki-ốt, biểu mẫu đã ký được quét, hoặc"
+" tài liệu hỗ trợ khác."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Pairing PIN for site %(site)s: %(pin)s. Valid for 5 minutes, one-shot."
+msgstr ""
+"PIN ghép nối cho địa điểm %(site)s: %(pin)s. Có hiệu lực trong 5 phút, dùng "
+"một lần."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__paper
+msgid "Paper signature, scanned"
+msgstr "Chữ ký giấy, đã quét"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__pending
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__pending
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Pending"
+msgstr "Đang chờ"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_root
+msgid "People Operations"
+msgstr "Vận hành nhân sự"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"Period after which an active consent expires and the employee is asked to "
+"re-consent."
+msgstr ""
+"Khoảng thời gian sau đó một sự đồng ý đang hoạt động sẽ hết hạn và nhân viên"
+" được yêu cầu đồng ý lại."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_consent_validity_months
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_validity_months
+msgid ""
+"Period for which a granted consent remains valid. After this the daily "
+"retention cron moves the consent to expired and the employee is asked to re-"
+"consent."
+msgstr ""
+"Khoảng thời gian mà một sự đồng ý đã cấp vẫn còn hiệu lực. Sau đó, cron lưu "
+"giữ hằng ngày sẽ chuyển sự đồng ý sang trạng thái hết hạn và nhân viên được "
+"yêu cầu đồng ý lại."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_audit_retention_months
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_audit_retention_months
+msgid ""
+"Period for which kiosk audit events (match attempts, attendance posts, "
+"exceptions) are retained. Used by fair-work or labour-dispute defence; "
+"longer is generally safer."
+msgstr ""
+"Khoảng thời gian lưu giữ các sự kiện kiểm toán của ki-ốt (lần thử khớp, ghi "
+"nhận chấm công, ngoại lệ). Được dùng để bảo vệ trong các vụ việc lao động "
+"công bằng hoặc tranh chấp lao động; thời gian dài hơn thường an toàn hơn."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_consent_retention_months
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_retention_months
+msgid ""
+"Period for which withdrawn or expired consent records are kept for audit "
+"before deletion. Match this to your local privacy law's documentation "
+"requirement."
+msgstr ""
+"Khoảng thời gian lưu giữ các bản ghi đồng ý đã rút lại hoặc hết hạn để kiểm "
+"toán trước khi xóa. Hãy điều chỉnh cho khớp với yêu cầu lưu trữ tài liệu của"
+" luật quyền riêng tư tại địa phương bạn."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__photo
+msgid "Photo capture"
+msgstr "Chụp ảnh"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__geofence_radius_m
+msgid "Radius (m)"
+msgstr "Bán kính (m)"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__rating_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__rating_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__rating_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__rating_ids
+msgid "Ratings"
+msgstr "Đánh giá"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Re-open"
+msgstr "Mở lại"
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_user
+msgid ""
+"Read and operational access to ERP Heritage attendance modules: own "
+"attendance, own consent, kiosk site listing. Implies the standard HR User "
+"role."
+msgstr ""
+"Quyền đọc và vận hành đối với các mô-đun chấm công ERP Heritage: chấm công "
+"của bản thân, sự đồng ý của bản thân, danh sách địa điểm kiosk. Bao hàm vai "
+"trò HR User tiêu chuẩn."
+
+#. module: eh_hr_attendance_base
+#: model:res.groups,comment:eh_hr_attendance_base.group_eh_hr_auditor
+msgid ""
+"Read-only auditor: visibility on every ERP Heritage attendance audit log "
+"without write access. Cannot edit consent, register devices, or post "
+"attendance."
+msgstr ""
+"Kiểm toán viên chỉ đọc: xem được mọi nhật ký kiểm toán chấm công của ERP "
+"Heritage mà không có quyền ghi. Không thể chỉnh sửa sự đồng ý, đăng ký thiết"
+" bị hoặc ghi nhận chấm công."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.actions.act_window,help:eh_hr_attendance_base.action_eh_hr_consent
+msgid ""
+"Records are created automatically when an employee enrols at a kiosk, or "
+"manually by an HR administrator from the employee's profile."
+msgstr ""
+"Bản ghi được tạo tự động khi nhân viên đăng ký tại ki-ốt, hoặc thủ công bởi "
+"quản trị viên HR từ hồ sơ của nhân viên."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__name
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__display_name
+msgid "Reference"
+msgstr "Tham chiếu"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model,name:eh_hr_attendance_base.model_eh_hr_kiosk_terminal
+msgid "Registered Kiosk Terminal"
+msgstr "Thiết bị đầu cuối kiosk đã đăng ký"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__registered_on
+msgid "Registered on"
+msgstr "Đăng ký vào"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__attendance_id
+msgid "Related attendance"
+msgstr "Chuyên cần liên quan"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+msgid "Resolution"
+msgstr "Giải quyết"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolution_notes
+msgid "Resolution notes"
+msgstr "Ghi chú giải quyết"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolved
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_form
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Resolved"
+msgstr "Đã xử lý"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolved_by
+msgid "Resolved by"
+msgstr "Được giải quyết bởi"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__resolved_on
+msgid "Resolved on"
+msgstr "Đã giải quyết vào"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Revoke"
+msgstr "Thu hồi"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Revoked"
+msgstr "Đã thu hồi"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid ""
+"Revoking the device prevents it from making any further kiosk requests. "
+"Continue?"
+msgstr ""
+"Việc thu hồi thiết bị sẽ ngăn thiết bị thực hiện bất kỳ yêu cầu kiosk nào "
+"nữa. Tiếp tục?"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid "Rotate token"
+msgstr "Xoay vòng token"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_device_form
+msgid ""
+"Rotating the token immediately invalidates the kiosk's current credentials. "
+"The device must be re-paired. Continue?"
+msgstr ""
+"Xoay vòng token sẽ ngay lập tức làm mất hiệu lực thông tin đăng nhập hiện "
+"tại của ki-ốt. Thiết bị phải được ghép nối lại. Tiếp tục?"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__message_has_sms_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__message_has_sms_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__message_has_sms_error
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Lỗi gửi SMS"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__granted_via__portal
+msgid "Self-service portal"
+msgstr "Cổng tự phục vụ"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__device_token
+msgid ""
+"Server-issued opaque token. The kiosk includes this in every request to "
+"authenticate itself."
+msgstr ""
+"Mã thông báo mờ do máy chủ cấp. Ki-ốt bao gồm mã này trong mọi yêu cầu để tự"
+" xác thực."
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_settings
+msgid "Settings"
+msgstr "Cài đặt"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__severity
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Severity"
+msgstr "Mức độ nghiêm trọng"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__code
+msgid ""
+"Short URL-safe identifier, used in the kiosk shell URL. Letters, digits, "
+"dash, underscore only."
+msgstr ""
+"Mã định danh ngắn an toàn cho URL, dùng trong URL shell của kiosk. Chỉ chữ "
+"cái, chữ số, dấu gạch ngang và dấu gạch dưới."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__site_id
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__site_id
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Site"
+msgstr "Trang"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Site code is required."
+msgstr "Mã địa điểm là bắt buộc."
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_kiosk_site.py:0
+msgid "Site code may contain letters, digits, dashes and underscores only."
+msgstr ""
+"Mã địa điểm chỉ có thể chứa chữ cái, chữ số, dấu gạch ngang và dấu gạch "
+"dưới."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.constraint,message:eh_hr_attendance_base.constraint_eh_hr_kiosk_site_unique_code_per_company
+msgid "Site code must be unique per company."
+msgstr "Mã địa điểm phải là duy nhất cho mỗi công ty."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__name
+msgid "Site name"
+msgstr "Tên trang web"
+
+#. module: eh_hr_attendance_base
+#: model:ir.ui.menu,name:eh_hr_attendance_base.menu_eh_hr_kiosk_sites
+msgid "Sites"
+msgstr "Địa điểm"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Snapshot of the consent prose displayed to the employee at grant time."
+msgstr ""
+"Ảnh chụp nhanh nội dung đồng ý được hiển thị cho nhân viên tại thời điểm "
+"cấp."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__consent_text
+msgid ""
+"Snapshot of the exact consent prose displayed when the employee granted "
+"consent. Frozen at grant time so the audit record cannot drift if the "
+"company default text is later changed."
+msgstr ""
+"Ảnh chụp nhanh nội dung đồng ý chính xác được hiển thị khi nhân viên cấp sự "
+"đồng ý. Được đóng băng tại thời điểm cấp để bản ghi kiểm toán không bị thay "
+"đổi nếu văn bản mặc định của công ty được sửa đổi sau này."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "State"
+msgstr "Trạng thái"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__state
+msgid "Status"
+msgstr "Trạng thái"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "Street, suburb, postcode, country..."
+msgstr "Đường, phường/xã, mã bưu chính, quốc gia..."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_hr_employee__eh_kiosk_site_default_id
+msgid ""
+"Suggested site for this employee. Other sites still accept this employee "
+"unless their record rules forbid it."
+msgstr ""
+"Địa điểm được đề xuất cho nhân viên này. Các địa điểm khác vẫn chấp nhận "
+"nhân viên này trừ khi quy tắc bản ghi của họ cấm điều đó."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"The exact prose displayed at the kiosk when an employee enrols for face "
+"recognition. Snapshotted onto each consent record at grant time."
+msgstr ""
+"Văn bản chính xác hiển thị tại ki-ốt khi nhân viên đăng ký nhận diện khuôn "
+"mặt. Được chụp nhanh vào mỗi bản ghi đồng ý tại thời điểm cấp."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_company__eh_hr_kiosk_idle_seconds
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_res_config_settings__eh_hr_kiosk_idle_seconds
+msgid ""
+"The kiosk shell resets to the welcome screen after this many seconds of "
+"inactivity."
+msgstr ""
+"Vỏ ki-ốt sẽ đặt lại về màn hình chào mừng sau số giây không hoạt động này."
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid ""
+"The kiosk shell returns to the welcome screen after this many seconds of "
+"inactivity."
+msgstr ""
+"Vỏ ki-ốt sẽ quay lại màn hình chào mừng sau số giây không hoạt động này."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__timestamp
+msgid "Timestamp"
+msgstr "Dấu thời gian"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__timezone
+msgid "Timezone"
+msgstr "Múi giờ"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_event_search
+msgid "Today"
+msgstr "Hôm nay"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_hr_employee__eh_face_enrolled
+msgid ""
+"True when at least one active face template exists for this employee. "
+"Computed from eh_face_template_ids."
+msgstr ""
+"True khi tồn tại ít nhất một mẫu khuôn mặt đang hoạt động cho nhân viên này."
+" Được tính từ eh_face_template_ids."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__exception_type
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__consent_type
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Type"
+msgstr "Loại"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/controllers/kiosk.py:0
+msgid "Unnamed kiosk"
+msgstr "Kiosk chưa đặt tên"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__timezone
+msgid "Used to interpret kiosk timestamps for late and no-show evaluation."
+msgstr ""
+"Được dùng để diễn giải dấu thời gian của ki-ốt nhằm đánh giá đi trễ và vắng "
+"mặt."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_event__user_agent
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__user_agent
+msgid "User agent"
+msgstr ""
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__consent_type__voice
+msgid "Voice"
+msgstr "Giọng nói"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_attendance_exception__severity__warning
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_attendance_exception_search
+msgid "Warning"
+msgstr "Cảnh báo"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_attendance_exception__website_message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__website_message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_site__website_message_ids
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__website_message_ids
+msgid "Website Messages"
+msgstr "Thông báo trên trang web"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_attendance_exception__website_message_ids
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_consent__website_message_ids
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_site__website_message_ids
+#: model:ir.model.fields,help:eh_hr_attendance_base.field_eh_hr_kiosk_terminal__website_message_ids
+msgid "Website communication history"
+msgstr "Lịch sử trao đổi qua trang web"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_form
+msgid "Withdraw"
+msgstr "Rút lại"
+
+#. module: eh_hr_attendance_base
+#. odoo-python
+#: code:addons/eh_hr_attendance_base/models/eh_hr_consent.py:0
+msgid "Withdrawal date cannot be before grant date."
+msgstr "Ngày rút lại không thể trước ngày cấp."
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__eh_hr_consent__state__withdrawn
+#: model:ir.model.fields.selection,name:eh_hr_attendance_base.selection__hr_employee__eh_face_consent_state__withdrawn
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_consent_search
+msgid "Withdrawn"
+msgstr "Đã rút lại"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_eh_hr_consent__withdrawn_on
+msgid "Withdrawn on"
+msgstr "Đã rút lại vào"
+
+#. module: eh_hr_attendance_base
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_company__eh_hr_consent_retention_months
+#: model:ir.model.fields,field_description:eh_hr_attendance_base.field_res_config_settings__eh_hr_consent_retention_months
+msgid "Withdrawn or expired consent retention (months)"
+msgstr "Lưu giữ sự đồng ý đã rút lại hoặc hết hạn (tháng)"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_res_config_settings_eh_hr
+msgid "Withdrawn or expired retention (months)"
+msgstr "Lưu giữ mục đã rút lại hoặc hết hạn (tháng)"
+
+#. module: eh_hr_attendance_base
+#: model_terms:ir.ui.view,arch_db:eh_hr_attendance_base.view_eh_hr_kiosk_site_form
+msgid "hq-melbourne"
+msgstr ""

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Daily retention sweeps.
+
+            Run once per day at off-peak. Each cron is independent so a
+            failure in one does not block the others. The audit-log
+            sweep runs after the consent sweep so any state transitions
+            written in the first pass are reflected before the second.
+        -->
+
+        <record id="cron_eh_hr_consent_retention_sweep" model="ir.cron">
+            <field name="name">ERP Heritage: Consent retention sweep</field>
+            <field name="model_id" ref="model_eh_hr_consent"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_retention_sweep()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <record id="cron_eh_hr_audit_retention_sweep" model="ir.cron">
+            <field name="name">ERP Heritage: Kiosk audit log retention sweep</field>
+            <field name="model_id" ref="model_eh_hr_kiosk_event"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_retention_sweep()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>

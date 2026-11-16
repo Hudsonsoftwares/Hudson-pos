@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_appraisal_mail_activity_type_view_form" model="ir.ui.view">
+        <field name="name">hr.appraisal.mail.activity.type.view.form</field>
+        <field name="model">mail.activity.type</field>
+        <field name="inherit_id" ref="mail.mail_activity_type_view_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='activity_details']" position="attributes">
+                <attribute name="string"></attribute>
+            </xpath>
+            <xpath expr="//group[@name='activity_planning']" position="attributes">
+                <attribute name="string"></attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single application root for the whole platform. Every feature module
+         hangs its menus under one of the sections below, so there is one app
+         icon and one coherent navigation tree (not three apps and a flat dump
+         under the standard Employees menu). -->
+    <menuitem id="menu_hr_platform_root" name="HR Platform"
+              sequence="50" web_icon="eh_hr_core,static/description/icon.png"
+              groups="eh_hr_core.group_hr_employee_self"/>
+
+    <!-- Sections. Attendance (10) and Time Off (20) are contributed by their
+         own modules; the rest are defined here so feature modules can target
+         them. Sequence sets the left-to-right / top-to-bottom order. -->
+    <menuitem id="menu_sec_talent" name="Talent"
+              parent="menu_hr_platform_root" sequence="30"
+              groups="eh_hr_core.group_hr_officer"/>
+
+    <menuitem id="menu_sec_requests" name="Employee Requests"
+              parent="menu_hr_platform_root" sequence="40"
+              groups="eh_hr_core.group_hr_employee_self"/>
+
+    <menuitem id="menu_sec_records" name="Records and Compliance"
+              parent="menu_hr_platform_root" sequence="50"
+              groups="eh_hr_core.group_hr_officer"/>
+
+    <menuitem id="menu_sec_approvals" name="Approvals"
+              parent="menu_hr_platform_root" sequence="70"
+              groups="eh_hr_core.group_hr_employee_self"/>
+
+    <menuitem id="menu_sec_config" name="Configuration"
+              parent="menu_hr_platform_root" sequence="90"
+              groups="eh_hr_core.group_hr_admin"/>
+
+    <!-- Core entries now live under Configuration. -->
+    <menuitem id="menu_hr_platform_audit" name="Audit Log"
+              parent="menu_sec_config"
+              action="action_hr_audit_log" sequence="80"
+              groups="eh_hr_core.group_hr_officer,eh_hr_core.group_hr_admin,eh_hr_core.group_hr_auditor"/>
+
+    <menuitem id="menu_hr_platform_settings" name="Platform Settings"
+              parent="menu_sec_config"
+              action="action_hr_settings_entry" sequence="90"
+              groups="eh_hr_core.group_hr_admin"/>
+</odoo>
