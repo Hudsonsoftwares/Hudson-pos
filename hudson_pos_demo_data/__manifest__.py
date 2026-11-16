@@ -3,7 +3,7 @@
 
 {
     'name': 'POS Demo Data (Restaurant, Cafe, Loyalty & Inventory)',
-    'version': '20.0.1.0.16',
+    'version': '20.0.1.0.17',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
     'summary': 'Declarative XML & Python Demo Data for POS (Restaurant, Cafe, Loyalty & Inventory) loaded on manual module activation',
@@ -51,6 +51,8 @@
           feedback surveys with responses, staff challenges & badges
         - Company setup: Resto Cafe Solutions branding, GSTIN/HSN (e-invoice sandbox), EAN barcodes, data recycle rules,
           wire transfer / COD providers and a UPI QR payment method in POS
+        - Field Service: coffee-equipment AMC jobs, a breakdown repair, an installation, wedding venue set-up and outlet
+          repairs, each linked to a project task, with technicians' planning shifts, timesheets and spare-part quotations
         - Automatically loads demo data on module activation via post_init_hook and cleans up on uninstall.
     """,
     'depends': ['point_of_sale', 'pos_restaurant', 'pos_loyalty', 'stock'],

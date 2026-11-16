@@ -17,7 +17,7 @@ class ResCompany(models.Model):
     )
     survey_message = fields.Text(
         string="Survey Message",
-        default="Thank you for coming! Scan the QR code below to fill the survey and share your suggestions.",
+        default="Thank you for coming! Scan the Customer Survey QR code to share your feedback and suggestions.",
     )
     survey_qr_size = fields.Integer(
         string="QR Code Size (mm)",

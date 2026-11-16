@@ -357,6 +357,13 @@ def load_pos_demo_data(env, pos_config_ids=None):
     except Exception as e:
         _logger.warning("Could not load Company setup demo data: %s", e)
 
+    # 34. Field Service jobs linked to Project tasks, Timesheets and Planning shifts
+    try:
+        from .demo_field_service_suite import load_field_service_suite_demo_data
+        load_field_service_suite_demo_data(env)
+    except Exception as e:
+        _logger.warning("Could not load Field Service demo data: %s", e)
+
     _logger.info("Hudson POS: Restaurant & Cafe demo data loaded successfully.")
     return True
 

@@ -11,7 +11,7 @@ $rc-press-scale: .97;
 $rc-status-occupied: $primary;
 $rc-status-unsent: $danger;
 $rc-status-booked: $warning;
-$rc-status-free: $o-gray-400;
+$rc-status-free: $success;
 
 @mixin rc-press-feedback {
     transition: transform .08s ease-out, box-shadow .15s ease-out;
@@ -226,18 +226,33 @@ $rc-status-free: $o-gray-400;
                 }
             }
 
-            // ---- status rings (follow the table shape, keep the table's own colour)
+            // ---- status pill (top of every table) + ring (follows the table shape, keeps its own colour)
+            .rc-tstate {
+                top: .3rem;
+                z-index: 2;
+                font-size: .68rem;
+                font-weight: 700;
+                letter-spacing: .02em;
+                padding: .2em .6em;
+                color: $white;
+                box-shadow: $box-shadow-sm;
+            }
+            .rc-tstate-free { background: $rc-status-free; }
+            .rc-tstate-occupied { background: $rc-status-occupied; }
+            .rc-tstate-unsent { background: $rc-status-unsent; }
+            .rc-tstate-booked { background: $rc-status-booked; color: $dark; }
+
             &:has(> .rc-tstate-occupied) {
-                box-shadow: 0 0 0 3px $rc-status-occupied;
+                box-shadow: 0 0 0 5px $rc-status-occupied;
             }
 
             &:has(> .rc-tstate-unsent) {
-                box-shadow: 0 0 0 3px $rc-status-unsent;
+                box-shadow: 0 0 0 5px $rc-status-unsent;
                 animation: rc-unsent-pulse 1.8s ease-in-out infinite;
             }
 
             &:has(> .rc-tstate-booked) {
-                box-shadow: 0 0 0 3px $rc-status-booked;
+                box-shadow: 0 0 0 5px $rc-status-booked;
             }
         }
 
@@ -353,8 +368,8 @@ $rc-status-free: $o-gray-400;
 }
 
 @keyframes rc-unsent-pulse {
-    0%, 100% { box-shadow: 0 0 0 3px $rc-status-unsent; }
-    50% { box-shadow: 0 0 0 6px rgba($rc-status-unsent, .35); }
+    0%, 100% { box-shadow: 0 0 0 5px $rc-status-unsent; }
+    50% { box-shadow: 0 0 0 9px rgba($rc-status-unsent, .35); }
 }
 
 @media (prefers-reduced-motion: reduce) {

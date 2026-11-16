@@ -262,7 +262,7 @@ class PosOrder(models.Model):
             if qr_code:
                 data['image']['survey_qr_code'] = qr_code
                 data['conditions']['show_survey_qr'] = True
-                data['extra_data']['survey_message'] = company.survey_message or "Thank you for coming! Scan the QR code below to fill the survey and share your suggestions."
+                data['extra_data']['survey_message'] = company.survey_message or "Thank you for coming! Scan the Customer Survey QR code to share your feedback and suggestions."
                 data['extra_data']['survey_qr_size'] = company.survey_qr_size or 32
         return data
 

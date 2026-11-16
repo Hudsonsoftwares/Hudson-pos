@@ -11,8 +11,14 @@
         <xpath expr="//div[contains(@t-attf-class, 'o_fp_table')]" position="inside">
             <t t-set="rcOrder" t-value="table.getOrder()"/>
             <t t-set="rcBooking" t-value="!rcOrder and table.getUpcomingBooking ? table.getUpcomingBooking() : false"/>
-            <span class="rc-tstate d-none"
-                  t-attf-class="rc-tstate-{{ rcOrder ? (data.changes > 0 ? 'unsent' : 'occupied') : (rcBooking ? 'booked' : 'free') }}"/>
+            <t t-set="rcState" t-value="rcOrder ? (data.changes > 0 ? 'unsent' : 'occupied') : (rcBooking ? 'booked' : 'free')"/>
+            <span class="rc-tstate position-absolute start-50 translate-middle-x badge rounded-pill pe-none"
+                  t-attf-class="rc-tstate-{{ rcState }}">
+                <t t-if="rcState == 'free'">Free</t>
+                <t t-elif="rcState == 'occupied'">Occupied</t>
+                <t t-elif="rcState == 'unsent'">Not sent</t>
+                <t t-else="">Booked</t>
+            </span>
             <div t-if="rcOrder and !rcOrder.isEmpty()"
                  class="rc-table-info position-absolute start-0 end-0 d-flex justify-content-center gap-2 lh-sm fw-semibold pe-none"
                  t-att-style="tableContentStyle">

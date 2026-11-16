@@ -7,7 +7,7 @@ import { generateQRCodeDataUrl } from "@point_of_sale/utils";
 
 const SURVEY_FIELDS = ["show_survey_qr", "survey_url", "survey_message", "survey_qr_size"];
 const DEFAULT_MESSAGE =
-    "Thank you for coming! Scan the QR code below to fill the survey and share your suggestions.";
+    "Thank you for coming! Scan the Customer Survey QR code to share your feedback and suggestions.";
 
 // Survey settings fetched directly from the server when the POS starts, so the
 // receipt does not depend on the company fields being part of the POS data load.
