@@ -338,7 +338,11 @@ def _templates(env, prods, docs):
     res = {}
     for xid, name, days, prepay, team_xid, doc_xids, lines in TEMPLATES:
         if _ref(env, xid):
-            res[xid] = _ref(env, xid)
+            res[xid] = tmpl = _ref(env, xid)
+            # template made before the PDF quote builder (headers/footers) was installed: attach them now
+            # (allowed by demo_guard only when that field was just added, so user changes are kept)
+            if docs and 'quotation_document_ids' in tmpl._fields and not tmpl.quotation_document_ids:
+                tmpl.quotation_document_ids = [Command.set([docs[d].id for d in doc_xids if d in docs])]
             continue
         team = env.ref(team_xid if '.' in team_xid else f'{MODULE}.{team_xid}', raise_if_not_found=False)
         line_vals = []

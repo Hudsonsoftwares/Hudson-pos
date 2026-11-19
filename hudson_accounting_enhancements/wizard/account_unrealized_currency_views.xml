@@ -15,8 +15,9 @@
                         <div>
                             <p class="text-muted">
                                 This report shows unrealized foreign exchange gains and losses
-                                on open receivables and payables in foreign currencies,
-                                based on the exchange rates as of the selected date.
+                                on what was open in foreign currencies on the selected date
+                                (reconcilable accounts and foreign currency bank or cash accounts),
+                                based on the exchange rates of that date.
                             </p>
                         </div>
                     </group>
@@ -63,14 +64,18 @@
                         <field name="reversal_date"/>
                     </group>
                 </group>
-                <div invisible="not header_note" class="alert py-2 px-3 mb-2 font-weight-bold" style="background-color: #dbeafe; color: #1e3a8a; border-radius: 4px; border: 1px solid #bfdbfe;">
+                <div invisible="not header_note" class="alert o_hx_info_banner py-2 px-3 mb-2 fw-bold">
                     <field name="header_note" readonly="1" class="fw-bold"/>
                 </div>
-                <field name="line_ids">
-                    <list editable="bottom" create="0" delete="1">
+                <div class="alert alert-info py-2 px-3 mb-2" role="alert">
+                    Only what is left to adjust on this date is posted: the adjustments already posted up to it count.
+                    The entry is always reversed on the reversal date, nothing is gained or lost until the items
+                    are settled.
+                </div>
+                <field name="line_ids" readonly="1">
+                    <list create="0" delete="0" edit="0">
                         <field name="currency_id" column_invisible="1"/>
-                        <field name="account_id" readonly="1"/>
-                        <field name="partner_id" readonly="1" optional="show"/>
+                        <field name="account_id"/>
                         <field name="name"/>
                         <field name="debit" sum="Total Debit"/>
                         <field name="credit" sum="Total Credit"/>

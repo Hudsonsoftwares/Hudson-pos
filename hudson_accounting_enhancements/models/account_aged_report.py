@@ -200,9 +200,18 @@ class AccountAgedReport(models.TransientModel):
             else:
                 return ">= %s", [periods[idx]['start'].strftime('%Y-%m-%d')]
 
+        # What each item still owed on the report date: its amount less the part of it matched
+        # (paid, credited) on or before that date. What was paid afterwards was still due then.
+        residual_expr = '''(l.balance
+            - COALESCE((SELECT SUM(pr.amount) FROM account_partial_reconcile pr
+                         WHERE pr.debit_move_id = l.id AND pr.max_date <= %s), 0)
+            + COALESCE((SELECT SUM(pr.amount) FROM account_partial_reconcile pr
+                         WHERE pr.credit_move_id = l.id AND pr.max_date <= %s), 0))'''
+        residual_args = [as_of, as_of]
+
         # ── Not due (date_maturity > as_of) ──────────────────────────────
         cr.execute(
-            f'''SELECT l.partner_id, COALESCE(SUM(l.balance * {sign}), 0) AS amt
+            f'''SELECT l.partner_id, COALESCE(SUM({residual_expr} * {sign}), 0) AS amt
                 FROM account_move_line l
                 JOIN account_account aa ON aa.id = l.account_id
                 JOIN account_move am ON am.id = l.move_id
@@ -216,7 +225,7 @@ class AccountAgedReport(models.TransientModel):
                   AND ((l.partner_id IN %s) OR (l.partner_id IS NULL))
                   AND l.display_type NOT IN ('line_section', 'line_note')
                 GROUP BY l.partner_id''',
-            [tuple(acc_types), as_of, as_of, company.id] + recon_args + [partner_id_tuple]
+            residual_args + [tuple(acc_types), as_of, as_of, company.id] + recon_args + [partner_id_tuple]
         )
         not_due = {row['partner_id']: row['amt'] for row in cr.dictfetchall()}
 
@@ -225,7 +234,7 @@ class AccountAgedReport(models.TransientModel):
         for i in range(5):
             date_op, date_params = build_date_clause(i)
             cr.execute(
-                f'''SELECT l.partner_id, COALESCE(SUM(l.balance * {sign}), 0) AS amt
+                f'''SELECT l.partner_id, COALESCE(SUM({residual_expr} * {sign}), 0) AS amt
                     FROM account_move_line l
                     JOIN account_account aa ON aa.id = l.account_id
                     JOIN account_move am ON am.id = l.move_id
@@ -239,7 +248,8 @@ class AccountAgedReport(models.TransientModel):
                       AND ((l.partner_id IN %s) OR (l.partner_id IS NULL))
                       AND l.display_type NOT IN ('line_section', 'line_note')
                     GROUP BY l.partner_id''',
-                [tuple(acc_types), as_of] + date_params + [company.id] + recon_args + [partner_id_tuple]
+                residual_args + [tuple(acc_types), as_of] + date_params + [company.id] + recon_args
+                + [partner_id_tuple]
             )
             bucket_data[i] = {row['partner_id']: row['amt'] for row in cr.dictfetchall()}
 
@@ -354,7 +364,7 @@ class AccountAgedReport(models.TransientModel):
             self.action_generate()
         report_action_id = (
             'hudson_accounting_enhancements.action_report_aged_receivable'
-            if self.account_type == 'receivable'
+            if self.account_type in ('receivable', 'non_trade_receivable')
             else 'hudson_accounting_enhancements.action_report_aged_payable'
         )
         return self.env.ref(report_action_id).with_context(landscape=True).report_action(self)

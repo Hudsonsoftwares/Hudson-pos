@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_form_view_inherit_quality_alert_fix" model="ir.ui.view">
+        <field name="name">mrp.production.form.quality.alert.fix</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <field name="quality_alert_todo" invisible="1"/>
+                <field name="quality_check_todo" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

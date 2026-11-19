@@ -1,0 +1,298 @@
+// Compile-time light/dark switch. Odoo compiles backend SCSS once for the
+// light bundle and once for web.assets_web_dark (dark primary variables), so
+// hx-theme() returns the light colour in one and the dark colour in the other.
+@function hx-theme($light, $dark) {
+    @if (global-variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark") {
+        @return $dark;
+    }
+    @return $light;
+}
+
+// Tax Returns: month-grouped rows, progress steps and checklist cards.
+$arp-muted: hx-theme(#adb5bd, $o-gray-500);
+$arp-done: hx-theme(#017e84, #17a89f);
+$arp-red: hx-theme(#e5484d, #ff6b6b);
+$arp-green: #28a745;
+
+.o_account_return_progress {
+    min-width: 0;
+    .o_arp_step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 9rem;
+    }
+    .o_arp_track {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+    .o_arp_line {
+        flex: 1 1 auto;
+        height: 1px;
+        background: hx-theme(#dee2e6, $o-gray-300);
+    }
+    .o_arp_dot {
+        flex: 0 0 auto;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: 1px solid $arp-muted;
+        background: hx-theme(#fff, $o-view-background-color);
+    }
+    .o_arp_label {
+        margin-top: 4px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+    .o_arp_done {
+        .o_arp_dot {
+            border-color: $arp-done;
+            background: $arp-done;
+        }
+        .o_arp_line_left {
+            background: $arp-done;
+        }
+        .o_arp_label {
+            color: $arp-done;
+            font-weight: 500;
+        }
+    }
+}
+
+// Grouped kanban shown as rows: month label on the left, return cards on the right.
+.o_account_return_kanban .o_kanban_renderer {
+    &.o_kanban_grouped {
+        flex-direction: column !important;
+        align-items: center !important;
+        overflow-x: hidden !important;
+        padding: 1.5rem 1rem;
+    }
+    .o_kanban_group {
+        display: grid !important;
+        grid-template-columns: 11rem minmax(0, 1fr);
+        align-content: start;
+        width: 100% !important;
+        max-width: 1150px;
+        min-height: 0 !important;
+        flex: 0 0 auto !important;
+        background: transparent !important;
+        border: 0 !important;
+        padding: 0 !important;
+        margin-bottom: 1.5rem;
+        > * {
+            grid-column: 2;
+        }
+        > .o_kanban_header {
+            grid-column: 1;
+            grid-row: 1 / span 500;
+        }
+    }
+    .o_kanban_header {
+        position: static !important;
+        background: transparent !important;
+        padding: 1.25rem 1.25rem 0 0 !important;
+        .o_kanban_header_title {
+            justify-content: flex-end !important;
+        }
+        .o_column_title {
+            font-size: 1.15rem !important;
+            font-weight: 600;
+            justify-content: flex-end;
+            white-space: nowrap;
+            > span.text-truncate {
+                overflow: visible !important;
+            }
+            > span:not(.text-truncate) {
+                display: none !important;
+            }
+        }
+        .o_group_config,
+        .o_kanban_config,
+        .o_kanban_quick_add,
+        .o_kanban_counter,
+        .o_column_progress {
+            display: none !important;
+        }
+    }
+    &.o_kanban_ungrouped {
+        flex-direction: column !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        padding: 1.5rem 1rem;
+        .o_kanban_record {
+            width: 100% !important;
+            max-width: 980px;
+        }
+    }
+    .o_kanban_ghost {
+        display: none !important;
+    }
+    .o_kanban_record {
+        width: 100% !important;
+        margin: 0 0 1px 0 !important;
+        border-left: 4px solid hx-theme(#dee2e6, $o-gray-300) !important;
+        &:has(.o_arr_late), &:has(.o_arr_soon) {
+            border-left-color: $arp-red !important;
+        }
+        &:has(.o_arr_done) {
+            border-left-color: $arp-green !important;
+        }
+    }
+    .o_dropdown_kanban {
+        visibility: visible !important;
+        opacity: 1 !important;
+        top: 50% !important;
+        transform: translateY(-50%);
+    }
+    .o_arr_row {
+        padding-right: 2.25rem !important;
+        flex: 1 1 auto;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.5rem 0.25rem;
+    }
+    .o_arr_info {
+        flex: 1 1 14rem;
+        min-width: 0;
+    }
+    .o_arr_progress {
+        flex: 1 1 18rem;
+        display: flex;
+        justify-content: center;
+    }
+    .o_arr_actions {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+
+.o_arr_deadline {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    background: hx-theme(#e9ecef, $o-gray-300);
+    color: hx-theme(#495057, $o-gray-700);
+    &.o_arr_late, &.o_arr_soon {
+        background: hx-theme(#fde2e2, rgba(255, 87, 87, 0.14));
+        color: hx-theme(#c92a2a, #ff7b7b);
+    }
+    &.o_arr_done {
+        background: hx-theme(#d3f9d8, rgba(74, 222, 128, 0.14));
+        color: hx-theme(#2b8a3e, #4ade80);
+    }
+}
+
+.o_arr_pending {
+    color: hx-theme(#c92a2a, #ff7b7b);
+    font-size: 0.9rem;
+    &.o_arr_pending_ok {
+        color: hx-theme(#2b8a3e, #4ade80);
+    }
+}
+
+.o_account_return_form {
+    .o_arf_header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.25rem;
+    }
+    .o_arf_title {
+        flex: 1 1 16rem;
+        min-width: 0;
+        h4 .o_field_widget,
+        h4 .o_field_widget span {
+            width: 100%;
+            white-space: normal !important;
+        }
+    }
+    .o_arf_progress {
+        flex: 1 1 18rem;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.o_field_account_return_checks {
+    width: 100%;
+}
+
+.o_account_return_checks {
+    max-width: 900px;
+    margin: 0 auto;
+    .o_arc_card {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        margin-bottom: 0.75rem;
+        background: hx-theme(#fff, $o-view-background-color);
+        border: 1px solid hx-theme(#dee2e6, $o-gray-300);
+        border-left: 5px solid $arp-muted;
+        border-radius: 4px;
+        &.o_arc_reviewed {
+            border-left-color: $arp-green;
+        }
+        &.o_arc_anomaly {
+            border-left-color: $arp-red;
+        }
+    }
+    .o_arc_main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+    .o_arc_title {
+        font-weight: 600;
+    }
+    .o_arc_message {
+        color: hx-theme(#6c757d, $o-gray-700);
+        margin-top: 2px;
+    }
+    .o_arc_records {
+        font-size: 0.9rem;
+    }
+    .o_arc_notes {
+        display: block;
+        width: 100%;
+        margin-top: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border: 0;
+        border-left: 1px solid hx-theme(#dee2e6, $o-gray-300);
+        resize: vertical;
+        background: transparent;
+        outline: none;
+    }
+    .o_arc_side {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .o_arc_avatar {
+        width: 26px;
+        height: 26px;
+        margin-top: 5px;
+    }
+    .o_arc_toggle {
+        border: 1px solid $arp-done;
+        color: $arp-done;
+        border-radius: 20px;
+        padding: 0.25rem 0.9rem;
+        background: hx-theme(#fff, $o-view-background-color);
+        &.o_arc_toggle_done {
+            border-color: $arp-green;
+            color: $arp-green;
+        }
+        &:hover:not(:disabled) {
+            background: $arp-done;
+            color: #fff;
+        }
+    }
+}

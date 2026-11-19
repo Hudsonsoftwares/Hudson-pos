@@ -1,3 +1,13 @@
+// Compile-time light/dark switch. Odoo compiles backend SCSS once for the
+// light bundle and once for web.assets_web_dark (dark primary variables), so
+// hx-theme() returns the light colour in one and the dark colour in the other.
+@function hx-theme($light, $dark) {
+    @if (global-variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark") {
+        @return $dark;
+    }
+    @return $light;
+}
+
 /* ==========================================================================
    Inventory Valuation View Styling (Matching Odoo Online)
    ========================================================================== */
@@ -19,13 +29,33 @@
     .o_form_sheet {
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
         border-radius: 8px !important;
-        border: 1px solid #e2e8f0 !important;
+        border: 1px solid hx-theme(#e2e8f0, $o-gray-300) !important;
     }
 
     /* Header styling */
     header {
-        border-bottom: 1px solid #e2e8f0 !important;
-        background-color: #f8fafc !important;
+        border-bottom: 1px solid hx-theme(#e2e8f0, $o-gray-300) !important;
+        background-color: hx-theme(#f8fafc, $o-gray-100) !important;
         padding: 10px 16px !important;
+    }
+}
+
+/* Computed valuation table (wizard report_html): theme-aware colours */
+.o_hx_valuation_report {
+    background-color: $o-view-background-color;
+    color: $o-main-text-color;
+
+    .table {
+        --bs-table-bg: transparent;
+        --bs-table-color: #{$o-main-text-color};
+    }
+    .o_hx_valuation_head > td {
+        background-color: hx-theme(#e9ecef, $o-gray-300);
+    }
+    .o_hx_valuation_title {
+        color: hx-theme(#017e84, #2dd4bf) !important;
+    }
+    .o_hx_valuation_sep {
+        border-bottom: 1px solid hx-theme(#e9ecef, $o-gray-300);
     }
 }

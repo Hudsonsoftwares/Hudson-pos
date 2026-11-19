@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Website booking pages: celebration / phone-first extensions owned by the bridge.
+     They only inherit the stock appointment templates (appointment module untouched). -->
+<odoo>
+
+    <!-- Appointment list: event emoji in front of the type name -->
+    <template id="appointment_type_index_inherit_celebration" inherit_id="appointment.appointment_type_index">
+        <xpath expr="//h3[hasclass('premium-card-title')]" position="attributes">
+            <attribute name="t-out">(appt.event_emoji + ' ' if appt.event_emoji else '') + appt.name</attribute>
+        </xpath>
+        <!-- Celebration tables are assigned by the restaurant: never list them to customers -->
+        <xpath expr="//div[hasclass('o_appointment_type_card_staff')]/t[@t-if=&quot;appt.booking_target == 'resources'&quot;]" position="attributes">
+            <attribute name="t-if">appt.booking_target == 'resources' and not appt.is_event_booking</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_appointment_type_card_staff')]/t[@t-else='']" position="attributes">
+            <attribute name="t-elif">appt.booking_target != 'resources'</attribute>
+            <attribute name="t-else"/>
+        </xpath>
+    </template>
+
+    <!-- Slot selection page: keep the yearly-wish link, show booking errors -->
+    <template id="appointment_preview_inherit_celebration" inherit_id="appointment.appointment_preview">
+        <xpath expr="//div[hasclass('o_appointment_preview')]//t[@t-if=&quot;request.params.get('error') == 'cancel_too_late'&quot;]" position="after">
+            <t t-if="request.params.get('error') in ('conflict', 'table_conflict', 'missing_fields', 'missing_datetime', 'invalid_datetime', 'closed_day', 'user_unavailable') or (request.params.get('msg') and request.params.get('error') not in ('no_resource_available', 'no_user_available'))">
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <strong><i class="fa fa-exclamation-triangle me-1"></i> Booking Notice:</strong>
+                    <t t-if="request.params.get('msg')" t-out="request.params.get('msg')"/>
+                    <t t-elif="request.params.get('error') == 'missing_fields'">
+                        Please fill in all required booking details (Name, Phone number, and mandatory celebration fields).
+                    </t>
+                    <t t-elif="request.params.get('error') in ('missing_datetime', 'invalid_datetime')">
+                        Please select a valid date and time slot for your celebration.
+                    </t>
+                    <t t-elif="request.params.get('error') == 'closed_day'">
+                        The selected date and time slot is closed for bookings. Please choose another time.
+                    </t>
+                    <t t-else="">
+                        The selected table or time slot is already booked. Please choose another table or time slot.
+                    </t>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//form[contains(@t-attf-action, '/info')]/input[@name='invite_token']" position="after">
+            <input t-if="wish_ref" type="hidden" name="wish_ref" t-att-value="wish_ref"/>
+            <input t-if="wish_token" type="hidden" name="wish_token" t-att-value="wish_token"/>
+        </xpath>
+        <xpath expr="//h4[hasclass('fw-bold')]/t[@t-out='appointment_type.name']" position="before">
+            <span t-if="appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
+        </xpath>
+    </template>
+
+    <!-- Guest details page: phone mandatory, email optional, Date questions, wish prefill -->
+    <template id="appointment_info_inherit_celebration" inherit_id="appointment.appointment_info">
+        <xpath expr="//form[contains(@t-attf-action, '/submit')]/input[@name='invite_token']" position="after">
+            <input type="hidden" name="staff_user_id" t-att-value="staff_user_id or ''"/>
+            <input t-if="wish_ref" type="hidden" name="wish_ref" t-att-value="wish_ref"/>
+            <input t-if="wish_token" type="hidden" name="wish_token" t-att-value="wish_token"/>
+        </xpath>
+        <xpath expr="//input[@name='name']" position="attributes">
+            <attribute name="t-att-value">(wish_prefill.get('name') if wish_prefill else '') or (user.name if user else '')</attribute>
+        </xpath>
+        <xpath expr="//input[@name='email']/.." position="replace">
+            <div class="mb-3">
+                <label class="form-label" style="font-size: 14px;">Phone number *</label>
+                <input type="tel" name="phone" class="form-control w-100 w-md-50" required="1" placeholder="e.g. +91 98765 43210"
+                       t-att-value="(wish_prefill.get('phone') if wish_prefill else '') or ((user.partner_id.phone or (user.partner_id.mobile if 'mobile' in user.partner_id._fields else '')) if user and user.partner_id else '')"/>
+            </div>
+            <div class="mb-4">
+                <label class="form-label" style="font-size: 14px;">Email <span class="text-muted small">(Optional)</span></label>
+                <input type="email" name="email" class="form-control w-100 w-md-50" placeholder="Optional — for email confirmation &amp; wishes"
+                       t-att-value="(wish_prefill.get('email') if wish_prefill else '') or (user.email if user else '')"/>
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-foreach='appointment_type.question_ids']/div" position="before">
+            <t t-set="q_prefill" t-value="question_prefills.get(question.id, '') if question_prefills else ''"/>
+        </xpath>
+        <xpath expr="//t[@t-if=&quot;question.question_type == 'char'&quot;]/input" position="attributes">
+            <attribute name="t-att-value">q_prefill</attribute>
+        </xpath>
+        <xpath expr="//t[@t-elif=&quot;question.question_type == 'text'&quot;]/textarea" position="attributes">
+            <attribute name="t-out">q_prefill</attribute>
+        </xpath>
+        <xpath expr="//t[@t-elif=&quot;question.question_type == 'phone'&quot;]/input" position="attributes">
+            <attribute name="t-att-value">q_prefill</attribute>
+        </xpath>
+        <!-- Dropdowns (e.g. Event Type): empty prompt so the guest must choose, wish-link prefill selects the last event -->
+        <xpath expr="//t[@t-elif=&quot;question.question_type == 'select'&quot;]/select/t[@t-foreach='question.answer_ids']" position="before">
+            <option value="" disabled="disabled" t-att-selected="None if q_prefill else 'selected'">Select...</option>
+        </xpath>
+        <xpath expr="//t[@t-elif=&quot;question.question_type == 'select'&quot;]/select//option[@t-att-value='opt.name']" position="attributes">
+            <attribute name="t-att-selected">'selected' if q_prefill and opt.name == q_prefill else None</attribute>
+        </xpath>
+        <xpath expr="//t[@t-elif=&quot;question.question_type == 'phone'&quot;]" position="after">
+            <t t-elif="question.question_type == 'date'">
+                <input type="date" t-attf-name="question_#{question.id}" class="form-control w-100 w-md-50"
+                       t-att-required="question.is_required" t-att-value="q_prefill"/>
+            </t>
+        </xpath>
+        <xpath expr="//h4/t[@t-out='appointment_type.name']" position="before">
+            <span t-if="appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
+        </xpath>
+    </template>
+
+    <!-- Confirmation page: celebration details -->
+    <template id="appointment_confirmation_inherit_celebration" inherit_id="appointment.appointment_confirmation">
+        <xpath expr="//h4[hasclass('fw-normal')]/t[@t-out='appointment_type.name']" position="before">
+            <span t-if="appointment_type.event_emoji" class="me-1"><t t-out="appointment_type.event_emoji"/></span>
+        </xpath>
+        <xpath expr="//hr[hasclass('mt-4')][hasclass('mb-4')]" position="before">
+            <t t-if="booking and (booking.sudo().celebration_type or booking.sudo().celebrant_name or booking.sudo().occasion_title or booking.sudo().occasion_date)">
+                <div class="mb-4 p-3 rounded-3 bg-light" style="font-size: 13px;">
+                    <div class="fw-bold mb-1">
+                        <span t-if="appointment_type.event_emoji" class="me-1"><t t-out="appointment_type.event_emoji"/></span>
+                        Celebration Details
+                    </div>
+                    <div class="text-muted" t-if="booking.sudo().celebration_type">
+                        Event: <strong><t t-out="booking.sudo().celebration_event_emoji"/> <t t-out="booking.sudo().celebration_event_name"/></strong>
+                    </div>
+                    <div class="text-muted" t-if="booking.sudo().celebrant_name">
+                        Celebrant: <strong><t t-out="booking.sudo().celebrant_name"/></strong>
+                    </div>
+                    <div class="text-muted" t-if="booking.sudo().occasion_title">
+                        Occasion: <t t-out="booking.sudo().occasion_title"/>
+                    </div>
+                    <div class="text-muted" t-if="booking.sudo().occasion_date">
+                        Special Day: <t t-out="booking.sudo().occasion_date.strftime('%d %b %Y')"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

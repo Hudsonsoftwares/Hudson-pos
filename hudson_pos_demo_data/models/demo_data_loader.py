@@ -5,7 +5,8 @@ import base64
 import hashlib
 import logging
 import os
-from odoo.tools import convert_file
+from .demo_xml import load_demo_xml as convert_file  # tolerant of apps not installed
+from .demo_guard import preexisting
 from odoo import Command
 
 _logger = logging.getLogger(__name__)
@@ -19,8 +20,9 @@ DEMO_XML_FILES = [
     'demo/pricelists.xml',
     'demo/loyalty_programs.xml',
     'demo/products_resto.xml',
-    'demo/recruitment_demo.xml',
 ]
+
+RECRUITMENT_XML_FILE = 'demo/recruitment_demo.xml'
 
 IMAGE_SEARCH_PATHS = [
     os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'static', 'src', 'img')),
@@ -89,13 +91,25 @@ LEGACY_REUSED_IMAGES = {
 
 def load_pos_demo_data(env, pos_config_ids=None):
     """
-    Complete Restaurant & Cafe POS Demo Data Loader:
+    Load ALL demo data available for the apps installed right now: the POS core data (when
+    Point of Sale, Restaurant, Loyalty and Inventory are installed) and every suite whose apps
+    are installed. Suites of apps installed later are loaded automatically at that time by
+    ``hudson.pos.demo.autoloader`` (see demo_autoloader.py).
+    """
+    from .demo_autoloader import run_autoload
+    return run_autoload(env, force=True, pos_config_ids=pos_config_ids)
+
+
+def load_pos_core_demo_data(env, pos_config_ids=None):
+    """
+    Complete Restaurant & Cafe POS Demo Data Loader (requires point_of_sale, pos_restaurant,
+    pos_loyalty and stock):
     - Purges duplicate/orphan floor plans.
     - Loads categories, tags, courses, prep notes, floors, pricelists, loyalty, and products.
     - Creates real POS Combo Choices and configures combo products with type='combo'.
     - Configures 2 distinct food & beverage POS configs: Restaurant (Dine-in) & Cafe (Register).
     - Sets beautiful graphical floor plan table positions.
-    - Attaches high-res product images and initial warehouse stock.
+    - Attaches high-res product images, initial warehouse stock and sample POS orders.
     """
     _logger.info("Hudson POS: Starting Restaurant & Cafe Demo Data loader...")
 
@@ -109,11 +123,6 @@ def load_pos_demo_data(env, pos_config_ids=None):
 
     # 3. Execute all standard XML demo files safely inside savepoints
     for xml_file in DEMO_XML_FILES:
-        if xml_file == 'demo/recruitment_demo.xml' and (
-            'hr.job' not in env or 'is_published' not in env['hr.job']._fields
-        ):
-            _logger.info("Skipping %s because website_hr_recruitment is not installed.", xml_file)
-            continue
         try:
             with env.cr.savepoint():
                 _logger.info("Loading demo XML: %s", xml_file)
@@ -145,6 +154,13 @@ def load_pos_demo_data(env, pos_config_ids=None):
             _ensure_default_shops(env)
     except Exception as e:
         _logger.warning("Could not ensure default POS shops: %s", e)
+
+    # 6b. Configure product variants (sizes and flavours)
+    try:
+        with env.cr.savepoint():
+            _configure_product_variants(env)
+    except Exception as e:
+        _logger.warning("Could not configure product variants: %s", e)
 
     # 7. Configure true POS Combos (product.combo & type='combo')
     try:
@@ -185,214 +201,37 @@ def load_pos_demo_data(env, pos_config_ids=None):
     except Exception as e:
         _logger.warning("Could not load stock inventory: %s", e)
 
-    # 11. Configure & publish recruitment job openings & sample applicants
-    try:
-        with env.cr.savepoint():
-            _load_recruitment_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load recruitment demo data: %s", e)
-
-    # 12. Load Resto Cafe Solutions eLearning demo data (courses, quizzes, certification, paid course)
-    try:
-        from .demo_elearning_suite import load_elearning_suite_demo_data
-        load_elearning_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load eLearning demo data: %s", e)
-
-    # 13. Create sample POS orders for demonstration
+    # 11. Create sample POS orders for demonstration
     try:
         with env.cr.savepoint():
             _load_sample_pos_orders(env)
     except Exception as e:
         _logger.warning("Could not load sample POS orders: %s", e)
 
-    # 14. Create full connected HR Suite demo data (Employees, Attendance, Time Off, Fleet, Lunch, Expenses, Payroll)
-    try:
-        with env.cr.savepoint():
-            from .demo_hr_suite import load_hr_suite_demo_data
-            load_hr_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load HR suite demo data: %s", e)
-
-    # 15. Create full connected Business Suite demo data (CRM, Sales, Inventory, Purchase, MRP, Maintenance, Events, Survey)
-    try:
-        with env.cr.savepoint():
-            from .demo_business_suite import load_business_suite_demo_data
-            load_business_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Business suite demo data: %s", e)
-
-    # 16. Create Restaurant & Cafe Inventory Suite demo data (Ingredients, Packaging, Vendors, Locations, Rules, BoMs, Moves)
-    try:
-        with env.cr.savepoint():
-            from .demo_inventory_suite import load_inventory_suite_demo_data
-            load_inventory_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Inventory suite demo data: %s", e)
-
-    # 17. Load Resto Cafe Solutions CRM demo data (Leads, Pipeline, Teams, Activities, Lost reasons, UTM)
-    try:
-        from .demo_crm_suite import load_crm_suite_demo_data
-        load_crm_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load CRM suite demo data: %s", e)
-
-    # 18. Load Resto Cafe Solutions Blog, Events and Email Marketing demo data (installed apps only)
-    try:
-        from .demo_marketing_suite import load_marketing_suite_demo_data
-        load_marketing_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Marketing suite demo data: %s", e)
-
-    # 19. Load Resto Cafe Solutions packaged-food webshop (eCommerce) demo data
-    try:
-        from .demo_ecommerce_suite import load_ecommerce_suite_demo_data
-        load_ecommerce_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load eCommerce suite demo data: %s", e)
-
-    # 20. Load Resto Cafe Solutions Sales demo data (catering quotations, templates, headers/footers, promotions)
-    try:
-        from .demo_sales_suite import load_sales_suite_demo_data
-        load_sales_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Sales suite demo data: %s", e)
-
-    # 21. Load Resto Cafe Solutions Purchase & Inventory demo data
-    try:
-        from .demo_purchase_suite import load_purchase_suite_demo_data
-        load_purchase_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Purchase & Inventory demo data: %s", e)
-
-    # 22. Load Resto Cafe Solutions Manufacturing & Shop Floor demo data
-    try:
-        from .demo_mrp_suite import load_mrp_suite_demo_data
-        load_mrp_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Manufacturing & Shop Floor demo data: %s", e)
-
-    # 23. Load Resto Cafe Solutions Quality & Maintenance demo data
-    try:
-        from .demo_quality_maintenance_suite import load_quality_maintenance_suite_demo_data
-        load_quality_maintenance_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Quality & Maintenance demo data: %s", e)
-
-    # 23b. Load Resto Cafe Solutions Inventory features demo data (expiry lots, locations, packages, UoM,
-    #      removal strategies, reordering rules, multi-step routes, receipt quality checks, returns)
-    try:
-        from .demo_inventory_features_suite import load_inventory_features_suite_demo_data
-        load_inventory_features_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Inventory features demo data: %s", e)
-
-    # 24. Load Resto Cafe Solutions Rental & Subscriptions demo data
-    try:
-        from .demo_rental_subscription_suite import load_rental_subscription_suite_demo_data
-        load_rental_subscription_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Rental & Subscriptions demo data: %s", e)
-
-    # 25. Load Resto Cafe Solutions Planning demo data
-    try:
-        from .demo_planning_suite import load_planning_suite_demo_data
-        load_planning_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Planning demo data: %s", e)
-
-    # 26. Load Resto Cafe Solutions Project & Timesheet demo data
-    try:
-        from .demo_project_suite import load_project_suite_demo_data
-        load_project_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Project & Timesheet demo data: %s", e)
-
-    # 27. Load Resto Cafe Solutions Fleet, Lunch & Expenses demo data
-    try:
-        from .demo_fleet_lunch_expense_suite import load_fleet_lunch_expense_suite_demo_data
-        load_fleet_lunch_expense_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Fleet, Lunch & Expenses demo data: %s", e)
-
-    # 28. Load Resto Cafe Solutions Approvals & PLM demo data
-    try:
-        from .demo_approvals_plm_suite import load_approvals_plm_suite_demo_data
-        load_approvals_plm_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Approvals & PLM demo data: %s", e)
-
-    # 29. Load Resto Cafe Solutions Helpdesk demo data
-    try:
-        from .demo_helpdesk_suite import load_helpdesk_suite_demo_data
-        load_helpdesk_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Helpdesk demo data: %s", e)
-
-    # 30. Load Resto Cafe Solutions HR people demo data
-    try:
-        from .demo_hr_people_suite import load_hr_people_suite_demo_data
-        load_hr_people_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load HR people demo data: %s", e)
-
-    # 31. Load Resto Cafe Solutions Recruitment & Payroll demo data
-    try:
-        from .demo_recruitment_payroll_suite import load_recruitment_payroll_suite_demo_data
-        load_recruitment_payroll_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Recruitment & Payroll demo data: %s", e)
-
-    # 32. Load Resto Cafe Solutions Collaboration demo data
-    try:
-        from .demo_collaboration_suite import load_collaboration_suite_demo_data
-        load_collaboration_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Collaboration demo data: %s", e)
-
-    # 33. Load Resto Cafe Solutions Company setup demo data
-    try:
-        from .demo_company_setup_suite import load_company_setup_suite_demo_data
-        load_company_setup_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Company setup demo data: %s", e)
-
-    # 34. Field Service jobs linked to Project tasks, Timesheets and Planning shifts
-    try:
-        from .demo_field_service_suite import load_field_service_suite_demo_data
-        load_field_service_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Field Service demo data: %s", e)
-
-    # 35. Visitor Management: front desks, meeting rooms and visitors in every status
-    try:
-        from .demo_visitor_suite import load_visitor_suite_demo_data
-        load_visitor_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Visitor Management demo data: %s", e)
-
-    # 36. Employee Referral: referred applicants, points, rewards and alerts
-    try:
-        from .demo_referral_suite import load_referral_suite_demo_data
-        load_referral_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Employee Referral demo data: %s", e)
-
-    # 37. Appraisals: review cycles, goals, ratings and feedback
-    try:
-        from .demo_appraisal_suite import load_appraisal_suite_demo_data
-        load_appraisal_suite_demo_data(env)
-    except Exception as e:
-        _logger.warning("Could not load Appraisal demo data: %s", e)
-
-    _logger.info("Hudson POS: Restaurant & Cafe demo data loaded successfully.")
+    _logger.info("Hudson POS: Restaurant & Cafe POS core demo data loaded successfully.")
     return True
+
+
+def load_recruitment_jobs_demo_data(env):
+    """Restaurant & Cafe job openings published on the website (requires website_hr_recruitment)."""
+    if 'hr.job' not in env or 'is_published' not in env['hr.job']._fields:
+        _logger.info("Skipping %s because website_hr_recruitment is not installed.", RECRUITMENT_XML_FILE)
+        return
+    try:
+        with env.cr.savepoint():
+            convert_file(env, 'hudson_pos_demo_data', RECRUITMENT_XML_FILE,
+                         idref={}, mode='init', noupdate=True)
+    except Exception as e:
+        _logger.error("Failed to load demo file %s: %s", RECRUITMENT_XML_FILE, e)
+    _load_recruitment_demo_data(env)
 
 
 def _cleanup_duplicate_floors(env):
     """
     Removes auto-generated dummy floors named after the company ('My Company') when orphaned without POS configs.
     """
+    if 'restaurant.floor' not in env:  # POS Restaurant not installed (yet)
+        return
     RestaurantFloor = env['restaurant.floor'].sudo()
     dummy_names = list({n for n in ['My Company', env.company.name] if n})
     dummy_floors = RestaurantFloor.search([
@@ -410,52 +249,11 @@ def _cleanup_duplicate_floors(env):
 
 def _configure_floors_and_tables(env):
     """
-    Configures visual background and grid coordinates for Main Floor and Patio tables.
+    Decorated floor plans: walls, entrance, reception, bar, open kitchen, booths, chairs around
+    every table, patio with fountain, parasols and fire-pit lounge (see demo_floor_plan.py).
     """
-    RestaurantFloor = env['restaurant.floor'].sudo()
-    main_floor = RestaurantFloor.search([('name', '=', 'Main Floor')], limit=1)
-    patio = RestaurantFloor.search([('name', '=', 'Patio')], limit=1)
-
-    if main_floor:
-        try:
-            main_floor.write({'floor_plan_layout': {'bgColor': 'texture-wood-v'}})
-            for idx, tbl in enumerate(main_floor.table_ids.sorted('table_number')):
-                row = idx // 4
-                col = idx % 4
-                shape = 'round' if tbl.seats == 2 else 'square'
-                color = 'blue' if tbl.seats >= 6 else 'green'
-                tbl.write({
-                    'floor_plan_layout': {
-                        'top': 80 + row * 160,
-                        'left': 80 + col * 170,
-                        'width': 100,
-                        'height': 100,
-                        'shape': shape,
-                        'color': color,
-                    }
-                })
-        except Exception as e:
-            _logger.warning("Could not set floor layout for Main Floor: %s", e)
-
-    if patio:
-        try:
-            patio.write({'floor_plan_layout': {'bgColor': 'texture-stone-v'}})
-            for idx, tbl in enumerate(patio.table_ids.sorted('table_number')):
-                row = idx // 4
-                col = idx % 4
-                shape = 'round' if tbl.seats == 2 else 'square'
-                tbl.write({
-                    'floor_plan_layout': {
-                        'top': 80 + row * 160,
-                        'left': 80 + col * 170,
-                        'width': 100,
-                        'height': 100,
-                        'shape': shape,
-                        'color': 'orange',
-                    }
-                })
-        except Exception as e:
-            _logger.warning("Could not set floor layout for Patio: %s", e)
+    from .demo_floor_plan import apply_floor_plans
+    apply_floor_plans(env)
 
 
 def _ensure_default_shops(env):
@@ -465,9 +263,9 @@ def _ensure_default_shops(env):
     2. Cafe (Counter-service Register with Drinks, Coffee, Desserts, Combos)
     """
     PosConfig = env['pos.config'].sudo()
-    RestaurantFloor = env['restaurant.floor'].sudo()
-
-    floors = RestaurantFloor.search([('name', 'in', ['Main Floor', 'Patio'])])
+    # floors exist only with POS Restaurant; the shops are created anyway and get their floors
+    # when POS Restaurant is installed (the auto-loader runs this again then)
+    floors = env['restaurant.floor'].sudo().search([('name', 'in', ['Main Floor', 'Patio'])])         if 'restaurant.floor' in env else []
 
     # 1. Restaurant POS
     resto = PosConfig.search([('name', '=', 'Restaurant')], limit=1)
@@ -508,6 +306,319 @@ def _ensure_default_shops(env):
 
     if not cafe.current_session_id and hasattr(cafe, 'default_screen'):
         cafe.write({'default_screen': 'register'})
+
+
+def _configure_product_variants(env):
+    """
+    Configures multi-attribute product variants (Sizes and Flavours) on existing POS demo products.
+    Sets realistic price extras (e.g. Medium, Large, Double Scoop, Double Patty) and internal codes.
+    """
+    if 'product.attribute' not in env or 'product.template' not in env:
+        return
+
+    _logger.info("Hudson POS: Configuring product variants (sizes and flavours)...")
+
+    ProductAttribute = env['product.attribute'].sudo()
+    AttributeValue = env['product.attribute.value'].sudo()
+    ProductTemplate = env['product.template'].sudo()
+    PTAL = env['product.template.attribute.line'].sudo()
+
+    def get_or_create_attr(name, display_type='pills'):
+        attr = ProductAttribute.search([('name', '=', name)], limit=1)
+        if not attr:
+            attr = ProductAttribute.create({'name': name, 'display_type': display_type})
+        return attr
+
+    def get_or_create_val(attr, val_name, seq=10):
+        val = AttributeValue.search([('attribute_id', '=', attr.id), ('name', '=', val_name)], limit=1)
+        if not val:
+            val = AttributeValue.create({'attribute_id': attr.id, 'name': val_name, 'sequence': seq})
+        return val
+
+    # Base attributes
+    attr_size = get_or_create_attr('Size', 'pills')
+    attr_pack_size = get_or_create_attr('Pack Size', 'pills')
+    attr_portion = get_or_create_attr('Portion Size', 'pills')
+    attr_patty = get_or_create_attr('Patty Size', 'pills')
+    attr_flavour = get_or_create_attr('Flavour', 'pills')
+    attr_flavour_style = get_or_create_attr('Flavour Style', 'pills')
+    attr_bacon_flavour = get_or_create_attr('Bacon Flavour', 'pills')
+    attr_macaron_flavour = get_or_create_attr('Flavour Assortment', 'pills')
+    attr_tea_size = get_or_create_attr('Serving Size', 'pills')
+    attr_bread = get_or_create_attr('Bread Type', 'pills')
+    attr_pasta = get_or_create_attr('Pasta Type', 'pills')
+    attr_spice = get_or_create_attr('Spice Level', 'pills')
+    attr_water_type = get_or_create_attr('Water Type', 'pills')
+    attr_dressing = get_or_create_attr('Dressing', 'pills')
+    attr_serving = get_or_create_attr('Serving Style', 'pills')
+    attr_card_value = get_or_create_attr('Card Value', 'pills')
+
+    VARIANT_CONFIGS = [
+        # 1. Existing Core Dishes & Drinks
+        ('Pizza Margherita', 'PIZ-MARG', [
+            (attr_size, [('Regular (10")', 1, 0.0, 'REG'), ('Medium (12")', 2, 3.5, 'MED'), ('Large (14")', 3, 6.0, 'LRG')])
+        ]),
+        ('Pizza Vegetarian', 'PIZ-VEG', [
+            (attr_size, [('Regular (10")', 1, 0.0, 'REG'), ('Medium (12")', 2, 4.0, 'MED'), ('Large (14")', 3, 7.0, 'LRG')])
+        ]),
+        ('Cheese Burger', 'BUR-CHS', [
+            (attr_patty, [('Single Patty (150g)', 1, 0.0, '150G'), ('Double Patty (300g)', 2, 3.5, '300G')]),
+            (attr_flavour_style, [('Classic American Cheddar', 1, 0.0, 'CLSC'), ('Spicy Jalapeno Melt', 2, 0.75, 'SPCY'), ('Smoky BBQ & Onion', 3, 1.0, 'BBQ')])
+        ]),
+        ('Bacon Burger', 'BUR-BCN', [
+            (attr_patty, [('Single Patty', 1, 0.0, 'SGL'), ('Double Patty', 2, 3.5, 'DBL')]),
+            (attr_bacon_flavour, [('Crispy Smoked Maple Bacon', 1, 0.0, 'MAPLE'), ('Black Pepper Glazed Bacon', 2, 0.5, 'PEPR')])
+        ]),
+        ('Milkshake Banana', 'MS-SHAKE', [
+            (attr_flavour, [('Banana Cream', 1, 0.0, 'BAN'), ('Belgian Chocolate', 2, 0.0, 'CHOC'), ('Wild Strawberry', 3, 0.0, 'STRW'), ('Salted Caramel', 4, 0.0, 'CARM')]),
+            (attr_size, [('Regular (350ml)', 10, 0.0, '350ML'), ('Large (500ml)', 11, 1.5, '500ML')])
+        ]),
+        ('Fanta', 'DRK-FNT', [
+            (attr_flavour, [('Orange Splash', 10, 0.0, 'ORN'), ('Grape Burst', 11, 0.0, 'GRP'), ('Pineapple Passion', 12, 0.0, 'PIN')])
+        ]),
+        ('Espresso', 'COF-ESP', [
+            (attr_size, [('Single Shot', 20, 0.0, 'SGL'), ('Double Shot (Doppio)', 21, 1.0, 'DBL')])
+        ]),
+        ('Green Tea', 'TEA-GRN', [
+            (attr_flavour, [('Jasmine Blossom', 20, 0.0, 'JAS'), ('Moroccan Mint', 21, 0.0, 'MNT'), ('Lemon & Ginger', 22, 0.0, 'LEM')]),
+            (attr_tea_size, [('Cup (250ml)', 1, 0.0, 'CUP'), ('Teapot (600ml)', 2, 2.5, 'POT')])
+        ]),
+        ('Vanilla Bean Ice Cream Sundae', 'DS-ICR', [
+            (attr_flavour, [('Madagascar Vanilla', 30, 0.0, 'VAN'), ('Belgian Chocolate', 31, 0.0, 'CHOC'), ('Wild Berry Swirl', 32, 0.0, 'BRY'), ('Salted Caramel Crunch', 33, 0.0, 'CARM')]),
+            (attr_portion, [('Single Scoop', 1, 0.0, '1SCP'), ('Double Scoop', 2, 2.5, '2SCP')])
+        ]),
+        ('French Macarons Box (6 pcs)', 'DS-MAC', [
+            (attr_macaron_flavour, [('Classic Parisian (Vanilla, Pistachio, Raspberry)', 1, 0.0, 'CLSC'), ('Chocolatier Collection (Dark, Milk, White)', 2, 1.0, 'CHOC'), ('Exotic Citrus & Berry (Passionfruit, Lemon, Cassis)', 3, 1.5, 'EXOT')])
+        ]),
+        ('Artisan Chocolate Croissant', 'BKG-CRS', [
+            (attr_flavour, [('Classic Dark Chocolate (70%)', 40, 0.0, 'DRK'), ('Hazelnut Praline Gianduja', 41, 0.75, 'PRAL'), ('Almond Frangipane & Chocolate', 42, 1.0, 'ALMD')])
+        ]),
+
+        # 2. Sandwiches, Pizzas & Savory Mains
+        ('Funghi', 'PIZ-FNG', [
+            (attr_size, [('Personal (8")', 1, 0.0, '8IN'), ('Medium (12")', 2, 3.5, '12IN'), ('Large (16")', 3, 6.5, '16IN')])
+        ]),
+        ('Chicken Curry Sandwich', 'SND-CHK', [
+            (attr_size, [('Half (6")', 1, 0.0, '6IN'), ('Full (12")', 2, 2.5, '12IN')]),
+            (attr_bread, [('Artisan Sourdough', 1, 0.0, 'SRD'), ('Brioche Roll', 2, 0.5, 'BRC')])
+        ]),
+        ('Club Sandwich', 'SND-CLB', [
+            (attr_portion, [('Single Deck', 1, 0.0, 'SGL'), ('Double Stack', 2, 2.0, 'DBL')]),
+            (attr_flavour_style, [('Classic Turkey & Bacon', 1, 0.0, 'TRK'), ('Smoked Ham & Cheddar', 2, 0.5, 'HAM')])
+        ]),
+        ('Mozzarella Sandwich', 'SND-MOZ', [
+            (attr_bread, [('Rosemary Focaccia', 1, 0.0, 'FOC'), ('Ciabatta Rustica', 2, 0.0, 'CIA'), ('Gluten-Free Bread', 3, 1.0, 'GF')]),
+            (attr_flavour, [('Pesto Genovese & Tomato', 1, 0.0, 'PST'), ('Sun-Dried Tomato & Olive Tapenade', 2, 0.5, 'SDT')])
+        ]),
+        ('Spicy Tuna Sandwich', 'SND-TNA', [
+            (attr_size, [('Half (6")', 1, 0.0, '6IN'), ('Full (12")', 2, 2.5, '12IN')]),
+            (attr_spice, [('Mild Kick', 1, 0.0, 'MLD'), ('Medium Zest', 2, 0.0, 'MED'), ('Extra Spicy Sriracha', 3, 0.5, 'XSP')])
+        ]),
+        ('Pasta 4 Formaggi', 'PST-4F', [
+            (attr_portion, [('Standard (300g)', 1, 0.0, 'STD'), ('Grande (450g)', 2, 3.5, 'GRD')]),
+            (attr_pasta, [('Penne Rigate', 1, 0.0, 'PEN'), ('Tagliatelle Egg Pasta', 2, 0.5, 'TAG')])
+        ]),
+        ('Pasta Bolognese', 'PST-BOL', [
+            (attr_portion, [('Standard (300g)', 1, 0.0, 'STD'), ('Grande (450g)', 2, 3.0, 'GRD')]),
+            (attr_pasta, [('Spaghetti No. 5', 1, 0.0, 'SPG'), ('Rigatoni', 2, 0.0, 'RIG')])
+        ]),
+        ('Lunch Maki 18pc', 'SUS-MAK', [
+            (attr_macaron_flavour, [('Chef Selection Classic', 1, 0.0, 'CLSC'), ('Salmon & Tuna Deluxe', 2, 2.5, 'DLX'), ('Spicy Tempura Crunch', 3, 2.0, 'SPCY')])
+        ]),
+        ('Lunch Salmon 20pc', 'SUS-SAL', [
+            (attr_serving, [('Fresh Nigiri & Sashimi', 1, 0.0, 'RAW'), ('Seared Aburi Torched with Ponzu', 2, 2.0, 'ABU')])
+        ]),
+        ('Lunch Temaki mix 3pc', 'SUS-TMK', [
+            (attr_macaron_flavour, [('Traditional Nori Wrap', 1, 0.0, 'NORI'), ('Soy Crepe Wrap', 2, 1.0, 'SOY')])
+        ]),
+        ('Salmon and Avocado', 'BWL-SAL', [
+            (attr_portion, [('Regular Bowl', 1, 0.0, 'REG'), ('Large Bowl', 2, 3.5, 'LRG')]),
+            (attr_dressing, [('Toasted Sesame Ginger', 1, 0.0, 'SES'), ('Citrus Ponzu Vinaigrette', 2, 0.0, 'PNZ'), ('Spicy Kewpie Mayo', 3, 0.5, 'KWP')])
+        ]),
+
+        # 3. Desserts, Pastries & Chocolates
+        ('Belgian Milk Chocolate Truffles', 'CHOC-TRF', [
+            (attr_portion, [('Box of 4 pcs', 1, 0.0, '4PC'), ('Box of 8 pcs', 2, 5.0, '8PC'), ('Box of 16 pcs', 3, 11.0, '16PC')]),
+            (attr_flavour, [('Velvety Milk Truffle', 1, 0.0, 'MLK'), ('Dark Cocoa Dust 72%', 2, 0.5, 'DRK'), ('Hazelnut Praline Feuilletine', 3, 1.0, 'PRL')])
+        ]),
+        ('Chocolate Lava Cake', 'DS-LAV', [
+            (attr_flavour, [('Belgian Dark Cocoa Core', 1, 0.0, 'DRK'), ('Gooey Salted Caramel Center', 2, 1.0, 'CARM'), ('Ruby Raspberry Ganache', 3, 1.0, 'RASP')]),
+            (attr_serving, [('Warm Cake Only', 1, 0.0, 'CAKE'), ('A La Mode + Madagascar Vanilla Scoop', 2, 2.0, 'ICR')])
+        ]),
+        ('Crème Brûlée', 'DS-CRB', [
+            (attr_flavour, [('Bourbon Vanilla Bean', 1, 0.0, 'VAN'), ('Earl Grey & Lavender Tea', 2, 0.75, 'EGY'), ('Double Ristretto Espresso', 3, 0.75, 'ESP')])
+        ]),
+        ('Fresh Strawberry Tart', 'DS-STR', [
+            (attr_portion, [('Individual Tartlet (4")', 1, 0.0, 'IND'), ('Sharing Tart (8")', 2, 7.5, 'SHR')]),
+            (attr_flavour, [('Vanilla Custard & Fresh Strawberries', 1, 0.0, 'CST'), ('Pistachio Cream & Glazed Berries', 2, 1.0, 'PST')])
+        ]),
+        ('Fudge Brownie & Ice Cream', 'DS-BRW', [
+            (attr_flavour, [('Double Fudge Walnut Brownie', 1, 0.0, 'WLN'), ('Triple Chocolate Brownie (Nut-Free)', 2, 0.0, 'TRP')]),
+            (attr_portion, [('Single Scoop Vanilla', 1, 0.0, '1SCP'), ('Double Scoop Vanilla & Choc', 2, 2.5, '2SCP')])
+        ]),
+        ('New York Cheesecake', 'DS-NYK', [
+            (attr_portion, [('Individual Generous Slice', 1, 0.0, 'SLC'), ('Whole Sharing Cheesecake (8")', 2, 18.0, 'WHL')]),
+            (attr_flavour, [('Classic Cream Cheese', 1, 0.0, 'CLS'), ('Wild Maine Blueberry Compote', 2, 1.0, 'BLU'), ('Wild Strawberry Coulis', 3, 1.0, 'STR')])
+        ]),
+        ('Tiramisu', 'DS-TIR', [
+            (attr_portion, [('Individual Glass Cup', 1, 0.0, 'CUP'), ('Sharing Dessert Bowl', 2, 5.5, 'BWL')]),
+            (attr_flavour, [('Traditional Espresso & Marsala', 1, 0.0, 'ESP'), ('Amaretto Almond Crunch', 2, 1.0, 'AMR'), ('Uji Matcha Green Tea', 3, 1.0, 'MTC')])
+        ]),
+        ('Warm Apple Pie', 'DS-APP', [
+            (attr_serving, [('Warm Oven-Baked Slice', 1, 0.0, 'SLC'), ('A La Mode with Vanilla Ice Cream', 2, 2.0, 'MOD')]),
+            (attr_flavour, [('Spiced Dutch Cinnamon Apple', 1, 0.0, 'CIN'), ('Salted Caramel & Roasted Pecan', 2, 1.0, 'CARM')])
+        ]),
+        ('Dark Chocolate Bar 70%', 'CHOC-BAR', [
+            (attr_flavour, [('Pure Single Origin Dark 70%', 1, 0.0, 'PURE'), ('Himalayan Pink Salt & Roasted Almonds', 2, 0.5, 'SALT'), ('Candied Orange Peel & Cocoa Nibs', 3, 0.75, 'ORN')])
+        ]),
+        ('Luxury Chocolate Gift Box', 'CHOC-GFT', [
+            (attr_portion, [('Collection of 9 pcs', 1, 0.0, '9PC'), ('Grand Collection of 16 pcs', 2, 8.0, '16PC'), ('Imperial Wooden Box 25 pcs', 3, 16.0, '25PC')])
+        ]),
+        ('White Chocolate Raspberry Bar', 'CHOC-WHT', [
+            (attr_flavour, [('Crispy Freeze-Dried Raspberry', 1, 0.0, 'RASP'), ('Sicilian Pistachio & White Chocolate', 2, 0.5, 'PST'), ('Toasted Coconut & Vanilla Bean', 3, 0.5, 'COC')])
+        ]),
+        ('Double Chocolate Chip Cookie', 'BKG-CKI', [
+            (attr_portion, [('Single Jumbo Cookie', 1, 0.0, '1PC'), ('Trio Pack (3 Cookies)', 2, 4.0, '3PC'), ('Baker Box (6 Cookies)', 3, 8.5, '6PC')]),
+            (attr_flavour, [('Belgian Double Chocolate Chunk', 1, 0.0, 'DBL'), ('White Chocolate & Macadamia Nut', 2, 0.5, 'MAC')])
+        ]),
+        ('Signature Hot Chocolate', 'BEV-HOTC', [
+            (attr_size, [('Regular (8oz)', 1, 0.0, '8OZ'), ('Grande (12oz)', 2, 1.2, '12OZ')]),
+            (attr_flavour, [('Rich Belgian Dark 65%', 1, 0.0, 'DRK'), ('Silky Swiss Milk Chocolate', 2, 0.0, 'MLK'), ('Spiced Mexican Chilli Cinnamon', 3, 0.5, 'MEX')])
+        ]),
+
+        # 4. Soft Drinks, Teas, Water
+        ('Coca-Cola', 'DRK-COK', [
+            (attr_size, [('Can 330ml', 1, 0.0, 'CAN'), ('Glass Bottle 330ml', 2, 0.5, 'BTL'), ('PET 500ml', 3, 0.8, '500ML')]),
+            (attr_flavour, [('Classic Original', 1, 0.0, 'CLS'), ('Zero Sugar', 2, 0.0, 'ZERO'), ('Cherry Vanilla Twist', 3, 0.3, 'CHR')])
+        ]),
+        ('Ice Tea', 'DRK-ICT', [
+            (attr_size, [('Glass (350ml)', 1, 0.0, '350ML'), ('Carafe (1 Litre)', 2, 3.5, '1L')]),
+            (attr_flavour, [('Sun Peach Nectar', 1, 0.0, 'PCH'), ('Fresh Lemon Citrus', 2, 0.0, 'LEM'), ('Tropical Passionfruit', 3, 0.3, 'PAS')])
+        ]),
+        ('Minute Maid', 'DRK-MMD', [
+            (attr_size, [('Bottle 250ml', 1, 0.0, '250ML'), ('Bottle 400ml', 2, 1.0, '400ML')]),
+            (attr_flavour, [('Pulpy Orange Delight', 1, 0.0, 'ORN'), ('Crisp Crisp Apple', 2, 0.0, 'APP'), ('Tropical Guava & Mango', 3, 0.0, 'TRP')])
+        ]),
+        ('Schweppes', 'DRK-SCH', [
+            (attr_size, [('Can 330ml', 1, 0.0, 'CAN'), ('Glass Bottle 300ml', 2, 0.5, 'BTL')]),
+            (attr_flavour, [('Indian Tonic Water', 1, 0.0, 'TNC'), ('Sparkling Ginger Ale', 2, 0.0, 'GNG'), ('Club Soda Water', 3, 0.0, 'SDA'), ('Bitter Lemon Refresher', 4, 0.0, 'BLM')])
+        ]),
+        ('Water', 'DRK-WTR', [
+            (attr_size, [('Eco Bottle 500ml', 1, 0.0, '500ML'), ('Glass Bottle 750ml', 2, 1.2, '750ML'), ('Family Bottle 1.5L', 3, 1.8, '1.5L')]),
+            (attr_water_type, [('Natural Mountain Spring (Still)', 1, 0.0, 'STL'), ('Effervescent Mineral (Sparkling)', 2, 0.5, 'SPK')])
+        ]),
+
+        # 5. Packaged Heritage Foods, Snacks & Pickles
+        ('Cardamom Butter Cookies', 'RT-CKI', [
+            (attr_pack_size, [('Tin 200g', 1, 0.0, '200G'), ('Family Tin 400g', 2, 120.0, '400G')])
+        ]),
+        ('Christmas Plum Cake (Rich Fruit)', 'RT-PLM', [
+            (attr_pack_size, [('Gift Loaf 500g', 1, 0.0, '500G'), ('Celebration Round 1 kg', 2, 380.0, '1KG')])
+        ]),
+        ('Dry Coconut Chutney Powder', 'RT-CPD', [
+            (attr_pack_size, [('Pouch 100g', 1, 0.0, '100G'), ('Pouch 250g', 2, 70.0, '250G')]),
+            (attr_spice, [('Medium Spiced', 1, 0.0, 'MED'), ('Extra Spicy Guntur', 2, 0.0, 'HOT')])
+        ]),
+        ('Gift Card', 'SYS-GFT', [
+            (attr_card_value, [('$25 Dining Credit', 1, -25.0, '25USD'), ('$50 Dining Credit', 2, 0.0, '50USD'), ('$100 Dining Credit', 3, 50.0, '100USD')])
+        ]),
+        ('Idli & Dosa Batter Mix', 'RT-BTR', [
+            (attr_pack_size, [('Fresh Pouch 1 kg', 1, 0.0, '1KG'), ('Catering Tub 2 kg', 2, 90.0, '2KG')])
+        ]),
+        ('Instant Appam Mix', 'RT-APM', [
+            (attr_pack_size, [('Pouch 500g', 1, 0.0, '500G'), ('Family Pouch 1 kg', 2, 100.0, '1KG')])
+        ]),
+        ('Jackfruit Chips', 'RT-JCK', [
+            (attr_pack_size, [('Pouch 200g', 1, 0.0, '200G'), ('Bulk Jar 500g', 2, 180.0, '500G')]),
+            (attr_flavour, [('Crispy Sea Salt', 1, 0.0, 'SALT'), ('Spicy Malabar Pepper', 2, 10.0, 'PEPR')])
+        ]),
+        ('Kerala Banana Chips (Coconut Oil)', 'RT-BNP', [
+            (attr_pack_size, [('Pouch 200g', 1, 0.0, '200G'), ('Bulk Jar 500g', 2, 150.0, '500G')]),
+            (attr_flavour, [('Golden Salted Crisp', 1, 0.0, 'SALT'), ('Spicy Masala Tossed', 2, 10.0, 'MAS'), ('Sweet Jaggery Sharkara Upperi', 3, 20.0, 'JAG')])
+        ]),
+        ('Kerala Cut Mango Pickle', 'RT-MNG', [
+            (attr_pack_size, [('Jar 250g', 1, 0.0, '250G'), ('Pouch 500g', 2, 110.0, '500G')]),
+            (attr_flavour, [('Traditional Tender Mango (Kadumango)', 1, 0.0, 'KADU'), ('Garlic Spiced Mango Pickle', 2, 10.0, 'GRLC')])
+        ]),
+        ('Kerala Treats Gift Box', 'RT-GFT', [
+            (attr_portion, [('Heritage Standard Box', 1, 0.0, 'STD'), ('Grand Malabar Wooden Box', 2, 450.0, 'ROYAL')])
+        ]),
+        ('Kozhikode Black Halwa', 'RT-HLW', [
+            (attr_pack_size, [('Pack 250g', 1, 0.0, '250G'), ('Block 500g', 2, 180.0, '500G'), ('Grand Box 1 kg', 3, 390.0, '1KG')])
+        ]),
+        ('Malabar Chicken Biryani (Ready-to-Eat)', 'RT-BRY', [
+            (attr_portion, [('Single Portion (350g)', 1, 0.0, '350G'), ('Family Feast (800g)', 2, 220.0, '800G')])
+        ]),
+        ('Avial (Ready-to-Eat)', 'RT-AVL', [
+            (attr_pack_size, [('Meal Pouch 300g', 1, 0.0, '300G'), ('Double Pouch 600g', 2, 130.0, '600G')])
+        ]),
+        ('Dal Makhani (Ready-to-Eat)', 'RT-DAL', [
+            (attr_pack_size, [('Meal Pouch 300g', 1, 0.0, '300G'), ('Double Pouch 600g', 2, 140.0, '600G')])
+        ]),
+        ('Vegetable Stew (Ready-to-Eat)', 'RT-STW', [
+            (attr_pack_size, [('Meal Pouch 300g', 1, 0.0, '300G'), ('Double Pouch 600g', 2, 135.0, '600G')])
+        ]),
+        ('Prawn Pickle', 'RT-PRW', [
+            (attr_pack_size, [('Glass Jar 250g', 1, 0.0, '250G'), ('Family Jar 500g', 2, 280.0, '500G')])
+        ]),
+        ('Sweet & Sour Lime Pickle', 'RT-LME', [
+            (attr_pack_size, [('Glass Jar 250g', 1, 0.0, '250G'), ('Family Jar 500g', 2, 100.0, '500G')])
+        ]),
+        ('Red Rice Puttu Podi', 'RT-PUT', [
+            (attr_pack_size, [('Pouch 500g', 1, 0.0, '500G'), ('Pouch 1 kg', 2, 70.0, '1KG')])
+        ]),
+        ('Rice Murukku', 'RT-MRK', [
+            (attr_pack_size, [('Pack 200g', 1, 0.0, '200G'), ('Family Box 500g', 2, 120.0, '500G')]),
+            (attr_flavour, [('Traditional Crunchy Sesame', 1, 0.0, 'SES'), ('Spicy Garlic Butter', 2, 10.0, 'GRLC')])
+        ]),
+        ('Spicy Kerala Mixture', 'RT-MIX', [
+            (attr_pack_size, [('Pouch 200g', 1, 0.0, '200G'), ('Family Jar 500g', 2, 130.0, '500G')]),
+            (attr_spice, [('Classic Spicy Crunch', 1, 0.0, 'CLS'), ('Extra Hot Devil Fire', 2, 10.0, 'HOT')])
+        ]),
+    ]
+
+    for tmpl_name, prefix, attr_defs in VARIANT_CONFIGS:
+        tmpl = ProductTemplate.search([('name', '=', tmpl_name)], limit=1)
+        if not tmpl:
+            continue
+
+        existing_attr_ids = set(tmpl.attribute_line_ids.mapped('attribute_id.id'))
+        target_attr_ids = set(a.id for a, _ in attr_defs)
+
+        if existing_attr_ids != target_attr_ids:
+            if tmpl.attribute_line_ids:
+                tmpl.attribute_line_ids.unlink()
+
+            for attr, val_tuples in attr_defs:
+                val_ids = [get_or_create_val(attr, vname, seq).id for vname, seq, _, _ in val_tuples]
+                PTAL.create({
+                    'product_tmpl_id': tmpl.id,
+                    'attribute_id': attr.id,
+                    'value_ids': [Command.set(val_ids)],
+                })
+
+        # Configure price extras and internal codes
+        price_map = {}
+        code_map = {}
+        for attr, val_tuples in attr_defs:
+            for vname, _, extra, code_suffix in val_tuples:
+                price_map[(attr.id, vname)] = extra
+                val_rec = AttributeValue.search([('attribute_id', '=', attr.id), ('name', '=', vname)], limit=1)
+                if val_rec:
+                    code_map[(attr.id, val_rec.id)] = code_suffix
+
+        for line in tmpl.attribute_line_ids:
+            for ptav in line.product_template_value_ids:
+                extra = price_map.get((line.attribute_id.id, ptav.name), 0.0)
+                if ptav.price_extra != extra:
+                    ptav.price_extra = extra
+
+        for idx, v in enumerate(tmpl.product_variant_ids, 1):
+            if not v.default_code or v.default_code.startswith(prefix):
+                suffixes = [code_map.get((ptav.attribute_id.id, ptav.product_attribute_value_id.id), '')
+                            for ptav in v.product_template_attribute_value_ids]
+                suffix_str = '-'.join(filter(None, suffixes))
+                v.default_code = f'{prefix}-{suffix_str}' if suffix_str else f'{prefix}-{idx:02d}'
 
 
 def _configure_combos(env):
@@ -747,9 +858,9 @@ def _post_process_pos_configs(env, pos_config_ids=None):
     PosConfig = env['pos.config'].sudo()
     configs = PosConfig.browse(pos_config_ids) if pos_config_ids else PosConfig.search([])
 
-    floors = env['restaurant.floor'].sudo().search([('name', 'in', ['Main Floor', 'Patio'])])
+    floors = env['restaurant.floor'].sudo().search([('name', 'in', ['Main Floor', 'Patio'])])         if 'restaurant.floor' in env else []
     pricelists = env['product.pricelist'].sudo().search([('name', 'in', ['Happy Hour (20% Off)', 'VIP Member (15% Off)'])])
-    loyalty_progs = env['loyalty.program'].sudo().search([])
+    loyalty_progs = env['loyalty.program'].sudo().search([]) if 'loyalty.program' in env else []
     demo_cats = env['pos.category'].sudo().search([('name', 'in', ['Food', 'Drinks', 'Desserts', 'Chocolates & Sweets'])])
 
     # Presets (Dine In, Takeout, Delivery)
@@ -1114,6 +1225,8 @@ def _load_stock_inventory(env):
         ('available_in_pos', '=', True),
         ('is_storable', '=', True),
     ])
+    # never change the stock of products that existed before this install run (user data)
+    pos_products -= preexisting(pos_products)
 
     target_qty = 100.0
     for prod in pos_products:

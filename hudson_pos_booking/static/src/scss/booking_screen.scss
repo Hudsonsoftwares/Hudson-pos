@@ -380,6 +380,15 @@
 }
 
 /* Badges */
+
+/* Online indicator dot - bottom-right corner, does not overlap prep timer or booking badge */
+.pos-online-table-badge {
+    transition: opacity 0.2s;
+    &:hover {
+        opacity: 0.85;
+    }
+}
+
 .pos-table-badge {
     display: inline-flex;
     align-items: center;
@@ -611,5 +620,19 @@
     &:hover {
         transform: scale(1.02);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+}
+
+/* Phones: the search box takes its own full-width line instead of pushing the toolbar
+   buttons (New Booking, Closing Day, view switcher) off the screen */
+@media (max-width: 576px) {
+    .pos-booking-search-box {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+        flex-basis: 100%;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        order: 3;
     }
 }

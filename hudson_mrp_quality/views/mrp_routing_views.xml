@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_routing_workcenter_form_view_inherit_quality" model="ir.ui.view">
+        <field name="name">mrp.routing.workcenter.form.inherit.quality</field>
+        <field name="model">mrp.routing.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Instructions" name="instructions">
+                        <field name="quality_point_ids" context="{'default_workorder_operation_id': id, 'default_company_id': company_id}">
+                            <list string="Steps">
+                                <field name="sequence" widget="handle"/>
+                                <field name="title" string="Title" required="1"/>
+                                <field name="test_type" string="Type"/>
+                                <field name="name" string="Reference" readonly="1"/>
+                            </list>
+                            <form string="Quality Point">
+                                <sheet>
+                                    <div class="oe_title">
+                                        <h1 class="d-flex align-items-center">
+                                            <field name="name" readonly="1" invisible="name == 'New'" class="oe_inline text-muted me-2"/>
+                                            <span invisible="name == 'New'" class="me-2">:</span>
+                                            <field name="title" placeholder="Title (e.g. Generate Serial Number)..." class="oe_inline flex-grow-1" required="1"/>
+                                        </h1>
+                                    </div>
+                                    <group>
+                                        <group>
+                                            <field name="company_id" groups="base.group_multi_company"/>
+                                            <field name="workorder_operation_id" invisible="1"/>
+                                            <field name="bom_id" invisible="1"/>
+                                            <field name="sequence" invisible="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="test_type" string="Type" required="1"/>
+                                        </group>
+                                    </group>
+                                    <notebook>
+                                        <page string="Instructions" name="instructions">
+                                            <field name="instructions" widget="html" placeholder="Describe the quality check / instructions to do..."/>
+                                        </page>
+                                        <page string="Attachment" name="attachment">
+                                            <group invisible="test_type != 'measure'">
+                                                <label for="norm"/>
+                                                <div class="o_row">
+                                                    <field name="norm"/>
+                                                    <field name="norm_unit"/>
+                                                </div>
+                                                <label for="tolerance_min" string="Tolerance"/>
+                                                <div class="o_row">
+                                                    <span>from </span>
+                                                    <field name="tolerance_min"/>
+                                                    <span> to </span>
+                                                    <field name="tolerance_max"/>
+                                                </div>
+                                            </group>
+                                            <group invisible="test_type == 'measure'">
+                                                <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
+                                            </group>
+                                        </page>
+                                        <page string="Notes" name="notes">
+                                            <field name="notes" placeholder="Add internal notes..."/>
+                                        </page>
+                                        <page string="Message If Failure" name="failure_message" invisible="test_type not in ['passfail', 'measure']">
+                                            <field name="failure_message" placeholder="Message displayed if check fails..."/>
+                                        </page>
+                                    </notebook>
+                                </sheet>
+                            </form>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>

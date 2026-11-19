@@ -106,6 +106,13 @@ class HudsonAutoReconcileWizard(models.TransientModel):
                         candidates.insert(0, other)
                     open_by_amount.setdefault(amount, []).append(line)
 
+        # Refresh payment_state on all affected invoice moves
+        reconciled_moves = lines.move_id.filtered(lambda m: m.is_invoice(True))
+        if reconciled_moves:
+            reconciled_moves.invalidate_recordset(['payment_state', 'status_in_payment', 'amount_residual'])
+            reconciled_moves._compute_payment_state()
+
+
         if reconciled_count == 0:
             message = _('Nothing to reconcile.')
             msg_type = 'warning'

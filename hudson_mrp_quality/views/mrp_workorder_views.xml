@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_workorder_form_view_inherit_quality_points" model="ir.ui.view">
+        <field name="name">mrp.production.work.order.form.inherit.quality.points</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook invisible="not quality_point_ids">
+                    <page string="Instructions / Quality Steps" name="instructions">
+                        <field name="quality_point_ids" readonly="1">
+                            <list string="Steps">
+                                <field name="sequence" widget="handle"/>
+                                <field name="title" string="Title"/>
+                                <field name="test_type" string="Type"/>
+                                <field name="name" string="Reference"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>

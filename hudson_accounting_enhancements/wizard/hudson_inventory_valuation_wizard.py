@@ -81,23 +81,23 @@ class HudsonInventoryValuationWizard(models.TransientModel):
             
             # Replicate Enterprise UI via HTML table
             html = f"""
-            <div style="background-color: white; width: 100%; padding-top: 10px;">
+            <div class="o_hx_valuation_report" style="width: 100%; padding-top: 10px;">
                 <table class="table table-sm table-borderless mb-0" style="width: 100%; table-layout: fixed;">
                     <tbody>
                         <!-- Initial Balance -->
-                        <tr style="background-color: #e9ecef; font-weight: bold;">
-                            <td colspan="2" style="color: #017e84; width: 50%;">Initial Balance</td>
+                        <tr class="o_hx_valuation_head fw-bold">
+                            <td colspan="2" class="o_hx_valuation_title" style="width: 50%;">Initial Balance</td>
                             <td class="text-end" colspan="2" style="width: 50%;">{format_monetary(wiz.initial_balance)}</td>
                         </tr>
                         <tr>
                             <td colspan="2" class="text-muted">{val_code}</td>
                             <td class="text-end" colspan="2" class="text-muted">{format_monetary(wiz.initial_balance)}</td>
                         </tr>
-                        <tr><td colspan="4" style="border-bottom: 1px solid #e9ecef; height: 10px;"></td></tr>
+                        <tr><td colspan="4" class="o_hx_valuation_sep" style="height: 10px;"></td></tr>
                         
                         <!-- Stock Variation -->
-                        <tr style="background-color: #e9ecef; font-weight: bold;">
-                            <td colspan="2" style="color: #017e84;">Stock Variation</td>
+                        <tr class="o_hx_valuation_head fw-bold">
+                            <td colspan="2" class="o_hx_valuation_title">Stock Variation</td>
                             <td class="text-end" colspan="2">{format_monetary(wiz.stock_variation)}</td>
                         </tr>
                         <tr class="text-muted" style="font-size: 0.9em;">
@@ -115,11 +115,11 @@ class HudsonInventoryValuationWizard(models.TransientModel):
                             <td class="text-end" class="text-muted">{format_monetary(variation_debit)}</td>
                             <td class="text-end" class="text-muted">{format_monetary(variation_credit)}</td>
                         </tr>
-                        <tr><td colspan="4" style="border-bottom: 1px solid #e9ecef; height: 10px;"></td></tr>
+                        <tr><td colspan="4" class="o_hx_valuation_sep" style="height: 10px;"></td></tr>
                         
                         <!-- Ending Stock -->
-                        <tr style="background-color: #e9ecef; font-weight: bold;">
-                            <td colspan="2" style="color: #017e84;">Ending Stock</td>
+                        <tr class="o_hx_valuation_head fw-bold">
+                            <td colspan="2" class="o_hx_valuation_title">Ending Stock</td>
                             <td class="text-end" colspan="2">{format_monetary(wiz.ending_stock)}</td>
                         </tr>
                         <tr>

@@ -3,6 +3,7 @@
 import { Component, proxy, onWillStart, onWillUnmount, useProps } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+import { download } from "@web/core/network/download";
 import { standardActionServiceProps } from "@web/webclient/actions/action_plugin";
 
 export class DynamicReport extends Component {
@@ -47,10 +48,12 @@ export class DynamicReport extends Component {
             expandedLines: {},
             currencyId: null,
             alert_message: null,
+            alert_dismissed: false,
+            secondary_alert_dismissed: false,
             filterSummary: {
                 date: 'Fiscal Year',
-                date_type: 'this_year',
-                aged_date_type: 'end_last_year',
+                date_type: 'year',
+                aged_date_type: 'today',
                 comparison: 'no_comparison',
                 previous_periods: 1,
                 date_from_cmp: '',
@@ -105,12 +108,21 @@ export class DynamicReport extends Component {
             model_name: null,
             openDropdownLineId: null,
             dropdownIsDropup: false,
+            dropdownStyle: '',
             searchQuery: '',
             selectedSplitLineId: null,
             splitSearchQuery: '',
             currency_symbol: '₹',
             integrations: { dms: false, knowledge: false },
+            journalChoices: [],
+            // Offsets of the ‹ › period navigators of the date filter
+            dateNav: { month: 0, quarter: 0, year: 0 },
+            // "Exchange Rates" popover (Unrealized Currency Gains/Losses)
+            exchangeRates: [],
+            companyCurrencyName: '',
         });
+        this.state.filterSummary.journal_ids = [];
+        this.state.filterSummary.unreconciled = false;
 
         // Stack of saved param objects for in-place sub-report navigation
         this._paramStack = [];
@@ -121,10 +133,45 @@ export class DynamicReport extends Component {
             if (this.state.openDropdownLineId) {
                 if (!ev.target.closest('.o_dynamic_report_dropdown')) {
                     this.state.openDropdownLineId = null;
+                    this.state.dropdownStyle = '';
+                }
+            }
+            if (this.state.analyticResults && this.state.analyticResults.length) {
+                if (!ev.target.closest('.o_hfp_search_analytic')) {
+                    this.state.analyticResults = [];
+                }
+            }
+            if (this.state.analyticPlanResults && this.state.analyticPlanResults.length) {
+                if (!ev.target.closest('.o_hfp_search_analytic_plan')) {
+                    this.state.analyticPlanResults = [];
+                }
+            }
+            if (this.state.partnerResults && this.state.partnerResults.length) {
+                if (!ev.target.closest('.o_hfp_search_partner')) {
+                    this.state.partnerResults = [];
+                }
+            }
+            if (this.state.tagResults && this.state.tagResults.length) {
+                if (!ev.target.closest('.o_hfp_search_tag')) {
+                    this.state.tagResults = [];
+                }
+            }
+            if (this.state.assetCategoryResults && this.state.assetCategoryResults.length) {
+                if (!ev.target.closest('.o_hfp_search_asset_cat')) {
+                    this.state.assetCategoryResults = [];
                 }
             }
         };
         document.addEventListener('click', this.handleClickOutside);
+
+        this.handleScrollClose = () => {
+            if (this.state.openDropdownLineId) {
+                this.state.openDropdownLineId = null;
+                this.state.dropdownStyle = '';
+            }
+        };
+        window.addEventListener('scroll', this.handleScrollClose, true);
+        window.addEventListener('resize', this.handleScrollClose, true);
 
         onWillStart(async () => {
             await this.fetchData();
@@ -132,22 +179,37 @@ export class DynamicReport extends Component {
 
         onWillUnmount(() => {
             document.removeEventListener('click', this.handleClickOutside);
+            window.removeEventListener('scroll', this.handleScrollClose, true);
+            window.removeEventListener('resize', this.handleScrollClose, true);
         });
     }
 
     toggleLineDropdown(lineId, ev = null) {
-        if (this.state.openDropdownLineId === lineId) {
+        if (!lineId || this.state.openDropdownLineId === lineId) {
             this.state.openDropdownLineId = null;
+            this.state.dropdownStyle = '';
             return;
         }
         this.state.openDropdownLineId = lineId;
-        if (ev && ev.target) {
-            const rect = ev.target.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - rect.bottom;
-            this.state.dropdownIsDropup = (spaceBelow < 200);
-        } else {
-            this.state.dropdownIsDropup = false;
+        if (ev) {
+            const btn = ev.currentTarget || (ev.target && ev.target.closest('.o_report_options_btn')) || ev.target;
+            if (btn && btn.getBoundingClientRect) {
+                const rect = btn.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const isDropup = spaceBelow < 180 && rect.top > 180;
+                const left = Math.max(10, Math.min(rect.left, window.innerWidth - 190));
+                this.state.dropdownIsDropup = isDropup;
+
+                if (isDropup) {
+                    this.state.dropdownStyle = `position: fixed !important; bottom: ${Math.round(window.innerHeight - rect.top + 2)}px !important; top: auto !important; left: ${Math.round(left)}px !important; z-index: 99999 !important; display: block !important; min-width: 170px; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); border: 1px solid var(--dr-dropdown-border, #cbd5e1);`;
+                } else {
+                    this.state.dropdownStyle = `position: fixed !important; top: ${Math.round(rect.bottom + 2)}px !important; bottom: auto !important; left: ${Math.round(left)}px !important; z-index: 99999 !important; display: block !important; min-width: 170px; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); border: 1px solid var(--dr-dropdown-border, #cbd5e1);`;
+                }
+                return;
+            }
         }
+        this.state.dropdownIsDropup = false;
+        this.state.dropdownStyle = '';
     }
 
     formatDateLocal(date) {
@@ -162,42 +224,98 @@ export class DynamicReport extends Component {
         return `${y}-${m}-${d}`;
     }
 
+    /**
+     * Current / previous fiscal year of the active company (server side, it
+     * follows the company's fiscal year settings, e.g. April - March).
+     */
+    async _loadFiscalYears() {
+        if (this._fiscalYears) return;
+        try {
+            this._fiscalYears = await this.orm.call("hudson.dynamic.report", "get_fiscal_year_dates", []);
+        } catch (e) {
+            console.warn("Could not fetch the fiscal year dates, using the calendar year", e);
+            this._fiscalYears = null;
+        }
+    }
+
+    get isDarkMode() {
+        if (typeof document === 'undefined') return false;
+        return Boolean(
+            document.documentElement?.getAttribute('data-bs-theme') === 'dark' ||
+            document.body?.getAttribute('data-bs-theme') === 'dark' ||
+            document.body?.classList?.contains('o_dark') ||
+            document.body?.classList?.contains('o_dark_mode') ||
+            document.documentElement?.classList?.contains('o_dark_mode') ||
+            (document.cookie && document.cookie.includes('color_scheme=dark')) ||
+            (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !(document.cookie && document.cookie.includes('color_scheme=light')))
+        );
+    }
+
+    _getFiscalYear(which = 'this_year') {
+        const fy = this._fiscalYears && this._fiscalYears[which];
+        if (fy && fy.date_from && fy.date_to) {
+            return fy;
+        }
+        // Fallback: calendar year
+        const y = new Date().getFullYear() - (which === 'last_year' ? 1 : 0);
+        return { date_from: `${y}-01-01`, date_to: `${y}-12-31` };
+    }
+
+    /** "Apr 2026 - Mar 2027": start month & year - end month & year. */
+    formatFiscalYearLabel(dateFrom, dateTo) {
+        if (!dateFrom || !dateTo) return '';
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const d1 = new Date(dateFrom + 'T00:00:00');
+        const d2 = new Date(dateTo + 'T00:00:00');
+        return `${months[d1.getMonth()]} ${d1.getFullYear()} - ${months[d2.getMonth()]} ${d2.getFullYear()}`;
+    }
+
+    /**
+     * Which period of the date filter matches the dates (and moves its ‹ ›
+     * navigator there): 'month', 'quarter', 'year' (fiscal), 'today' or 'custom'.
+     */
     detectDateType(dateFrom, dateTo) {
-        if (!dateFrom || !dateTo) return 'this_year';
+        if (!dateFrom || !dateTo) return 'year';
+        if (dateFrom === dateTo && dateFrom === this.formatDateLocal(new Date())) return 'today';
+        const from = new Date(dateFrom + 'T00:00:00');
         const now = new Date();
-        const y = now.getFullYear();
-        const m = now.getMonth();
-        const q = Math.floor(m / 3);
+        const nav = { ...(this.state.dateNav || {}) };
+        const monthsFromNow = (from.getFullYear() - now.getFullYear()) * 12 + from.getMonth() - now.getMonth();
+        const lastDay = new Date(from.getFullYear(), from.getMonth() + 1, 0);
+        if (from.getDate() === 1 && this.formatDateLocal(lastDay) === dateTo) {
+            this.state.dateNav = { ...nav, month: monthsFromNow };
+            return 'month';
+        }
+        // Fiscal quarters (see getPeriodBounds)
+        for (let quarterOffset = -40; quarterOffset <= 8; quarterOffset++) {
+            const qb = this.getPeriodBounds('quarter', quarterOffset);
+            if (qb.date_from === dateFrom && qb.date_to === dateTo) {
+                this.state.dateNav = { ...nav, quarter: quarterOffset };
+                return 'quarter';
+            }
+        }
+        const fyFrom = new Date(this._getFiscalYear('this_year').date_from + 'T00:00:00');
+        const yearOffset = from.getFullYear() - fyFrom.getFullYear();
+        const fy = this.getPeriodBounds('year', yearOffset);
+        if (fy.date_from === dateFrom && fy.date_to === dateTo) {
+            this.state.dateNav = { ...nav, year: yearOffset };
+            return 'year';
+        }
+        return 'custom';
+    }
 
-        const todayStr = this.formatDateLocal(now);
-        if (dateFrom === todayStr && dateTo === todayStr) return 'today';
-
-        const thisMonthStart = this.formatDateLocal(new Date(y, m, 1));
-        const thisMonthEnd = this.formatDateLocal(new Date(y, m + 1, 0));
-        if (dateFrom === thisMonthStart && dateTo === thisMonthEnd) return 'this_month';
-
-        const thisQuarterStart = this.formatDateLocal(new Date(y, q * 3, 1));
-        const thisQuarterEnd = this.formatDateLocal(new Date(y, q * 3 + 3, 0));
-        if (dateFrom === thisQuarterStart && dateTo === thisQuarterEnd) return 'this_quarter';
-
-        const thisYearStart = `${y}-01-01`;
-        const thisYearEnd = `${y}-12-31`;
-        if (dateFrom === thisYearStart && dateTo === thisYearEnd) return 'this_year';
-
-        const lastMonthStart = this.formatDateLocal(new Date(y, m - 1, 1));
-        const lastMonthEnd = this.formatDateLocal(new Date(y, m, 0));
-        if (dateFrom === lastMonthStart && dateTo === lastMonthEnd) return 'last_month';
-
-        const lastQ = q === 0 ? 3 : q - 1;
-        const lastQYear = q === 0 ? y - 1 : y;
-        const lastQuarterStart = this.formatDateLocal(new Date(lastQYear, lastQ * 3, 1));
-        const lastQuarterEnd = this.formatDateLocal(new Date(lastQYear, lastQ * 3 + 3, 0));
-        if (dateFrom === lastQuarterStart && dateTo === lastQuarterEnd) return 'last_quarter';
-
-        const lastYearStart = `${y - 1}-01-01`;
-        const lastYearEnd = `${y - 1}-12-31`;
-        if (dateFrom === lastYearStart && dateTo === lastYearEnd) return 'last_year';
-
+    /** Which "End of" period matches an as-of date ('today', 'month', 'quarter', 'year' or 'custom'). */
+    detectAsOfType(dateTo) {
+        if (!dateTo) return 'today';
+        if (dateTo === this.formatDateLocal(new Date())) return 'today';
+        for (const kind of ['month', 'quarter', 'year']) {
+            for (let offset = -24; offset <= 12; offset++) {
+                if (this.getPeriodBounds(kind, offset).date_to === dateTo) {
+                    this.state.dateNav = { ...(this.state.dateNav || {}), [kind]: offset };
+                    return kind;
+                }
+            }
+        }
         return 'custom';
     }
 
@@ -283,27 +401,85 @@ export class DynamicReport extends Component {
             data.date_to = false;
         }
 
+        await this._loadFiscalYears();
+
+        // Name of the financial report of the menu (Balance Sheet / Profit and
+        // Loss), to pick the right filters before the first load.
+        const reportRef = data.account_report_id || data.form.account_report_id;
+        if (Array.isArray(reportRef) && reportRef.length > 1) {
+            this._reportNameHint = String(reportRef[1]);
+        }
+
+        if (!data.form.date_from && !data.form.date_to && model_name !== 'account.aged.report'
+                && this.getReportKind() === 'balance_sheet') {
+            // Balance Sheet: a position at a date ("As of today"), as in Odoo Online
+            const today = this.formatDateLocal(new Date());
+            this.state.filterSummary.aged_date_type = 'today';
+            this.state.filterSummary.date = today;
+            data.form.date_from = false;
+            data.form.date_to = today;
+            data.date_from = false;
+            data.date_to = today;
+            if (data.form.used_context) {
+                data.form.used_context.date_from = false;
+                data.form.used_context.date_to = today;
+            }
+        }
+
+        if (!data.form.date_to && !data.date_to && this.getReportKind() === 'unrealized') {
+            // Unrealized Currency Gains/Losses: as of the end of the previous
+            // month by default, as in Odoo Online.
+            const now = new Date();
+            const endLastMonth = this.formatDateLocal(new Date(now.getFullYear(), now.getMonth(), 0));
+            this.state.filterSummary.aged_date_type = 'month';
+            this.state.dateNav = { ...(this.state.dateNav || {}), month: -1 };
+            this.state.filterSummary.date = endLastMonth;
+            data.form.date_from = false;
+            data.form.date_to = endLastMonth;
+            data.form.as_of_date = endLastMonth;
+            data.date_from = false;
+            data.date_to = endLastMonth;
+            data.as_of_date = endLastMonth;
+        }
+
+        if (this.getReportKind() === 'journal_audit') {
+            try {
+                await this.loadJournalChoices();
+            } catch (e) {
+                console.warn("Could not load the journals", e);
+            }
+        }
+
         if (!data.form.date_from && !data.form.date_to && model_name !== 'account.aged.report') {
             const now = new Date();
-            if (['account.deferred.revenue.report', 'account.deferred.expense.report'].includes(model_name)) {
+            // Current month by default, as in Odoo Online: the General Ledger and
+            // Trial Balance open on "Nov 2026", so an unfolded account shows its
+            // Initial Balance and Total, plus only this month's items.
+            const MONTH_DEFAULT_MODELS = [
+                'account.deferred.revenue.report', 'account.deferred.expense.report',
+                'account.report.general.ledger', 'account.balance.report',
+                'account.customer.statement',
+            ];
+            if (MONTH_DEFAULT_MODELS.includes(model_name)) {
                 const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
                 const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
                 data.form.date_from = this.formatDateLocal(firstDay);
                 data.form.date_to = this.formatDateLocal(lastDay);
                 data.date_from = data.form.date_from;
                 data.date_to = data.form.date_to;
-                this.state.filterSummary.date_type = 'this_month';
-                const monthName = now.toLocaleString('default', { month: 'long' });
+                this.state.filterSummary.date_type = 'month';
+                const monthName = now.toLocaleString('en-US', { month: 'short' });
                 this.state.filterSummary.date = `${monthName} ${now.getFullYear()}`;
             } else {
-                const firstDay = new Date(now.getFullYear(), 0, 1);
-                const lastDay = new Date(now.getFullYear(), 11, 31);
-                data.form.date_from = this.formatDateLocal(firstDay);
-                data.form.date_to = this.formatDateLocal(lastDay);
+                // Default period: the company's current fiscal year (start month
+                // to end month), as in Odoo Online — not the calendar year.
+                const fy = this._getFiscalYear('this_year');
+                data.form.date_from = fy.date_from;
+                data.form.date_to = fy.date_to;
                 data.date_from = data.form.date_from;
                 data.date_to = data.form.date_to;
-                this.state.filterSummary.date_type = 'this_year';
-                this.state.filterSummary.date = `${now.getFullYear()}`;
+                this.state.filterSummary.date_type = 'year';
+                this.state.filterSummary.date = this.formatFiscalYearLabel(fy.date_from, fy.date_to);
             }
             if (data.form.used_context) {
                 data.form.used_context.date_from = data.form.date_from;
@@ -319,8 +495,18 @@ export class DynamicReport extends Component {
             this.state.customDateTo = data.form.date_to;
             this.state.filterSummary.date_to = data.form.date_to;
         }
-        if (!this.state.filterSummary.date_type && data.form.date_from && data.form.date_to) {
+        if (data.form.date_from && data.form.date_to && !this._dateTypeDetected) {
+            // Dates given by the menu / a previous visit: select the matching period
             this.state.filterSummary.date_type = this.detectDateType(data.form.date_from, data.form.date_to);
+            this._dateTypeDetected = true;
+        }
+        if (this.isSingleDateReport() && !this._asOfDetected) {
+            const asOf = data.form.as_of_date || data.form.date_to || data.as_of_date;
+            if (asOf) {
+                this.state.filterSummary.date = asOf;
+                this.state.filterSummary.aged_date_type = this.detectAsOfType(asOf);
+            }
+            this._asOfDetected = true;
         }
 
         // If it's an aged report, try to read the wizard's actual values to populate filterSummary
@@ -444,6 +630,8 @@ export class DynamicReport extends Component {
         this.state.alert_message = result.alert_message || null;
         this.state.companies_description = result.companies_description || '';
         this.state.available_ledgers = result.available_ledgers || [];
+        this.state.exchangeRates = result.exchange_rates || [];
+        this.state.companyCurrencyName = result.company_currency_name || '';
         
         if (result.date_from && result.date_to) {
             this.state.filterSummary.date_from = result.date_from;
@@ -460,10 +648,12 @@ export class DynamicReport extends Component {
         
         // Setup smart line expansion matching standard ERP reporting
         const expanded = {};
-        if (model_name === 'account.aged.report' || model_name === 'account.report.partner.ledger') {
-            // In Aged reports and Partner Ledger, groups/partners are collapsed by default unless Unfold All is active
-            if (this.state.unfoldAll) {
-                for (const line of lines) {
+        if (['account.aged.report', 'account.report.partner.ledger', 'account.customer.statement'].includes(model_name)) {
+            // Partners are collapsed by default unless Unfold All is active; the
+            // report heading line ("Partner Ledger", "Customer Statement") is
+            // open so the partners are listed, as in Odoo Online.
+            for (const line of lines) {
+                if (this.state.unfoldAll || (line.level === 1 && line.type === 'report')) {
                     expanded[line.id] = true;
                 }
             }
@@ -497,85 +687,128 @@ export class DynamicReport extends Component {
         this.state.expandedLines = expanded;
     }
 
+    // ------------------------------------------------------------------
+    // Date filter, as in Odoo Online: Month / Quarter / Fiscal Year with
+    // ‹ › arrows to move to the previous / next period, or custom dates.
+    // Reports at a date (Balance Sheet, Aged, Unrealized Currency) use the
+    // end of the same periods: End of Month / Quarter / Fiscal Year.
+    // ------------------------------------------------------------------
+
+    /** {date_from, date_to} ('YYYY-MM-DD') of the month / quarter / fiscal year
+     *  `offset` periods away from the current one. */
+    getPeriodBounds(kind, offset = 0) {
+        const now = new Date();
+        if (kind === 'month') {
+            const from = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+            const to = new Date(from.getFullYear(), from.getMonth() + 1, 0);
+            return { date_from: this.formatDateLocal(from), date_to: this.formatDateLocal(to) };
+        }
+        const fy = this._getFiscalYear('this_year');
+        const fyFrom = new Date(fy.date_from + 'T00:00:00');
+        if (kind === 'quarter') {
+            // Quarters of the company's fiscal year (Apr-Jun, Jul-Sep... for an
+            // April - March year), not always of the calendar year.
+            const nowFirst = new Date(now.getFullYear(), now.getMonth(), 1);
+            const monthsIntoFy = (nowFirst.getFullYear() - fyFrom.getFullYear()) * 12 + nowFirst.getMonth() - fyFrom.getMonth();
+            const q = Math.floor(monthsIntoFy / 3) + offset;
+            const from = new Date(fyFrom.getFullYear(), fyFrom.getMonth() + q * 3, fyFrom.getDate());
+            const next = new Date(fyFrom.getFullYear(), fyFrom.getMonth() + (q + 1) * 3, fyFrom.getDate());
+            const to = new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1);
+            return { date_from: this.formatDateLocal(from), date_to: this.formatDateLocal(to) };
+        }
+        // Fiscal year of the company (e.g. April - March): ends the day before
+        // the next one starts, whatever its last day (fiscalyear_last_day).
+        const from = new Date(fyFrom.getFullYear() + offset, fyFrom.getMonth(), fyFrom.getDate());
+        const to = new Date(from.getFullYear() + 1, from.getMonth(), from.getDate() - 1);
+        return { date_from: this.formatDateLocal(from), date_to: this.formatDateLocal(to) };
+    }
+
+    /** True when the fiscal quarters are the calendar ones (fiscal year starting on Jan/Apr/Jul/Oct 1st). */
+    _fiscalQuartersAreCalendar() {
+        const fyFrom = new Date(this._getFiscalYear('this_year').date_from + 'T00:00:00');
+        return fyFrom.getDate() === 1 && fyFrom.getMonth() % 3 === 0;
+    }
+
+    getDateNav(kind) {
+        return (this.state.dateNav && this.state.dateNav[kind]) || 0;
+    }
+
+    /** Text of a period in the dropdown ("November 2026", "Oct 2026 - Dec 2026"...). */
+    getPeriodLabel(kind, single = false) {
+        const b = this.getPeriodBounds(kind, this.getDateNav(kind));
+        const from = new Date(b.date_from + 'T00:00:00');
+        if (kind === 'month') {
+            return `${from.toLocaleString('en-US', { month: 'long' })} ${from.getFullYear()}`;
+        }
+        if (kind === 'quarter') {
+            if (single || !this._fiscalQuartersAreCalendar()) return this.formatFiscalYearLabel(b.date_from, b.date_to);
+            return `Q${Math.floor(from.getMonth() / 3) + 1} ${from.getFullYear()}`;
+        }
+        return single ? this.formatDateDisplay(b.date_to) : this.formatFiscalYearLabel(b.date_from, b.date_to);
+    }
+
+    isPeriodSelected(kind, single = false) {
+        const t = single ? this.state.filterSummary.aged_date_type : this.state.filterSummary.date_type;
+        return t === kind;
+    }
+
+    /** ‹ › arrows: previous / next period, applied at once (as in Odoo Online). */
+    async shiftPeriod(kind, delta, single = false, ev = null) {
+        if (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+        }
+        this.state.dateNav = { ...(this.state.dateNav || {}), [kind]: this.getDateNav(kind) + delta };
+        if (single) {
+            await this.onSingleDateFilter(kind);
+        } else {
+            await this.onDateFilter(kind);
+        }
+    }
+
     async onDateFilter(type) {
+        // Former choices (This / Last Month...) map to a period and an offset
+        const legacy = {
+            this_month: ['month', 0], last_month: ['month', -1],
+            this_quarter: ['quarter', 0], last_quarter: ['quarter', -1],
+            this_year: ['year', 0], last_year: ['year', -1],
+        };
+        if (legacy[type]) {
+            const [kind, offset] = legacy[type];
+            this.state.dateNav = { ...(this.state.dateNav || {}), [kind]: offset };
+            type = kind;
+        }
         const params = this._ensureCurrentParams();
         const data = params.data;
         const form_data = data.form || data;
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = now.getMonth();
-        const q = Math.floor(m / 3);
-        
+
         if (type === 'today') {
-            const today = this.formatDateLocal(now);
+            const today = this.formatDateLocal(new Date());
             form_data.date_from = today;
             form_data.date_to = today;
-            this.state.filterSummary.date = 'Today';
-            this.state.filterSummary.date_type = 'today';
-        } else if (type === 'this_month') {
-            const firstDay = new Date(y, m, 1);
-            const lastDay = new Date(y, m + 1, 0);
-            form_data.date_from = this.formatDateLocal(firstDay);
-            form_data.date_to = this.formatDateLocal(lastDay);
-            const monthName = now.toLocaleString('default', { month: 'long' });
-            this.state.filterSummary.date = `${monthName} ${y}`;
-            this.state.filterSummary.date_type = 'this_month';
-        } else if (type === 'this_quarter') {
-            const firstDay = new Date(y, q * 3, 1);
-            const lastDay = new Date(y, q * 3 + 3, 0);
-            form_data.date_from = this.formatDateLocal(firstDay);
-            form_data.date_to = this.formatDateLocal(lastDay);
-            this.state.filterSummary.date = `Q${q + 1} ${y}`;
-            this.state.filterSummary.date_type = 'this_quarter';
-        } else if (type === 'this_year') {
-            const firstDay = new Date(y, 0, 1);
-            const lastDay = new Date(y, 11, 31);
-            form_data.date_from = this.formatDateLocal(firstDay);
-            form_data.date_to = this.formatDateLocal(lastDay);
-            this.state.filterSummary.date = `${y}`;
-            this.state.filterSummary.date_type = 'this_year';
-        } else if (type === 'last_month') {
-            const firstDay = new Date(y, m - 1, 1);
-            const lastDay = new Date(y, m, 0);
-            form_data.date_from = this.formatDateLocal(firstDay);
-            form_data.date_to = this.formatDateLocal(lastDay);
-            const lastMonthName = firstDay.toLocaleString('default', { month: 'long' });
-            this.state.filterSummary.date = `${lastMonthName} ${firstDay.getFullYear()}`;
-            this.state.filterSummary.date_type = 'last_month';
-        } else if (type === 'last_quarter') {
-            const targetQuarter = q === 0 ? 3 : q - 1;
-            const targetYear = q === 0 ? y - 1 : y;
-            const firstDay = new Date(targetYear, targetQuarter * 3, 1);
-            const lastDay = new Date(targetYear, targetQuarter * 3 + 3, 0);
-            form_data.date_from = this.formatDateLocal(firstDay);
-            form_data.date_to = this.formatDateLocal(lastDay);
-            this.state.filterSummary.date = `Q${targetQuarter + 1} ${targetYear}`;
-            this.state.filterSummary.date_type = 'last_quarter';
-        } else if (type === 'last_year') {
-            const prevYear = y - 1;
-            const firstDay = new Date(prevYear, 0, 1);
-            const lastDay = new Date(prevYear, 11, 31);
-            form_data.date_from = this.formatDateLocal(firstDay);
-            form_data.date_to = this.formatDateLocal(lastDay);
-            this.state.filterSummary.date = `${prevYear}`;
-            this.state.filterSummary.date_type = 'last_year';
+        } else {
+            const b = this.getPeriodBounds(type, this.getDateNav(type));
+            form_data.date_from = b.date_from;
+            form_data.date_to = b.date_to;
         }
+        this.state.filterSummary.date_type = type;
+        this.state.filterSummary.date = this.getDateButtonLabel();
         data.date_from = form_data.date_from;
         data.date_to = form_data.date_to;
-        form_data.date_type = this.state.filterSummary.date_type;
-        data.date_type = this.state.filterSummary.date_type;
+        form_data.date_type = type;
+        data.date_type = type;
         this.state.filterSummary.date_from = form_data.date_from;
         this.state.filterSummary.date_to = form_data.date_to;
         this.state.customDateFrom = form_data.date_from;
         this.state.customDateTo = form_data.date_to;
-        
+
         if (form_data.used_context) {
             form_data.used_context.date_from = form_data.date_from;
             form_data.used_context.date_to = form_data.date_to;
         }
-        
+
         this._saveParams();
-        
+
         const wizard_id = params.wizard_id;
         const model_name = params.model_name;
         if (wizard_id && model_name) {
@@ -588,7 +821,7 @@ export class DynamicReport extends Component {
                 console.warn("Could not write date fields to wizard", e);
             }
         }
-        
+
         await this.fetchData();
     }
 
@@ -651,6 +884,9 @@ export class DynamicReport extends Component {
         form_data.target_move = type;
         data.target_move = type;
         this.state.filterSummary.target_move = type === 'posted' ? 'Posted Entries' : 'All Entries';
+        if (type === 'posted') {
+            this.state.alert_dismissed = false;
+        }
         
         this._saveParams();
         
@@ -665,6 +901,18 @@ export class DynamicReport extends Component {
         }
         
         await this.fetchData();
+    }
+
+    closeAlertBanner() {
+        this.state.alert_dismissed = true;
+    }
+
+    toggleAlertBanner() {
+        this.state.alert_dismissed = !this.state.alert_dismissed;
+    }
+
+    closeSecondaryAlertBanner() {
+        this.state.secondary_alert_dismissed = true;
     }
 
     async onComparisonFilter(type) {
@@ -781,50 +1029,6 @@ export class DynamicReport extends Component {
 
     closeBanner() {
         this.state.bannerClosed = true;
-    }
-
-    async onAgedDateFilter(type) {
-        let newDate = '';
-        const today = new Date();
-        
-        if (type === 'today') {
-            newDate = this.formatDateLocal(today);
-        } else if (type === 'end_last_month') {
-            const date = new Date(today.getFullYear(), today.getMonth(), 0);
-            newDate = this.formatDateLocal(date);
-        } else if (type === 'end_last_quarter') {
-            const q = Math.floor(today.getMonth() / 3);
-            const date = new Date(today.getFullYear(), q * 3, 0);
-            newDate = this.formatDateLocal(date);
-        } else if (type === 'end_last_year') {
-            const date = new Date(today.getFullYear(), 0, 0);
-            newDate = this.formatDateLocal(date);
-        } else if (type === 'custom') {
-            newDate = this.state.customDateFrom || this.state.filterSummary.date || this.formatDateLocal(today);
-        }
-
-        this.state.filterSummary.date = newDate;
-        this.state.filterSummary.aged_date_type = type;
-        this.state.customDateFrom = newDate;
-        
-        const params = this._ensureCurrentParams();
-        const data = params.data;
-        const form_data = data.form || data;
-        form_data.as_of_date = newDate;
-        form_data.date_to = newDate;
-        data.as_of_date = newDate;
-        data.date_to = newDate;
-
-        this._saveParams();
-
-        const wizard_id = params.wizard_id;
-        const model_name = params.model_name;
-        if (wizard_id && model_name === 'account.aged.report') {
-            try {
-                await this.orm.write(model_name, [wizard_id], { as_of_date: newDate });
-            } catch (e) {}
-        }
-        await this.fetchData();
     }
 
     async onAgedAccountFilter(type) {
@@ -1016,6 +1220,13 @@ export class DynamicReport extends Component {
                     newExpanded[l.id] = true;
                 }
             });
+        } else if (['account.aged.report', 'account.report.partner.ledger', 'account.customer.statement'].includes(model_name)) {
+            // Keep the report heading open: only the partners fold
+            this.state.lines.forEach(l => {
+                if (l.level === 1 && l.type === 'report') {
+                    newExpanded[l.id] = true;
+                }
+            });
         }
         this.state.expandedLines = newExpanded;
     }
@@ -1039,10 +1250,10 @@ export class DynamicReport extends Component {
     }
 
     async loadDefaultPartners() {
-        if (!this.state.partnerResults || this.state.partnerResults.length === 0) {
-            const results = await this.orm.searchRead('res.partner', [], ['id', 'name'], { limit: 20, order: 'name asc' });
-            this.state.partnerResults = results;
-        }
+        const selectedIds = new Set((this.state.filterSummary.partners || []).map(p => p.id));
+        const domain = selectedIds.size > 0 ? [['id', 'not in', Array.from(selectedIds)]] : [];
+        const results = await this.orm.searchRead('res.partner', domain, ['id', 'name'], { limit: 50, order: 'name asc' });
+        this.state.partnerResults = results.filter(p => !selectedIds.has(p.id)).slice(0, 20);
     }
 
     async onTagSearch(ev) {
@@ -1112,7 +1323,12 @@ export class DynamicReport extends Component {
     }
 
     async onAnalyticSearch(ev) {
-        const val = ev.target.value;
+        if (ev.key === 'Escape') {
+            this.state.analyticResults = [];
+            ev.target.blur();
+            return;
+        }
+        const val = (ev.target.value || '').trim();
         if (!val) {
             await this.loadDefaultAnalytics();
             return;
@@ -1123,16 +1339,21 @@ export class DynamicReport extends Component {
         }
         if (this.analyticTimeout) clearTimeout(this.analyticTimeout);
         this.analyticTimeout = setTimeout(async () => {
-            const results = await this.orm.searchRead('account.analytic.account', [['name', 'ilike', val]], ['id', 'name'], { limit: 10 });
-            this.state.analyticResults = results;
+            const selectedIds = new Set((this.state.filterSummary.analytic_accounts || []).map(a => a.id));
+            const domain = [['name', 'ilike', val]];
+            if (selectedIds.size > 0) {
+                domain.push(['id', 'not in', Array.from(selectedIds)]);
+            }
+            const results = await this.orm.searchRead('account.analytic.account', domain, ['id', 'name'], { limit: 20 });
+            this.state.analyticResults = results.filter(a => !selectedIds.has(a.id)).slice(0, 10);
         }, 300);
     }
 
     async loadDefaultAnalytics() {
-        if (!this.state.analyticResults || this.state.analyticResults.length === 0) {
-            const results = await this.orm.searchRead('account.analytic.account', [], ['id', 'name'], { limit: 20, order: 'name asc' });
-            this.state.analyticResults = results;
-        }
+        const selectedIds = new Set((this.state.filterSummary.analytic_accounts || []).map(a => a.id));
+        const domain = selectedIds.size > 0 ? [['id', 'not in', Array.from(selectedIds)]] : [];
+        const results = await this.orm.searchRead('account.analytic.account', domain, ['id', 'name'], { limit: 50, order: 'name asc' });
+        this.state.analyticResults = results.filter(a => !selectedIds.has(a.id)).slice(0, 20);
     }
 
     selectAnalyticAccount(a) {
@@ -1150,10 +1371,17 @@ export class DynamicReport extends Component {
         if (this.state.filterSummary.analytic_accounts) {
             this.state.filterSummary.analytic_accounts = this.state.filterSummary.analytic_accounts.filter(a => a.id !== aid);
         }
+        if (this.state.analyticResults && this.state.analyticResults.length > 0) {
+            await this.loadDefaultAnalytics();
+        }
         await this.applyAnalyticFilters();
     }
 
     async applyAnalyticFilters() {
+        this.state.analyticResults = [];
+        this.state.analyticPlanResults = [];
+        this.state.analyticSearch = '';
+        this.state.analyticPlanSearch = '';
         const wizard_id = this.reportParams.wizard_id;
         const model_name = this.reportParams.model_name;
         const accountIds = (this.state.filterSummary.analytic_accounts || []).map(a => a.id);
@@ -1178,7 +1406,12 @@ export class DynamicReport extends Component {
     }
 
     async onAnalyticPlanSearch(ev) {
-        const val = ev.target.value;
+        if (ev.key === 'Escape') {
+            this.state.analyticPlanResults = [];
+            ev.target.blur();
+            return;
+        }
+        const val = (ev.target.value || '').trim();
         if (!val) {
             await this.loadDefaultAnalyticPlans();
             return;
@@ -1189,16 +1422,21 @@ export class DynamicReport extends Component {
         }
         if (this.analyticPlanTimeout) clearTimeout(this.analyticPlanTimeout);
         this.analyticPlanTimeout = setTimeout(async () => {
-            const results = await this.orm.searchRead('account.analytic.plan', [['name', 'ilike', val]], ['id', 'name'], { limit: 10 });
-            this.state.analyticPlanResults = results;
+            const selectedIds = new Set((this.state.filterSummary.analytic_plans || []).map(p => p.id));
+            const domain = [['name', 'ilike', val]];
+            if (selectedIds.size > 0) {
+                domain.push(['id', 'not in', Array.from(selectedIds)]);
+            }
+            const results = await this.orm.searchRead('account.analytic.plan', domain, ['id', 'name'], { limit: 20 });
+            this.state.analyticPlanResults = results.filter(p => !selectedIds.has(p.id)).slice(0, 10);
         }, 300);
     }
 
     async loadDefaultAnalyticPlans() {
-        if (!this.state.analyticPlanResults || this.state.analyticPlanResults.length === 0) {
-            const results = await this.orm.searchRead('account.analytic.plan', [], ['id', 'name'], { limit: 20, order: 'name asc' });
-            this.state.analyticPlanResults = results;
-        }
+        const selectedIds = new Set((this.state.filterSummary.analytic_plans || []).map(p => p.id));
+        const domain = selectedIds.size > 0 ? [['id', 'not in', Array.from(selectedIds)]] : [];
+        const results = await this.orm.searchRead('account.analytic.plan', domain, ['id', 'name'], { limit: 50, order: 'name asc' });
+        this.state.analyticPlanResults = results.filter(p => !selectedIds.has(p.id)).slice(0, 20);
     }
 
     selectAnalyticPlan(p) {
@@ -1215,6 +1453,9 @@ export class DynamicReport extends Component {
     async removeAnalyticPlan(pid) {
         if (this.state.filterSummary.analytic_plans) {
             this.state.filterSummary.analytic_plans = this.state.filterSummary.analytic_plans.filter(p => p.id !== pid);
+        }
+        if (this.state.analyticPlanResults && this.state.analyticPlanResults.length > 0) {
+            await this.loadDefaultAnalyticPlans();
         }
         await this.applyAnalyticFilters();
     }
@@ -1233,10 +1474,13 @@ export class DynamicReport extends Component {
     }
 
     async loadDefaultAssetCategories() {
-        if (!this.state.assetCategoryResults || this.state.assetCategoryResults.length === 0) {
-            const results = await this.orm.searchRead('account.asset.category', [['type', '=', 'purchase']], ['id', 'name'], { limit: 20, order: 'name asc' });
-            this.state.assetCategoryResults = results;
+        const selectedIds = new Set((this.state.filterSummary.asset_categories || []).map(c => c.id));
+        const domain = [['type', '=', 'purchase']];
+        if (selectedIds.size > 0) {
+            domain.push(['id', 'not in', Array.from(selectedIds)]);
         }
+        const results = await this.orm.searchRead('account.asset.category', domain, ['id', 'name'], { limit: 50, order: 'name asc' });
+        this.state.assetCategoryResults = results.filter(c => !selectedIds.has(c.id)).slice(0, 20);
     }
 
     selectAssetCategory(c) {
@@ -1547,6 +1791,213 @@ export class DynamicReport extends Component {
                model === 'account.profit.and.loss';
     }
 
+    /**
+     * Which report is displayed, independent of the wizard model behind it.
+     * Before the first load the title is not known yet: the financial report
+     * name of the menu (Balance Sheet / Profit and Loss) is used instead.
+     */
+    getReportKind() {
+        const model = this.state.model_name || '';
+        const title = ((this.state.title && this.state.title !== 'Loading...') ? this.state.title : (this._reportNameHint || '')).toLowerCase();
+        if (model === 'accounting.report') {
+            if (title.includes('balance sheet')) return 'balance_sheet';
+            return 'profit_loss';
+        }
+        const kinds = {
+            'account.cash.flow.wizard': 'cash_flow',
+            'account.executive.summary.wizard': 'executive_summary',
+            'account.report.general.ledger': 'general_ledger',
+            'account.balance.report': 'trial_balance',
+            'account.aged.report': 'aged',
+            'account.report.partner.ledger': 'partner_ledger',
+            'account.customer.statement': 'customer_statement',
+            'account.tax.extended.wizard': 'tax',
+            'account.tax.report.wizard': 'tax',
+            'account.print.journal': 'journal_audit',
+            'account.unrealized.currency.wizard': 'unrealized',
+            'account.unrealized.currency.report': 'unrealized',
+            'account.deferred.revenue.report': 'deferred',
+            'account.deferred.expense.report': 'deferred',
+            'asset.depreciation.schedule': 'depreciation',
+        };
+        return kinds[model] || 'other';
+    }
+
+    /**
+     * Filters of the top bar per report, as in Odoo Online.
+     *  date: 'range' (start - end) or 'single' (as of date)
+     *  options: entries of the options part of the "Posted Entries" dropdown
+     */
+    get reportFilters() {
+        const configs = {
+            balance_sheet: { date: 'single', comparison: true, analytic: true, options: ['unfold_all', 'hide_zero', 'split_horizontally'] },
+            profit_loss: { date: 'range', comparison: true, analytic: true, options: ['unfold_all', 'hide_zero', 'split_horizontally'] },
+            cash_flow: { date: 'range', options: ['unfold_all', 'hide_zero'] },
+            executive_summary: { date: 'range', comparison: true, options: ['hide_zero'] },
+            general_ledger: { date: 'range', analytic: true, options: ['unfold_all'] },
+            trial_balance: { date: 'range', analytic: true, options: ['unfold_all'] },
+            aged: { date: 'single', partners: true, account_aged: true, options: ['unfold_all', 'hide_zero', 'aging_by', 'aging_interval'] },
+            partner_ledger: { date: 'range', partners: true, account_partner: true, options: ['unfold_all', 'unreconciled'] },
+            customer_statement: { date: 'range', partners: true, account_partner: true, options: ['unfold_all'] },
+            tax: { date: 'range', options: ['hide_zero'] },
+            journal_audit: { date: 'range', journals: true, options: ['unfold_all'] },
+            unrealized: { date: 'single', options: ['hide_zero'] },
+            deferred: { date: 'range', options: ['unfold_all', 'hide_zero'] },
+            depreciation: { date: 'range', options: ['unfold_all', 'hide_zero'] },
+            other: { date: 'range', options: ['unfold_all', 'hide_zero'] },
+        };
+        return configs[this.getReportKind()] || configs.other;
+    }
+
+    hasFilter(name) {
+        return Boolean(this.reportFilters[name]);
+    }
+
+    hasOption(name) {
+        return (this.reportFilters.options || []).includes(name);
+    }
+
+    isSingleDateReport() {
+        return this.reportFilters.date === 'single';
+    }
+
+    /** Aged Receivable only offers receivable accounts, Aged Payable payable ones. */
+    getAgedAccountChoices() {
+        const current = this.state.filterSummary.account_type || 'receivable';
+        if (current.includes('payable')) {
+            return [['payable', 'Payable'], ['non_trade_payable', 'Non Trade Payable']];
+        }
+        return [['receivable', 'Receivable'], ['non_trade_receivable', 'Non Trade Receivable']];
+    }
+
+    /**
+     * "As of" date of the reports showing a position at a date (Balance Sheet):
+     * no start date, balances since the beginning.
+     */
+    /**
+     * "As of" date of the reports showing a position at a date (Balance Sheet,
+     * Aged Receivable / Payable, Unrealized Currency): Today, End of Month /
+     * Quarter / Fiscal Year (with ‹ › arrows) or a specific date.
+     */
+    async onSingleDateFilter(type) {
+        // Former choices (End of Last Month...) map to a period and an offset
+        const legacy = {
+            end_last_month: ['month', -1], end_last_quarter: ['quarter', -1], end_last_year: ['year', -1],
+        };
+        if (legacy[type]) {
+            const [kind, offset] = legacy[type];
+            this.state.dateNav = { ...(this.state.dateNav || {}), [kind]: offset };
+            type = kind;
+        }
+        let newDate = this.formatDateLocal(new Date());
+        if (['month', 'quarter', 'year'].includes(type)) {
+            newDate = this.getPeriodBounds(type, this.getDateNav(type)).date_to;
+        } else if (type === 'custom') {
+            newDate = this.state.customDateFrom || this.state.filterSummary.date || newDate;
+        }
+        this.state.filterSummary.aged_date_type = type;
+        this.state.filterSummary.date = newDate;
+        this.state.customDateFrom = newDate;
+
+        const params = this._ensureCurrentParams();
+        const data = params.data;
+        const form_data = data.form || data;
+        if (this.state.model_name === 'account.aged.report' || this.getReportKind() === 'unrealized') {
+            form_data.as_of_date = newDate;
+            form_data.date_to = newDate;
+            data.as_of_date = newDate;
+            data.date_to = newDate;
+            this.state.filterSummary.date_to = newDate;
+            this._saveParams();
+            if (params.wizard_id && this.state.model_name === 'account.aged.report') {
+                try {
+                    await this.orm.write('account.aged.report', [params.wizard_id], { as_of_date: newDate });
+                } catch (e) {}
+            }
+        } else {
+            this._setAsOfDate(newDate);
+            this._saveParams();
+            if (params.wizard_id && params.model_name) {
+                try {
+                    await this.orm.write(params.model_name, [params.wizard_id], { date_from: false, date_to: newDate });
+                } catch (e) {}
+            }
+        }
+        await this.fetchData();
+    }
+
+    /** Kept for the callers of the former Aged date filter. */
+    async onAgedDateFilter(type) {
+        return this.onSingleDateFilter(type);
+    }
+
+    _setAsOfDate(newDate) {
+        const data = this._ensureCurrentParams().data;
+        const form_data = data.form || data;
+        form_data.date_from = false;
+        form_data.date_to = newDate;
+        data.date_from = false;
+        data.date_to = newDate;
+        if (form_data.used_context) {
+            form_data.used_context.date_from = false;
+            form_data.used_context.date_to = newDate;
+        }
+        this.state.filterSummary.date_from = false;
+        this.state.filterSummary.date_to = newDate;
+    }
+
+    async toggleUnreconciled() {
+        this.state.filterSummary.unreconciled = !this.state.filterSummary.unreconciled;
+        const data = this._ensureCurrentParams().data;
+        const form_data = data.form || data;
+        form_data.unreconciled = this.state.filterSummary.unreconciled;
+        this._saveParams();
+        await this.fetchData();
+    }
+
+    // ---- Journals filter (Journal Audit) ----
+
+    async loadJournalChoices() {
+        if (this.state.journalChoices && this.state.journalChoices.length) return;
+        // The active companies are applied by the record rules / context
+        this.state.journalChoices = await this.orm.searchRead(
+            'account.journal', [], ['id', 'name', 'code'], { order: 'sequence, name' });
+    }
+
+    isJournalSelected(journalId) {
+        const selected = this.state.filterSummary.journal_ids || [];
+        return !selected.length || selected.includes(journalId);
+    }
+
+    async toggleJournal(journalId) {
+        const all = (this.state.journalChoices || []).map(j => j.id);
+        let selected = [...(this.state.filterSummary.journal_ids || [])];
+        if (!selected.length) selected = [...all];
+        selected = selected.includes(journalId) ? selected.filter(id => id !== journalId) : [...selected, journalId];
+        if (!selected.length) return;  // at least one journal
+        this.state.filterSummary.journal_ids = selected.length === all.length ? [] : selected;
+        const params = this._ensureCurrentParams();
+        const form_data = params.data.form || params.data;
+        form_data.journal_ids = selected;
+        // a journal choice of the user: the server keeps it (within the active
+        // companies); otherwise the report covers the journals of all of them
+        form_data.journal_ids_user_selected = selected.length !== all.length;
+        this._saveParams();
+        if (params.wizard_id && params.model_name) {
+            try {
+                await this.orm.write(params.model_name, [params.wizard_id], { journal_ids: [[6, 0, selected]] });
+            } catch (e) {}
+        }
+        await this.fetchData();
+    }
+
+    getJournalButtonLabel() {
+        const selected = this.state.filterSummary.journal_ids || [];
+        if (!selected.length) return 'All Journals';
+        const names = (this.state.journalChoices || []).filter(j => selected.includes(j.id)).map(j => j.code || j.name);
+        return names.length <= 2 ? names.join(', ') : `${names.length} Journals`;
+    }
+
     formatDateRangeLabel(dateFrom, dateTo) {
         if (!dateFrom || !dateTo) return `${new Date().getFullYear()}`;
         const d1 = new Date(dateFrom + 'T00:00:00');
@@ -1561,7 +2012,7 @@ export class DynamicReport extends Component {
                 return `${y1}`;
             }
             if (m1 === m2 && d1.getDate() === 1) {
-                const fullMonth = d1.toLocaleString('default', { month: 'long' });
+                const fullMonth = d1.toLocaleString('en-US', { month: 'short' });
                 return `${fullMonth} ${y1}`;
             }
             return `${m1} - ${m2} ${y1}`;
@@ -1571,61 +2022,31 @@ export class DynamicReport extends Component {
 
     getDateButtonLabel() {
         const t = this.state.filterSummary.date_type;
-        const now = new Date();
-        const y = now.getFullYear();
+        const fs = this.state.filterSummary;
         if (t === 'today') {
             return 'Today';
         }
-        if (t === 'this_month') {
-            const monthName = now.toLocaleString('default', { month: 'long' });
-            return `${monthName} ${y}`;
+        if (t === 'month') {
+            const b = this.getPeriodBounds('month', this.getDateNav('month'));
+            const d = new Date(b.date_from + 'T00:00:00');
+            return `${d.toLocaleString('en-US', { month: 'short' })} ${d.getFullYear()}`;
         }
-        if (t === 'this_quarter') {
-            const quarter = Math.floor(now.getMonth() / 3) + 1;
-            return `Q${quarter} ${y}`;
+        if (t === 'quarter' || t === 'year') {
+            return this.getPeriodLabel(t);
         }
-        if (t === 'this_year') {
-            return `${y}`;
-        }
-        if (t === 'last_month') {
-            const prevMonthDate = new Date(y, now.getMonth() - 1, 1);
-            const monthName = prevMonthDate.toLocaleString('default', { month: 'long' });
-            return `${monthName} ${prevMonthDate.getFullYear()}`;
-        }
-        if (t === 'last_quarter') {
-            const currentQuarter = Math.floor(now.getMonth() / 3);
-            const targetQuarter = currentQuarter === 0 ? 4 : currentQuarter;
-            const targetYear = currentQuarter === 0 ? y - 1 : y;
-            return `Q${targetQuarter} ${targetYear}`;
-        }
-        if (t === 'last_year') {
-            return `${y - 1}`;
-        }
-        if (t === 'custom') {
-            if (this.state.filterSummary.date_from && this.state.filterSummary.date_to) {
-                return `${this.formatDateDisplay(this.state.filterSummary.date_from)} to ${this.formatDateDisplay(this.state.filterSummary.date_to)}`;
+        if (fs.date_from && fs.date_to) {
+            if (t === 'custom') {
+                return `${this.formatDateDisplay(fs.date_from)} - ${this.formatDateDisplay(fs.date_to)}`;
             }
-            return this.state.filterSummary.date || 'Custom Dates';
+            return this.formatDateRangeLabel(fs.date_from, fs.date_to);
         }
-        if (this.state.filterSummary.date_from && this.state.filterSummary.date_to) {
-            return this.formatDateRangeLabel(this.state.filterSummary.date_from, this.state.filterSummary.date_to);
-        }
-        return this.state.filterSummary.date || `${y}`;
+        return fs.date || `${new Date().getFullYear()}`;
     }
 
+    /** "As of 30/11/2026", as in Odoo Online. */
     getAgedDateButtonLabel() {
-        const t = this.state.filterSummary.aged_date_type;
-        if (t === 'today') return 'Today';
-        if (t === 'end_last_month') return 'End of Last Month';
-        if (t === 'end_last_quarter') return 'End of Last Quarter';
-        if (t === 'end_last_year') return 'End of Last Financial Year';
-        if (t === 'custom') return `As of: ${this.formatDateDisplay(this.state.filterSummary.date)}`;
-        if (this.state.filterSummary.date) {
-            const todayStr = this.formatDateLocal(new Date());
-            if (this.state.filterSummary.date === todayStr) return 'Today';
-            return `As of: ${this.formatDateDisplay(this.state.filterSummary.date)}`;
-        }
-        return 'Today';
+        const date = this.state.filterSummary.date || this.formatDateLocal(new Date());
+        return `As of ${this.formatDateDisplay(date)}`;
     }
 
     toggleSubtotals() {
@@ -1945,8 +2366,10 @@ export class DynamicReport extends Component {
         return 'o_report_val_positive';
     }
 
-    getCellValueClass(val, col) {
+    getCellValueClass(val, col, line = null) {
         if (!col) return '';
+        // Overdue due dates in red (Customer Statement), as in Odoo Online
+        if (col.field === 'date_maturity' && line && line.is_overdue) return 'text-danger';
         if (col.type === 'percentage' || (col.field && (col.field === 'percentage_val' || col.field.endsWith('_pct')))) {
             if (this.isZeroValue(val)) return 'o_report_val_zero';
             if (this.isNegativeValue(val)) return 'o_report_pct_negative text-danger fw-semibold';
@@ -1963,6 +2386,14 @@ export class DynamicReport extends Component {
 
     formatCellValue(value, line, col) {
         if (!col) return value || '';
+        // General Ledger, as in Odoo Online: an unfolded account shows its
+        // amounts on its "Total <account>" line, not on the account line.
+        // Same for an unfolded partner of the Customer Statement ("Total <partner>")
+        if (col.type === 'monetary' && line && this.state.expandedLines[line.id] && this.hasChildren(line)
+            && ((line.type === 'account' && this.state.model_name === 'account.report.general.ledger')
+                || (line.type === 'partner' && this.state.model_name === 'account.customer.statement'))) {
+            return '';
+        }
         if (col.type === 'monetary') {
             return this.formatMonetary(value, line, col);
         }
@@ -2017,6 +2448,40 @@ export class DynamicReport extends Component {
         return `${symbol} ${formatted}`;
     }
 
+    _getCustomRates() {
+        const data = this._ensureCurrentParams().data || {};
+        const form_data = data.form || data;
+        return { ...(form_data.custom_rates || {}) };
+    }
+
+    /** A rate typed in the Exchange Rates popover: report only, not saved. */
+    async onExchangeRateChange(currencyId, ev) {
+        const value = parseFloat(ev.target.value);
+        const data = this._ensureCurrentParams().data;
+        const form_data = data.form || data;
+        const rates = { ...(form_data.custom_rates || {}) };
+        if (!value || value <= 0) {
+            delete rates[String(currencyId)];
+        } else {
+            rates[String(currencyId)] = value;
+        }
+        form_data.custom_rates = rates;
+        this._saveParams();
+        await this.fetchData();
+    }
+
+    async resetExchangeRates() {
+        const data = this._ensureCurrentParams().data;
+        const form_data = data.form || data;
+        form_data.custom_rates = {};
+        this._saveParams();
+        await this.fetchData();
+    }
+
+    hasCustomRates() {
+        return (this.state.exchangeRates || []).some(r => r.is_custom);
+    }
+
     async openExchangeRates() {
         await this.action.doAction({
             type: 'ir.actions.act_window',
@@ -2038,6 +2503,8 @@ export class DynamicReport extends Component {
             target: 'new',
             context: {
                 'default_date': (date && date !== 'Fiscal Year') ? date : undefined,
+                // Rates typed in the Exchange Rates popover of the report
+                'unrealized_custom_rates': this._getCustomRates(),
             }
         });
     }
@@ -2338,7 +2805,20 @@ export class DynamicReport extends Component {
         const model_name = params.model_name;
         const wizard_id = params.wizard_id;
         const data = params.data || {};
-        
+
+        // Reports without a wizard PDF (no check_report): print the report
+        // as computed for the screen, every line included.
+        // Profit and Loss: the screen restructures the report like Odoo Online
+        // (Revenue, Costs of Revenue, Gross Profit, Operating Expenses...); the
+        // wizard PDF only knows the raw financial report lines, so print the
+        // screen version instead.
+        const SNAPSHOT_PDF_MODELS = ['account.aged.report', 'account.customer.statement'];
+        const isProfitAndLoss = model_name === 'accounting.report' && /profit|loss/i.test(this.state.title || '');
+        if (SNAPSHOT_PDF_MODELS.includes(model_name) || isProfitAndLoss) {
+            await this.exportSnapshotPDF();
+            return;
+        }
+
         if (model_name && wizard_id) {
             try {
                 const context = {
@@ -2356,10 +2836,57 @@ export class DynamicReport extends Component {
                     return;
                 }
             } catch (e) {
-                console.warn("Could not execute check_report, falling back to window.print", e);
+                console.warn("Could not execute check_report, falling back to the report snapshot PDF", e);
             }
         }
-        window.print();
+        // window.print() only printed the part of the report visible on screen
+        await this.exportSnapshotPDF();
+    }
+
+    /**
+     * Download a PDF of the whole report (all lines, folded or not), built
+     * server side from the data displayed (hudson.report.snapshot).
+     */
+    async exportSnapshotPDF() {
+        const columns = (this.state.columns || []).map((col) => ({
+            field: col.field,
+            label: col.label,
+            type: col.type,
+        }));
+        const lines = (this.state.lines || []).map((line) => {
+            const out = {
+                level: line.level,
+                has_children: !!line.has_children,
+                is_summary_total: !!line.is_summary_total,
+                is_summary_banner: !!line.is_summary_banner,
+            };
+            for (const col of columns) {
+                out[col.field] = line[col.field];
+            }
+            return out;
+        });
+        const reportData = {
+            title: this.state.title,
+            // Same period wording as the date filter button ("Apr 2026 - Mar 2027")
+            date_str: this.state.model_name === 'account.aged.report'
+                ? this.getAgedDateButtonLabel()
+                : this.getDateButtonLabel(),
+            columns,
+            lines,
+        };
+
+        // download() shows server errors in the usual error dialog instead of
+        // leaving the page like a plain form submit would.
+        const ui = this.env.services.ui;
+        ui?.block();
+        try {
+            await download({
+                url: "/hudson_accounting_enhancements/export_pdf",
+                data: { data: JSON.stringify(reportData) },
+            });
+        } finally {
+            ui?.unblock();
+        }
     }
 
     /**

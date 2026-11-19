@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <t t-name="hudson_pos_actions.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
-        <!-- Place Course button for Bar & Restaurant; Quotation button for Retail -->
+        <!-- Quotation button for Retail -->
         <xpath expr="//button[@t-if='this.pos.config.use_presets']" position="after">
-            <button class="hudson-course-btn btn btn-lg btn-secondary lh-lg" t-if="this.pos.config.module_pos_restaurant and this.showAddCourse" t-on-click="() => this.clickAddCourse()">
-                <i class="oi oi-fw align-self-center opacity-50" data-icon="restaurant" role="img" aria-hidden="true"/>
-                <span class="ps-1">Course</span>
-            </button>
             <button class="hudson-quotation-btn btn btn-lg btn-secondary lh-lg" t-if="this.showRetailQuotation" t-on-click="() => this.clickRetailQuotation()">
                 <i class="oi oi-fw align-self-center opacity-50" data-icon="link" role="img" aria-hidden="true"/>
                 <span class="ps-1">Quotation / Order</span>
+            </button>
+        </xpath>
+
+        <!-- Phones (small product screen): the button row above is not displayed at all, every action
+             lives in the Actions dialog. Offer Quotation / Order and Course there too. -->
+        <xpath expr="//t[@t-if='(this.pos.isSmallProductScreen and this.props.showRemainingButtons)']" position="inside">
+            <button t-if="this.showRetailQuotationInDialog" class="hudson-quotation-btn btn btn-secondary" t-on-click="() => this.clickRetailQuotationFromDialog()">
+                <i class="oi oi-fw align-self-center opacity-50" data-icon="link" role="img" aria-hidden="true"/>
+                <span>Quotation / Order</span>
+            </button>
+            <button t-if="this.showAddCourseInDialog" class="course-btn btn btn-secondary" t-on-click="() => this.clickAddCourseFromDialog()">
+                <i class="oi oi-fw align-self-center opacity-50" data-icon="restaurant" role="img" aria-hidden="true"/>
+                <span>Course</span>
             </button>
         </xpath>
 

@@ -1,30 +1,40 @@
+// Compile-time light/dark switch. Odoo compiles backend SCSS once for the
+// light bundle and once for web.assets_web_dark (dark primary variables), so
+// hx-theme() returns the light colour in one and the dark colour in the other.
+@function hx-theme($light, $dark) {
+    @if (global-variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark") {
+        @return $dark;
+    }
+    @return $light;
+}
+
 /* Bank Matching List View - High Visibility & Premium Aesthetics */
 .o_hudson_bank_matching_container {
-    background-color: #ffffff;
+    background-color: hx-theme(#ffffff, $o-view-background-color);
     font-family: inherit;
 
     .o_hudson_bank_matching_top_banner {
-        border-bottom: 1px solid #e2e8f0;
-        background-color: #ffffff;
+        border-bottom: 1px solid hx-theme(#e2e8f0, $o-gray-300);
+        background-color: hx-theme(#ffffff, $o-view-background-color);
         padding: 12px 24px;
     }
 
     .o_hudson_bank_matching_group_header {
-        background-color: #f1f5f9;
-        border-top: 1px solid #cbd5e1;
-        border-bottom: 1px solid #cbd5e1;
+        background-color: hx-theme(#f1f5f9, $o-gray-100);
+        border-top: 1px solid hx-theme(#cbd5e1, $o-gray-400);
+        border-bottom: 1px solid hx-theme(#cbd5e1, $o-gray-400);
         padding: 8px 24px;
     }
 
     .o_hudson_bank_matching_row {
-        border-bottom: 1px solid #e2e8f0;
-        background-color: #ffffff;
+        border-bottom: 1px solid hx-theme(#e2e8f0, $o-gray-300);
+        background-color: hx-theme(#ffffff, $o-view-background-color);
         min-height: 48px;
         padding: 8px 24px;
         transition: background-color 0.1s ease;
 
         &:hover {
-            background-color: #f8fafc;
+            background-color: hx-theme(#f8fafc, $o-gray-100);
         }
 
         .cursor-pointer {
@@ -33,14 +43,14 @@
 
         /* High Legibility Typography */
         .o_hudson_row_date {
-            color: #334155 !important;
+            color: hx-theme(#334155, $o-gray-800) !important;
             font-weight: 600 !important;
             font-size: 0.85rem !important;
             min-width: 65px;
         }
 
         .o_hudson_partner_name {
-            color: #00878a !important;
+            color: hx-theme(#00878a, #2dd4bf) !important;
             font-weight: 700 !important;
             font-size: 0.875rem !important;
             max-width: 220px;
@@ -52,26 +62,26 @@
         }
 
         .o_hudson_partner_ref {
-            color: #475569 !important;
+            color: hx-theme(#475569, $o-gray-700) !important;
             font-weight: 500 !important;
             font-size: 0.84rem !important;
         }
 
         .o_hudson_primary_label {
-            color: #0f172a !important;
+            color: hx-theme(#0f172a, $o-gray-900) !important;
             font-weight: 600 !important;
             font-size: 0.875rem !important;
         }
 
         .o_hudson_amount_pos {
-            color: #0f172a !important;
+            color: hx-theme(#0f172a, $o-gray-900) !important;
             font-weight: 700 !important;
             font-size: 0.92rem !important;
             font-variant-numeric: tabular-nums;
         }
 
         .o_hudson_amount_neg {
-            color: #b91c1c !important;
+            color: hx-theme(#b91c1c, #ff7b7b) !important;
             font-weight: 700 !important;
             font-size: 0.92rem !important;
             font-variant-numeric: tabular-nums;
@@ -106,19 +116,19 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid hx-theme(#cbd5e1, $o-gray-400) !important;
     border-radius: 6px !important;
-    background-color: #ffffff !important;
-    color: #475569 !important;
+    background-color: hx-theme(#ffffff, $o-view-background-color) !important;
+    color: hx-theme(#475569, $o-gray-700) !important;
     position: relative !important;
     cursor: pointer !important;
     transition: all 0.15s ease-in-out !important;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
 
     &:hover {
-        background-color: #f1f5f9 !important;
-        border-color: #94a3b8 !important;
-        color: #0f172a !important;
+        background-color: hx-theme(#f1f5f9, $o-gray-100) !important;
+        border-color: hx-theme(#94a3b8, $o-gray-500) !important;
+        color: hx-theme(#0f172a, $o-gray-900) !important;
     }
 
     &:focus, &:active {
@@ -139,7 +149,7 @@
         width: 8px;
         height: 8px;
         background-color: #0284c7;
-        border: 2px solid #ffffff;
+        border: 2px solid hx-theme(#ffffff, $o-gray-100);
         border-radius: 50%;
         pointer-events: none;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -158,14 +168,14 @@
     border: 1px solid transparent !important;
     border-radius: 6px !important;
     background-color: transparent !important;
-    color: #475569 !important;
+    color: hx-theme(#475569, $o-gray-700) !important;
     cursor: pointer !important;
     transition: all 0.15s ease-in-out !important;
 
     &:hover {
-        background-color: #f1f5f9 !important;
-        border-color: #cbd5e1 !important;
-        color: #0f172a !important;
+        background-color: hx-theme(#f1f5f9, $o-gray-100) !important;
+        border-color: hx-theme(#cbd5e1, $o-gray-400) !important;
+        color: hx-theme(#0f172a, $o-gray-900) !important;
     }
 
     &:focus, &:active {
@@ -179,22 +189,22 @@
 }
 
 .o_hudson_edit_btn {
-    color: #475569 !important;
+    color: hx-theme(#475569, $o-gray-700) !important;
 
     &:hover {
-        color: #00878a !important;
+        color: hx-theme(#00878a, #2dd4bf) !important;
         border-color: #00878a !important;
-        background-color: #f0fdfa !important;
+        background-color: hx-theme(#f0fdfa, rgba(45, 212, 191, 0.12)) !important;
     }
 }
 
 .o_hudson_undo_btn {
-    color: #64748b !important;
+    color: hx-theme(#64748b, $o-gray-700) !important;
 
     &:hover {
-        color: #b91c1c !important;
-        border-color: #fecaca !important;
-        background-color: #fef2f2 !important;
+        color: hx-theme(#b91c1c, #ff7b7b) !important;
+        border-color: hx-theme(#fecaca, rgba(255, 87, 87, 0.35)) !important;
+        background-color: hx-theme(#fef2f2, rgba(255, 87, 87, 0.14)) !important;
     }
 }
 
@@ -206,8 +216,8 @@
 
 /* Inline New Transaction Styling */
 .o_hudson_new_transaction_box {
-    background-color: #f8fafc;
-    border-bottom: 2px solid #e2e8f0;
+    background-color: hx-theme(#f8fafc, $o-gray-100);
+    border-bottom: 2px solid hx-theme(#e2e8f0, $o-gray-300);
 
     .o_hudson_underlined_input {
         border: none !important;
@@ -218,16 +228,16 @@
         padding-left: 2px !important;
         padding-right: 2px !important;
         font-size: 0.88rem !important;
-        color: #1e293b !important;
+        color: hx-theme(#1e293b, $o-gray-900) !important;
 
         &:focus {
             border-bottom: 2px solid #005a5c !important;
-            background: #ffffff !important;
+            background: hx-theme(#ffffff, $o-view-background-color) !important;
             outline: none !important;
         }
 
         &::placeholder {
-            color: #94a3b8;
+            color: hx-theme(#94a3b8, $o-gray-600);
         }
     }
 }
@@ -235,10 +245,10 @@
 /* Edit Line Dialog Styling */
 .o_hudson_edit_line_body {
     font-size: 0.9rem;
-    color: #334155;
+    color: hx-theme(#334155, $o-gray-800);
 
     .form-control {
-        border: 1px solid #cbd5e1;
+        border: 1px solid hx-theme(#cbd5e1, $o-gray-400);
         &:focus {
             border-color: #00878a;
             box-shadow: 0 0 0 2px rgba(0, 135, 138, 0.2);

@@ -46,6 +46,27 @@ def _account_field(key):
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
+    def _auto_init(self):
+        res = super()._auto_init()
+        columns = [
+            'hds_payroll_account_salary_expense_id',
+            'hds_payroll_account_employer_expense_id',
+            'hds_payroll_account_pf_employee_id',
+            'hds_payroll_account_pf_employer_id',
+            'hds_payroll_account_pf_admin_id',
+            'hds_payroll_account_net_payable_id',
+            'hds_payroll_account_tds_id',
+            'hds_payroll_account_pt_id',
+            'hds_payroll_account_esic_employee_id',
+            'hds_payroll_account_esic_employer_id',
+            'hds_payroll_account_lwf_employee_id',
+            'hds_payroll_account_lwf_employer_id',
+            'hds_payroll_account_other_deductions_id',
+        ]
+        for col in columns:
+            self.env.cr.execute(f"ALTER TABLE res_company ADD COLUMN IF NOT EXISTS {col} INTEGER;")
+        return res
+
     hds_payroll_account_salary_expense_id = fields.Many2one('account.account', string='Salary Expense')
     hds_payroll_account_employer_expense_id = fields.Many2one('account.account', string='Employer Contribution Expense')
     hds_payroll_account_pf_employee_id = fields.Many2one('account.account', string='PF - Employee Payable')

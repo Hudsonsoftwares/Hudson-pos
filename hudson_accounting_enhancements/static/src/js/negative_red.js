@@ -27,14 +27,9 @@ function applyNegativeColoring() {
         // Exclude hyphens in names/dates (require digit after -)
         const isNegative = /^\s*[-−]\s*[\d]/.test(text) || /[₹$€£¥]\s*[-−]/.test(text) || text.startsWith("-");
 
-        if (isNegative) {
-            el.style.setProperty("color", "#dc3545", "important");
-        } else {
-            // Only remove our color if we set it (don't disturb other styles)
-            if (el.style.color === "rgb(220, 53, 69)") {
-                el.style.removeProperty("color");
-            }
-        }
+        // Class instead of an inline colour so the shade follows the light /
+        // dark theme (see .o_hx_negative in scss/theme_utilities.scss).
+        el.classList.toggle("o_hx_negative", isNegative);
     });
 }
 

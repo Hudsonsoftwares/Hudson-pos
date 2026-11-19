@@ -141,7 +141,7 @@ class HudsonLoan(models.Model):
                 'default_company_id': self.company_id.id,
                 'default_amount': self.amount_borrowed,
                 'default_start_date': self.date or fields.Date.context_today(self),
-                'default_term_years': max(1, self.duration // 12) if self.duration else 1,
+                'default_term_months': self.duration or 12,
             }
         }
 
@@ -305,32 +305,44 @@ class HudsonLoan(models.Model):
 
         self.state = 'running'
 
-    def action_cancel(self):
+    def _remove_loan_entries(self):
+        """ Remove the entries of the loans like Odoo does: the draft entries (instalments to come) are
+        deleted, the posted ones are in the books and are reversed. Entries matched with a bank statement
+        or a payment block the operation: the payment would be left without its instalment. """
         for loan in self:
-            # Failures (lock date, hashed entries) must stop the cancellation: a
-            # cancelled loan must not leave posted entries behind.
-            for move in loan.move_ids:
-                if move.state == 'posted':
-                    move.button_draft()
+            moves = loan.move_ids.filtered(
+                lambda m: m.state != 'cancel' and not m.reversed_entry_id
+                and not m.reversal_move_ids.filtered(lambda r: r.state != 'cancel'))
+            posted = moves.filtered(lambda m: m.state == 'posted')
+            reconciled = posted.filtered(
+                lambda m: any(line.matched_debit_ids or line.matched_credit_ids for line in m.line_ids))
+            if reconciled:
+                raise UserError(_(
+                    "The entries %(entries)s of the loan %(loan)s are matched with a bank statement or a payment. "
+                    "Unreconcile them first.",
+                    entries=', '.join(reconciled.mapped('name')), loan=loan.name))
+            for move in moves.filtered(lambda m: m.state == 'draft'):
                 try:
                     with self.env.cr.savepoint():
                         move.unlink()
                 except UserError:
                     # e.g. part of a sequence chain: keep it, cancelled
                     move.button_cancel()
-            loan.state = 'cancelled'
+            if posted:
+                posted._reverse_moves(default_values_list=[{
+                    'ref': _("Reversal of: %s", move.ref or move.name),
+                } for move in posted], cancel=True)
+            loan.line_ids.filtered(lambda l: l.move_id in moves).move_id = False
+
+    def action_cancel(self):
+        # Failures (lock date, hashed entries, reconciled entries) stop the cancellation:
+        # a cancelled loan must not leave entries in effect behind.
+        self._remove_loan_entries()
+        self.state = 'cancelled'
 
     def action_reset_to_draft(self):
-        for loan in self:
-            posted_moves = loan.move_ids.filtered(lambda m: m.state == 'posted')
-            if posted_moves:
-                for move in posted_moves:
-                    try:
-                        move.button_draft()
-                    except Exception as e:
-                        raise UserError(_("Cannot reset to draft while posted entry %s cannot be drafted: %s", move.name, str(e)))
-            loan.move_ids.unlink()
-            loan.state = 'draft'
+        self._remove_loan_entries()
+        self.state = 'draft'
 
 
     def action_close(self):

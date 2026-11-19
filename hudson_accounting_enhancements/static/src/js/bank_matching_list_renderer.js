@@ -358,6 +358,9 @@ export class HudsonBankMatchingListRenderer extends Component {
         };
 
         useBus(this.env.bus, "hudson-show-new-transaction", () => {
+            if (!this.state.showNewTransaction) {
+                this.resetNewTransactionForm();
+            }
             this.state.showNewTransaction = true;
         });
 
@@ -560,7 +563,20 @@ export class HudsonBankMatchingListRenderer extends Component {
     }
 
     toggleNewTransaction() {
+        if (!this.state.showNewTransaction) {
+            this.resetNewTransactionForm();
+        }
         this.state.showNewTransaction = !this.state.showNewTransaction;
+    }
+
+    resetNewTransactionForm() {
+        const _now = new Date();
+        this.state.newDate = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}-${String(_now.getDate()).padStart(2, '0')}`;
+        this.state.newLabel = "";
+        this.state.newAmount = "";
+        this.state.newPartnerId = null;
+        this.state.newPartnerName = "";
+        this.state.newModelId = "";
     }
 
     onSelectNewPartner() {
@@ -621,24 +637,15 @@ export class HudsonBankMatchingListRenderer extends Component {
 
         await this.reloadView();
 
+        this.resetNewTransactionForm();
         if (closeAfter) {
             this.state.showNewTransaction = false;
-        } else {
-            this.state.newLabel = "";
-            this.state.newAmount = "";
-            this.state.newPartnerId = null;
-            this.state.newPartnerName = "";
-            this.state.newModelId = "";
         }
     }
 
     onDiscardNewTransaction() {
         this.state.showNewTransaction = false;
-        this.state.newLabel = "";
-        this.state.newAmount = "";
-        this.state.newPartnerId = null;
-        this.state.newPartnerName = "";
-        this.state.newModelId = "";
+        this.resetNewTransactionForm();
     }
 
     onEditLine(record, ev) {

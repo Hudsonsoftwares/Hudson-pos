@@ -1,11 +1,31 @@
 import { patch } from "@web/core/utils/patch";
+import { PosStore } from "@point_of_sale/app/services/pos_store";
+import { debounce } from "@web/core/utils/timing";
 import { ControlButtons } from "@point_of_sale/app/screens/product_screen/control_buttons/control_buttons";
 import { NoteButton } from "@point_of_sale/app/screens/product_screen/control_buttons/orderline_note_button/orderline_note_button";
-import { OrderDisplay } from "@point_of_sale/app/components/order_display/order_display";
 import { TextInputPopup } from "@point_of_sale/app/components/popups/text_input_popup/text_input_popup";
 import { SelectionPopup } from "@point_of_sale/app/components/popups/selection_popup/selection_popup";
 import { SelectCreateDialog } from "@web/views/view_dialogs/select_create_dialog";
 import { _t } from "@web/core/l10n/translation";
+
+// Fix Odoo 20 timing bug where removeOrder is called during initServerData before setup defines syncAllOrdersDebounced
+patch(PosStore.prototype, {
+    async setup() {
+        if (!this.syncAllOrdersDebounced && typeof this.syncAllOrders === "function") {
+            this.syncAllOrdersDebounced = debounce(this.syncAllOrders.bind(this), 100);
+        }
+        await super.setup(...arguments);
+        if (!this.syncAllOrdersDebounced && typeof this.syncAllOrders === "function") {
+            this.syncAllOrdersDebounced = debounce(this.syncAllOrders.bind(this), 100);
+        }
+    },
+    removeOrder(order, removeFromServer = true) {
+        if (!this.syncAllOrdersDebounced && typeof this.syncAllOrders === "function") {
+            this.syncAllOrdersDebounced = debounce(this.syncAllOrders.bind(this), 100);
+        }
+        return super.removeOrder(...arguments);
+    },
+});
 
 patch(NoteButton.prototype, {
     async onClick() {
@@ -56,6 +76,35 @@ patch(ControlButtons.prototype, {
             !this.pos.config?.module_pos_restaurant &&
             !this.props.showRemainingButtons
         );
+    },
+
+    // Phones: the button row is hidden (only the Actions dialog is shown), so the dialog offers
+    // the Quotation / Order and Course buttons as well.
+    get showRetailQuotationInDialog() {
+        return (
+            !this.pos.config?.module_pos_restaurant &&
+            this.props.showRemainingButtons &&
+            this.pos.isSmallProductScreen
+        );
+    },
+
+    get showAddCourseInDialog() {
+        return (
+            Boolean(this.pos.config?.module_pos_restaurant) &&
+            this.props.showRemainingButtons &&
+            this.pos.isSmallProductScreen &&
+            !this.pos.getOrder()?.isRefund
+        );
+    },
+
+    async clickRetailQuotationFromDialog() {
+        this.dialog.closeAll();
+        return this.clickRetailQuotation();
+    },
+
+    clickAddCourseFromDialog() {
+        this.dialog.closeAll();
+        this.pos.addCourse();
     },
 
     async clickRetailQuotation() {
@@ -146,41 +195,6 @@ patch(ControlButtons.prototype, {
         }
     },
 
-    clickAddCourse() {
-        const order = this.pos.getOrder();
-        if (!order) return;
-
-        if (typeof this.pos.addCourse === "function") {
-            this.pos.addCourse();
-        } else {
-            // Direct fallback
-            const nextIdx = order.getNextCourseIndex ? order.getNextCourseIndex() : ((order.course_ids?.length || 0) + 1);
-            const courseModel = this.pos.data?.models?.["restaurant.order.course"];
-            if (courseModel) {
-                const course = courseModel.create({
-                    order_id: order,
-                    index: nextIdx,
-                    name: _t("Course ") + nextIdx,
-                });
-                if (order.course_ids?.length === 1 && order.lines?.length > 0) {
-                    order.lines.forEach((line) => {
-                        if (!line.isServiceFeeLine || !line.isServiceFeeLine()) {
-                            line.course_id = course;
-                        }
-                    });
-                    const course2 = courseModel.create({
-                        order_id: order,
-                        index: order.getNextCourseIndex ? order.getNextCourseIndex() : 2,
-                        name: _t("Course 2"),
-                    });
-                    order.selectCourse(course2);
-                } else {
-                    order.selectCourse(course);
-                }
-            }
-        }
-    },
-
     async clickPrintBill() {
         this.dialog?.closeAll?.();
         const order = this.pos.getOrder();
@@ -237,14 +251,5 @@ patch(ControlButtons.prototype, {
                 }
             },
         });
-    },
-});
-
-patch(OrderDisplay.prototype, {
-    get displayCourses() {
-        if (!this.pos?.config?.module_pos_restaurant || this.props.mode !== "display" || this.order?.finalized) {
-            return false;
-        }
-        return Boolean(this.order?.course_ids?.length > 0);
     },
 });

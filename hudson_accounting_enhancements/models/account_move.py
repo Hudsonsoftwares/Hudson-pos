@@ -42,34 +42,7 @@ class AccountMove(models.Model):
         posted = res.filtered(lambda m: m.state == 'posted')
         posted._generate_hudson_deferrals()
         posted._auto_reconcile_hudson_deferrals()
-        posted._auto_reverse_hudson_accruals()
         return res
-
-    def _auto_reverse_hudson_accruals(self):
-        for move in self:
-            if move.is_invoice(include_receipts=True) and move.state == 'posted':
-                orders = self.env['purchase.order'].browse()
-                # Find linked orders
-                if move.move_type in ['in_invoice', 'in_receipt', 'in_refund']:
-                    if hasattr(move.line_ids, 'purchase_line_id'):
-                        po_lines = move.line_ids.mapped('purchase_line_id')
-                        orders = po_lines.mapped('order_id')
-                elif move.move_type in ['out_invoice', 'out_receipt', 'out_refund']:
-                    if hasattr(move.line_ids, 'sale_line_ids'):
-                        so_lines = move.line_ids.mapped('sale_line_ids')
-                        orders = so_lines.mapped('order_id')
-                
-                for order in orders:
-                    # Find reversal moves that are in the future compared to the bill
-                    for acc_move in order.hudson_accrual_move_ids:
-                        if acc_move.reversed_entry_id and acc_move.date > move.date:
-                            # It is a reversal move scheduled after the bill's date.
-                            # Change its date to instantly eliminate duplication!
-                            if acc_move.state == 'posted':
-                                acc_move.button_draft()
-                            acc_move.date = move.date
-                            acc_move.action_post()
-
 
     def _auto_reconcile_hudson_deferrals(self):
         for move in self:
@@ -92,20 +65,32 @@ class AccountMove(models.Model):
                         except UserError as e:
                             _logger.warning("Could not reconcile deferral lines of %s: %s", orig_move.name, e)
 
+    def _get_active_hudson_deferrals(self):
+        """ Deferral entries of the moves still in effect: not cancelled nor reversed. """
+        return self.hudson_deferral_move_ids.filtered(
+            lambda m: m.state != 'cancel' and not m.reversal_move_ids.filtered(lambda r: r.state != 'cancel'))
+
+    def _remove_hudson_deferrals(self):
+        """ Remove the deferral entries of the moves like Odoo does: the drafts (the months to come) are
+        deleted, the posted ones are in the books and are reversed, never deleted. """
+        deferrals = self._get_active_hudson_deferrals()
+        deferrals.filtered(lambda m: m.state == 'draft').unlink()
+        posted = deferrals.filtered(lambda m: m.state == 'posted')
+        if posted:
+            # the lines are matched with each other and with the invoice: each reversal matches its entry instead
+            posted.line_ids.filtered(lambda l: l.matched_debit_ids or l.matched_credit_ids).remove_move_reconcile()
+            posted._reverse_moves(default_values_list=[{
+                'ref': _("Reversal of: %s", move.ref or move.name),
+            } for move in posted], cancel=True)
+
     def button_draft(self):
-        for move in self:
-            for def_move in move.hudson_deferral_move_ids:
-                if def_move.state == 'posted':
-                    def_move.button_draft()
-                def_move.unlink()
-        return super(AccountMove, self).button_draft()
+        res = super(AccountMove, self).button_draft()
+        # after super: the invoice lines are no longer reconciled with the deferral entries
+        self._remove_hudson_deferrals()
+        return res
 
     def button_cancel(self):
-        for move in self:
-            for def_move in move.hudson_deferral_move_ids:
-                if def_move.state == 'posted':
-                    def_move.button_draft()
-                def_move.button_cancel()
+        self._remove_hudson_deferrals()
         return super(AccountMove, self).button_cancel()
 
     def _get_or_create_deferred_account(self, company, is_income):
@@ -156,7 +141,7 @@ class AccountMove(models.Model):
 
     def _generate_hudson_deferrals(self):
         for move in self:
-            if move.state != 'posted' or move.hudson_deferred_original_move_id or move.hudson_deferral_move_ids:
+            if move.state != 'posted' or move.hudson_deferred_original_move_id or move._get_active_hudson_deferrals():
                 continue
 
             deferral_lines = move.line_ids.filtered(lambda l: l.hudson_deferred_start_date and l.hudson_deferred_end_date and l.display_type == 'product')
@@ -275,3 +260,43 @@ class AccountMove(models.Model):
                     _logger.exception("Deferral generation failed for %s", move.name)
                     raise UserError(_("Could not generate the deferral entries for %(move)s: %(error)s",
                                       move=move.name, error=e)) from e
+
+    @api.depends(
+        'amount_residual', 'move_type', 'state', 'company_id',
+        'reconciled_payment_ids.state', 'reconciled_payment_ids.is_matched',
+        'matched_payment_ids.state', 'matched_payment_ids.is_matched',
+    )
+    def _compute_payment_state(self):
+        super()._compute_payment_state()
+        for invoice in self:
+            if not invoice.is_invoice(True) or invoice.state != 'posted':
+                continue
+            if invoice.payment_state in ('reversed', 'blocked', 'invoicing_legacy'):
+                continue
+
+            currency = invoice.currency_id or invoice.company_id.currency_id or self.env.company.currency_id
+            linked_payments = (invoice.reconciled_payment_ids | invoice.matched_payment_ids).exists()
+
+            # Case A: Amount residual is zero (the bill/invoice is fully covered)
+            if currency.is_zero(invoice.amount_residual):
+                if not linked_payments:
+                    invoice.payment_state = 'paid'
+                elif all(p.state == 'reconciled' or p.is_matched for p in linked_payments):
+                    invoice.payment_state = 'paid'
+                elif any(p.state in ('paid', 'in_payment') for p in linked_payments):
+                    invoice.payment_state = 'in_payment'
+                else:
+                    invoice.payment_state = 'paid'
+
+            # Case B: Enterprise-style registered payments without move_id
+            elif invoice.matched_payment_ids.filtered(lambda p: not p.move_id):
+                unmoved_payments = invoice.matched_payment_ids.filtered(lambda p: not p.move_id)
+                total_unmoved = sum(abs(p.amount_company_currency_signed or p.amount) for p in unmoved_payments)
+                if currency.compare_amounts(total_unmoved, invoice.amount_total) >= 0:
+                    if all(p.state == 'reconciled' or p.is_matched for p in unmoved_payments):
+                        invoice.payment_state = 'paid'
+                    elif any(p.state in ('paid', 'in_payment') for p in unmoved_payments):
+                        invoice.payment_state = 'in_payment'
+                else:
+                    invoice.payment_state = 'partial'
+

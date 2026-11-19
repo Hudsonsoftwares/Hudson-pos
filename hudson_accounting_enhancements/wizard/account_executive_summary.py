@@ -69,6 +69,11 @@ class AccountExecutiveSummaryWizard(models.TransientModel):
 
     report_html = fields.Html(string="Report HTML")
 
+    def _report_company_ids(self):
+        """The companies the report covers: the ones selected in the company
+        switcher, which always include the wizard's company (checked above)."""
+        return (self.env.companies | self.company_id).ids
+
     def _get_journal_clause(self):
         """Restrict to the journals of the selected Multi Ledgers (passed in context)."""
         journal_ids = self.env.context.get('report_journal_ids')
@@ -86,7 +91,7 @@ class AccountExecutiveSummaryWizard(models.TransientModel):
             JOIN account_account aa ON aa.id = aml.account_id
             WHERE aa.account_type IN %s
               AND aml.date >= %s AND aml.date <= %s
-              AND aml.company_id = %s
+              AND aml.company_id IN %s
               AND aml.display_type NOT IN ('line_section', 'line_note')
               {state_clause}
               {journal_clause}
@@ -105,7 +110,7 @@ class AccountExecutiveSummaryWizard(models.TransientModel):
             JOIN account_account aa ON aa.id = aml.account_id
             WHERE aa.account_type = 'asset_cash'
               AND aml.date >= %s AND aml.date <= %s
-              AND aml.company_id = %s
+              AND aml.company_id IN %s
               AND aml.display_type NOT IN ('line_section', 'line_note')
               {state_clause}
               {journal_clause}
@@ -124,7 +129,7 @@ class AccountExecutiveSummaryWizard(models.TransientModel):
             JOIN account_account aa ON aa.id = aml.account_id
             WHERE aa.account_type IN %s
               AND aml.date <= %s
-              AND aml.company_id = %s
+              AND aml.company_id IN %s
               AND aml.display_type NOT IN ('line_section', 'line_note')
               {state_clause}
               {journal_clause}
@@ -276,7 +281,8 @@ class AccountExecutiveSummaryWizard(models.TransientModel):
         # company_id can come from client data and is used in raw SQL
         if self.company_id not in self.env.companies:
             raise UserError(_("You are not allowed to access this company's data."))
-        cid = self.company_id.id
+        # all the companies of the company switcher, as in Odoo
+        cid = tuple(self._report_company_ids())
         state = self.target_move
         current = self._compute_kpis(self.date_from, self.date_to, cid, state)
 

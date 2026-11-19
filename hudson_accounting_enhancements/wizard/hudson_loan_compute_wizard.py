@@ -51,7 +51,9 @@ class HudsonLoanComputeWizard(models.TransientModel):
     loan_id = fields.Many2one('hudson.loan', required=True)
     amount = fields.Monetary(string='Loan Amount', currency_field='currency_id', required=True)
     interest_rate = fields.Float(string='Interest Rate (%)', required=True, default=1.00)
-    term_years = fields.Integer(string='Loan Term (years)', required=True, default=1)
+    term_months = fields.Integer(
+        string='Loan Term (months)', required=True, default=12,
+        help="Number of monthly instalments, e.g. 18 for a loan of a year and a half.")
     start_date = fields.Date(string='Start Date', required=True, default=fields.Date.context_today)
     
     payment_type = fields.Selection([
@@ -97,7 +99,7 @@ class HudsonLoanComputeWizard(models.TransientModel):
 
     def _get_payment_dates(self):
         self.ensure_one()
-        periods = self.term_years * 12
+        periods = self.term_months
         if periods <= 0 or not self.start_date:
             return []
 
@@ -127,14 +129,16 @@ class HudsonLoanComputeWizard(models.TransientModel):
 
     def _get_amortization_lines(self):
         self.ensure_one()
-        if self.amount <= 0 or self.term_years <= 0 or self.interest_rate <= 0 or not self.start_date:
+        # an interest-free loan (0%) has a schedule too: equal instalments of principal
+        if self.amount <= 0 or self.term_months <= 0 or self.interest_rate < 0 or not self.start_date:
             return []
 
         dates = self._get_payment_dates()
         if not dates:
             return []
 
-        principal = self.amount
+        currency = self.currency_id or self.loan_id.company_id.currency_id or self.env.company.currency_id
+        principal = currency.round(self.amount)
         annual_rate = self.interest_rate / 100.0
         periods = len(dates)
         
@@ -165,34 +169,35 @@ class HudsonLoanComputeWizard(models.TransientModel):
             pmt1 = pmt_next
             
         final_pmt = pmt1
-        
+
+        # Amounts are rounded line by line, the last instalment taking what is left: the principal
+        # of the schedule (and of the entries) is exactly the amount borrowed, nothing stays on the
+        # loan account.
         lines = []
         balance = principal
         d1 = self.start_date
-        
+
         for i, d2 in enumerate(dates):
             dcf = get_dcf(d1, d2, self.compounding_method)
-            interest = max(0.0, balance * annual_rate * dcf)
-            principal_payment = max(0.0, final_pmt - interest)
-            
+            interest = currency.round(max(0.0, balance * annual_rate * dcf))
             if i == periods - 1:
                 principal_payment = balance
-                final_pmt = principal_payment + interest
-            
-            balance = max(0.0, balance - principal_payment)
-            
+            else:
+                principal_payment = currency.round(min(balance, max(0.0, final_pmt - interest)))
+            balance = currency.round(balance - principal_payment)
+
             lines.append((0, 0, {
                 'date': d2,
                 'principal': principal_payment,
                 'interest': interest,
-                'payment': final_pmt,
-                'balance': balance
+                'payment': currency.round(principal_payment + interest),
+                'balance': balance,
             }))
             d1 = d2
-            
+
         return lines
 
-    @api.onchange('amount', 'interest_rate', 'term_years', 'start_date', 'compounding_method', 'payment_type', 'first_payment_date')
+    @api.onchange('amount', 'interest_rate', 'term_months', 'start_date', 'compounding_method', 'payment_type', 'first_payment_date')
     def _compute_schedule_preview(self):
         for wizard in self:
             wizard.line_ids = [(5, 0, 0)] + wizard._get_amortization_lines()
@@ -201,10 +206,16 @@ class HudsonLoanComputeWizard(models.TransientModel):
         self.ensure_one()
         if self.payment_type == 'anniversary' and self.first_payment_date and self.first_payment_date < self.start_date:
             raise UserError(_("First payment date cannot be earlier than the loan start date."))
+        if self.interest_rate < 0:
+            raise UserError(_("The interest rate cannot be negative."))
+        if self.term_months <= 0:
+            raise UserError(_("The loan term must be at least one month."))
         lines_to_create = self._get_amortization_lines()
+        if not lines_to_create:
+            raise UserError(_("No amortization schedule could be computed: check the amount, term and start date."))
         self.loan_id.write({
             'amount_borrowed': self.amount,
-            'duration': self.term_years * 12,
+            'duration': self.term_months,
             'date': self.start_date,
             'line_ids': [(5, 0, 0)] + lines_to_create
         })

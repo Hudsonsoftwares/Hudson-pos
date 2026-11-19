@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Backend views of the celebration / guest-contact features owned by the bridge.
+     They only inherit stock appointment views: the appointment module itself is untouched. -->
+<odoo>
+
+    <!-- ===================== Booking form ===================== -->
+    <record id="appointment_booking_view_form_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.booking.view.form.inherit.celebration</field>
+        <field name="model">appointment.booking</field>
+        <field name="inherit_id" ref="appointment.appointment_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_check_in']" position="before">
+                <button name="action_send_celebration_wish" type="object" string="Send Celebration Wish"
+                        class="btn-secondary" invisible="not occasion_date"/>
+            </xpath>
+            <xpath expr="//header/button[@name='action_check_in']" position="attributes">
+                <attribute name="invisible">state in ('checked_in', 'checked_out', 'cancelled')</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_check_in']" position="after">
+                <button name="action_check_out" type="object" string="Release Table / Check out"
+                        class="btn-primary" invisible="state != 'checked_in'"/>
+            </xpath>
+            <xpath expr="//header/button[@name='action_no_show']" position="attributes">
+                <attribute name="invisible">state in ('checked_in', 'checked_out', 'no_show', 'cancelled')</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_cancel']" position="attributes">
+                <attribute name="invisible">state in ('checked_out', 'cancelled')</attribute>
+            </xpath>
+            <xpath expr="//widget[@name='web_ribbon'][@invisible=&quot;state != 'checked_in'&quot;]" position="after">
+                <widget name="web_ribbon" title="CHECKED-OUT" bg_color="text-bg-secondary" invisible="state != 'checked_out'"/>
+            </xpath>
+            <xpath expr="//sheet/group/group/field[@name='partner_id']" position="after">
+                <field name="customer_name" placeholder="Guest Name"/>
+                <field name="customer_phone" placeholder="Phone Number"/>
+                <field name="customer_email" placeholder="Email (optional)"/>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="before">
+                <group string="Celebration Details" name="celebration_details_group">
+                    <group>
+                        <field name="event_category" readonly="1" invisible="not event_category"/>
+                        <field name="celebration_type"/>
+                        <field name="celebrant_name" placeholder="Celebrant / Honoree Name"/>
+                        <field name="occasion_title" placeholder="e.g. 25th Birthday, Anniversary"/>
+                    </group>
+                    <group>
+                        <field name="occasion_date"/>
+                        <field name="confirmation_sent" readonly="1"/>
+                        <field name="wish_last_advance_year" readonly="1"/>
+                        <field name="wish_last_day_year" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='answer_ids']/list/field[@name='value_text']" position="before">
+                <field name="value_date" string="Date Answer" optional="show" readonly="question_type != 'date'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ===================== Booking lists & search ===================== -->
+    <record id="appointment_booking_view_list_resource_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.booking.view.list.resource.inherit.celebration</field>
+        <field name="model">appointment.booking</field>
+        <field name="inherit_id" ref="appointment.appointment_booking_view_list_resource"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="customer_phone" string="Phone" optional="show"/>
+                <field name="celebrant_name" string="Celebrant" optional="show"/>
+                <field name="occasion_date" string="Special Day" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="appointment_booking_view_list_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.booking.view.list.inherit.celebration</field>
+        <field name="model">appointment.booking</field>
+        <field name="inherit_id" ref="appointment.appointment_booking_view_list"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="customer_phone" optional="show"/>
+                <field name="celebrant_name" optional="show"/>
+                <field name="occasion_date" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="appointment_booking_view_search_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.booking.view.search.inherit.celebration</field>
+        <field name="model">appointment.booking</field>
+        <field name="inherit_id" ref="appointment.appointment_booking_view_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="customer_name"/>
+                <field name="customer_phone"/>
+                <field name="celebrant_name"/>
+                <field name="occasion_title"/>
+                <field name="occasion_date"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- ===================== Appointment type ===================== -->
+    <record id="appointment_type_view_form_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.type.view.form.inherit.celebration</field>
+        <field name="model">appointment.type</field>
+        <field name="inherit_id" ref="appointment.appointment_type_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id'][@invisible='1']" position="after">
+                <field name="is_event_booking" widget="boolean_toggle"/>
+                <field name="event_category" invisible="not is_event_booking"/>
+                <field name="event_emoji" invisible="not is_event_booking" placeholder="e.g. 🎂"/>
+            </xpath>
+            <xpath expr="//field[@name='question_ids']/list/field[@name='question_type']" position="after">
+                <field name="question_role" optional="show"/>
+            </xpath>
+            <xpath expr="//group[field[@name='feedback_template_id']]/.." position="after">
+                <group string="Next-Year Celebration Wishes (Email &amp; SMS)" name="celebration_wishes_group">
+                    <group>
+                        <field name="enable_anniversary_wishes" widget="boolean_toggle"/>
+                        <field name="wish_send_advance_invite" widget="boolean_toggle" invisible="not enable_anniversary_wishes"/>
+                        <field name="wish_advance_days" invisible="not enable_anniversary_wishes or not wish_send_advance_invite"/>
+                        <field name="wish_send_on_day" widget="boolean_toggle" invisible="not enable_anniversary_wishes"/>
+                    </group>
+                    <group invisible="not enable_anniversary_wishes">
+                        <field name="wish_advance_email_template_id" invisible="not wish_send_advance_invite"/>
+                        <field name="wish_day_email_template_id" invisible="not wish_send_on_day"/>
+                    </group>
+                </group>
+                <group invisible="not enable_anniversary_wishes">
+                    <field name="wish_advance_sms_text" invisible="not wish_send_advance_invite" colspan="2"/>
+                    <field name="wish_day_sms_text" invisible="not wish_send_on_day" colspan="2"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="appointment_type_view_kanban_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.type.view.kanban.inherit.celebration</field>
+        <field name="model">appointment.type</field>
+        <field name="inherit_id" ref="appointment.appointment_type_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban/field[@name='name']" position="after">
+                <field name="event_emoji"/>
+                <field name="is_event_booking"/>
+            </xpath>
+            <xpath expr="//strong/field[@name='name']" position="before">
+                <span t-if="record.event_emoji.raw_value" class="me-1"><field name="event_emoji"/></span>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ===================== Questions & answers ===================== -->
+    <record id="appointment_question_view_form_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.question.view.form.inherit.celebration</field>
+        <field name="model">appointment.question</field>
+        <field name="inherit_id" ref="appointment.appointment_question_view_form"/>
+        <field name="arch" type="xml">
+            <field name="is_required" position="after">
+                <field name="question_role"/>
+                <field name="is_occasion_date" invisible="question_type != 'date'"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="appointment_question_view_list_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.question.view.list.inherit.celebration</field>
+        <field name="model">appointment.question</field>
+        <field name="inherit_id" ref="appointment.appointment_question_view_list"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="question_type" optional="show"/>
+                <field name="question_role" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="appointment_answer_view_list_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.answer.view.list.inherit.celebration</field>
+        <field name="model">appointment.answer</field>
+        <field name="inherit_id" ref="appointment.appointment_answer_view_list"/>
+        <field name="arch" type="xml">
+            <field name="value_text" position="before">
+                <field name="value_date" string="Date Answer" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="appointment_answer_view_list_reporting_inherit_celebration" model="ir.ui.view">
+        <field name="name">appointment.answer.view.list.reporting.inherit.celebration</field>
+        <field name="model">appointment.answer</field>
+        <field name="inherit_id" ref="appointment.appointment_answer_view_list_reporting"/>
+        <field name="arch" type="xml">
+            <field name="value_text" position="before">
+                <field name="value_date" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

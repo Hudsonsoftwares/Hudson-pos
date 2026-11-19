@@ -1,4 +1,6 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
 
 class HudsonBankMatchWizard(models.TransientModel):
     _name = 'hudson.bank.match.wizard'
@@ -8,7 +10,7 @@ class HudsonBankMatchWizard(models.TransientModel):
     partner_id = fields.Many2one(related='statement_line_id.partner_id')
     amount = fields.Monetary(related='statement_line_id.amount', currency_field='currency_id')
     currency_id = fields.Many2one(related='statement_line_id.currency_id')
-    
+
     move_line_ids = fields.Many2many(
         'account.move.line',
         string='Available Matches',
@@ -18,37 +20,24 @@ class HudsonBankMatchWizard(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
-        if 'statement_line_id' in res:
+        if res.get('statement_line_id') and 'move_line_ids' in fields_list:
             st_line = self.env['account.bank.statement.line'].browse(res['statement_line_id'])
-            
-            domain = [
-                ('account_id.reconcile', '=', True),
-                ('reconciled', '=', False),
-                ('move_id.state', '=', 'posted'),
-                ('company_id', '=', st_line.company_id.id)
-            ]
-            move_lines = self.env['account.move.line'].search(domain)
-            
-            # Sort logic: 
-            # 1. Partner matches (+10)
-            # 2. Amount matches (+5)
-            def get_score(ml):
-                score = 0
-                if st_line.partner_id and ml.partner_id == st_line.partner_id:
-                    score += 10
-                if abs(ml.amount_residual) == abs(st_line.amount):
-                    score += 5
-                return score
-            
-            # Sort by score descending, then by date descending
-            sorted_lines = sorted(move_lines, key=lambda ml: (get_score(ml), ml.date), reverse=True)
-            res['move_line_ids'] = [(6, 0, [ml.id for ml in sorted_lines])]
-            
+            # Only what the reconciliation engine suggests is preselected (the items of the partner, or
+            # written on the label, of the right amount in the currency of the transaction): "Validate"
+            # matches every selected item.
+            if not st_line.is_reconciled:
+                suggestion = st_line._om_suggested_proposal()
+                res['move_line_ids'] = [(6, 0, [match['aml_id'] for match in suggestion.get('matches', [])])]
         return res
 
     def action_validate(self):
+        """ Reconcile the transaction with the selected journal items: the counterparts are written in its
+        journal entry instead of the suspense account and reconciled with the selected items. """
         self.ensure_one()
-        # In a real implementation, this would reconcile the selected move_lines with the statement line.
-        # For this UI clone, we simulate success and return.
-        self.statement_line_id.is_reconciled = True
+        st_line = self.statement_line_id
+        if not st_line:
+            raise UserError(_("There is no transaction to match."))
+        if not self.move_line_ids:
+            raise UserError(_("Select the journal items to match with the transaction."))
+        st_line.action_hudson_reconcile_items(self.move_line_ids.ids)
         return {'type': 'ir.actions.act_window_close'}

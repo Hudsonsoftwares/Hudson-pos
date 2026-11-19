@@ -20,7 +20,7 @@ when the module is uninstalled. The only existing records touched are CRM settin
 
 import logging
 
-from odoo.tools import convert_file
+from .demo_xml import load_demo_xml as convert_file  # tolerant of apps not installed
 
 _logger = logging.getLogger(__name__)
 

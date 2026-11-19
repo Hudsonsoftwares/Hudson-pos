@@ -5,12 +5,8 @@
         <field name="model">appointment.resource</field>
         <field name="inherit_id" ref="appointment.appointment_resource_view_list"/>
         <field name="arch" type="xml">
-            <xpath expr="//list" position="attributes">
-                <attribute name="decoration-muted">not allow_website_booking</attribute>
-            </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="pos_table_id" optional="hide"/>
-                <field name="allow_website_booking" widget="boolean_toggle" readonly="not pos_table_id"/>
             </xpath>
         </field>
     </record>
@@ -22,7 +18,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='capacity']" position="after">
                 <field name="pos_table_id" readonly="1" invisible="not pos_table_id"/>
-                <field name="allow_website_booking" widget="boolean_toggle" readonly="not pos_table_id"/>
             </xpath>
         </field>
     </record>
@@ -34,13 +29,6 @@
             <search string="Resources">
                 <field name="name"/>
                 <field name="appointment_type_ids"/>
-                <filter string="Website Booking Allowed"
-                        name="website_booking_allowed"
-                        domain="[('allow_website_booking', '=', True)]"/>
-                <filter string="Not Allowed on Website"
-                        name="website_booking_disabled"
-                        domain="[('allow_website_booking', '=', False)]"/>
-                <separator/>
                 <filter string="Unassigned (Available for Event)"
                         name="unassigned_resources"
                         domain="[('appointment_type_ids', '=', False)]"/>
@@ -50,7 +38,7 @@
 
     <record id="appointment.action_appointment_resource" model="ir.actions.act_window">
         <field name="search_view_id" ref="appointment_resource_view_search"/>
-        <field name="context">{'search_default_website_booking_allowed': 1}</field>
+        <field name="context">{}</field>
     </record>
 </odoo>
 

@@ -89,23 +89,35 @@
     margin-bottom: 2px !important;
 }
 
-/* Hide Tax and Break Combo to preserve 5-col alignment */
-.control-buttons-modal .o_fiscal_position_button,
-.control-buttons-modal .break-combo-button {
-    display: none !important;
-}
-
-/* Full Width Cancel Order Button */
+/* Cancel Order Button (standard grid tile) */
 .control-buttons-modal .btn-danger,
 .control-buttons-modal button:has([data-icon="delete"]) {
-    grid-column: 1 / -1 !important;
+    grid-column: auto !important;
     background: #ef4444 !important;
     border-color: #ef4444 !important;
     color: #ffffff !important;
-    min-height: 48px !important;
-    flex-direction: row !important;
-    justify-content: center !important;
-    margin-top: 6px !important;
+}
+
+.control-buttons-modal .btn-danger:hover:not(:disabled),
+.control-buttons-modal button:has([data-icon="delete"]):hover:not(:disabled) {
+    background: #dc2626 !important;
+    border-color: #dc2626 !important;
+    color: #ffffff !important;
+}
+
+.control-buttons-modal .btn-danger:disabled,
+.control-buttons-modal button:has([data-icon="delete"]):disabled {
+    background: #f87171 !important;
+    border-color: #f87171 !important;
+    color: #ffffff !important;
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+}
+
+.control-buttons-modal .btn-danger i.oi,
+.control-buttons-modal button:has([data-icon="delete"]) i.oi {
+    color: #ffffff !important;
+    opacity: 0.9 !important;
 }
 
 /* Dark Mode support */
@@ -134,13 +146,7 @@
  * POS Course Button & Course Display Enhancements
  * ========================================================= */
 
-/* Hide default course button placed before more-btn by pos_restaurant */
-.control-buttons button.course-btn {
-    display: none !important;
-}
-
-/* Hudson Course Button right next to Dine In (preset) */
-.control-buttons button.hudson-course-btn,
+/* Hudson Quotation Button right next to Dine In (preset) */
 .control-buttons button.hudson-quotation-btn {
     display: inline-flex !important;
     align-items: center !important;

@@ -16,7 +16,23 @@ class ProductTemplate(models.Model):
 
     def action_view_ecos(self):
         self.ensure_one()
-        action = self.env['ir.actions.act_window']._for_xml_id('hudson_plm.mrp_eco_action_main')
+        action = self.env['ir.actions.actions']._for_xml_id('hudson_plm.mrp_eco_action_main')
         action['domain'] = [('product_tmpl_id', '=', self.id)]
         action['context'] = {'default_product_tmpl_id': self.id}
         return action
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    eco_ids = fields.One2many('mrp.eco', 'product_tmpl_id', related='product_tmpl_id.eco_ids', string='ECOs')
+    eco_count = fields.Integer('# ECOs', compute='_compute_eco_count')
+
+    def _compute_eco_count(self):
+        for product in self:
+            product.eco_count = product.product_tmpl_id.eco_count
+
+    def action_view_ecos(self):
+        self.ensure_one()
+        return self.product_tmpl_id.action_view_ecos()
+

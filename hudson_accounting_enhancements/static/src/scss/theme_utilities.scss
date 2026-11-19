@@ -1,0 +1,39 @@
+// Compile-time light/dark switch. Odoo compiles backend SCSS once for the
+// light bundle and once for web.assets_web_dark (dark primary variables), so
+// hx-theme() returns the light colour in one and the dark colour in the other.
+@function hx-theme($light, $dark) {
+    @if (global-variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark") {
+        @return $dark;
+    }
+    @return $light;
+}
+
+/* Theme-aware colour utilities for accounting templates.
+   Use these instead of inline style="color: #..." (inline colours cannot
+   change with the theme, and Bootstrap's text-white / bg-white flip to
+   black in the dark bundle because Odoo maps $white to $o-white). */
+
+.o_hx_text_strong { color: hx-theme(#0f172a, $o-gray-900) !important; }
+.o_hx_text { color: hx-theme(#334155, $o-gray-800) !important; }
+.o_hx_text_muted { color: hx-theme(#64748b, $o-gray-600) !important; }
+.o_hx_accent { color: hx-theme(#00878a, #2dd4bf) !important; }
+.o_hx_success { color: hx-theme(#16a34a, #4ade80) !important; }
+.o_hx_negative { color: hx-theme(#dc3545, #ff7b7b) !important; }
+.o_hx_accent_border { border-color: hx-theme(#00878a, #2dd4bf) !important; }
+.o_hx_border_bottom2 { border-bottom: 2px solid hx-theme(#e2e8f0, $o-gray-300) !important; }
+
+/* Info banner used by the unrealized currency gains wizard */
+.o_hx_info_banner {
+    background-color: hx-theme(#dbeafe, rgba(59, 130, 246, 0.16));
+    color: hx-theme(#1e3a8a, #bfdbfe);
+    border: 1px solid hx-theme(#bfdbfe, rgba(96, 165, 250, 0.35));
+    border-radius: 4px;
+}
+
+/* Report snapshots embedded in Knowledge articles carry inline light-theme
+   text colours; keep the card light so they stay readable in dark mode
+   (also covers snapshots saved before the card had its own background). */
+.o_hudson_report_snapshot {
+    background-color: #ffffff;
+    color: #334155;
+}

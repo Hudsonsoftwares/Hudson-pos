@@ -4,6 +4,7 @@ import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_valid
 import { getOnNotified } from "@point_of_sale/utils";
 import { _t } from "@web/core/l10n/translation";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { debounce } from "@web/core/utils/timing";
 
 function upsertBooking(posStore, data) {
     if (!data) return;
@@ -28,10 +29,23 @@ function upsertBooking(posStore, data) {
 
 patch(PosStore.prototype, {
     async setup() {
+        if (!this.syncAllOrdersDebounced && typeof this.syncAllOrders === "function") {
+            this.syncAllOrdersDebounced = debounce(this.syncAllOrders.bind(this), 100);
+        }
         await super.setup(...arguments);
+        if (!this.syncAllOrdersDebounced && typeof this.syncAllOrders === "function") {
+            this.syncAllOrdersDebounced = debounce(this.syncAllOrders.bind(this), 100);
+        }
         if (this.config.use_booking && (this.data || this.bus)) {
             this._setupBookingBusListener();
         }
+    },
+
+    removeOrder(order, removeFromServer = true) {
+        if (!this.syncAllOrdersDebounced && typeof this.syncAllOrders === "function") {
+            this.syncAllOrdersDebounced = debounce(this.syncAllOrders.bind(this), 100);
+        }
+        return super.removeOrder(...arguments);
     },
 
     _setupBookingBusListener() {

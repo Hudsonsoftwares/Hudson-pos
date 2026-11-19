@@ -2,6 +2,8 @@ from datetime import date, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
+from odoo.addons.accounting_pdf_reports.report.report_cash_flow import CASH_ACCOUNT_TYPES
+
 
 class AccountCashFlowWizard(models.TransientModel):
     """
@@ -52,6 +54,11 @@ class AccountCashFlowWizard(models.TransientModel):
         default=lambda self: self.env.company,
     )
 
+    def _report_company_ids(self):
+        """The companies the report covers: the ones selected in the company
+        switcher, which always include the wizard's company (checked above)."""
+        return (self.env.companies | self.company_id).ids
+
     def _get_journal_clause(self):
         """Restrict to the journals of the selected Multi Ledgers (passed in context)."""
         journal_ids = self.env.context.get('report_journal_ids')
@@ -75,7 +82,7 @@ class AccountCashFlowWizard(models.TransientModel):
             JOIN account_account aa ON aa.id = aml.account_id
             WHERE aa.account_type IN %s
               AND aml.date <= %s
-              AND aml.company_id = %s
+              AND aml.company_id IN %s
               AND aml.display_type NOT IN ('line_section', 'line_note')
               {state_clause}
               {journal_clause}
@@ -98,7 +105,7 @@ class AccountCashFlowWizard(models.TransientModel):
             WHERE aa.account_type IN %s
               AND aml.date >= %s
               AND aml.date <= %s
-              AND aml.company_id = %s
+              AND aml.company_id IN %s
               AND aml.display_type NOT IN ('line_section', 'line_note')
               {state_clause}
               {journal_clause}
@@ -115,39 +122,23 @@ class AccountCashFlowWizard(models.TransientModel):
         if self.date_from > self.date_to:
             raise UserError(_('Date From must be before Date To.'))
 
-        company_id = self.company_id.id
+        # all the companies of the company switcher, as in Odoo
+        company_id = tuple(self._report_company_ids())
         date_from = self.date_from
         date_to = self.date_to
         state = self.target_move
 
         date_before = date_from - timedelta(days=1)
-        cash_types = ['asset_cash']
-        
+        # bank and cash accounts, and the credit cards: paying with a card is spending cash (in Odoo
+        # Enterprise the credit card journals are liquidity journals)
+        cash_types = list(CASH_ACCOUNT_TYPES)
+
         opening_cash = self._get_balance_at_date(cash_types, date_before, company_id, state)
         closing_cash = self._get_balance_at_date(cash_types, date_to, company_id, state)
-        
-        state_clause = "AND m.state = 'posted'" if state == 'posted' else "AND m.state IN ('draft', 'posted')"
-        journal_clause, journal_params = self._get_journal_clause()
-        
-        # 1. Find all moves that have at least one cash line
-        query = f"""
-            SELECT DISTINCT aml.move_id
-            FROM account_move_line aml
-            JOIN account_account aa ON aa.id = aml.account_id
-            JOIN account_move m ON m.id = aml.move_id
-            WHERE aa.account_type IN %s
-              AND aml.date >= %s
-              AND aml.date <= %s
-              AND aml.company_id = %s
-              {state_clause}
-              {journal_clause}
-        """
-        self.env.cr.execute(query, (tuple(cash_types), date_from, date_to, company_id) + journal_params)
-        move_ids = [r[0] for r in self.env.cr.fetchall()]
-        
+
         def init_bucket():
             return {'total': 0.0, 'accounts': {}}
-            
+
         # Initialize buckets
         results = {
             'op_adv_in': init_bucket(),
@@ -161,10 +152,10 @@ class AccountCashFlowWizard(models.TransientModel):
             'unclass_in': init_bucket(),
             'unclass_out': init_bucket(),
         }
-        
-        def add_to_bucket(bucket_name, cf_amount, acc_id, code, name, tx_data=None):
+
+        def add_to_bucket(bucket_name, cf_amount, account, tx_data=None):
             results[bucket_name]['total'] += cf_amount
-            key = (acc_id, code, name)
+            key = (account.id, account.code or '', account.name or '')
             if key not in results[bucket_name]['accounts']:
                 results[bucket_name]['accounts'][key] = {
                     'balance': 0.0,
@@ -173,80 +164,75 @@ class AccountCashFlowWizard(models.TransientModel):
             results[bucket_name]['accounts'][key]['balance'] += cf_amount
             if tx_data:
                 results[bucket_name]['accounts'][key]['transactions'].append(tx_data)
-        
-        if move_ids:
-            # For these moves, get all non-cash lines with full transaction details
-            lines_query = """
-                SELECT aml.id as aml_id, aml.move_id, aml.debit - aml.credit AS balance, aa.account_type, aa.id as account_id,
-                       aml.name as aml_name, aml.ref as aml_ref, aml.date as aml_date,
-                       m.name as move_name, m.move_type, m.ref as move_ref,
-                       COALESCE(rp.name, aml_rp.name, '') as partner_name,
-                       COALESCE(m.partner_id, aml.partner_id) as partner_id
-                FROM account_move_line aml
-                JOIN account_account aa ON aa.id = aml.account_id
-                JOIN account_move m ON m.id = aml.move_id
-                LEFT JOIN res_partner rp ON rp.id = m.partner_id
-                LEFT JOIN res_partner aml_rp ON aml_rp.id = aml.partner_id
-                WHERE aml.move_id IN %s
-                  AND aa.account_type NOT IN %s
-                  AND aml.display_type NOT IN ('line_section', 'line_note')
-                ORDER BY aml.date DESC, aml.id DESC
-            """
-            self.env.cr.execute(lines_query, (tuple(move_ids), tuple(cash_types)))
-            non_cash_lines = self.env.cr.dictfetchall()
-            
-            acc_ids = list(set([line['account_id'] for line in non_cash_lines]))
-            acc_map = {acc.id: {'code': acc.code, 'name': acc.name} for acc in self.env['account.account'].browse(acc_ids)}
-            
-            for line in non_cash_lines:
-                # Cash flow contribution is the NEGATIVE of the non-cash balance
-                # (because sum of balances in a move is 0)
-                cf_amount = -line['balance']
-                acc_type = line['account_type']
-                acc_id = line['account_id']
-                code = acc_map.get(acc_id, {}).get('code', '')
-                name = acc_map.get(acc_id, {}).get('name', 'Unknown')
-                
-                is_in = cf_amount > 0
-                bucket = 'unclass_in' if is_in else 'unclass_out'
-                
-                if acc_type in ('asset_receivable', 'income', 'income_other'):
-                    bucket = 'op_cash_in' if is_in else 'op_adv_out'
-                elif acc_type in ('liability_payable', 'expense', 'expense_direct_cost', 'expense_depreciation', 'liability_current'):
-                    bucket = 'op_adv_in' if is_in else 'op_cash_out'
-                elif acc_type in ('asset_prepayments',):
-                    bucket = 'op_cash_in' if is_in else 'op_adv_out'
-                elif acc_type in ('asset_current',):
-                    # Usually inventory, treating as operating
-                    bucket = 'op_cash_in' if is_in else 'op_cash_out'
-                elif acc_type in ('asset_fixed', 'asset_non_current'):
-                    bucket = 'inv_in' if is_in else 'inv_out'
-                elif acc_type in ('liability_non_current', 'equity', 'equity_unaffected'):
-                    bucket = 'fin_in' if is_in else 'fin_out'
-                
-                # Transaction detail dict for drill-down
-                move_display_name = line.get('move_name') or '/'
-                tx_label = line.get('aml_name') or line.get('move_ref') or move_display_name
-                if line.get('partner_name'):
-                    tx_label = f"{move_display_name} - {line['partner_name']} ({tx_label})"
-                else:
-                    tx_label = f"{move_display_name} ({tx_label})"
 
-                tx_data = {
-                    'id': line['aml_id'],
-                    'move_id': line['move_id'],
-                    'move_name': move_display_name,
-                    'move_type': line.get('move_type', 'entry'),
-                    'name': tx_label,
-                    'ref': line.get('move_ref') or line.get('aml_ref') or '',
-                    'date': str(line.get('aml_date') or ''),
-                    'partner_id': line.get('partner_id'),
-                    'partner_name': line.get('partner_name') or '',
-                    'balance': cf_amount,
-                    'account_id': acc_id,
-                }
-                    
-                add_to_bucket(bucket, cf_amount, acc_id, code, name, tx_data)
+        cash_domain = [
+            ('company_id', 'in', list(company_id)),
+            ('account_id.account_type', 'in', cash_types),
+            ('date', '>=', date_from),
+            ('date', '<=', date_to),
+            ('parent_state', 'in', ('posted',) if state == 'posted' else ('draft', 'posted')),
+            ('display_type', 'not in', ('line_section', 'line_note')),
+        ]
+        journal_ids = self.env.context.get('report_journal_ids')
+        if journal_ids:
+            cash_domain.append(('journal_id', 'in', list(journal_ids)))
+        cash_lines = self.env['account.move.line'].search(cash_domain)
+
+        # What the cash was paid or received for, followed through the outstanding accounts and the
+        # reconciliations of the receivables and payables with the invoices and bills, as in Odoo
+        # Enterprise: a supplier payment for equipment is an investing flow, a loan repayment or a
+        # dividend paid a financing one.
+        engine = self.env['report.accounting_pdf_reports.report_cash_flow']
+        for entry in engine._trace_cash_lines(cash_lines, self.env['res.company'].browse(company_id)):
+            cf_amount = entry['amount']
+            if not cf_amount:
+                continue
+            is_in = cf_amount > 0
+            origin = entry['origin']
+            account = entry['account'] or origin.account_id
+            activity, line_key = entry['activity'], entry['line']
+            if activity == 'investing':
+                bucket = 'inv_in' if is_in else 'inv_out'
+            elif activity == 'financing':
+                bucket = 'fin_in' if is_in else 'fin_out'
+            elif entry['partner_line']:
+                # paid invoices and bills: cash received from / paid for operating activities
+                bucket = 'op_cash_in' if is_in else 'op_cash_out'
+            elif line_key == 'receivable':
+                # not matched with an invoice: advance of (or refund to) a customer
+                bucket = 'op_adv_in'
+            elif line_key == 'payable':
+                # not matched with a bill: advance to (or refund from) a supplier
+                bucket = 'op_adv_out'
+            elif line_key in ('unmatched', 'transfer', 'other'):
+                bucket = 'unclass_in' if is_in else 'unclass_out'
+            else:
+                bucket = 'op_cash_in' if is_in else 'op_cash_out'
+
+            # Transaction detail dict for drill-down
+            move = origin.move_id
+            partner = move.partner_id or origin.partner_id
+            move_display_name = move.name or '/'
+            tx_label = origin.name or move.ref or move_display_name
+            if partner:
+                tx_label = f"{move_display_name} - {partner.name} ({tx_label})"
+            else:
+                tx_label = f"{move_display_name} ({tx_label})"
+
+            tx_data = {
+                'id': origin.id,
+                'move_id': move.id,
+                'move_name': move_display_name,
+                'move_type': move.move_type or 'entry',
+                'name': tx_label,
+                'ref': move.ref or origin.ref or '',
+                'date': str(origin.date or ''),
+                'partner_id': partner.id or False,
+                'partner_name': partner.name or '',
+                'balance': cf_amount,
+                'account_id': account.id,
+            }
+            add_to_bucket(bucket, cf_amount, account, tx_data)
 
         # Format buckets to lists
         for b_name in results:

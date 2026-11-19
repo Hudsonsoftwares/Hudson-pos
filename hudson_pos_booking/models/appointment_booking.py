@@ -429,14 +429,10 @@ class AppointmentBooking(models.Model):
 
     @api.model
     def _load_pos_data_fields(self, config):
-        return [
+        base_fields = [
             'name',
             'company_id',
             'appointment_type_id',
-            'event_category',
-            'celebrant_name',
-            'occasion_title',
-            'occasion_date',
             'customer_name',
             'customer_phone',
             'customer_email',
@@ -461,6 +457,13 @@ class AppointmentBooking(models.Model):
             'pos_order_ids',
             'sale_order_id',
         ]
+        optional_fields = [
+            'event_category',
+            'celebrant_name',
+            'occasion_title',
+            'occasion_date',
+        ]
+        return [f for f in base_fields + optional_fields if f in self._fields]
 
     def _get_booking_timezone(self, config=None):
         """Resolve timezone for POS booking formatting, never falling back to UTC while appointment_tz is set."""
@@ -498,17 +501,19 @@ class AppointmentBooking(models.Model):
         disp_phone = self.customer_phone or (self.partner_id.phone or (getattr(self.partner_id, 'mobile', '') if hasattr(self.partner_id, 'mobile') else '')) or ''
         disp_email = self.customer_email or (self.partner_id.email or '')
 
+        occ_date = getattr(self, 'occasion_date', False)
+
         return {
             'id': self.id,
             'name': self.name or '',
             'company_id': self.company_id.id if self.company_id else False,
             'appointment_type_id': self.appointment_type_id.id if self.appointment_type_id else False,
             'appointment_type_name': self.appointment_type_id.name if self.appointment_type_id else '',
-            'event_emoji': self.appointment_type_id.event_emoji if self.appointment_type_id else '',
-            'event_category': self.event_category or '',
-            'celebrant_name': self.celebrant_name or '',
-            'occasion_title': self.occasion_title or '',
-            'occasion_date': fields.Date.to_string(self.occasion_date) if self.occasion_date else '',
+            'event_emoji': getattr(self.appointment_type_id, 'event_emoji', '') if self.appointment_type_id else '',
+            'event_category': getattr(self, 'event_category', '') or '',
+            'celebrant_name': getattr(self, 'celebrant_name', '') or '',
+            'occasion_title': getattr(self, 'occasion_title', '') or '',
+            'occasion_date': fields.Date.to_string(occ_date) if occ_date else '',
             'customer_name': disp_name,
             'customer_phone': disp_phone,
             'customer_email': disp_email,

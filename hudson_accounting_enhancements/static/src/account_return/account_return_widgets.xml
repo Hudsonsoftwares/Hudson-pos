@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hudson_accounting_enhancements.AccountReturnProgress">
+        <div class="o_account_return_progress d-flex align-items-start">
+            <t t-foreach="this.steps" t-as="step" t-key="step.key">
+                <div class="o_arp_step" t-att-class="{ 'o_arp_done': step.done }">
+                    <div class="o_arp_track">
+                        <span class="o_arp_line o_arp_line_left" t-att-class="{ 'invisible': step_first }"/>
+                        <span class="o_arp_dot"/>
+                        <span class="o_arp_line o_arp_line_right" t-att-class="{ 'invisible': step_last }"/>
+                    </div>
+                    <div class="o_arp_label" t-out="step.label"/>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="hudson_accounting_enhancements.AccountReturnChecks">
+        <div class="o_account_return_checks">
+            <div t-if="!this.checks.length" class="text-muted p-3">No checks for this return.</div>
+            <t t-foreach="this.checks" t-as="check" t-key="check.id">
+                <div class="o_arc_card" t-att-class="'o_arc_' + check.result">
+                    <div class="o_arc_main">
+                        <div class="o_arc_title" t-out="check.name"/>
+                        <div class="o_arc_message" t-out="check.message"/>
+                        <button t-if="check.records_count"
+                                class="btn btn-link p-0 o_arc_records"
+                                t-on-click="() => this.openRecords(check)">
+                            <t t-out="check.records_count"/> item(s) to review
+                        </button>
+                        <button t-elif="check.has_action"
+                                class="btn btn-link p-0 o_arc_records"
+                                t-on-click="() => this.openRecords(check)">Open</button>
+                        <textarea class="o_arc_notes" rows="1" placeholder="Add notes..."
+                                  t-att-value="check.notes" t-att-readonly="check.readonly"
+                                  t-on-change="(ev) => this.saveNotes(check, ev.target.value)"/>
+                    </div>
+                    <div class="o_arc_side">
+                        <img t-if="check.result === 'reviewed' and check.reviewer_id"
+                             class="o_arc_avatar rounded-circle" t-att-src="this.avatarUrl(check)"
+                             t-att-title="check.reviewer_name" t-att-alt="check.reviewer_name"/>
+                        <button class="btn o_arc_toggle"
+                                t-att-class="check.result === 'reviewed' ? 'o_arc_toggle_done' : ''"
+                                t-att-disabled="check.readonly"
+                                t-on-click="() => this.toggle(check)"
+                                t-out="this.resultLabel(check)"/>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

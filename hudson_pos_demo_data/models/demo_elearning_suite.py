@@ -10,11 +10,17 @@ Loads, for the installed apps only:
 """
 import logging
 
-from odoo.tools import convert_file
+from .demo_xml import load_demo_xml as convert_file  # tolerant of apps not installed
 
 _logger = logging.getLogger(__name__)
 
 MODULE = 'hudson_pos_demo_data'
+
+ELEARNING_XML_FILES = [
+    'demo/elearning_demo.xml',
+    'demo/elearning_cert_demo.xml',
+    'demo/elearning_paid_demo.xml',
+]
 
 
 def _installed(env, name):

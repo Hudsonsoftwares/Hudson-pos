@@ -228,6 +228,16 @@
         <field name="account_type_ids" eval="[(5, 0, 0)]"/>
     </record>
 
+    <!-- STEP 9b: accounting_pdf_reports 2.x ships its own "Equity" node (with "Capital and
+         Reserves" = equity + current year earnings accounts) under "Liabilities and Equity".
+         The Equity of this Balance Sheet is the separate section below, so that node is taken
+         out of the tree: left under Liabilities, the equity would be counted twice and
+         Assets would not equal Liabilities + Equity. (Existing databases: see the
+         migration script, which also handles the no-update flag.) -->
+    <record id="accounting_pdf_reports.account_financial_report_equity0" model="account.financial.report">
+        <field name="parent_id" eval="False"/>
+    </record>
+
     <!-- STEP 10: Create separate Equity section -->
     <record id="account_financial_report_equity_section" model="account.financial.report">
         <field name="name">Equity</field>

@@ -162,3 +162,20 @@ class ProductTemplate(models.Model):
         if not prices and self.rental_periodicity:
             prices.append(periods(RENTAL_PERIOD_DAYS[self.rental_periodicity]) * self.list_price)
         return min(prices) if prices else 0.0
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    qty_in_rent = fields.Float("Quantity currently in rent", compute="_compute_qty_in_rent")
+
+    def _compute_qty_in_rent(self):
+        for product in self:
+            product.qty_in_rent = product.product_tmpl_id.qty_in_rent
+
+    def action_view_rental_orders(self):
+        self.ensure_one()
+        action = self.env['ir.actions.actions']._for_xml_id('hudson_rental.action_rental_order')
+        action['domain'] = [('order_line.product_id', '=', self.id)]
+        return action
+

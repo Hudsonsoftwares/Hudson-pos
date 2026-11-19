@@ -18,15 +18,16 @@ class AccountAnnualReport(models.Model):
         required=True,
     )
 
+    # the fiscal year of the company (e.g. April - March), not the calendar year
     date_from = fields.Date(
         string='Date From',
         required=True,
-        default=lambda self: date.today().replace(month=1, day=1),
+        default=lambda self: self.env.company.compute_fiscalyear_dates(fields.Date.context_today(self))['date_from'],
     )
     date_to = fields.Date(
         string='Date To',
         required=True,
-        default=lambda self: date.today().replace(month=12, day=31),
+        default=lambda self: self.env.company.compute_fiscalyear_dates(fields.Date.context_today(self))['date_to'],
     )
     target_move = fields.Selection(
         [('posted', 'All Posted Entries'), ('all', 'All Entries')],
@@ -153,9 +154,32 @@ class AccountAnnualReport(models.Model):
         return self._get_balance(account_types, prior_from, prior_to, company_id, state)
 
     def _get_aged_lines(self, account_type, as_of_date, company_id, state, period_length=30):
-        """Get aged payable/receivable bucket totals."""
+        """Get aged payable/receivable bucket totals, as they were on ``as_of_date``: what each item
+        still owed on that date (its amount less what was matched with it on or before that date),
+        not what it owes today - a report of last year printed today would show nothing open."""
         state_clause = "AND am.state = 'posted'" if state == 'posted' else "AND am.state IN ('draft', 'posted')"
         query = f"""
+            WITH open_items AS (
+                SELECT aml.id, aml.date, aml.date_maturity,
+                       aml.balance
+                       - COALESCE((SELECT SUM(pr.amount) FROM account_partial_reconcile pr
+                                    WHERE pr.debit_move_id = aml.id AND pr.max_date <= %(as_of)s), 0)
+                       + COALESCE((SELECT SUM(pr.amount) FROM account_partial_reconcile pr
+                                    WHERE pr.credit_move_id = aml.id AND pr.max_date <= %(as_of)s), 0)
+                       AS amount_residual
+                FROM account_move_line aml
+                JOIN account_account aa ON aa.id = aml.account_id
+                JOIN account_move am ON am.id = aml.move_id
+                WHERE aa.account_type = %(atype)s
+                  AND aml.date <= %(as_of)s
+                  AND aml.company_id = %(cid)s
+                  AND aml.display_type NOT IN ('line_section', 'line_note')
+                  AND (aml.reconciled IS NOT TRUE OR EXISTS (
+                        SELECT 1 FROM account_partial_reconcile pr
+                         WHERE (pr.debit_move_id = aml.id OR pr.credit_move_id = aml.id)
+                           AND pr.max_date > %(as_of)s))
+                  {state_clause}
+            )
             SELECT
                 COALESCE(SUM(aml.amount_residual), 0) as total,
                 COALESCE(SUM(CASE WHEN (%(as_of)s - COALESCE(aml.date_maturity, aml.date)) BETWEEN 1 AND %(p)s THEN aml.amount_residual ELSE 0 END), 0) as b1,
@@ -164,15 +188,8 @@ class AccountAnnualReport(models.Model):
                 COALESCE(SUM(CASE WHEN (%(as_of)s - COALESCE(aml.date_maturity, aml.date)) BETWEEN %(p3)s+1 AND %(p4)s THEN aml.amount_residual ELSE 0 END), 0) as b4,
                 COALESCE(SUM(CASE WHEN (%(as_of)s - COALESCE(aml.date_maturity, aml.date)) > %(p4)s THEN aml.amount_residual ELSE 0 END), 0) as b5,
                 COALESCE(SUM(CASE WHEN (%(as_of)s - COALESCE(aml.date_maturity, aml.date)) <= 0 THEN aml.amount_residual ELSE 0 END), 0) as current_amt
-            FROM account_move_line aml
-            JOIN account_account aa ON aa.id = aml.account_id
-            JOIN account_move am ON am.id = aml.move_id
-            WHERE aa.account_type = %(atype)s
-              AND aml.date <= %(as_of)s
-              AND aml.company_id = %(cid)s
-              AND aml.display_type NOT IN ('line_section', 'line_note')
-              AND aml.amount_residual != 0
-              {state_clause}
+            FROM open_items aml
+            WHERE aml.amount_residual != 0
         """
         self.env.cr.execute(query, {
             'as_of': as_of_date,
@@ -321,10 +338,13 @@ class AccountAnnualReport(models.Model):
         self.ensure_one()
         if self.company_id and self.company_id not in self.env.companies:
             raise UserError(_("You cannot view or print an Annual Report belonging to another company (%s).") % self.company_id.name)
-        data = self._compute_annual_data()
+        self._compute_annual_data()  # validate before printing
+        # No `data`: when an action carries data the web client drops the record
+        # ids from the report URL, the template gets no docs and prints a blank
+        # page. The template recomputes the figures from the record itself.
         return self.env.ref(
             'hudson_accounting_enhancements.action_report_annual'
-        ).report_action(self, data={'form': data})
+        ).report_action(self)
 
     def check_report(self):
         return self.action_print_report()

@@ -11,20 +11,22 @@ class AccountAnnualReportWizard(models.TransientModel):
     _name = 'account.annual.report.wizard'
     _description = 'Annual Financial Report'
 
+    # By default the last closed fiscal year of the company (e.g. April - March), not the calendar
+    # year. The fiscal year is named after the year it starts in.
     fiscal_year = fields.Integer(
         string='Fiscal Year',
         required=True,
-        default=lambda self: date.today().year - 1,
+        default=lambda self: self._default_fiscal_year_dates()['date_from'].year,
     )
     date_from = fields.Date(
         string='Date From',
         required=True,
-        default=lambda self: date.today().replace(month=1, day=1, year=date.today().year - 1),
+        default=lambda self: self._default_fiscal_year_dates()['date_from'],
     )
     date_to = fields.Date(
         string='Date To',
         required=True,
-        default=lambda self: date.today().replace(month=12, day=31, year=date.today().year - 1),
+        default=lambda self: self._default_fiscal_year_dates()['date_to'],
     )
     target_move = fields.Selection(
         [('posted', 'All Posted Entries'), ('all', 'All Entries')],
@@ -39,11 +41,25 @@ class AccountAnnualReportWizard(models.TransientModel):
         default=lambda self: self.env.company,
     )
 
-    @api.onchange('fiscal_year')
+    @api.model
+    def _default_fiscal_year_dates(self):
+        """ :return: the dates of the fiscal year before the current one, for the company """
+        company = self.env.company
+        current = company.compute_fiscalyear_dates(fields.Date.context_today(self))
+        return company.compute_fiscalyear_dates(current['date_from'] - timedelta(days=1))
+
+    @api.model
+    def _fiscal_year_dates(self, company, year):
+        """ :return: the dates of the fiscal year of `company` starting in `year` (the one holding
+            the 31st of December of `year`) """
+        return company.compute_fiscalyear_dates(date(year, 12, 31))
+
+    @api.onchange('fiscal_year', 'company_id')
     def _onchange_fiscal_year(self):
-        if self.fiscal_year:
-            self.date_from = date(self.fiscal_year, 1, 1)
-            self.date_to = date(self.fiscal_year, 12, 31)
+        if self.fiscal_year and 1 <= self.fiscal_year <= 9999:
+            dates = self._fiscal_year_dates(self.company_id or self.env.company, self.fiscal_year)
+            self.date_from = dates['date_from']
+            self.date_to = dates['date_to']
 
     @staticmethod
     def _clean_zero(val):

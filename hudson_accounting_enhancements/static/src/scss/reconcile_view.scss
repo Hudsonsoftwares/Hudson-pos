@@ -1,7 +1,17 @@
+// Compile-time light/dark switch. Odoo compiles backend SCSS once for the
+// light bundle and once for web.assets_web_dark (dark primary variables), so
+// hx-theme() returns the light colour in one and the dark colour in the other.
+@function hx-theme($light, $dark) {
+    @if (global-variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark") {
+        @return $dark;
+    }
+    @return $light;
+}
+
 /* Negative value coloring - applied via JS MutationObserver */
 [style*="color: rgb(220, 53, 69)"],
 .hudson-negative {
-    color: #dc3545 !important;
+    color: hx-theme(#dc3545, #ff7b7b) !important;
 }
 
 .hudson_auto_reconcile_view .o_group_header,

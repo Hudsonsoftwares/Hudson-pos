@@ -167,6 +167,14 @@ class AppointmentResource(models.Model):
         resources = enabled_tables.mapped('appointment_resource_id').filtered(
             lambda r: r.active and (not r.company_id or r.company_id == company)
         )
+        # Stand-alone resources (party halls, meeting rooms...) not linked to any POS table
+        table_res_ids = Table.with_context(active_test=False).search([
+            ('appointment_resource_id', '!=', False),
+        ]).mapped('appointment_resource_id').ids
+        resources |= self.sudo().search([
+            ('id', 'not in', table_res_ids),
+            '|', ('company_id', '=', False), ('company_id', '=', company.id),
+        ])
         if not include_allocated and resources:
             other_domain = [
                 ('active', '=', True),

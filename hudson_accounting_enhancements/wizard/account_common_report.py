@@ -40,7 +40,9 @@ class AccountCommonReport(models.TransientModel):
             
             try:
                 # Use the dynamic report model to get the data
-                report_data = self.env['hudson.dynamic.report'].get_report_data(model_name, record.id, data)
+                # no write on the wizard from its own compute (see _hudson_apply_company_scope)
+                report_data = self.env['hudson.dynamic.report'].with_context(
+                    hudson_report_keep_wizard=True).get_report_data(model_name, record.id, data)
                 
                 # Render the HTML using the QWeb template
                 # We can reuse the executive summary template or a generic one

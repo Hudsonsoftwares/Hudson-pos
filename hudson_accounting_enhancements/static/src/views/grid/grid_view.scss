@@ -1,3 +1,13 @@
+// Compile-time light/dark switch. Odoo compiles backend SCSS once for the
+// light bundle and once for web.assets_web_dark (dark primary variables), so
+// hx-theme() returns the light colour in one and the dark colour in the other.
+@function hx-theme($light, $dark) {
+    @if (global-variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark") {
+        @return $dark;
+    }
+    @return $light;
+}
+
 /* Analytic Reporting Grid View & Views Styling */
 
 .o_grid_view {
@@ -7,7 +17,7 @@
     }
 
     .o_grid_table_wrapper {
-        background-color: #ffffff;
+        background-color: hx-theme(#ffffff, $o-view-background-color);
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         overflow-x: auto !important;
         position: relative;
@@ -24,15 +34,15 @@
             white-space: nowrap;
             border-top: none;
             border-left: none;
-            border-right: 1px solid #e9ecef;
-            border-bottom: 1px solid #e9ecef;
+            border-right: 1px solid hx-theme(#e9ecef, $o-gray-300);
+            border-bottom: 1px solid hx-theme(#e9ecef, $o-gray-300);
             vertical-align: middle;
         }
 
         th {
             font-size: 0.85rem;
-            background-color: #f8f9fa;
-            color: #495057;
+            background-color: hx-theme(#f8f9fa, $o-gray-100);
+            color: hx-theme(#495057, $o-gray-700);
         }
 
         /* Fixed Left Column (Analytic Account) */
@@ -46,24 +56,24 @@
 
         thead th.o_grid_col_fixed_left {
             z-index: 10 !important;
-            background-color: #f8f9fa !important;
-            border-right: 2px solid #dee2e6;
+            background-color: hx-theme(#f8f9fa, $o-gray-100) !important;
+            border-right: 2px solid hx-theme(#dee2e6, $o-gray-300);
         }
 
         tbody td.o_grid_col_fixed_left {
             z-index: 5 !important;
-            background-color: #ffffff !important;
-            border-right: 2px solid #e9ecef;
+            background-color: hx-theme(#ffffff, $o-view-background-color) !important;
+            border-right: 2px solid hx-theme(#e9ecef, $o-gray-300);
         }
 
         tbody tr.o_grid_subrow td.o_grid_col_fixed_left {
-            background-color: #f8f9fa !important;
+            background-color: hx-theme(#f8f9fa, $o-gray-100) !important;
         }
 
         tfoot td.o_grid_col_fixed_left {
             z-index: 10 !important;
-            background-color: #f1f3f5 !important;
-            border-right: 2px solid #ced4da;
+            background-color: hx-theme(#f1f3f5, $o-gray-100) !important;
+            border-right: 2px solid hx-theme(#ced4da, $o-gray-400);
         }
 
         /* Fixed Right Column (Amount) - Always visible on horizontal scroll */
@@ -77,21 +87,21 @@
 
         thead th.o_grid_header_total {
             z-index: 10 !important;
-            background-color: #2b3035 !important;
+            background-color: hx-theme(#2b3035, $o-gray-400) !important;
             color: #ffffff !important;
             font-weight: 700 !important;
             font-size: 0.85rem !important;
             letter-spacing: 0.5px;
-            border-left: 2px solid #495057 !important;
+            border-left: 2px solid hx-theme(#495057, $o-gray-500) !important;
         }
 
         tbody td.o_grid_row_total {
             z-index: 5 !important;
-            background-color: #3b424a !important;
+            background-color: hx-theme(#3b424a, $o-gray-300) !important;
             color: #ffffff !important;
             font-weight: 700 !important;
             font-size: 0.875rem !important;
-            border-left: 2px solid #495057 !important;
+            border-left: 2px solid hx-theme(#495057, $o-gray-500) !important;
             text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 
             span {
@@ -101,7 +111,7 @@
 
         tbody td.o_grid_subrow_total {
             z-index: 5 !important;
-            border-left: 2px solid #dee2e6 !important;
+            border-left: 2px solid hx-theme(#dee2e6, $o-gray-300) !important;
 
             &.o_grid_subrow_negative {
                 background-color: #e55353 !important; /* High-visibility coral/red background */
@@ -116,24 +126,24 @@
             }
 
             &.o_grid_subrow_positive {
-                background-color: #f8f9fa !important;
-                color: #212529 !important;
+                background-color: hx-theme(#f8f9fa, $o-gray-100) !important;
+                color: hx-theme(#212529, $o-gray-900) !important;
                 font-weight: 600 !important;
             }
 
             &.o_grid_subrow_zero {
-                background-color: #f8f9fa !important;
-                color: #adb5bd !important;
+                background-color: hx-theme(#f8f9fa, $o-gray-100) !important;
+                color: hx-theme(#adb5bd, $o-gray-600) !important;
             }
         }
 
         tfoot td.o_grid_grand_total {
             z-index: 10 !important;
-            background-color: #1a1e21 !important; /* High-contrast obsidian black */
+            background-color: hx-theme(#1a1e21, $o-gray-500) !important; /* High-contrast obsidian black */
             color: #ffffff !important;
             font-weight: 800 !important;
             font-size: 0.95rem !important;
-            border-left: 2px solid #343a40 !important;
+            border-left: 2px solid hx-theme(#343a40, $o-gray-600) !important;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 
             span {
@@ -142,13 +152,13 @@
         }
 
         .o_grid_account_link {
-            color: #008784;
+            color: hx-theme(#008784, #2dd4bf);
             font-weight: 600;
             text-decoration: none;
 
             &:hover {
                 text-decoration: underline;
-                color: #005f5d;
+                color: hx-theme(#005f5d, #5eead4);
             }
         }
 
@@ -160,7 +170,7 @@
             }
 
             &.o_grid_cell_selected {
-                outline: 2px solid #008784;
+                outline: 2px solid hx-theme(#008784, #2dd4bf);
                 outline-offset: -2px;
                 background-color: rgba(0, 135, 132, 0.12);
             }
@@ -169,7 +179,7 @@
         .o_grid_subrow {
             td {
                 font-size: 0.8rem;
-                background-color: #f8f9fa;
+                background-color: hx-theme(#f8f9fa, $o-gray-100);
             }
         }
     }
@@ -203,14 +213,14 @@
 .o_analytic_reporting_kanban {
     .o_kanban_record {
         border-radius: 8px !important;
-        border: 1px solid #e2e8f0 !important;
+        border: 1px solid hx-theme(#e2e8f0, $o-gray-300) !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
         padding: 12px 16px !important;
         cursor: pointer !important;
         transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
 
         &:hover {
-            border-color: #cbd5e1 !important;
+            border-color: hx-theme(#cbd5e1, $o-gray-400) !important;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
             transform: translateY(-1px);
         }

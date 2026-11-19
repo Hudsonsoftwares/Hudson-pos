@@ -19,14 +19,14 @@ record is owned by hudson_pos_demo_data, so Odoo removes it when the module is u
 
 import logging
 
-from odoo.tools import convert_file
+from .demo_xml import load_demo_xml as convert_file  # tolerant of apps not installed
 
 _logger = logging.getLogger(__name__)
 
 # (file, model that must exist, optional field check (model, field, selection value))
 MARKETING_XML_FILES = [
     ('demo/marketing/blog_demo.xml', 'blog.post', None),
-    ('demo/marketing/event_demo.xml', 'event.event.ticket', None),
+    ('demo/marketing/event_demo.xml', 'event.event', None),
     ('demo/marketing/event_track_demo.xml', 'event.track', None),
     ('demo/marketing/mass_mailing_demo.xml', 'mailing.mailing', None),
     ('demo/marketing/mass_mailing_sms_demo.xml', 'mailing.mailing', ('mailing.mailing', 'mailing_type', 'sms')),

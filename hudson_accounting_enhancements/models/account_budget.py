@@ -366,31 +366,3 @@ class AccountBudget(models.Model):
             budget.is_over_budget = budget.state in ('validate', 'done') and any(
                 line.is_over_budget for line in budget.line_ids if line.budget_type == 'expense'
             )
-
-    def action_revise_budget(self):
-        self.ensure_one()
-        base_name = self.name
-        if " - Rev " in base_name:
-            base_name = base_name.rsplit(" - Rev ", 1)[0]
-
-        existing_revisions = self.search([('name', 'ilike', f"{base_name} - Rev %")])
-        rev_num = 1
-        for rev in existing_revisions:
-            try:
-                num = int(rev.name.rsplit(" - Rev ", 1)[-1])
-                if num >= rev_num:
-                    rev_num = num + 1
-            except ValueError:
-                pass
-
-        new_name = f"{base_name} - Rev {rev_num}"
-        new_budget = self.copy(default={'name': new_name, 'state': 'draft', 'budget_type': self.budget_type})
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Budget Revision'),
-            'res_model': 'account.budget',
-            'view_mode': 'form',
-            'res_id': new_budget.id,
-            'target': 'current',
-        }

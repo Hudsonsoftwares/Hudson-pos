@@ -15,8 +15,8 @@
                                     <t t-out="doc.company_id.name"/> | As of: <strong><t t-out="doc.as_of_date"/></strong>
                                     | Period: <strong><t t-out="doc.period_length"/> days</strong>
                                     | Moves: <strong>
-                                        <t t-if="doc.target_move == 'posted'">Posted Only</t>
-                                        <t t-if="doc.target_move == 'all'">All Entries</t>
+                                        <t t-if="doc.show_draft">All Entries</t>
+                                        <t t-else="">Posted Only</t>
                                     </strong>
                                 </t>
                             </p>
@@ -98,8 +98,8 @@
                                     <t t-out="doc.company_id.name"/> | As of: <strong><t t-out="doc.as_of_date"/></strong>
                                     | Period: <strong><t t-out="doc.period_length"/> days</strong>
                                     | Moves: <strong>
-                                        <t t-if="doc.target_move == 'posted'">Posted Only</t>
-                                        <t t-if="doc.target_move == 'all'">All Entries</t>
+                                        <t t-if="doc.show_draft">All Entries</t>
+                                        <t t-else="">Posted Only</t>
                                     </strong>
                                 </t>
                             </p>

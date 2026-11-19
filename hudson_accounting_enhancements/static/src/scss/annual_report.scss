@@ -1,3 +1,13 @@
+// Compile-time light/dark switch. Odoo compiles backend SCSS once for the
+// light bundle and once for web.assets_web_dark (dark primary variables), so
+// hx-theme() returns the light colour in one and the dark colour in the other.
+@function hx-theme($light, $dark) {
+    @if (global-variable-exists(o-webclient-color-scheme) and $o-webclient-color-scheme == "dark") {
+        @return $dark;
+    }
+    @return $light;
+}
+
 /* ==========================================================================
    Annual Report UI Enhancements
    ========================================================================== */
@@ -13,7 +23,7 @@
     .o_input, input {
         font-size: 1.5rem !important;
         font-weight: 300 !important;
-        color: #1e293b !important;
+        color: hx-theme(#1e293b, $o-gray-900) !important;
         border: none !important;
         border-bottom: 2px solid #714b67 !important;
         border-radius: 0 !important;
@@ -30,7 +40,7 @@
         }
 
         &::placeholder {
-            color: #94a3b8 !important;
+            color: hx-theme(#94a3b8, $o-gray-600) !important;
             font-weight: 300 !important;
         }
     }
@@ -53,16 +63,16 @@
         width: 360px !important;
         min-width: 340px !important;
         border-radius: 10px !important;
-        border: 1px solid #e2e8f0 !important;
+        border: 1px solid hx-theme(#e2e8f0, $o-gray-300) !important;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
-        background: #ffffff !important;
+        background: hx-theme(#ffffff, $o-view-background-color) !important;
         overflow: hidden !important;
         padding: 0 !important;
         margin-bottom: 16px !important;
 
         /* Clean, stable hover without jumping/motion effects */
         &:hover {
-            border-color: #cbd5e1 !important;
+            border-color: hx-theme(#cbd5e1, $o-gray-400) !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
         }
     }
@@ -96,7 +106,7 @@
         .o_annual_report_card_title {
             font-size: 1.15rem;
             font-weight: 700;
-            color: #1e293b;
+            color: hx-theme(#1e293b, $o-gray-900);
             line-height: 1.3;
             letter-spacing: -0.01em;
             word-break: break-word;
@@ -106,19 +116,19 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: #334155;
+            color: hx-theme(#334155, $o-gray-800);
             font-size: 0.875rem;
             font-weight: 500;
             white-space: nowrap !important;
             margin-bottom: 8px;
             padding: 4px 10px;
-            background: #f8fafc;
-            border: 1px solid #f1f5f9;
+            background: hx-theme(#f8fafc, $o-gray-100);
+            border: 1px solid hx-theme(#f1f5f9, $o-gray-300);
             border-radius: 6px;
             width: fit-content;
 
             i {
-                color: #714b67;
+                color: hx-theme(#714b67, #c175ad);
                 font-size: 0.95rem;
             }
 
@@ -131,12 +141,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #64748b;
+            color: hx-theme(#64748b, $o-gray-700);
             font-size: 0.85rem;
             margin-bottom: 6px;
 
             i {
-                color: #94a3b8;
+                color: hx-theme(#94a3b8, $o-gray-600);
                 font-size: 0.9rem;
             }
         }
@@ -145,7 +155,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #94a3b8;
+            color: hx-theme(#94a3b8, $o-gray-600);
             font-size: 0.78rem;
             margin-bottom: 14px;
 
@@ -157,7 +167,7 @@
         .o_annual_report_footer {
             margin-top: auto;
             padding-top: 14px;
-            border-top: 1px solid #f1f5f9;
+            border-top: 1px solid hx-theme(#f1f5f9, $o-gray-300);
             display: flex;
             justify-content: space-between;
             align-items: center;

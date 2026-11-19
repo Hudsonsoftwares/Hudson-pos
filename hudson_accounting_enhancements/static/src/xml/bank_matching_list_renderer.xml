@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="hudson_accounting_enhancements.BankMatchingListRenderer">
-        <div class="o_hudson_bank_matching_container o_list_renderer w-100 h-100 d-flex flex-column bg-white overflow-auto">
+        <div class="o_hudson_bank_matching_container o_list_renderer w-100 h-100 d-flex flex-column overflow-auto">
             <!-- 1. Top Balance Banner: Current Balance | $ 2,540.93 -->
-            <div class="o_hudson_bank_matching_top_banner d-flex align-items-center justify-content-between px-4 py-3 bg-white border-bottom">
-                <span class="fw-bold" style="color: #0f172a; font-size: 1.05rem;">Current Balance</span>
-                <span class="fw-bold" style="color: #00878a; font-size: 1.15rem;" t-out="this.totalBalanceFormatted"/>
+            <div class="o_hudson_bank_matching_top_banner d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+                <span class="fw-bold o_hx_text_strong" style="font-size: 1.05rem;">Current Balance</span>
+                <span class="fw-bold o_hx_accent" style="font-size: 1.15rem;" t-out="this.totalBalanceFormatted"/>
             </div>
 
             <!-- Inline New Transaction Creation Row (As in Screenshot 1) -->
@@ -45,13 +45,13 @@
                 </div>
                 <!-- Action Buttons: Add & New | Add & Close | Discard -->
                 <div class="d-flex align-items-center gap-2 mt-2">
-                    <button class="btn btn-sm text-white fw-semibold px-3 py-1" style="background-color: #714B67; border-radius: 4px;" t-on-click="() => this.onSaveNewTransaction(false)">
+                    <button class="btn btn-sm btn-primary fw-semibold px-3 py-1" style="border-radius: 4px;" t-on-click="() => this.onSaveNewTransaction(false)">
                         Add &amp; New
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="() => this.onSaveNewTransaction(true)">
+                    <button class="btn btn-sm btn-secondary fw-medium px-3 py-1" style="border-radius: 4px;" t-on-click="() => this.onSaveNewTransaction(true)">
                         Add &amp; Close
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="this.onDiscardNewTransaction">
+                    <button class="btn btn-sm btn-secondary fw-medium px-3 py-1" style="border-radius: 4px;" t-on-click="this.onDiscardNewTransaction">
                         Discard
                     </button>
                 </div>
@@ -69,8 +69,8 @@
                     <t t-foreach="this.statementGroups" t-as="group" t-key="group.key">
                         <!-- Statement Section Header if statement exists -->
                         <div t-if="group.statementName" class="o_hudson_bank_matching_group_header d-flex align-items-center justify-content-between px-4 py-2 border-top border-bottom">
-                            <span class="fw-bold" style="color: #00878a; font-size: 0.95rem;" t-out="group.statementName"/>
-                            <span class="fw-bold" style="color: #00878a; font-size: 0.95rem;" t-out="(group.dateRange ? group.dateRange + ' ' : '') + group.totalFormatted"/>
+                            <span class="fw-bold o_hx_accent" style="font-size: 0.95rem;" t-out="group.statementName"/>
+                            <span class="fw-bold o_hx_accent" style="font-size: 0.95rem;" t-out="(group.dateRange ? group.dateRange + ' ' : '') + group.totalFormatted"/>
                         </div>
 
                         <!-- Transaction Rows -->
@@ -82,7 +82,7 @@
                                     <span class="o_hudson_row_date me-3 text-nowrap" t-out="this.formatDisplayDate(record.data.date)"/>
 
                                     <!-- Icons (Attachments / Chatter) -->
-                                    <span class="d-inline-flex align-items-center me-2" style="min-width: 18px; color: #64748b;">
+                                    <span class="d-inline-flex align-items-center me-2 o_hx_text_muted" style="min-width: 18px;">
                                         <i t-if="this.hasAttachments(record)" class="fa fa-paperclip me-1" style="font-size: 0.85rem;" title="Attachments"/>
                                         <i t-if="this.hasNotes(record)" class="fa fa-comment-o" style="font-size: 0.85rem;" title="Notes"/>
                                     </span>
@@ -92,7 +92,7 @@
                                         <span class="o_hudson_partner_name text-truncate me-1" t-on-click="(ev) => this.onOpenPartner(record, ev)">
                                             <t t-out="this.getPartnerName(record)"/>
                                         </span>
-                                        <i t-if="!record.data.is_reconciled" class="fa fa-times cursor-pointer me-2" style="font-size: 0.75rem; color: #94a3b8;" title="Remove Partner" t-on-click="(ev) => this.onClearPartner(record, ev)"/>
+                                        <i t-if="!record.data.is_reconciled" class="fa fa-times cursor-pointer me-2 o_hx_text_muted" style="font-size: 0.75rem;" title="Remove Partner" t-on-click="(ev) => this.onClearPartner(record, ev)"/>
                                         <!-- Transaction Reference / Memo alongside partner -->
                                         <span t-if="record.data.payment_ref" class="o_hudson_partner_ref text-truncate" t-out="record.data.payment_ref"/>
                                     </t>
@@ -106,13 +106,13 @@
                                 <div class="d-flex align-items-center flex-shrink-0 mx-3">
                                     <!-- Reconciled State (With Checkmark, Matched Name, Pencil Edit, and U-turn Undo) -->
                                     <t t-if="record.data.is_reconciled">
-                                        <span class="me-1 d-inline-flex align-items-center" title="Matched" style="color: #16a34a;">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <span class="me-1 d-inline-flex align-items-center o_hx_success" title="Matched">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                                                 <polyline points="22 4 12 14.01 9 11.01"/>
                                             </svg>
                                         </span>
-                                        <span class="fw-semibold small me-2 text-truncate" style="font-size: 0.85rem; color: #047857; max-width: 280px;" t-out="record.data.hudson_matched_account_name || 'Reconciled'"/>
+                                        <span class="fw-semibold small me-2 text-truncate o_hx_success" style="font-size: 0.85rem; max-width: 280px;" t-out="record.data.hudson_matched_account_name || 'Reconciled'"/>
                                         
                                         <!-- Pencil / Edit Line Button (Opens Edit Line Modal) -->
                                         <button class="o_hudson_icon_btn o_hudson_edit_btn me-2" title="Edit Line" t-on-click="(ev) => this.onEditLine(record, ev)">
@@ -159,7 +159,7 @@
                                         <!-- Matching Count Button if matches with same value exist -->
                                         <button t-if="record.data.hudson_match_count > 0" class="btn btn-hudson-purple btn-sm d-inline-flex align-items-center me-1" t-on-click="(ev) => this.onReconcile(record, ev)" title="View and reconcile matching journal items">
                                             <span>Reconcile</span>
-                                            <span class="badge rounded-pill bg-white text-dark ms-1 px-1" t-out="record.data.hudson_match_count" style="font-size: 0.72rem; font-weight: bold;"/>
+                                            <span class="badge rounded-pill text-bg-light ms-1 px-1" t-out="record.data.hudson_match_count" style="font-size: 0.72rem; font-weight: bold;"/>
                                         </button>
 
                                         <!-- If No Partner -->
@@ -234,7 +234,7 @@
                                 <!-- Right: Amount & Chevron -->
                                 <div class="d-flex align-items-center flex-shrink-0 text-end" style="min-width: 130px; justify-content: flex-end;">
                                     <span t-att-class="this.isNegative(record) ? 'o_hudson_amount_neg text-nowrap' : 'o_hudson_amount_pos text-nowrap'" t-out="this.formatRecordAmount(record)"/>
-                                    <i class="fa fa-chevron-down ms-3 cursor-pointer opacity-75 hover-opacity-100" style="font-size: 0.72rem; color: #64748b;" title="Open Details" t-on-click="(ev) => this.onOpenRecord(record, ev)"/>
+                                    <i class="fa fa-chevron-down ms-3 cursor-pointer opacity-75 hover-opacity-100 o_hx_text_muted" style="font-size: 0.72rem;" title="Open Details" t-on-click="(ev) => this.onOpenRecord(record, ev)"/>
                                 </div>
                             </div>
                         </t>
@@ -256,14 +256,14 @@
                     <div class="row mb-3 align-items-baseline">
                         <div class="col-7">
                             <div class="d-flex align-items-baseline">
-                                <span class="fw-bold me-3" style="min-width: 70px; color: #1e293b;">Balance</span>
+                                <span class="fw-bold me-3 o_hx_text_strong" style="min-width: 70px;">Balance</span>
                                 <div class="d-flex align-items-baseline">
-                                    <span class="fw-semibold me-2" style="font-size: 1.1rem; color: #00878a;" t-out="this.state.data.balance_formatted"/>
+                                    <span class="fw-semibold me-2 o_hx_accent" style="font-size: 1.1rem;" t-out="this.state.data.balance_formatted"/>
                                     <span class="text-muted small" t-out="this.state.data.currency_name"/>
                                 </div>
                             </div>
                             <!-- Subtitle: Matched Bill notice in italics teal -->
-                            <div t-if="this.state.data.matched_bill_text" class="mt-1 ps-5" style="color: #00878a; font-style: italic; font-size: 0.85rem;">
+                            <div t-if="this.state.data.matched_bill_text" class="mt-1 ps-5 o_hx_accent" style="font-style: italic; font-size: 0.85rem;">
                                 <t t-out="this.state.data.matched_bill_text"/>
                             </div>
                         </div>
@@ -282,12 +282,12 @@
                                 <span class="text-muted me-3" style="min-width: 70px;">Account</span>
                                 <!-- Read-only if matched to bill -->
                                 <t t-if="!this.state.data.is_account_editable">
-                                    <span class="cursor-pointer fw-medium" style="color: #00878a;" t-on-click="this.onOpenAccount" t-out="this.state.accountDisplayName"/>
+                                    <span class="cursor-pointer fw-medium o_hx_accent" t-on-click="this.onOpenAccount" t-out="this.state.accountDisplayName"/>
                                 </t>
                                 <!-- Editable if direct writeoff / counterpart -->
                                 <t t-else="">
                                     <div class="d-flex align-items-center">
-                                        <span class="cursor-pointer fw-medium text-decoration-underline" style="color: #00878a;" t-on-click="this.onSelectAccount" t-out="this.state.accountDisplayName || 'Select Account'"/>
+                                        <span class="cursor-pointer fw-medium text-decoration-underline o_hx_accent" t-on-click="this.onSelectAccount" t-out="this.state.accountDisplayName || 'Select Account'"/>
                                         <svg class="ms-2 text-muted cursor-pointer" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Change Account" t-on-click="this.onSelectAccount">
                                             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                                             <path d="m15 5 4 4"/>
@@ -298,7 +298,7 @@
                         </div>
                         <div class="col-5">
                             <div class="d-flex align-items-baseline">
-                                <span class="fw-semibold me-3" style="font-size: 0.85rem; color: #1e293b;">Analytic Distribution</span>
+                                <span class="fw-semibold me-3 o_hx_text_strong" style="font-size: 0.85rem;">Analytic Distribution</span>
                             </div>
                         </div>
                     </div>
@@ -310,12 +310,12 @@
                                 <span class="text-muted me-3" style="min-width: 70px;">Partner</span>
                                 <!-- Read-only if matched to bill -->
                                 <t t-if="!this.state.data.is_partner_editable">
-                                    <span class="cursor-pointer fw-medium" style="color: #00878a;" t-on-click="this.onOpenPartner" t-out="this.state.partnerDisplayName || '(No partner)'"/>
+                                    <span class="cursor-pointer fw-medium o_hx_accent" t-on-click="this.onOpenPartner" t-out="this.state.partnerDisplayName || '(No partner)'"/>
                                 </t>
                                 <!-- Editable if direct counterpart -->
                                 <t t-else="">
                                     <div class="d-flex align-items-center">
-                                        <span class="cursor-pointer fw-medium text-decoration-underline" style="color: #00878a;" t-on-click="this.onSelectPartner" t-out="this.state.partnerDisplayName || 'Select Partner'"/>
+                                        <span class="cursor-pointer fw-medium text-decoration-underline o_hx_accent" t-on-click="this.onSelectPartner" t-out="this.state.partnerDisplayName || 'Select Partner'"/>
                                         <svg class="ms-2 text-muted cursor-pointer" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Change Partner" t-on-click="this.onSelectPartner">
                                             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                                             <path d="m15 5 4 4"/>
@@ -326,7 +326,7 @@
                         </div>
                         <div class="col-5">
                             <div class="d-flex align-items-baseline">
-                                <span class="fw-semibold me-3" style="font-size: 0.85rem; color: #1e293b;">Vehicle</span>
+                                <span class="fw-semibold me-3 o_hx_text_strong" style="font-size: 0.85rem;">Vehicle</span>
                                 <span t-if="this.state.data.vehicle" t-out="this.state.data.vehicle"/>
                             </div>
                         </div>
@@ -344,10 +344,10 @@
                 </div>
             </t>
             <t t-set-slot="footer">
-                <button class="btn btn-sm text-white fw-semibold px-4 py-1 me-2" style="background-color: #714B67; border-radius: 4px;" t-on-click="this.onSave">
+                <button class="btn btn-sm btn-primary fw-semibold px-4 py-1 me-2" style="border-radius: 4px;" t-on-click="this.onSave">
                     Save
                 </button>
-                <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="this.props.close">
+                <button class="btn btn-sm btn-secondary fw-medium px-3 py-1" style="border-radius: 4px;" t-on-click="this.props.close">
                     Discard
                 </button>
             </t>
@@ -364,7 +364,7 @@
                         <div class="flex-grow-1 d-flex justify-content-center">
                             <div class="position-relative" style="width: 440px; max-width: 100%;">
                                 <i class="fa fa-search position-absolute text-muted" style="left: 14px; top: 10px; font-size: 0.85rem;"/>
-                                <input type="text" class="form-control rounded-pill ps-5 pe-3 py-1 text-sm" style="border-color: #00878a;" placeholder="Search..." t-att-value="this.state.searchTerm" t-on-input="this.onSearchInput"/>
+                                <input type="text" class="form-control rounded-pill ps-5 pe-3 py-1 text-sm o_hx_accent_border" placeholder="Search..." t-att-value="this.state.searchTerm" t-on-input="this.onSearchInput"/>
                             </div>
                         </div>
                         <!-- Pagination (1-30 / 30 < >) -->
@@ -396,7 +396,7 @@
                     <div class="table-responsive flex-grow-1" style="max-height: 500px; min-height: 250px; overflow-y: auto;">
                         <table class="table table-sm table-hover align-middle mb-0">
                             <thead class="table-light sticky-top" style="border-top: none;">
-                                <tr class="text-secondary small fw-bold" style="font-size: 0.82rem; border-bottom: 2px solid #e2e8f0;">
+                                <tr class="text-secondary small fw-bold o_hx_border_bottom2" style="font-size: 0.82rem;">
                                     <th style="width: 40px;" class="text-center">
                                         <input type="checkbox" class="form-check-input" t-att-checked="this.isAllSelected" t-on-change="this.onToggleSelectAll"/>
                                     </th>
@@ -432,16 +432,16 @@
                                             <td class="text-center" t-on-click.stop="">
                                                 <input type="checkbox" class="form-check-input" t-att-checked="this.state.selectedIds.has(item.id)" t-on-change="() => this.onToggleSelect(item.id)"/>
                                             </td>
-                                            <td class="text-nowrap" style="color: #334155; font-size: 0.875rem;" t-out="item.date"/>
-                                            <td class="text-nowrap fw-medium" style="color: #475569; font-size: 0.875rem;" t-out="item.move_name"/>
-                                            <td class="text-truncate" style="max-width: 180px; font-size: 0.875rem;" t-att-style="item.move_name ? 'color: #334155;' : 'color: #00878a; font-weight: 500;'" t-out="item.partner_name"/>
+                                            <td class="text-nowrap o_hx_text" style="font-size: 0.875rem;" t-out="item.date"/>
+                                            <td class="text-nowrap fw-medium o_hx_text" style="font-size: 0.875rem;" t-out="item.move_name"/>
+                                            <td class="text-truncate" style="max-width: 180px; font-size: 0.875rem;" t-att-class="item.move_name ? 'o_hx_text' : 'o_hx_accent fw-medium'" t-out="item.partner_name"/>
                                             <td class="text-truncate text-muted" style="max-width: 240px; font-size: 0.85rem;" t-out="item.name"/>
                                             <td class="text-end text-nowrap" style="font-size: 0.875rem;">
                                                 <span t-if="item.has_foreign_currency" class="me-3 text-secondary" t-out="item.foreign_amount_due_str"/>
                                                 <span t-att-class="item.is_negative ? 'text-dark' : 'text-dark'" t-out="item.amount_due_str"/>
                                             </td>
                                             <td class="text-center" t-on-click.stop="">
-                                                <button class="btn btn-link p-0 fw-semibold" style="color: #00878a; text-decoration: none; font-size: 0.875rem;" t-on-click="(ev) => this.onViewCandidate(item, ev)">
+                                                <button class="btn btn-link p-0 fw-semibold o_hx_accent" style="text-decoration: none; font-size: 0.875rem;" t-on-click="(ev) => this.onViewCandidate(item, ev)">
                                                     View
                                                 </button>
                                             </td>
@@ -455,10 +455,10 @@
             </t>
             <t t-set-slot="footer">
                 <div class="d-flex align-items-center justify-content-start w-100 gap-2">
-                    <button class="btn btn-sm text-white fw-semibold px-3 py-1" style="background-color: #714B67; border-radius: 4px;" t-att-disabled="!this.state.selectedIds.size" t-on-click="this.onSelect">
+                    <button class="btn btn-sm btn-primary fw-semibold px-3 py-1" style="border-radius: 4px;" t-att-disabled="!this.state.selectedIds.size" t-on-click="this.onSelect">
                         Select
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary bg-white text-dark fw-medium px-3 py-1" style="border-radius: 4px; border-color: #cbd5e1;" t-on-click="this.props.close">
+                    <button class="btn btn-sm btn-secondary fw-medium px-3 py-1" style="border-radius: 4px;" t-on-click="this.props.close">
                         Close
                     </button>
                 </div>

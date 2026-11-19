@@ -9,7 +9,7 @@
     <!--     Audit Trail                                                           -->
     <!--     Journal Audit                                                         -->
     <!--   Audit                                                                   -->
-    <!--     Working Files                                                         -->
+    <!--     Working Files (disabled)                                              -->
     <!--     Annual Report                                                         -->
     <!--   Inventory                                                               -->
     <!--     Inventory Valuation                                                   -->
@@ -102,12 +102,13 @@ action = {
               sequence="20"
               groups="account.group_account_user,account.group_account_manager"/>
 
-    <!-- Working Files -->
+    <!-- Working Files (disabled) -->
     <menuitem id="menu_account_review_working_files"
               name="Working Files"
               parent="menu_account_review_audit"
               action="action_account_working_file"
               sequence="10"
+              active="False"
               groups="account.group_account_user,account.group_account_manager"/>
 
     <!-- Annual Report -->
@@ -508,6 +509,21 @@ action = {
         <field name="active" eval="True"/>
     </record>
 
+    <!-- 2. Customer Statement (as in Odoo Online): per partner, the receivable /
+         payable items of the period with their due date. No wizard: the dynamic
+         report computes it from its filters. -->
+    <record id="action_report_customer_statement" model="ir.actions.client">
+        <field name="name">Customer Statement</field>
+        <field name="tag">hudson_dynamic_reports.dynamic_report</field>
+        <field name="params" eval="{'model_name': 'account.customer.statement', 'wizard_id': False, 'data': {'form': {'target_move': 'posted', 'account_types': ['receivable', 'payable']}}}"/>
+    </record>
+    <menuitem id="menu_account_customer_statement"
+              name="Customer Statement"
+              parent="account.account_reports_partners_reports_menu"
+              action="action_report_customer_statement"
+              sequence="20"
+              groups="account.group_account_readonly"/>
+
     <!-- 3. Aged Receivable -->
     <record id="accounting_pdf_reports.menu_aged_receivable" model="ir.ui.menu">
         <field name="name">Aged Receivable</field>
@@ -666,7 +682,7 @@ action = {'name': 'Executive Summary', 'type': 'ir.actions.client', 'tag': 'huds
     <!--     Fiscal Categories, Depreciation Models, Return Types,                 -->
     <!--     Invoice Reminders, Financial Budgets, Online Synchronization          -->
     <!--   Invoicing:                                                              -->
-    <!--     Payment Terms, EDI Proxy Users, Incoterms, Product Categories         -->
+    <!--     Payment Terms, Incoterms, Product Categories                          -->
     <!--   Analytic Accounting:                                                    -->
     <!--     Analytic Distribution Models, Analytic Accounts, Analytic Plans       -->
     <!-- ========================================================================= -->
@@ -865,12 +881,9 @@ action = {'name': 'Executive Summary', 'type': 'ir.actions.client', 'tag': 'huds
         <field name="active" eval="True"/>
     </record>
 
-    <!-- 2. EDI Proxy Users -->
+    <!-- 2. EDI Proxy Users: hidden (technical, not needed by users) -->
     <record id="account_edi_proxy_client.menu_account_proxy_client_user" model="ir.ui.menu">
-        <field name="name">EDI Proxy Users</field>
-        <field name="parent_id" ref="account.account_invoicing_menu"/>
-        <field name="sequence">20</field>
-        <field name="active" eval="True"/>
+        <field name="active" eval="False"/>
     </record>
 
     <!-- 3. Incoterms -->
@@ -1058,7 +1071,7 @@ action = {'name': 'Executive Summary', 'type': 'ir.actions.client', 'tag': 'huds
     <menuitem id="menu_account_closing_tax_returns"
               name="Tax Returns"
               parent="account.account_closing_menu"
-              action="action_server_report_tax"
+              action="action_server_account_return"
               sequence="20"
               groups="account.group_account_user,account.group_account_manager"/>
 

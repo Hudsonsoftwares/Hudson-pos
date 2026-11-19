@@ -61,3 +61,16 @@
 .notification-dropdown .platform-row:hover {
     background-color: #f8f9fa;
 }
+
+/* Phones: never wider than the screen (the dropdown opens from the right edge of the navbar) */
+@media (max-width: 576px) {
+    .notification-dropdown {
+        position: fixed;
+        top: 56px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        max-height: calc(100vh - 72px);
+        overflow-y: auto;
+    }
+}

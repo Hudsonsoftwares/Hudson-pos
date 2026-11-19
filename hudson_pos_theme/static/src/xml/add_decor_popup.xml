@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-inherit="pos_restaurant.floor_editor.add_decor_popup" t-inherit-mode="extension">
+        <xpath expr="//h3[2]" position="before">
+
+            <!-- 1. Chairs & Seats -->
+            <h3 class="mb-3 mt-4">Chairs &amp; Seats</h3>
+            <div class="d-flex flex-wrap gap-3 align-items-center mb-2">
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Restaurant Dining Chair (Seat)"
+                        t-on-click="() => this.addCustomDecor('dining_chair.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('dining_chair.svg')" style="max-width: 60px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Dining Chair</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Woven Patio Rattan Chair (Outdoor Seat)"
+                        t-on-click="() => this.addCustomDecor('patio_chair.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('patio_chair.svg')" style="max-width: 60px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Patio Chair</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Padded Leather Bar Stool"
+                        t-on-click="() => this.addCustomDecor('bar_stool.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('bar_stool.svg')" style="max-width: 50px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Bar Stool</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Booth / Banquette Leather Sofa"
+                        t-on-click="() => this.addCustomDecor('booth_sofa.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('booth_sofa.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Booth Sofa</span>
+                </button>
+            </div>
+
+            <!-- 2. Greenery & Garden Decor -->
+            <h3 class="mb-3 mt-4">Greenery &amp; Garden Decor</h3>
+            <div class="d-flex flex-wrap gap-3 align-items-center mb-2">
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Green Boxwood Garden Hedge Divider"
+                        t-on-click="() => this.addCustomDecor('garden_hedge.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('garden_hedge.svg')" style="max-width: 72px; max-height: 48px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Garden Hedge</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Decorative Potted Palm Tree"
+                        t-on-click="() => this.addCustomDecor('palm_plant.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('palm_plant.svg')" style="max-width: 56px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Palm Plant</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Lush Green Lawn Grass Zone"
+                        t-on-click="() => this.addCustomDecor('lawn_patch.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('lawn_patch.svg')" style="max-width: 70px; max-height: 48px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Lawn Patch</span>
+                </button>
+            </div>
+
+            <!-- 3. Restaurant Furniture & Stations -->
+            <h3 class="mb-3 mt-4">Restaurant Furniture &amp; Stations</h3>
+            <div class="d-flex flex-wrap gap-3 align-items-center mb-2">
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Waiting Lounge Set (Sofa, Coffee Table, Plant)"
+                        t-on-click="() => this.addCustomDecor('lounge_set.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('lounge_set.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Lounge Set</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Curved Reception Front Desk"
+                        t-on-click="() => this.addCustomDecor('reception_desk.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('reception_desk.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Reception</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Coffee &amp; Mocktail Bar Counter"
+                        t-on-click="() => this.addCustomDecor('bar_counter.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('bar_counter.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Bar Counter</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Open Kitchen Pass Counter &amp; Line"
+                        t-on-click="() => this.addCustomDecor('kitchen_line.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('kitchen_line.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Kitchen Pass</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Dessert &amp; Pastry Display Cabinet"
+                        t-on-click="() => this.addCustomDecor('dessert_display.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('dessert_display.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Desserts</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Decorative Dining Area Rug"
+                        t-on-click="() => this.addCustomDecor('dining_rug.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('dining_rug.svg')" style="max-width: 70px; max-height: 48px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Dining Rug</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Restrooms Sign (Male &amp; Female Icons)"
+                        t-on-click="() => this.addCustomDecor('restroom_sign.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('restroom_sign.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Restrooms</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Entrance Welcome Mat"
+                        t-on-click="() => this.addCustomDecor('welcome_mat.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('welcome_mat.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Welcome Mat</span>
+                </button>
+            </div>
+
+            <!-- 4. Patio & Outdoor Features -->
+            <h3 class="mb-3 mt-4">Patio &amp; Outdoor Features</h3>
+            <div class="d-flex flex-wrap gap-3 align-items-center mb-2">
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Live BBQ Grill Station"
+                        t-on-click="() => this.addCustomDecor('bbq_grill.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('bbq_grill.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">BBQ Grill</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Fire-pit Lounge Circular Seating"
+                        t-on-click="() => this.addCustomDecor('firepit_lounge.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('firepit_lounge.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Fire Pit</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Garden Tiered Water Fountain"
+                        t-on-click="() => this.addCustomDecor('fountain.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('fountain.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Fountain</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Patio Parasol Umbrella (Teal)"
+                        t-on-click="() => this.addCustomDecor('umbrella_teal.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('umbrella_teal.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Parasol Teal</span>
+                </button>
+
+                <button class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-between"
+                        style="width: 92px; height: 92px;"
+                        title="Patio Parasol Umbrella (Red)"
+                        t-on-click="() => this.addCustomDecor('umbrella_red.svg')">
+                    <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 72px; height: 52px;">
+                        <img t-att-src="this.getCustomDecorUrl('umbrella_red.svg')" style="max-width: 70px; max-height: 50px; object-fit: contain;"/>
+                    </div>
+                    <span class="text-truncate w-100 text-center fw-semibold text-muted" style="font-size: 11px; line-height: 1.1;">Parasol Red</span>
+                </button>
+            </div>
+
+        </xpath>
+    </t>
+
+</templates>

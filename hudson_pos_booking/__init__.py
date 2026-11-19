@@ -52,13 +52,20 @@ def _post_init_hook(env):
 
     # 4. Provision Celebration / Event appointment types, reusable event questions & sync floor tables
     env['appointment.type'].sudo()._ensure_default_event_booking_setup()
-    app_types = env['appointment.type'].sudo().search([
-        ('booking_target', '=', 'resources'),
-        '|', ('is_event_booking', '=', True), ('name', 'ilike', 'Table Booking'),
-    ])
+    AppType = env['appointment.type'].sudo()
+    if 'is_event_booking' in AppType._fields:
+        app_types = AppType.search([
+            ('booking_target', '=', 'resources'),
+            '|', ('is_event_booking', '=', True), ('name', 'ilike', 'Table Booking'),
+        ])
+    else:
+        app_types = AppType.search([
+            ('booking_target', '=', 'resources'),
+            ('name', 'ilike', 'Table Booking'),
+        ])
     for at in app_types:
-        if at.assign_method != 'customer':
-            at.write({'assign_method': 'customer'})
+        if at.assign_method != 'random':  # tables are auto-assigned; no resource picker on the website
+            at.write({'assign_method': 'random'})
     tables = env['restaurant.table'].sudo().with_context(active_test=False).search([])
     tables._sync_appointment_resource()
     env['restaurant.table'].sudo()._cleanup_orphaned_tables_and_rescue_bookings()

@@ -19,6 +19,28 @@ class AccountMoveLine(models.Model):
         """Action for the manual Reconcile button on the custom Reconcile view."""
         return self.reconcile()
 
+    def _reconcile_post_hook(self, data):
+        res = super()._reconcile_post_hook(data)
+        moves = self.move_id
+        invoices = moves.filtered(lambda m: m.is_invoice(True))
+        payments = self.env['account.payment'].search([
+            '|', '|',
+            ('move_id', 'in', moves.ids),
+            ('reconciled_bill_ids', 'in', invoices.ids),
+            ('reconciled_invoice_ids', 'in', invoices.ids),
+        ]) | invoices.matched_payment_ids
+
+        if payments:
+            payments.invalidate_recordset(['state', 'is_matched', 'is_reconciled'])
+            payments._compute_state()
+            payments._compute_reconciliation_status()
+            invoices |= payments.reconciled_bill_ids | payments.reconciled_invoice_ids
+
+        if invoices:
+            invoices.invalidate_recordset(['payment_state', 'status_in_payment', 'amount_residual'])
+            invoices._compute_payment_state()
+        return res
+
     @api.model
     def _search(self, domain, offset=0, limit=None, order=None, **kwargs):
         query = super()._search(domain, offset=offset, limit=limit, order=order, **kwargs)

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================== Tax Returns ===================== -->
+
+    <record id="view_account_return_kanban" model="ir.ui.view">
+        <field name="name">account.return.kanban</field>
+        <field name="model">account.return</field>
+        <field name="arch" type="xml">
+            <kanban class="o_account_return_kanban" on_create="hudson_accounting_enhancements.action_account_return_generate_wizard"
+                    group_create="false" group_delete="false" group_edit="false" quick_create="false"
+                    records_draggable="false" groups_draggable="false" sample="1">
+                <field name="state"/>
+                <field name="active"/>
+                <field name="is_completed"/>
+                <field name="deadline_status"/>
+                <field name="pending_count"/>
+                <templates>
+                    <t t-name="menu">
+                        <a t-if="!record.is_completed.raw_value" role="menuitem" type="object"
+                           name="action_mark_completed" class="dropdown-item">Mark as Completed</a>
+                        <a t-if="record.is_completed.raw_value" role="menuitem" type="object"
+                           name="action_mark_uncompleted" class="dropdown-item">Mark as To Do</a>
+                        <a t-if="record.active.raw_value" role="menuitem" type="archive" class="dropdown-item">Archive</a>
+                        <a t-if="!record.active.raw_value" role="menuitem" type="unarchive" class="dropdown-item">Unarchive</a>
+                        <a t-if="record.state.raw_value === 'new'" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                    </t>
+                    <t t-name="card">
+                        <div class="o_arr_row">
+                            <div class="o_arr_info">
+                                <field name="name" class="fw-bold d-block"/>
+                                <div t-if="record.pending_count.raw_value and !record.is_completed.raw_value" class="o_arr_pending">
+                                    <b><field name="pending_count"/></b> Pending
+                                </div>
+                                <div t-elif="!record.is_completed.raw_value" class="o_arr_pending o_arr_pending_ok">All checks reviewed</div>
+                                <span t-attf-class="o_arr_deadline o_arr_{{record.deadline_status.raw_value}}">
+                                    <field name="date_deadline" options="{'show_time': false}"/>
+                                </span>
+                            </div>
+                            <div class="o_arr_progress">
+                                <field name="progress_steps" widget="account_return_progress"/>
+                            </div>
+                            <div class="o_arr_actions">
+                                <button t-if="!record.is_completed.raw_value" name="action_review" type="object"
+                                        class="btn btn-primary btn-sm">Review</button>
+                                <button t-else="" name="action_review" type="object"
+                                        class="btn btn-secondary btn-sm">Open</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_account_return_form" model="ir.ui.view">
+        <field name="name">account.return.form</field>
+        <field name="model">account.return</field>
+        <field name="arch" type="xml">
+            <form string="Tax Return" class="o_account_return_form" create="false">
+                <field name="state" invisible="1"/>
+                <field name="category" invisible="1"/>
+                <field name="states_workflow" invisible="1"/>
+                <field name="payment_partner_id" invisible="1"/>
+                <field name="is_completed" invisible="1"/>
+                <field name="deadline_status" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="closing_move_id" invisible="1"/>
+                <sheet>
+                    <div class="o_arf_header">
+                        <div class="o_arf_title">
+                            <h4 class="mb-1"><field name="name" readonly="1"/></h4>
+                            <span class="o_arr_deadline o_arr_late" invisible="deadline_status != 'late'"><field name="date_deadline" readonly="1"/></span>
+                            <span class="o_arr_deadline o_arr_soon" invisible="deadline_status != 'soon'"><field name="date_deadline" readonly="1"/></span>
+                            <span class="o_arr_deadline" invisible="deadline_status != 'ok'"><field name="date_deadline" readonly="1"/></span>
+                            <span class="o_arr_deadline o_arr_done" invisible="deadline_status != 'done'">Completed</span>
+                        </div>
+                        <div class="o_arf_progress">
+                            <field name="progress_steps" widget="account_return_progress" nolabel="1"/>
+                        </div>
+                        <div class="o_arr_actions d-flex gap-2">
+                            <button name="action_validate" type="object" string="Validate" class="btn-primary"
+                                    invisible="state != 'new'" data-hotkey="v"/>
+                            <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                                    invisible="state != 'reviewed' or states_workflow == 'reviewed'" data-hotkey="s"
+                                    confirm="Mark this return as submitted to the authority?"/>
+                            <button name="action_pay" type="object" string="Pay" class="btn-primary"
+                                    invisible="state != 'submitted' or states_workflow != 'paid' or is_completed or not payment_partner_id or amount_to_pay &lt;= 0"/>
+                            <button name="action_mark_paid" type="object" string="Mark as Paid"
+                                    class="btn-secondary"
+                                    invisible="state != 'submitted' or states_workflow != 'paid' or is_completed" data-hotkey="p"/>
+                            <button name="action_open_closing_move" type="object" string="Closing Entry"
+                                    class="btn-secondary" invisible="not closing_move_id"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type_id" readonly="1" options="{'no_open': True}"/>
+                            <label for="date_from" string="Period"/>
+                            <div class="o_row">
+                                <field name="date_from" readonly="state != 'new'"/>
+                                <span>→</span>
+                                <field name="date_to" readonly="state != 'new'"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="amount_to_pay" invisible="category != 'tax'"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="checks_data" widget="account_return_checks" nolabel="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_account_return_calendar" model="ir.ui.view">
+        <field name="name">account.return.calendar</field>
+        <field name="model">account.return</field>
+        <field name="arch" type="xml">
+            <calendar string="Tax Returns" date_start="date_deadline" color="type_id" mode="month"
+                      event_open_popup="false" quick_create="false" create="false">
+                <field name="type_id" filters="1"/>
+                <field name="state"/>
+                <field name="pending_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_account_return_list" model="ir.ui.view">
+        <field name="name">account.return.list</field>
+        <field name="model">account.return</field>
+        <field name="arch" type="xml">
+            <list string="Tax Returns" create="false">
+                <field name="name"/>
+                <field name="type_id" optional="hide"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="date_deadline"/>
+                <field name="pending_count"/>
+                <field name="amount_to_pay" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state in ('submitted', 'paid')"
+                       decoration-info="state == 'reviewed'"/>
+                <field name="is_completed" widget="boolean_toggle" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_return_search" model="ir.ui.view">
+        <field name="name">account.return.search</field>
+        <field name="model">account.return</field>
+        <field name="arch" type="xml">
+            <search string="Tax Returns">
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="user_id"/>
+                <filter name="todo" string="To Do" domain="[('is_completed', '=', False)]"/>
+                <filter name="completed" string="Completed" domain="[('is_completed', '=', True)]"/>
+                <separator/>
+                <filter name="tax" string="Tax Returns" domain="[('category', '=', 'tax')]"/>
+                <filter name="annual" string="Annual Closings" domain="[('category', '=', 'annual')]"/>
+                <separator/>
+                <filter name="late" string="Late"
+                        domain="[('is_completed', '=', False), ('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="my" string="My Returns" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_date" string="Date" context="{'group_by': 'date_to:month'}"/>
+                    <filter name="group_type" string="Return Type" context="{'group_by': 'type_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_account_return" model="ir.actions.act_window">
+        <field name="name">Tax Returns</field>
+        <field name="res_model">account.return</field>
+        <field name="view_mode">kanban,calendar,list,form</field>
+        <field name="view_id" ref="view_account_return_kanban"/>
+        <field name="search_view_id" ref="view_account_return_search"/>
+        <field name="context">{'search_default_todo': 1, 'search_default_group_date': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No tax return to do</p>
+            <p>Generate a return to review its checklist, validate it and keep track of its submission.</p>
+        </field>
+    </record>
+
+    <!-- Menu entry: generates the periodic returns, then opens the action above -->
+    <record id="action_server_account_return" model="ir.actions.server">
+        <field name="name">Tax Returns</field>
+        <field name="model_id" ref="model_account_return"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_returns()</field>
+    </record>
+
+    <!-- Form "⋮" menu -->
+    <record id="action_server_account_return_refresh" model="ir.actions.server">
+        <field name="name">Refresh Checks</field>
+        <field name="model_id" ref="model_account_return"/>
+        <field name="binding_model_id" ref="model_account_return"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_refresh_checks()</field>
+    </record>
+
+    <record id="action_server_account_return_complete" model="ir.actions.server">
+        <field name="name">Mark as Completed</field>
+        <field name="model_id" ref="model_account_return"/>
+        <field name="binding_model_id" ref="model_account_return"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_mark_completed()</field>
+    </record>
+
+    <record id="action_server_account_return_reset" model="ir.actions.server">
+        <field name="name">Reset to Draft</field>
+        <field name="model_id" ref="model_account_return"/>
+        <field name="binding_model_id" ref="model_account_return"/>
+        <field name="binding_view_types">form</field>
+        <field name="group_ids" eval="[(6, 0, [ref('account.group_account_manager')])]"/>
+        <field name="state">code</field>
+        <field name="code">records.action_reset()</field>
+    </record>
+
+    <!-- ===================== Generate Return wizard ===================== -->
+
+    <record id="view_account_return_generate_wizard_form" model="ir.ui.view">
+        <field name="name">account.return.generate.wizard.form</field>
+        <field name="model">account.return.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Return">
+                <field name="company_id" invisible="1"/>
+                <field name="available_type_ids" invisible="1"/>
+                <field name="is_blocking" invisible="1"/>
+                <group>
+                    <field name="type_id" widget="badges_many2one" options="{'no_create': True}"/>
+                    <label for="date_from"/>
+                    <div class="o_row">
+                        <field name="date_from" widget="daterange" options="{'end_date_field': 'date_to'}"/>
+                        <field name="date_to" invisible="1"/>
+                    </div>
+                </group>
+                <div class="alert alert-warning mb-0" role="alert" invisible="not warning_message">
+                    <field name="warning_message" readonly="1"/>
+                </div>
+                <footer>
+                    <button name="action_generate" type="object" string="Generate Return" class="btn-primary"
+                            invisible="is_blocking" data-hotkey="q"/>
+                    <button name="action_generate" type="object" string="Generate Return"
+                            class="btn-primary disabled" invisible="not is_blocking"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_return_generate_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Return</field>
+        <field name="res_model">account.return.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ===================== Return Types ===================== -->
+
+    <record id="view_account_return_type_tree_inherit" model="ir.ui.view">
+        <field name="name">account.return.type.list.inherit</field>
+        <field name="model">account.return.type</field>
+        <field name="inherit_id" ref="view_account_return_type_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="sequence" widget="handle"/>
+            </field>
+            <field name="periodicity" position="after">
+                <field name="category"/>
+                <field name="states_workflow"/>
+                <field name="deadline_days_delay"/>
+                <field name="auto_generate"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_return_type_form_inherit" model="ir.ui.view">
+        <field name="name">account.return.type.form.inherit</field>
+        <field name="model">account.return.type</field>
+        <field name="inherit_id" ref="view_account_return_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="replace">
+                <form string="Return Type">
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <field name="active" invisible="1"/>
+                        <field name="category" widget="radio" options="{'horizontal': true}" nolabel="1"/>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="Tax Return"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="periodicity"/>
+                                <field name="deadline_start_date"/>
+                                <label for="deadline_days_delay"/>
+                                <div class="o_row">
+                                    <field name="deadline_days_delay" class="oe_inline" style="max-width: 4rem;"/>
+                                    <span>days after tax period</span>
+                                </div>
+                                <field name="states_workflow"/>
+                            </group>
+                            <group>
+                                <field name="country_id" options="{'no_create': True}"/>
+                                <field name="report_id" options="{'no_create': True}"/>
+                                <field name="payment_partner_id"/>
+                                <field name="payment_partner_bank_id"
+                                       context="{'default_partner_id': payment_partner_id}"
+                                       readonly="not payment_partner_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Tax Closing" name="tax_closing" invisible="category != 'tax'">
+                                <group>
+                                    <group>
+                                        <field name="closing_journal_id"/>
+                                        <field name="closing_payable_account_id"/>
+                                        <field name="closing_receivable_account_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Options" name="options">
+                                <group>
+                                    <group>
+                                        <field name="code"/>
+                                        <field name="auto_generate"/>
+                                        <field name="company_id" groups="base.group_multi_company"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

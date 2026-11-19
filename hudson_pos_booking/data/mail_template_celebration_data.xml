@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Celebration wish emails (moved from the customised appointment module into the bridge) -->
+    <data noupdate="1">
+        <!-- Next-Year Pre-Celebration Invite Email (T - N days) -->
+        <record id="email_template_celebration_advance" model="mail.template">
+            <field name="name">Appointment: Celebration Advance Party Invite</field>
+            <field name="model_id" ref="appointment.model_appointment_booking"/>
+            <field name="subject">Upcoming Celebration: {{ object.celebrant_name or object._get_guest_display_name() or 'Special Day' }} - {{ object.celebration_event_name or object.appointment_type_id.name }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or object.appointment_type_id.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object._get_recipient_email() or '' }}</field>
+            <field name="use_default_to" eval="False"/>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="email_layout_xmlid">mail.mail_notification_light</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 14px; line-height: 1.6;">
+    <p style="margin: 0px 0px 14px 0px;">
+        Hello <t t-out="object._get_guest_display_name() or 'Guest'"/>,
+    </p>
+    <p style="margin: 0px 0px 14px 0px;">
+        <t t-if="object.celebration_event_emoji"><t t-out="object.celebration_event_emoji"/> </t>
+        <strong><t t-out="object.celebrant_name or object._get_guest_display_name() or 'Your'"/>'s <t t-out="object.celebration_event_name or object.appointment_type_id.name"/></strong>
+        is right around the corner
+        <t t-if="object.occasion_date">
+            (<t t-out="object.occasion_date.strftime('%d %b')"/>)
+        </t>!
+    </p>
+    <t t-if="object.occasion_title">
+        <p style="margin: 0px 0px 14px 0px;">
+            Last year you celebrated: <strong><t t-out="object.occasion_title"/></strong>. We would love to host you and your loved ones again this year!
+        </p>
+    </t>
+    <p style="margin: 0px 0px 18px 0px;">
+        Reserve your celebration table in advance and pre-order your favourite dishes so everything is ready for your party.
+    </p>
+    <div style="text-align: center; margin: 22px 0px;">
+        <a t-att-href="object._get_celebration_wish_booking_url()"
+           style="display: inline-block; padding: 12px 24px; color: #FFFFFF; text-decoration: none; background-color: #714B67; border-radius: 6px; font-weight: bold;">
+            Grab a party here
+        </a>
+    </div>
+    <p style="margin: 18px 0px 0px 0px; color: #555555;">
+        Warm regards,<br/>
+        <t t-out="(object.company_id or object.appointment_type_id.company_id).name"/>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <!-- Next-Year Special Day Celebration Wish Email -->
+        <record id="email_template_celebration_day" model="mail.template">
+            <field name="name">Appointment: Special Day Celebration Wish</field>
+            <field name="model_id" ref="appointment.model_appointment_booking"/>
+            <field name="subject">Warm Wishes for {{ object.celebrant_name or object._get_guest_display_name() or 'Your Special Day' }} - {{ object.celebration_event_name or object.appointment_type_id.name }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or object.appointment_type_id.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object._get_recipient_email() or '' }}</field>
+            <field name="use_default_to" eval="False"/>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="email_layout_xmlid">mail.mail_notification_light</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 14px; line-height: 1.6;">
+    <p style="margin: 0px 0px 14px 0px;">
+        Hello <t t-out="object._get_guest_display_name() or 'Guest'"/>,
+    </p>
+    <p style="margin: 0px 0px 14px 0px;">
+        <t t-if="object.celebration_event_emoji"><t t-out="object.celebration_event_emoji"/> </t>
+        Happy celebration wishes on <strong><t t-out="object.celebrant_name or object._get_guest_display_name() or 'your'"/>'s <t t-out="object.celebration_event_name or object.appointment_type_id.name"/></strong>
+        from all of us at <strong><t t-out="(object.company_id or object.appointment_type_id.company_id).name"/></strong>!
+    </p>
+    <t t-if="object.occasion_title">
+        <p style="margin: 0px 0px 14px 0px;">
+            Wishing you another joyful year filled with wonderful moments celebrating <strong><t t-out="object.occasion_title"/></strong>.
+        </p>
+    </t>
+    <p style="margin: 0px 0px 18px 0px;">
+        Planning a get-together with family and friends? Book your table effortlessly below:
+    </p>
+    <div style="text-align: center; margin: 22px 0px;">
+        <a t-att-href="object._get_celebration_wish_booking_url()"
+           style="display: inline-block; padding: 12px 24px; color: #FFFFFF; text-decoration: none; background-color: #16a34a; border-radius: 6px; font-weight: bold;">
+            Grab a party here
+        </a>
+    </div>
+    <p style="margin: 18px 0px 0px 0px; color: #555555;">
+        See you soon,<br/>
+        <t t-out="(object.company_id or object.appointment_type_id.company_id).name"/>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

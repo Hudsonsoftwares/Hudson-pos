@@ -1,6 +1,6 @@
 {
     'name': 'Hudson Accounting Enhancements',
-    'version': '20.0.1.0.2',
+    'version': '20.0.1.0.3',
     'category': 'Accounting',
     'summary': (
         'Dynamic Interactive Financial Reports (OWL), Cash Flow Statement, Annual Report, '
@@ -30,6 +30,7 @@
     'license': 'LGPL-3',
     'depends': [
         'account',
+        'mail',
         'account_payment',
         'account_edi_proxy_client',
         'product_margin',
@@ -85,11 +86,14 @@
         'wizard/hudson_inventory_valuation_wizard_views.xml',
         'views/account_multi_ledger_views.xml',
         'views/account_review_config_views.xml',
+        'data/account_return_type_data.xml',
+        'views/account_return_views.xml',
         'views/menu.xml',
     ],
     'assets': {
         'web.assets_backend': [
             'hudson_accounting_enhancements/static/src/js/grid_session_init.js',
+            'hudson_accounting_enhancements/static/src/scss/theme_utilities.scss',
             'hudson_accounting_enhancements/static/src/scss/dynamic_report.scss',
             'hudson_accounting_enhancements/static/src/js/dynamic_report.js',
             'hudson_accounting_enhancements/static/src/xml/dynamic_report.xml',
@@ -105,6 +109,9 @@
             'hudson_accounting_enhancements/static/src/views/grid/grid_controller.js',
             'hudson_accounting_enhancements/static/src/views/grid/grid_view.js',
             'hudson_accounting_enhancements/static/src/views/grid/grid_controller.xml',
+            'hudson_accounting_enhancements/static/src/account_return/account_return.scss',
+            'hudson_accounting_enhancements/static/src/account_return/account_return_widgets.js',
+            'hudson_accounting_enhancements/static/src/account_return/account_return_widgets.xml',
         ],
         'web.assets_backend_lazy': [
             'hudson_accounting_enhancements/static/src/js/pivot_model_fix.js',

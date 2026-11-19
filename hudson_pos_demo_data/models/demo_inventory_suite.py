@@ -147,6 +147,11 @@ def _get_or_create_location(env, barcode, name, parent_loc):
     return loc
 
 
+def _pos_domain(Product):
+    """Restrict a product search to POS products when Point of Sale is installed."""
+    return [('available_in_pos', '=', True)] if 'available_in_pos' in Product._fields else []
+
+
 def load_inventory_suite_demo_data(env):
     """
     Populates comprehensive Inventory, Purchasing, Replenishment, BoM, and Stock Move
@@ -350,7 +355,7 @@ def load_inventory_suite_demo_data(env):
         ('Ice Tea', 1.10, 2, 24.0, 100.0),
     ]
     for drink_name, v_price, delay, min_q, max_q in drink_vendor_specs:
-        drink_prod = Product.search([('name', '=', drink_name), ('available_in_pos', '=', True)], limit=1)
+        drink_prod = Product.search([('name', '=', drink_name), *_pos_domain(Product)], limit=1)
         if drink_prod:
             _ensure_supplierinfo(env, drink_prod, v_beverage, v_price, delay)
             if Orderpoint is not None and warehouse and lot_stock:
@@ -389,7 +394,7 @@ def load_inventory_suite_demo_data(env):
     ]
     if Orderpoint is not None and warehouse and lot_stock:
         for pos_name, min_q, max_q in key_pos_items:
-            pos_prod = Product.search([('name', '=', pos_name), ('available_in_pos', '=', True)], limit=1)
+            pos_prod = Product.search([('name', '=', pos_name), *_pos_domain(Product)], limit=1)
             if not pos_prod:
                 continue
             op_name = f"{HINV_PREFIX}OP-POS-{pos_prod.id}"
@@ -543,7 +548,7 @@ def load_inventory_suite_demo_data(env):
         ]
 
         for pos_name, comp_list in bom_specs:
-            pos_prod = Product.search([('name', '=', pos_name), ('available_in_pos', '=', True)], limit=1)
+            pos_prod = Product.search([('name', '=', pos_name), *_pos_domain(Product)], limit=1)
             if not pos_prod:
                 continue
             existing_bom = Bom.search([

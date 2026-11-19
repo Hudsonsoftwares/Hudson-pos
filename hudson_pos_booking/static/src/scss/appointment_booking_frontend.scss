@@ -303,3 +303,96 @@
         --bs-btn-hover-border-color: color-mix(in srgb, currentColor 42%, transparent);
     }
 }
+
+/* ==========================================================================
+   Food Pre-Order & Self-Ordering Mobile Phone Optimization
+   Works automatically across ALL databases and website templates
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* Horizontal swipeable category pills like Swiggy / UberEats */
+    #category_pills_container {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px !important;
+        margin-bottom: 10px !important;
+        gap: 6px !important;
+
+        &::-webkit-scrollbar {
+            display: none !important;
+        }
+        scrollbar-width: none;
+
+        .category-pill {
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+            padding: 6px 14px !important;
+            font-size: 12px !important;
+            border-radius: 999px !important;
+        }
+    }
+
+    /* Food dish cards: compact touch layout */
+    .food-dish-card {
+        padding: 10px !important;
+        gap: 8px !important;
+
+        img {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 8px !important;
+        }
+    }
+
+    /* Dish Stepper controls: prominent thumb tap buttons */
+    .o_booking_stepper {
+        padding: 2px !important;
+
+        .preorder-btn-minus,
+        .preorder-btn-plus {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 16px !important;
+        }
+
+        .preorder-qty-input {
+            width: 28px !important;
+            font-size: 13px !important;
+        }
+    }
+
+    /* Pre-order dishes grid height on mobile */
+    #preorder_dishes_grid {
+        max-height: 60vh !important;
+    }
+
+    /* Sticky Bottom Floating Order Summary Bar on phones */
+    #preorder_summary_bar {
+        position: sticky !important;
+        bottom: 12px !important;
+        z-index: 1000 !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22) !important;
+        backdrop-filter: blur(12px) !important;
+        border-radius: 14px !important;
+        padding: 12px 14px !important;
+    }
+
+    /* Combo customization modal for mobile phones */
+    #comboModal {
+        .modal-dialog {
+            margin: 8px !important;
+            max-width: calc(100% - 16px) !important;
+        }
+
+        .modal-content {
+            border-radius: 18px !important;
+        }
+
+        .modal-body {
+            max-height: 65vh !important;
+            padding: 14px !important;
+        }
+    }
+}

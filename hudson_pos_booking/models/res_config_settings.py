@@ -8,7 +8,10 @@ class ResConfigSettings(models.TransientModel):
 
     pos_use_booking = fields.Boolean(related='pos_config_id.use_booking', readonly=False)
     pos_booking_appointment_type_id = fields.Many2one(
-        related='pos_config_id.booking_appointment_type_id', readonly=False
+        'appointment.type',
+        related='pos_config_id.booking_appointment_type_id',
+        readonly=False,
+        check_company=False,
     )
     pos_booking_no_show_grace_minutes = fields.Integer(
         related='pos_config_id.booking_no_show_grace_minutes', readonly=False

@@ -12,13 +12,8 @@
             <t t-set="rcOrder" t-value="table.getOrder()"/>
             <t t-set="rcBooking" t-value="!rcOrder and table.getUpcomingBooking ? table.getUpcomingBooking() : false"/>
             <t t-set="rcState" t-value="rcOrder ? (data.changes > 0 ? 'unsent' : 'occupied') : (rcBooking ? 'booked' : 'free')"/>
-            <span class="rc-tstate position-absolute start-50 translate-middle-x badge rounded-pill pe-none"
-                  t-attf-class="rc-tstate-{{ rcState }}">
-                <t t-if="rcState == 'free'">Free</t>
-                <t t-elif="rcState == 'occupied'">Occupied</t>
-                <t t-elif="rcState == 'unsent'">Not sent</t>
-                <t t-else="">Booked</t>
-            </span>
+            <span class="rc-tstate d-none"
+                  t-attf-class="rc-tstate-{{ rcState }}"/>
             <div t-if="rcOrder and !rcOrder.isEmpty()"
                  class="rc-table-info position-absolute start-0 end-0 d-flex justify-content-center gap-2 lh-sm fw-semibold pe-none"
                  t-att-style="tableContentStyle">
@@ -31,8 +26,15 @@
         </xpath>
     </t>
 
-    <!-- Status legend on the floor plan (not shown while editing the plan) -->
+    <!-- Status legend on the floor plan (not shown while editing the plan) + View toggle button in toolbar -->
     <t t-inherit="pos_restaurant.FloorScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('right-buttons')]" position="inside">
+            <button class="btn btn-secondary btn-lg lh-lg"
+                    t-att-title="this.floorPlanStore.isKanban() ? 'Switch to Floor Map View' : 'Switch to Grid View'"
+                    t-on-click="() => this.floorPlanStore.toggleFloorPlanStyle()">
+                <i class="oi oi-fw" t-att-data-icon="this.floorPlanStore.isKanban() ? 'map' : 'view_module'"/>
+            </button>
+        </xpath>
         <xpath expr="//FloorPlanEditor" position="after">
             <div t-if="!this.isEditMode()"
                  class="rc-floor-legend position-absolute bottom-0 end-0 m-2 d-flex flex-wrap gap-2 align-items-center rounded-3 px-2 py-1 pe-none">

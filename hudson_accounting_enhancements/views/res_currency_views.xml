@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Add "Fetch ECB Rates" button to the currency list view -->
+    <!-- Update the rates from the currencies, with the sources and limits of
+         Settings > Accounting > Automatic Currency Rates (om_currency_rate_update).
+         Accounting managers only: the rates feed every posting in a foreign currency. -->
     <record id="view_currency_list_ecb_inherit" model="ir.ui.view">
-        <field name="name">res.currency.list.ecb.button</field>
+        <field name="name">res.currency.list.update.rates.button</field>
         <field name="model">res.currency</field>
         <field name="inherit_id" ref="base.view_currency_tree"/>
         <field name="arch" type="xml">
             <list position="inside">
                 <header>
-                    <button name="action_fetch_ecb_rates" 
-                            string="Fetch ECB Rates" 
-                            type="object" 
-                            class="btn-primary" 
-                            display="always"/>
+                    <button name="action_update_currency_rates"
+                            string="Update Rates"
+                            type="object"
+                            class="btn-primary"
+                            display="always"
+                            groups="account.group_account_manager"/>
+                    <button name="action_force_update_currency_rates"
+                            string="Force Update"
+                            type="object"
+                            class="btn-secondary"
+                            display="always"
+                            groups="account.group_account_manager"
+                            confirm="Save the rates of the sources even if they changed more than the maximum change?"/>
                 </header>
             </list>
         </field>
     </record>
 
-    <!-- Add button to currency form view for manual fetch -->
     <record id="view_currency_form_ecb_inherit" model="ir.ui.view">
-        <field name="name">res.currency.form.ecb.button</field>
+        <field name="name">res.currency.form.update.rates.button</field>
         <field name="model">res.currency</field>
         <field name="inherit_id" ref="base.view_currency_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="before">
                 <header>
-                    <button name="action_fetch_ecb_rates"
-                            string="🌐 Fetch ECB Rates"
+                    <button name="action_update_currency_rates"
+                            string="Update Rates"
                             type="object"
                             class="btn-secondary"
-                            title="Fetch latest currency rates from the European Central Bank (ECB) for all active currencies"
-                            groups="base.group_system"/>
+                            title="Update the rates now, from the sources of Settings > Accounting > Automatic Currency Rates"
+                            groups="account.group_account_manager"/>
                 </header>
             </xpath>
         </field>

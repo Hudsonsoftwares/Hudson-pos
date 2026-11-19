@@ -39,153 +39,35 @@ class AccountBankStatementLine(models.Model):
         return res
 
     def _hudson_auto_reconcile_sync(self, selected_model_id=None):
-        """ Synchronously evaluates and applies reconciliation models to statement lines """
-        import re
-        for line in self:
-            if line.is_reconciled:
-                continue
+        """ Reconcile the transactions right away, as Odoo does when they are created.
 
-            # 1. If a specific reconciliation model was explicitly selected:
-            if selected_model_id:
-                model = self.env['account.reconcile.model'].browse(selected_model_id)
-                if model.exists() and (not model.company_id or model.company_id == line.company_id):
+        With `selected_model_id` (the model picked by the user on the inline row) that model is applied and
+        any failure is reported. Otherwise the engine of om_account_reconcile decides, exactly as its
+        automatic reconciliation does: the partner mappings, then the reconciliation models set to
+        "Automated" (a "Manual" model is a button the user clicks, whatever its conditions), then the
+        perfect matches when the automatic matching is enabled on the company.
+        """
+        to_reconcile = self.filtered(lambda line: not line.is_reconciled)
+        if not to_reconcile:
+            return self.browse()
+        if selected_model_id:
+            model = self.env['account.reconcile.model'].browse(selected_model_id).exists()
+            if not model:
+                return self.browse()
+            for line in to_reconcile:
+                if not model.company_id or model.company_id == line.company_id:
                     self._hudson_apply_reconcile_model(line, model, explicit=True)
-                continue
-
-            # 2. Automated evaluation of models based on keywords / auto_reconcile triggers:
-            models = self.env['account.reconcile.model'].search([
-                ('active', '=', True),
-                '|', ('company_id', '=', False), ('company_id', '=', line.company_id.id),
-            ])
-
-            # Prioritize specific models (with match_label, match_partner_ids, match_amount) before generic catch-alls
-            sorted_models = models.sorted(key=lambda m: (
-                0 if (m.match_label and m.match_label_param) else (
-                    1 if m.match_partner_ids else (
-                        2 if m.match_amount else 3
-                    )
-                ),
-                m.sequence,
-                m.id
-            ))
-
-            for model in sorted_models:
-                # Check journal restriction
-                if model.match_journal_ids and line.journal_id not in model.match_journal_ids:
-                    continue
-
-                # Check match_nature if present (amount_received / amount_paid)
-                match_nature = getattr(model, 'match_nature', False)
-                if match_nature == 'amount_received' and line.amount <= 0:
-                    continue
-                if match_nature == 'amount_paid' and line.amount >= 0:
-                    continue
-
-                # Check match_amount
-                if model.match_amount:
-                    amt = abs(line.amount_currency if line.foreign_currency_id else line.amount)
-                    if model.match_amount == 'lower' and amt > model.match_amount_max:
-                        continue
-                    if model.match_amount == 'greater' and amt < model.match_amount_min:
-                        continue
-                    if model.match_amount == 'between' and not (model.match_amount_min <= amt <= model.match_amount_max):
-                        continue
-
-                # Check match_partner_ids
-                if model.match_partner_ids:
-                    if not line.partner_id or line.partner_id.commercial_partner_id not in model.match_partner_ids.commercial_partner_id:
-                        continue
-
-                # Check match_label
-                matched_label = False
-                if model.match_label and model.match_label_param:
-                    param = model.match_label_param.strip().lower()
-                    texts = [
-                        (line.payment_ref or '').lower(),
-                        (line.narration and str(line.narration) or '').lower(),
-                        (line.ref or '').lower(),
-                        (getattr(line, 'transaction_details', '') and str(line.transaction_details) or '').lower(),
-                    ]
-                    if model.match_label == 'contains':
-                        if any(param in t for t in texts):
-                            matched_label = True
-                        else:
-                            continue
-                    elif model.match_label == 'not_contains':
-                        if not any(param in t for t in texts):
-                            matched_label = True
-                        else:
-                            continue
-                    elif model.match_label == 'match_regex':
-                        try:
-                            if any(re.search(model.match_label_param, t) for t in texts):
-                                matched_label = True
-                            else:
-                                continue
-                        except Exception:
-                            continue
-
-                # Check match_note if present
-                match_note = getattr(model, 'match_note', False)
-                match_note_param = getattr(model, 'match_note_param', False)
-                if match_note and match_note_param:
-                    note = str(line.narration or '').lower()
-                    n_param = match_note_param.strip().lower()
-                    if match_note == 'contains' and n_param not in note:
-                        continue
-                    elif match_note == 'not_contains' and n_param in note:
-                        continue
-                    elif match_note == 'match_regex':
-                        try:
-                            if not re.search(match_note_param, str(line.narration or '')):
-                                continue
-                        except Exception:
-                            continue
-
-                # Check match_transaction_type if present
-                match_ttype = getattr(model, 'match_transaction_type', False)
-                match_ttype_param = getattr(model, 'match_transaction_type_param', False)
-                if match_ttype and match_ttype_param:
-                    ttype = str(getattr(line, 'transaction_type', '') or '').lower()
-                    t_param = match_ttype_param.strip().lower()
-                    if match_ttype == 'contains' and t_param not in ttype:
-                        continue
-                    elif match_ttype == 'not_contains' and t_param in ttype:
-                        continue
-                    elif match_ttype == 'match_regex':
-                        try:
-                            if not re.search(match_ttype_param, str(getattr(line, 'transaction_type', '') or '')):
-                                continue
-                        except Exception:
-                            continue
-
-                # Check match_partner / categories if present
-                match_partner = getattr(model, 'match_partner', False)
-                match_cats = getattr(model, 'match_partner_category_ids', False)
-                if match_partner:
-                    if not line.partner_id:
-                        continue
-                    if match_cats and not (line.partner_id.category_id & match_cats):
-                        continue
-
-                # Check match_same_currency if present
-                match_same_currency = getattr(model, 'match_same_currency', False)
-                if match_same_currency and line.foreign_currency_id and line.foreign_currency_id != line.company_currency_id:
-                    continue
-
-                # Auto-reconcile check:
-                # Triggers auto-reconcile if:
-                # - trigger == 'auto_reconcile'
-                # - OR model has any active match filter (label, partner, or amount) AND counterpart lines configured
-                has_counterpart = bool(model.line_ids.filtered('account_id'))
-                has_match_rule = bool((model.match_label and model.match_label_param) or model.match_partner_ids or model.match_amount)
-                is_auto = (model.trigger == 'auto_reconcile') or (has_match_rule and has_counterpart)
-                if not is_auto:
-                    continue
-
-                applied = self._hudson_apply_reconcile_model(line, model)
-                if applied:
-                    break
+            return to_reconcile.filtered('is_reconciled')
+        # as the automatic reconciliation of om_account_reconcile: only for the companies where
+        # "Reconcile New Transactions Automatically" is enabled
+        to_reconcile = to_reconcile.filtered(lambda line: line.company_id.om_reconcile_auto)
+        if not to_reconcile:
+            return self.browse()
+        reconciled = to_reconcile._om_auto_reconcile()
+        for line in reconciled:
+            line._compute_hudson_matched_account_name()
+            line._compute_hudson_suggestions()
+        return reconciled
 
     def _hudson_apply_reconcile_model(self, line, model, explicit=False):
         """ Applies a reconciliation model to a single statement line.
@@ -216,10 +98,9 @@ class AccountBankStatementLine(models.Model):
             _logger.warning("Reconciliation model %s could not be applied on statement line %s", model.name, line.id, exc_info=True)
             return False
         line.invalidate_recordset()
-        line._compute_is_reconciled()
         line._compute_hudson_matched_account_name()
         line._compute_hudson_suggestions()
-        return True
+        return line.is_reconciled
     
     def action_hudson_upload_bills(self):
         """ Open a wizard or form to attach/upload bills """
@@ -247,19 +128,6 @@ class AccountBankStatementLine(models.Model):
     def _compute_hudson_action_dummy(self):
         for rec in self:
             rec.hudson_action_dummy = False
-
-    @api.depends('line_ids.reconciled', 'line_ids.account_id', 'line_ids.matched_debit_ids', 'line_ids.matched_credit_ids', 'line_ids.reconcile_model_id')
-    def _compute_is_reconciled(self):
-        super()._compute_is_reconciled()
-        for st_line in self:
-            suspense_account = st_line.journal_id.suspense_account_id
-            if suspense_account:
-                suspense_lines = st_line.line_ids.filtered(lambda l: l.account_id == suspense_account)
-                if suspense_lines:
-                    if all(l.reconcile_model_id for l in suspense_lines):
-                        st_line.is_reconciled = True
-                    elif not any(l.matched_debit_ids or l.matched_credit_ids for l in suspense_lines):
-                        st_line.is_reconciled = False
 
     # --- New UI Backend Fields & Methods ---
     
@@ -350,10 +218,15 @@ class AccountBankStatementLine(models.Model):
                 ('reconciled', '=', False),
                 ('move_id.state', '=', 'posted'),
                 ('company_id', '=', line.company_id.id),
-                ('journal_id.type', 'not in', ('bank', 'cash')),
+                ('id', 'not in', line.move_id.line_ids.ids),
+                ('account_id.account_type', 'not in', ('asset_cash', 'liability_credit_card')),
                 ('amount_residual', '>=', rounded_amount - 0.005),
                 ('amount_residual', '<=', rounded_amount + 0.005),
             ]
+            if line.journal_id.default_account_id:
+                base_exact_domain.append(('account_id', '!=', line.journal_id.default_account_id.id))
+            if line.journal_id.suspense_account_id:
+                base_exact_domain.append(('account_id', '!=', line.journal_id.suspense_account_id.id))
 
             # Count + fetch one: this compute runs for every row of the list view
             AML = self.env['account.move.line']
@@ -400,10 +273,15 @@ class AccountBankStatementLine(models.Model):
             ('reconciled', '=', False),
             ('move_id.state', '=', 'posted'),
             ('company_id', '=', self.company_id.id),
-            ('journal_id.type', 'not in', ('bank', 'cash')),
+            ('id', 'not in', self.move_id.line_ids.ids),
+            ('account_id.account_type', 'not in', ('asset_cash', 'liability_credit_card')),
             ('amount_residual', '>=', rounded_amount - 0.005),
             ('amount_residual', '<=', rounded_amount + 0.005),
         ]
+        if self.journal_id.default_account_id:
+            base_exact_domain.append(('account_id', '!=', self.journal_id.default_account_id.id))
+        if self.journal_id.suspense_account_id:
+            base_exact_domain.append(('account_id', '!=', self.journal_id.suspense_account_id.id))
         if self.partner_id:
             partner_ids = [self.partner_id.id]
             if self.partner_id.commercial_partner_id:
@@ -460,6 +338,25 @@ class AccountBankStatementLine(models.Model):
         self.invalidate_recordset()
         self._compute_is_reconciled()
         self._compute_hudson_matched_account_name()
+
+        # Ensure all affected invoices and payments have updated states
+        affected_moves = matching_lines.move_id.filtered(lambda m: m.is_invoice(True))
+        affected_payments = self.env['account.payment'].search([
+            '|', '|',
+            ('move_id', 'in', matching_lines.move_id.ids),
+            ('reconciled_bill_ids', 'in', affected_moves.ids),
+            ('reconciled_invoice_ids', 'in', affected_moves.ids),
+        ]) | affected_moves.matched_payment_ids
+
+        if affected_payments:
+            affected_payments.invalidate_recordset(['state', 'is_matched', 'is_reconciled'])
+            affected_payments._compute_state()
+            affected_payments._compute_reconciliation_status()
+            affected_moves |= affected_payments.reconciled_bill_ids | affected_payments.reconciled_invoice_ids
+
+        if affected_moves:
+            affected_moves.invalidate_recordset(['payment_state', 'status_in_payment', 'amount_residual'])
+            affected_moves._compute_payment_state()
         return True
 
     def action_hudson_internal_transfer(self):
@@ -484,6 +381,17 @@ class AccountBankStatementLine(models.Model):
     def action_hudson_reset(self):
         """ Resets the statement line matching natively """
         self.ensure_one()
+        counterpart_lines = self.move_id.line_ids.filtered(lambda l: l.account_id != self.journal_id.default_account_id)
+        partials = counterpart_lines.matched_debit_ids | counterpart_lines.matched_credit_ids
+        other_lines = (partials.debit_move_id | partials.credit_move_id) - counterpart_lines
+        affected_moves = other_lines.move_id.filtered(lambda m: m.is_invoice(True))
+        affected_payments = self.env['account.payment'].search([
+            '|', '|',
+            ('move_id', 'in', other_lines.move_id.ids),
+            ('reconciled_bill_ids', 'in', affected_moves.ids),
+            ('reconciled_invoice_ids', 'in', affected_moves.ids),
+        ]) | affected_moves.matched_payment_ids
+
         if hasattr(self, '_om_undo'):
             try:
                 self._om_undo()
@@ -494,6 +402,17 @@ class AccountBankStatementLine(models.Model):
 
         self.is_reconciled = False
         self.hudson_matched_account_name = False
+
+        if affected_payments:
+            affected_payments.invalidate_recordset(['state', 'is_matched', 'is_reconciled'])
+            affected_payments._compute_state()
+            affected_payments._compute_reconciliation_status()
+            affected_moves |= affected_payments.reconciled_bill_ids | affected_payments.reconciled_invoice_ids
+
+        if affected_moves:
+            affected_moves.invalidate_recordset(['payment_state', 'status_in_payment', 'amount_residual'])
+            affected_moves._compute_payment_state()
+
         return True
 
     def action_set_partner(self):
@@ -611,9 +530,14 @@ class AccountBankStatementLine(models.Model):
             ('account_id.reconcile', '=', True),
             ('reconciled', '=', False),
             ('move_id.state', '=', 'posted'),
-            ('journal_id.type', 'not in', ['bank', 'cash']),
             ('company_id', '=', st_line.company_id.id),
+            ('id', 'not in', st_line.move_id.line_ids.ids),
+            ('account_id.account_type', 'not in', ('asset_cash', 'liability_credit_card')),
         ]
+        if st_line.journal_id.default_account_id:
+            domain.append(('account_id', '!=', st_line.journal_id.default_account_id.id))
+        if st_line.journal_id.suspense_account_id:
+            domain.append(('account_id', '!=', st_line.journal_id.suspense_account_id.id))
 
         if search_term and str(search_term).strip():
             term = str(search_term).strip()

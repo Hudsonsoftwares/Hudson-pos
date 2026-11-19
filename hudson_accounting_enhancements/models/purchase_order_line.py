@@ -85,13 +85,3 @@ class PurchaseOrderLine(models.Model):
                 'default_date': fields.Date.context_today(self),
             }
         }
-
-    def _prepare_account_move_line(self, move=False):
-        res = super(PurchaseOrderLine, self)._prepare_account_move_line(move=move)
-        # Vendor refunds keep the standard quantity (based on what was over-billed/returned)
-        if move and move.move_type == 'in_refund':
-            return res
-        # Override to always default the auto-complete quantity to the remaining ordered quantity,
-        # instead of the received quantity (which is 0 for Billed Not Received cases).
-        res['quantity'] = max(self.product_qty - self.qty_invoiced, 0)
-        return res

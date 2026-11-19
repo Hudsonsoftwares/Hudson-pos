@@ -19,7 +19,8 @@ hudson_pos_demo_data, so Odoo removes it when the module is uninstalled.
 import json
 import logging
 
-from odoo.tools import convert_file, file_open
+from odoo.tools import file_open
+from .demo_xml import load_demo_xml as convert_file  # tolerant of apps not installed
 
 _logger = logging.getLogger(__name__)
 

@@ -31,7 +31,9 @@ class HrPayslip(models.Model):
 
     @api.model
     def _default_journal_id(self):
-        company = self.env.company
+        company = self.env.company or self.env['res.company']._company_default_get('hr.payslip')
+        if not company:
+            return False
         journal = self.env['account.journal'].search([
             ('company_id', '=', company.id),
             ('type', '=', 'general'),
@@ -43,19 +45,27 @@ class HrPayslip(models.Model):
                 '|', ('code', '=', 'SAL'), ('name', 'ilike', 'Salar'),
             ], limit=1)
         if not journal:
-            journal = self.env['account.journal'].sudo().create({
-                'name': 'Salaries',
-                'code': 'SAL',
-                'type': 'general',
-                'company_id': company.id,
-                'sequence': 10,
-            })
+            journal = self.env['account.journal'].search([
+                ('company_id', '=', company.id),
+                ('type', '=', 'general'),
+            ], limit=1)
+        if not journal and getattr(self.env.registry, 'ready', False):
+            try:
+                journal = self.env['account.journal'].sudo().create({
+                    'name': 'Salaries',
+                    'code': 'SAL',
+                    'type': 'general',
+                    'company_id': company.id,
+                    'sequence': 10,
+                })
+            except Exception:
+                journal = False
         return journal
 
     journal_id = fields.Many2one(
         'account.journal',
         string='Salary Journal',
-        required=True,
+        required=False,
         default=lambda self: self._default_journal_id(),
         domain="[('company_id', '=', company_id)]",
         help="Select Salary Journal for accounting entries."

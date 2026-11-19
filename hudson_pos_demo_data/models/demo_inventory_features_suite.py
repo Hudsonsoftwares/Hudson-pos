@@ -6,8 +6,8 @@ Idempotent (every record bound to an xmlid of this module, prefix rc_invf_). Run
 Purchase, MRP and Quality suites and reuses their vendors, products and quality teams.
 
   1. Products with shelf-life lots   lot-tracked dairy/frozen products, lots packed on different dates
-                                     with best-before in the lot reference/notes (expiry dates proper
-                                     need the "Product Expiry Date" app, product_expiry, not installed)
+                                     with best-before in the lot reference/notes (real expiration dates
+                                     and the FEFO removal strategy are shown in demo_fefo_suite)
   2. Multiple locations              Cold Room, Freezer, Dry Store (Rack A/B), Bar Store, Bakery Store
                                      in the main warehouse and in a new Central Kitchen Warehouse (CKW)
   3. Packagings and packages         Crate of 12, Case of 24, Tray of 30, Dozen, Bag of 25 kg, Box of 10 kg,

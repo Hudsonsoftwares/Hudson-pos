@@ -5,7 +5,7 @@
             <!-- RECONCILED STATE -->
             <t t-if="this.isReconciled">
                 <span class="text-success me-1 d-inline-flex align-items-center" title="Matched">
-                    <i class="fa fa-check-circle" style="font-size: 1.05rem; color: #28a745;"/>
+                    <i class="fa fa-check-circle o_hx_success" style="font-size: 1.05rem;"/>
                 </span>
                 <span class="text-secondary fw-semibold small me-2" style="font-size: 0.85rem;" t-out="this.matchedAccountName"/>
                 <button class="btn btn-link btn-sm text-muted p-0 opacity-50 hover-opacity-100" title="Reset Match" t-on-click="() => this.onResetMatch()">
@@ -30,7 +30,7 @@
                     <!-- Matching moves count button if any matches -->
                     <button t-if="this.matchCount > 0" class="btn btn-hudson-purple btn-sm d-inline-flex align-items-center me-1" t-on-click="() => this.onReconcile()" title="View and reconcile matching journal items">
                         <span>Reconcile</span>
-                        <span class="badge rounded-pill bg-white text-dark ms-1 px-1" t-out="this.matchCount" style="font-size: 0.72rem; font-weight: bold;"/>
+                        <span class="badge rounded-pill text-bg-light ms-1 px-1" t-out="this.matchCount" style="font-size: 0.72rem; font-weight: bold;"/>
                     </button>
 
                     <!-- Suggested Account Button -->

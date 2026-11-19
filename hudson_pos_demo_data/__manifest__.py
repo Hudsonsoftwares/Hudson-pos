@@ -3,16 +3,25 @@
 
 {
     'name': 'POS Demo Data (Restaurant, Cafe, Loyalty & Inventory)',
-    'version': '20.0.1.0.18',
+    'version': '20.0.1.0.26',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
-    'summary': 'Declarative XML & Python Demo Data for POS (Restaurant, Cafe, Loyalty & Inventory) loaded on manual module activation',
+    'summary': 'Declarative XML & Python Demo Data for POS (Restaurant, Cafe, Loyalty & Inventory), auto-installed and loaded per app as apps get installed',
     'description': """
         Declarative Standard Odoo Demo Data for Point of Sale:
-        - Does NOT auto-install; install/activate this module manually when demo data is needed.
+        - Auto-installs with every new database (depends only on base), whatever apps are installed.
+        - Loads the demo data of each app as soon as that app is installed, also when it is installed later:
+          e.g. install Point of Sale later and the POS restaurant/cafe data loads automatically, install
+          Appraisals later and the appraisal demo loads automatically. No manual action or configuration needed.
+        - Never resets existing data: records that existed before an install/upgrade (possibly modified by the
+          user) are not changed or deleted; only new demo records and fields added by the new module are written,
+          and demo records deleted by the user are not recreated from the XML files.
         - Categories: Food, Drinks, Desserts, Chocolates & Sweets
         - Products: 40+ Restaurant & Cafe POS products with product images and combos
-        - Floors & Tables: Main Floor (12 Tables) & Patio (12 Tables)
+        - Floors & Tables: decorated floor plans - Main Dining (12 tables) with walls, entrance, reception desk,
+          waiting lounge, open kitchen, dessert display, coffee & mocktail bar with stools, booths, family area,
+          chef's table, restrooms and plants; Garden Patio (12 tables) with hedges, fountain, parasols, fairy
+          lights, live grill and fire-pit lounge; chairs drawn around every table
         - Courses: Starter, Main Course, Dessert, Drinks
         - Notes: Preparation Note Models (Extra Spicy, Less Sugar, No Ice, etc.)
         - Pricelists: Happy Hour (20% off), VIP Member (15% off)
@@ -36,6 +45,12 @@
         - Purchase & Inventory: Kerala suppliers, vendor prices, RFQs and purchase orders in every stage, receipts, bills, stock counts
         - Manufacturing & Shop Floor: kitchen work centres, routings, manufacturing orders in every state with live work-order timers
         - Quality & Maintenance: control points, checks, alerts; kitchen equipment, maintenance teams and requests
+        - FEFO (First Expiry First Out): Perishables (FEFO) category & Perishables Chiller location, 6 products with
+          expiration/best-before/removal/alert times, lots received out of expiry order (incl. expired & alert lots),
+          a validated and a reserved delivery showing FEFO lot selection
+          and (with Purchase) lot-wise expiration dates on purchases: Greek Yogurt, Fresh Cream and Paneer bought
+          from a dairy vendor in several lots with different expiration dates (received POs, a receipt ready to
+          validate, an RFQ), scrap of an expired lot and a FEFO delivery across the purchased lots
         - Inventory features: lot-tracked dairy, Central Kitchen Warehouse (3-step), storage locations, packages, packaging UoMs,
           FIFO/LIFO removal, reordering rules, receipt quality checks and vendor returns
         - Rental & Subscriptions: event-equipment rentals in every status; coffee/lunch/membership subscriptions with MRR
@@ -57,10 +72,14 @@
           18 visitors (inspectors, suppliers, wedding & corporate clients, candidates) in every status
         - Employee Referral (when installed): staff referrals for kitchen, bar, service & delivery jobs with points, rewards and alerts
         - Appraisals (when installed): review cycles in every state with goals, ratings and manager/employee feedback
-        - Automatically loads demo data on module activation via post_init_hook and cleans up on uninstall.
+        - Appointments (when installed): party halls, banquet hall, garden lawn, kids' party room, private dining &
+          tasting room as bookable resources, a Party Hall booking type and venue bookings in every status
+        - Automatically loads demo data for the installed apps, and for every app installed afterwards; cleans up on uninstall.
     """,
-    'depends': ['point_of_sale', 'pos_restaurant', 'pos_loyalty', 'stock'],
-    'auto_install': False,
+    # Only `base`: every other app is optional. Demo data of each app is loaded when that app is
+    # installed (now or later) by models/demo_autoloader.py.
+    'depends': ['base'],
+    'auto_install': True,
     'data': [],
     'assets': {
         'point_of_sale._assets_pos': [

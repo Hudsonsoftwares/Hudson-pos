@@ -1040,7 +1040,7 @@ def load_business_suite_demo_data(env):
         if not apt_degustation:
             apt_vals = {
                 'name': "VIP Chef's Table 7-Course Degustation Experience",
-                'appointment_duration': 120,
+                'appointment_duration': 2.0,
                 'location': 'custom',
                 'location_details': "Chef's Table Suite - Hudson Restaurant Main Kitchen",
             }
@@ -1052,7 +1052,7 @@ def load_business_suite_demo_data(env):
         if not apt_catering:
             apt_catering = AppType.create({
                 'name': 'Banquets & Wedding Catering Consultation',
-                'appointment_duration': 60,
+                'appointment_duration': 1.0,
                 'location': 'custom',
                 'location_details': 'Hudson Executive Conference Lounge & Tasting Room',
             })
@@ -1061,7 +1061,7 @@ def load_business_suite_demo_data(env):
         if not apt_coffee:
             apt_vals = {
                 'name': 'Artisan Coffee Cupping & Barista Workshop',
-                'appointment_duration': 45,
+                'appointment_duration': 0.75,
                 'location': 'custom',
                 'location_details': 'Hudson Specialty Coffee Lab',
             }
@@ -1079,7 +1079,7 @@ def load_business_suite_demo_data(env):
                 malabar_partner.id,
                 datetime(today.year, today.month, today.day, 19, 30, 0) + timedelta(days=5),
                 datetime(today.year, today.month, today.day, 21, 30, 0) + timedelta(days=5),
-                120,
+                2.0,
                 8,
                 'confirmed',
                 'Leadership dinner for Malabar Corporate Club board. Special 7-course menu paired with organic boutique wines; 2 pescatarian guests.'
@@ -1089,7 +1089,7 @@ def load_business_suite_demo_data(env):
                 ananya_partner.id,
                 datetime(today.year, today.month, today.day, 15, 0, 0) + timedelta(days=3),
                 datetime(today.year, today.month, today.day, 16, 0, 0) + timedelta(days=3),
-                60,
+                1.0,
                 4,
                 'confirmed',
                 'Consultation regarding 25th Wedding Anniversary banquet (120 Pax). Tasting samples of dessert shooters and live tandoori appetizers.'
@@ -1099,7 +1099,7 @@ def load_business_suite_demo_data(env):
                 royal_partner.id,
                 datetime(today.year, today.month, today.day, 11, 0, 0) - timedelta(days=2),
                 datetime(today.year, today.month, today.day, 11, 45, 0) - timedelta(days=2),
-                45,
+                0.75,
                 6,
                 'checked_in',
                 'Hands-on cupping session evaluating single-origin beans: Ethiopian Yirgacheffe washed and Colombian Geisha honey-processed.'
@@ -1298,7 +1298,9 @@ def clear_business_suite_demo_data(env):
                 at_names = [
                     "VIP Chef's Table 7-Course Degustation Experience",
                     'Banquets & Wedding Catering Consultation',
-                    'Artisan Coffee Cupping & Barista Workshop'
+                    'Artisan Coffee Cupping & Barista Workshop',
+                    'Party Hall & Celebration Venue Booking',
+                    'Private Dining Room Reservation',
                 ]
                 ats = env['appointment.type'].sudo().search([('name', 'in', at_names)])
                 if ats:
@@ -1309,7 +1311,13 @@ def clear_business_suite_demo_data(env):
                     env['appointment.resource'].sudo().search([('name', 'in', [
                         "Chef's Table Suite (8 Pax)",
                         'Rooftop Pergola Garden Lounge (12 Pax)',
-                        'Barista Cupping & Masterclass Lab (6 Pax)'
+                        'Barista Cupping & Masterclass Lab (6 Pax)',
+                        'Grand Celebration Party Hall (150 Pax)',
+                        'Royal Banquet Hall (80 Pax)',
+                        "Kids' Birthday Party Room (30 Pax)",
+                        'Open-Air Garden Lawn (250 Pax)',
+                        'Private Dining Room (20 Pax)',
+                        'Executive Conference & Tasting Room (10 Pax)',
                     ])]).unlink()
         except Exception as e:
             _logger.warning("Could not unlink appointments: %s", e)

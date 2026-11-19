@@ -27,14 +27,23 @@ class PosOrder(models.Model):
 
     @api.model
     def validate_code_from_pos(self, code, config_id=False):
-        """Validates a coupon/promo/discount code from POS."""
+        """Validates a coupon/promo/discount code from POS, strictly respecting company boundary."""
         if not code:
             return {'valid': False, 'message': _("Please enter a code.")}
         code = str(code).strip()
 
+        # Multi-company filter: determine the POS session's company
+        company = self.env.company
+        if config_id:
+            cfg = self.env['pos.config'].browse(config_id)
+            if cfg.exists() and cfg.company_id:
+                company = cfg.company_id
+
+        comp_domain = [('program_id.company_id', 'in', [company.id, False])]
+
         # 1. Check loyalty cards if model exists
         if 'loyalty.card' in self.env:
-            card = self.env['loyalty.card'].search([('code', '=', code)], limit=1)
+            card = self.env['loyalty.card'].search([('code', '=', code)] + comp_domain, limit=1)
             if card:
                 if not card.program_id.active:
                     return {'valid': False, 'message': _("This loyalty program is inactive.")}
@@ -52,7 +61,7 @@ class PosOrder(models.Model):
 
         # 2. Check loyalty rules (promotion codes)
         if 'loyalty.rule' in self.env:
-            rule = self.env['loyalty.rule'].search([('code', '=', code)], limit=1)
+            rule = self.env['loyalty.rule'].search([('code', '=', code)] + comp_domain, limit=1)
             if rule:
                 if not rule.program_id.active:
                     return {'valid': False, 'message': _("This promotion is inactive.")}
@@ -67,7 +76,7 @@ class PosOrder(models.Model):
 
     @api.model
     def create_sale_quotation_from_pos(self, order_data):
-        """Creates a quotation (sale.order) in draft state from POS cart lines."""
+        """Creates a quotation (sale.order) in draft state from POS cart lines respecting company."""
         partner_id = order_data.get('partner_id')
         if not partner_id:
             return {'success': False, 'message': _("Please select a Customer first before saving as quotation.")}
@@ -89,7 +98,14 @@ class PosOrder(models.Model):
                 'discount': discount,
             }))
 
-        company_id = order_data.get('company_id') or self.env.company.id
+        config_id = order_data.get('config_id')
+        company_id = order_data.get('company_id')
+        if not company_id and config_id:
+            cfg = self.env['pos.config'].browse(config_id)
+            if cfg.exists() and cfg.company_id:
+                company_id = cfg.company_id.id
+        company_id = company_id or self.env.company.id
+
         pricelist_id = order_data.get('pricelist_id')
         so_vals = {
             'partner_id': partner_id,

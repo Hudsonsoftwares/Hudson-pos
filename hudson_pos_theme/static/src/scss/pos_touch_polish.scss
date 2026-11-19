@@ -209,16 +209,27 @@ $rc-status-free: $success;
                 box-shadow: $box-shadow-sm;
             }
 
+            // Elapsed-time badge: top-left corner (mirrors the change-count badge on the
+            // top-right) instead of Odoo's bottom position, where it covered the
+            // guest count / amount line below.
             .table-timer-badge {
-                font-size: .8rem !important;
+                font-size: .72rem !important;
                 font-weight: 600;
+                top: 0;
+                left: 0;
+                bottom: auto !important;
+                margin: .3rem 0 0 .3rem !important;
+                z-index: 2;
             }
 
-            // guest count + amount under the table number
+            // guest count + amount under the table number, always on one line
             .rc-table-info {
                 top: calc(50% + .95rem);
                 font-size: .78rem;
                 z-index: 1;
+                flex-wrap: nowrap;
+                align-items: baseline;
+                white-space: nowrap;
 
                 .oi {
                     font-size: .85rem;
@@ -226,21 +237,14 @@ $rc-status-free: $success;
                 }
             }
 
-            // ---- status pill (top of every table) + ring (follows the table shape, keeps its own colour)
+            // ---- status marker (invisible marker driving table status ring via :has)
             .rc-tstate {
-                top: .3rem;
-                z-index: 2;
-                font-size: .68rem;
-                font-weight: 700;
-                letter-spacing: .02em;
-                padding: .2em .6em;
-                color: $white;
-                box-shadow: $box-shadow-sm;
+                display: none !important;
             }
-            .rc-tstate-free { background: $rc-status-free; }
-            .rc-tstate-occupied { background: $rc-status-occupied; }
-            .rc-tstate-unsent { background: $rc-status-unsent; }
-            .rc-tstate-booked { background: $rc-status-booked; color: $dark; }
+
+            &:has(> .rc-tstate-free) {
+                box-shadow: 0 0 0 4px $rc-status-free;
+            }
 
             &:has(> .rc-tstate-occupied) {
                 box-shadow: 0 0 0 5px $rc-status-occupied;

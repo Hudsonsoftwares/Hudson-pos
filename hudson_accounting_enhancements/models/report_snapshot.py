@@ -37,6 +37,10 @@ class HudsonReportSnapshot(models.AbstractModel):
                 level = 1
             if line.get('is_summary_banner') or line.get('is_summary_total'):
                 kind = 'total'
+            elif level > 1 and line.get('has_children') is False:
+                # Leaf line (account, invoice...) when the client tells us so:
+                # not a heading, even at level 2 (Trial Balance, Aged reports).
+                kind = 'line'
             elif level == 1:
                 kind = 'section'
             elif level == 2:
@@ -78,7 +82,9 @@ class HudsonReportSnapshot(models.AbstractModel):
     # ------------------------------------------------------------------
 
     @api.model
-    def render_pdf(self, report_data, name=None):
+    def render_pdf(self, report_data, name=None, landscape=None):
+        """ :param landscape: True / False to force the orientation; by default
+            wide reports (more than 6 columns, e.g. Aged Receivable) are landscape. """
         columns, rows = self._get_rows(report_data)
         if not columns:
             raise UserError(_("There is nothing to export: the report has no columns."))
@@ -91,8 +97,10 @@ class HudsonReportSnapshot(models.AbstractModel):
                         for c in columns],
             'rows': rows,
         }
+        if landscape is None:
+            landscape = len(columns) > 6
         company = self.env.company
-        pdf, _type = self.env['ir.actions.report']._render_qweb_pdf(
+        pdf, _type = self.env['ir.actions.report'].with_context(landscape=bool(landscape))._render_qweb_pdf(
             'hudson_accounting_enhancements.action_report_dynamic_snapshot', [company.id], data=data)
         return pdf
 
@@ -172,7 +180,7 @@ class HudsonReportSnapshot(models.AbstractModel):
         border = '#e2e8f0'
         parts = [
             Markup('<div class="o_hudson_report_snapshot" style="margin:16px 0;border:1px solid %s;'
-                   'border-radius:8px;overflow:hidden;font-size:13px;">') % border,
+                   'border-radius:8px;overflow:hidden;font-size:13px;background-color:#ffffff;color:#334155;">') % border,
             Markup('<div style="padding:12px 16px;background-color:#f8fafc;border-bottom:1px solid %s;">'
                    '<div style="font-size:16px;font-weight:700;color:#0f172a;">%s</div>') % (border, title),
         ]

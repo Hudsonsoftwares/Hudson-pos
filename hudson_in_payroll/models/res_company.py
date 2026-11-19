@@ -47,6 +47,12 @@ class ResCompany(models.Model):
             ('hds_in_professional_tax_registration_no', 'VARCHAR'),
             ('hds_in_tds_applicable', 'BOOLEAN DEFAULT FALSE'),
             ('hds_in_tan', 'VARCHAR(10)'),
+            ('hds_in_company_pan', 'VARCHAR(10)'),
+            ('hds_in_deductor_type', "VARCHAR(1) DEFAULT 'K'"),
+            ('hds_in_tds_responsible_name', 'VARCHAR'),
+            ('hds_in_tds_responsible_designation', 'VARCHAR'),
+            ('hds_in_tds_responsible_email', 'VARCHAR'),
+            ('hds_in_tds_responsible_mobile', 'VARCHAR'),
             ('hds_in_default_tax_regime', 'VARCHAR'),
             ('hds_in_default_tax_year', 'INTEGER'),
             ('hds_in_enable_leave_encashment', 'BOOLEAN DEFAULT TRUE'),
@@ -71,10 +77,8 @@ class ResCompany(models.Model):
         except Exception:
             pass
 
-    def fetch(self, field_names=None):
-        if not getattr(self.env.registry, '_hds_in_company_cols_synced', False):
-            self._ensure_hds_in_columns()
-        return super().fetch(field_names=field_names)
+    # Note: _auto_init() already ensures these columns during schema initialization.
+    # We do NOT run ALTER TABLE inside fetch() to avoid deadlocks and aborted transactions.
 
     hds_in_is_india_company = fields.Boolean(
         string="Is India Company",

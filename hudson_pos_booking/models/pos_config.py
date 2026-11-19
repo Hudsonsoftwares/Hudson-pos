@@ -10,53 +10,75 @@ class PosConfig(models.Model):
     _inherit = 'pos.config'
 
     def _default_booking_appointment_type_id(self):
-        """Pure side-effect-free search for default celebration/table booking appointment type."""
+        """Pure side-effect-free search for default celebration/table booking appointment type.
+
+        Guards against is_event_booking not being present (e.g. when the custom
+        appointment module is not yet installed on the target database).
+        Uses sudo() to safely evaluate cross-company records without triggering AccessError.
+        """
         company = (self.company_id if self and len(self) == 1 and self.company_id else False) or self.env.company
-        other_type = self.env.ref('hudson_pos_booking.appointment_type_event_other', raise_if_not_found=False)
+        other_type = self.sudo().env.ref('hudson_pos_booking.appointment_type_event_other', raise_if_not_found=False)
         if other_type and other_type.exists() and (not other_type.company_id or other_type.company_id == company):
             return other_type.id
-        AppType = self.env['appointment.type']
+        AppType = self.env['appointment.type'].sudo()
         comp_domain = ['|', ('company_id', '=', False), ('company_id', '=', company.id)]
-        found = AppType.search([
-            ('booking_target', '=', 'resources'),
-            ('is_event_booking', '=', True),
-            ('event_category', '=', 'other'),
-        ] + comp_domain, limit=1)
+        has_event_booking_field = 'is_event_booking' in AppType._fields
+        found = AppType.browse()
+        if has_event_booking_field:
+            try:
+                with self.env.cr.savepoint():
+                    found = AppType.search([
+                        ('booking_target', '=', 'resources'),
+                        ('is_event_booking', '=', True),
+                        ('event_category', '=', 'other'),
+                    ] + comp_domain, limit=1)
+                    if not found:
+                        found = AppType.search([
+                            ('booking_target', '=', 'resources'),
+                            ('is_event_booking', '=', True),
+                            ('is_published', '=', True),
+                        ] + comp_domain, limit=1)
+            except Exception:
+                found = AppType.browse()
         if not found:
-            found = AppType.search([
-                ('booking_target', '=', 'resources'),
-                ('is_event_booking', '=', True),
-                ('is_published', '=', True),
-            ] + comp_domain, limit=1)
-        if not found:
-            app_type = self.env.ref('appointment.appointment_type_table_booking', raise_if_not_found=False)
-            if app_type and app_type.exists():
-                return app_type.id
-            found = AppType.search([
-                ('booking_target', '=', 'resources'),
-                ('name', 'ilike', 'Table Booking'),
-            ] + comp_domain, limit=1)
+            try:
+                with self.env.cr.savepoint():
+                    app_type = self.sudo().env.ref('appointment.appointment_type_table_booking', raise_if_not_found=False)
+                    if app_type and app_type.exists() and (not app_type.company_id or app_type.company_id == company):
+                        return app_type.id
+                    found = AppType.search([
+                        ('booking_target', '=', 'resources'),
+                        ('name', 'ilike', 'Table Booking'),
+                    ] + comp_domain, limit=1)
+            except Exception:
+                found = AppType.browse()
         return found.id if found else False
 
     def _get_or_create_default_table_booking_type(self):
-        """Return default booking appointment type ID, creating 'Other Celebrations' only if missing."""
+        """Return default booking appointment type ID, creating 'Celebrate Your Life Events' only if missing."""
         at_id = self._default_booking_appointment_type_id()
         if at_id:
             return at_id
         company = (self.company_id if self and len(self) == 1 and self.company_id else False) or self.env.company
         tz_name = company.partner_id.tz or self.env.user.tz or self.env.context.get('tz') or 'Asia/Calcutta'
-        app_type = self.env['appointment.type'].sudo().create({
-            'name': 'Other Celebrations',
-            'is_event_booking': True,
-            'event_category': 'other',
-            'event_emoji': '🎉',
+        AppType = self.env['appointment.type'].sudo()
+        vals = {
+            'name': 'Celebrate Your Life Events',
             'booking_target': 'resources',
-            'assign_method': 'customer',
+            'assign_method': 'random',
             'schedule_based_on': 'website',
-            'is_published': True,
-            'company_id': company.id,
+            'is_published': False,
+            'company_id': False,
             'appointment_tz': tz_name,
-        })
+        }
+        if 'is_event_booking' in AppType._fields:
+            vals['is_event_booking'] = True
+        if 'event_category' in AppType._fields:
+            vals['event_category'] = 'other'
+        if 'event_emoji' in AppType._fields:
+            vals['event_emoji'] = '🎉'
+        safe_vals = {k: v for k, v in vals.items() if k in AppType._fields}
+        app_type = AppType.create(safe_vals)
         return app_type.id
 
     def _get_booking_timezone_name(self):
@@ -93,12 +115,12 @@ class PosConfig(models.Model):
             if not cfg.use_booking:
                 continue
             company = cfg.company_id or self.env.company
-            pm = self.env['pos.payment.method'].search([
+            pm = self.env['pos.payment.method'].sudo().search([
                 ('name', '=', 'Online Prepaid'),
                 ('company_id', '=', company.id),
             ], limit=1)
             if not pm:
-                bank_journal = self.env['account.journal'].search([
+                bank_journal = self.env['account.journal'].sudo().search([
                     ('type', '=', 'bank'),
                     ('company_id', '=', company.id),
                 ], limit=1)
@@ -170,7 +192,7 @@ class PosConfig(models.Model):
         'appointment.type',
         string='Table Booking Type',
         domain="[('booking_target', '=', 'resources'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
-        check_company=True,
+        check_company=False,
         default=_default_booking_appointment_type_id,
         help="Appointment type used for restaurant table bookings."
     )
@@ -304,9 +326,15 @@ class PosConfig(models.Model):
         occasion_title = (vals.get('occasion_title') or '').strip() or False
         occasion_date = False
         if vals.get('occasion_date'):
-            occasion_date = self.env['appointment.answer']._parse_date_value(vals.get('occasion_date'))
+            raw_occ = vals.get('occasion_date')
+            try:
+                occasion_date = fields.Date.to_date(raw_occ)
+            except Exception:
+                pass
+            if not occasion_date and hasattr(self.env.get('appointment.answer'), '_parse_date_value'):
+                occasion_date = self.env['appointment.answer']._parse_date_value(raw_occ)
             if not occasion_date:
-                raise UserError(_("Invalid Special Day date format: '%s'. Please use YYYY-MM-DD.") % vals.get('occasion_date'))
+                raise UserError(_("Invalid Special Day date format: '%s'. Please use YYYY-MM-DD.") % raw_occ)
 
         party_size = max(1, int(vals.get('party_size', 1)))
         table_id = vals.get('table_id')
@@ -326,6 +354,12 @@ class PosConfig(models.Model):
             excluded_ids.append(config.company_id.partner_id.id)
         comp_scope = [('company_id', 'in', [False, config.company_id.id])]
 
+        def _clean_phone(phone_val):
+            if hasattr(BookingModel, '_normalize_phone_digits'):
+                return BookingModel._normalize_phone_digits(phone_val)
+            import re
+            return re.sub(r'\D+', '', str(phone_val or ''))
+
         partner = Partner.browse()
         if customer_phone:
             phone_domain = [('phone', '=', customer_phone)]
@@ -333,14 +367,14 @@ class PosConfig(models.Model):
                 phone_domain = ['|', ('phone', '=', customer_phone), ('mobile', '=', customer_phone)]
             partner = Partner.search([('id', 'not in', excluded_ids)] + comp_scope + phone_domain, limit=1)
             if not partner:
-                target_digits = BookingModel._normalize_phone_digits(customer_phone)
+                target_digits = _clean_phone(customer_phone)
                 if len(target_digits) >= 7:
                     candidates = Partner.search([
                         ('id', 'not in', excluded_ids),
                         ('phone', '!=', False),
                     ] + comp_scope, order='id desc', limit=200)
                     for cand in candidates:
-                        c_digits = BookingModel._normalize_phone_digits(cand.phone)
+                        c_digits = _clean_phone(cand.phone)
                         if c_digits and (
                             c_digits == target_digits
                             or c_digits.endswith(target_digits[-10:])
@@ -430,7 +464,8 @@ class PosConfig(models.Model):
             'resource_ids': [(6, 0, assigned_resources.ids)] if assigned_resources else [(5, 0, 0)],
             'guest_details': vals.get('notes', ''),
         }
-        booking = self.env['appointment.booking'].sudo().create(booking_vals)
+        safe_booking_vals = {k: v for k, v in booking_vals.items() if k in self.env['appointment.booking']._fields}
+        booking = self.env['appointment.booking'].sudo().create(safe_booking_vals)
         config.notify_booking_update(booking, action="CREATE")
         return {'appointment.booking': [booking._get_pos_booking_data(config)]}
 
@@ -445,13 +480,25 @@ class PosConfig(models.Model):
         new_state = vals.get('state')
         if new_state:
             if new_state == 'checked_in':
-                booking.action_check_in()
+                if hasattr(booking, 'action_check_in'):
+                    booking.action_check_in()
+                else:
+                    booking.state = 'checked_in'
             elif new_state == 'checked_out':
-                booking.action_check_out()
+                if hasattr(booking, 'action_check_out'):
+                    booking.action_check_out()
+                else:
+                    booking.state = 'checked_out'
             elif new_state == 'no_show':
-                booking.action_no_show()
+                if hasattr(booking, 'action_no_show'):
+                    booking.action_no_show()
+                else:
+                    booking.state = 'no_show'
             elif new_state == 'cancelled':
-                booking.action_cancel()
+                if hasattr(booking, 'action_cancel'):
+                    booking.action_cancel()
+                else:
+                    booking.state = 'cancelled'
             elif new_state == 'confirmed':
                 booking.state = 'confirmed'
 
@@ -558,7 +605,13 @@ class PosConfig(models.Model):
         if 'occasion_date' in vals:
             raw_occ = vals['occasion_date']
             if raw_occ:
-                parsed_occ = self.env['appointment.answer']._parse_date_value(raw_occ)
+                parsed_occ = False
+                try:
+                    parsed_occ = fields.Date.to_date(raw_occ)
+                except Exception:
+                    pass
+                if not parsed_occ and hasattr(self.env.get('appointment.answer'), '_parse_date_value'):
+                    parsed_occ = self.env['appointment.answer']._parse_date_value(raw_occ)
                 if not parsed_occ:
                     raise UserError(_("Invalid Special Day date format: '%s'. Please use YYYY-MM-DD.") % raw_occ)
                 write_vals['occasion_date'] = parsed_occ
@@ -600,7 +653,9 @@ class PosConfig(models.Model):
                 write_vals['partner_id'] = partner.id
 
         if write_vals:
-            booking.write(write_vals)
+            safe_write = {k: v for k, v in write_vals.items() if k in booking._fields}
+            if safe_write:
+                booking.write(safe_write)
 
         config.notify_booking_update(booking, action="UPDATE")
         return {'appointment.booking': [booking._get_pos_booking_data(config)]}
