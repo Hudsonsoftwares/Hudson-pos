@@ -11,5 +11,19 @@
             <field name="body_plaintext">Resto Cafe: Happy Hour 4-7pm today! 20% off coffees &amp; desserts for loyalty members. See you soon!</field>
             <field name="state">draft</field>
         </record>
+
+        <!-- Ready-to-send demo SMS campaign (matches the "Chef's Weekend Specials" email):
+             one SMS segment, GSM characters only, link shortened + tracked on send, opt-out link added. -->
+        <record id="rc_mailing_sms_weekend_specials" model="mailing.mailing">
+            <field name="subject">Chef's Weekend Specials (SMS)</field>
+            <field name="mailing_type">sms</field>
+            <field name="mailing_model_id" ref="mass_mailing.model_mailing_list"/>
+            <field name="contact_list_ids" eval="[Command.set([ref('rc_list_loyalty')])]"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_newsletter"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="body_plaintext">Resto Cafe Kochi: Chef's Weekend Specials! Bacon Burger $15.50, Pasta 4 Formaggi $9.50 + DOUBLE loyalty points Sat-Sun. Book: https://restocafe.example.com/book</field>
+            <field name="sms_allow_unsubscribe" eval="True"/>
+            <field name="state">draft</field>
+        </record>
     </data>
 </odoo>

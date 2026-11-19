@@ -190,9 +190,12 @@ def load_referral_suite_demo_data(env):
 
     # 3. light users for the referring employees (no invitation e-mail)
     for xid, name in REFERRER_USERS:
-        if _ref(env, xid):
-            continue
         employee = emp(name)
+        user = _ref(env, xid)
+        if user and user.exists():
+            if employee and not employee.user_id:
+                employee.with_context(bin_size=True, **CTX).write({'user_id': user.id})
+            continue
         if not employee:
             continue
         try:
@@ -211,7 +214,16 @@ def load_referral_suite_demo_data(env):
 
     def referrer_user(name):
         employee = emp(name)
-        return employee.user_id if employee and employee.user_id and not employee.user_id.share else False
+        if employee and employee.user_id and not employee.user_id.share:
+            return employee.user_id
+        for xid, rname in REFERRER_USERS:
+            if rname == name:
+                u = _ref(env, xid)
+                if u and u.exists() and not u.share:
+                    if employee and not employee.user_id:
+                        employee.with_context(bin_size=True, **CTX).write({'user_id': u.id})
+                    return u
+        return False
 
     source = env['utm.source'].sudo().search([('name', '=', 'Employee Referral')], limit=1)
 

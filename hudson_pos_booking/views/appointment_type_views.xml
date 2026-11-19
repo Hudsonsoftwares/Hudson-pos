@@ -8,37 +8,10 @@
             <xpath expr="//field[@name='resource_ids']" position="before">
                 <field name="allowed_resource_ids" invisible="1"/>
             </xpath>
-            <xpath expr="//field[@name='resource_ids']" position="attributes">
-                <attribute name="domain">[('id', 'in', allowed_resource_ids)]</attribute>
-                <attribute name="context">{'appointment_booking_target': booking_target, 'default_company_id': company_id, 'active_appointment_type_id': id}</attribute>
-                <attribute name="options">{'no_create': True}</attribute>
-            </xpath>
-
-            <!-- Resource configuration popup + warning (backend only) -->
-            <xpath expr="//header" position="inside">
-                <field name="is_event_booking" invisible="1"/>
-                <button name="action_hudson_configure_resources" type="object" string="Configure Resources"
-                        invisible="not id or not is_event_booking or booking_target != 'resources'"
-                        class="btn-primary"
-                        groups="appointment.group_appointment_manager"/>
-            </xpath>
-            <xpath expr="//sheet/div[@name='button_box']" position="after">
-                <field name="hudson_resource_config_warning" invisible="1"/>
-                <div class="alert alert-warning d-flex align-items-center mb-3" role="alert"
-                     invisible="not hudson_resource_config_warning">
-                    <div class="flex-grow-1">
-                        <field name="hudson_resource_config_warning" readonly="1" nolabel="1" class="d-block"/>
-                    </div>
-                    <button name="action_hudson_configure_resources" type="object" string="Configure Resources"
-                            class="btn btn-warning btn-sm ms-2" invisible="not id"
-                            groups="appointment.group_appointment_manager"/>
-                </div>
-            </xpath>
         </field>
     </record>
 
-    <!-- "Configure Resources" popup: a minimal dialog of the appointment type itself,
-         editing the stock Resources (resource_ids) field. Backend only. -->
+    <!-- Minimal popup view preserved for any backward-compatible programmatic calls -->
     <record id="appointment_type_view_form_hudson_configure_resources" model="ir.ui.view">
         <field name="name">appointment.type.view.form.hudson.configure.resources</field>
         <field name="model">appointment.type</field>
@@ -47,19 +20,11 @@
             <form string="Configure Resources">
                 <field name="booking_target" invisible="1"/>
                 <field name="company_id" invisible="1"/>
-                <field name="allowed_resource_ids" invisible="1"/>
                 <p class="text-muted">
-                    Choose the tables customers can be seated at for this celebration.
-                    Customers never pick a table on the website: the best-fitting free table is assigned automatically.
+                    Choose the resources available for this appointment type.
                 </p>
-                <div class="alert alert-warning" role="alert" invisible="not hudson_resource_config_warning">
-                    <field name="hudson_resource_config_warning" readonly="1" nolabel="1"/>
-                </div>
                 <group>
-                    <field name="resource_ids" widget="many2many_tags"
-                           domain="[('id', 'in', allowed_resource_ids)]"
-                           context="{'appointment_booking_target': booking_target, 'default_company_id': company_id, 'active_appointment_type_id': id}"
-                           options="{'no_create': True}"/>
+                    <field name="resource_ids" widget="many2many_tags"/>
                     <field name="is_published" readonly="1"/>
                 </group>
                 <footer>
@@ -73,4 +38,3 @@
         </field>
     </record>
 </odoo>
-

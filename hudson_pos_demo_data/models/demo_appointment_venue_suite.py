@@ -81,7 +81,13 @@ def _assign_tables_to_celebration_type(env):
     """Give the 'Celebrate Your Life Events' type (hudson_pos_booking) the demo
     floor tables, so it has resources to book and can be published."""
     life = env.ref('hudson_pos_booking.appointment_type_event_other', raise_if_not_found=False)
-    if not life or 'restaurant.table' not in env:
+    if not life:
+        return
+    # Ensure life does not contain venue hall resources (like Grand Celebration Party Hall)
+    venue_res = env['appointment.resource'].sudo().search([('name', 'in', VENUE_RESOURCE_NAMES)])
+    if life.resource_ids & venue_res:
+        life.write({'resource_ids': [Command.unlink(r.id) for r in (life.resource_ids & venue_res)]})
+    if 'restaurant.table' not in env:
         return
     Table = env['restaurant.table'].sudo().with_context(active_test=False)
     if hasattr(Table, '_sync_appointment_resource'):
@@ -131,13 +137,47 @@ def load_appointment_venue_suite_demo_data(env):
     private_dining = venues['Private Dining Room (20 Pax)']
     tasting_room = venues['Executive Conference & Tasting Room (10 Pax)']
     res_pergola = AppResource.search([('name', '=', 'Rooftop Pergola Garden Lounge (12 Pax)')], limit=1)
+    if not res_pergola:
+        res_pergola = AppResource.create({
+            'name': 'Rooftop Pergola Garden Lounge (12 Pax)',
+            'capacity': 12,
+            'description': 'Private semi-outdoor weatherproof pergola with panoramic skyline views and ambient fireplace.',
+        })
     res_chef_table = AppResource.search([('name', '=', "Chef's Table Suite (8 Pax)")], limit=1)
+    if not res_chef_table:
+        res_chef_table = AppResource.create({
+            'name': "Chef's Table Suite (8 Pax)",
+            'capacity': 8,
+            'description': 'Exclusive front-row glass counter dining table overlooking the executive pastry and pass line.',
+        })
+    res_lab = AppResource.search([('name', '=', 'Barista Cupping & Masterclass Lab (6 Pax)')], limit=1)
+    if not res_lab:
+        res_lab = AppResource.create({
+            'name': 'Barista Cupping & Masterclass Lab (6 Pax)',
+            'capacity': 6,
+            'description': 'Professional specialty coffee laboratory with commercial grinders, manual brew bars, and sensory cups.',
+        })
+
+    # Ensure all demo resources have active=True and company calendar
+    all_demo_resources = AppResource.browse([r.id for r in list(venues.values()) + [res_pergola, res_chef_table, res_lab] if r])
+    for r in all_demo_resources:
+        res_vals = {}
+        if not r.active:
+            res_vals['active'] = True
+        if 'opening_hours_id' in r._fields and not r.opening_hours_id and env.company.resource_calendar_id:
+            res_vals['opening_hours_id'] = env.company.resource_calendar_id.id
+        if res_vals:
+            r.write(res_vals)
 
     # The banquet hall opens into the grand hall for very large parties
     if banquet_hall not in grand_hall.linked_resource_ids:
         grand_hall.linked_resource_ids = [Command.link(banquet_hall.id)]
 
     hall_resources = grand_hall | banquet_hall | kids_room | garden_lawn | res_pergola
+    party_avail_cmds = [
+        Command.create({'day_of_week': str(dow), 'start_time': 9.0, 'end_time': 23.0})
+        for dow in range(7)
+    ]
     apt_party = AppType.search([('name', '=', 'Party Hall & Celebration Venue Booking')], limit=1)
     if not apt_party:
         apt_party = AppType.create({
@@ -151,10 +191,24 @@ def load_appointment_venue_suite_demo_data(env):
             'max_schedule_days': 90,
             'min_schedule_hours': 48.0,
             'resource_ids': [Command.set(hall_resources.ids)],
+            'availability_ids': party_avail_cmds,
+            'is_published': True,
         })
-    elif apt_party.resource_ids != hall_resources:
-        apt_party.resource_ids = [Command.set(hall_resources.ids)]
+    else:
+        party_vals = {}
+        if apt_party.resource_ids != hall_resources:
+            party_vals['resource_ids'] = [Command.set(hall_resources.ids)]
+        if not apt_party.availability_ids:
+            party_vals['availability_ids'] = party_avail_cmds
+        if not apt_party.is_published:
+            party_vals['is_published'] = True
+        if party_vals:
+            apt_party.write(party_vals)
 
+    private_avail_cmds = [
+        Command.create({'day_of_week': str(dow), 'start_time': 11.0, 'end_time': 23.0})
+        for dow in range(7)
+    ]
     apt_private = AppType.search([('name', '=', 'Private Dining Room Reservation')], limit=1)
     if not apt_private:
         apt_private = AppType.create({
@@ -165,22 +219,29 @@ def load_appointment_venue_suite_demo_data(env):
             'location': 'custom',
             'location_details': 'Hudson Restaurant - First Floor',
             'resource_ids': [Command.set(private_dining.ids)],
+            'availability_ids': private_avail_cmds,
+            'is_published': True,
         })
-    elif apt_private.resource_ids != private_dining:
-        apt_private.resource_ids = [Command.set(private_dining.ids)]
+    else:
+        private_vals = {}
+        if apt_private.resource_ids != private_dining:
+            private_vals['resource_ids'] = [Command.set(private_dining.ids)]
+        if not apt_private.availability_ids:
+            private_vals['availability_ids'] = private_avail_cmds
+        if not apt_private.is_published:
+            private_vals['is_published'] = True
+        if private_vals:
+            apt_private.write(private_vals)
 
     _assign_tables_to_celebration_type(env)
 
-    # The original sample appointment types become resource-based, each with its own room,
-    # and their sample bookings are given that room.
-    # (A resource may belong to only one resource-based type, see hudson_pos_booking.)
-    res_lab = AppResource.search([('name', '=', 'Barista Cupping & Masterclass Lab (6 Pax)')], limit=1)
+    # The sample appointment types become fully active resource-based types with opening hours
     sample_type_rooms = [
-        ("VIP Chef's Table 7-Course Degustation Experience", res_chef_table),
-        ('Banquets & Wedding Catering Consultation', tasting_room),
-        ('Artisan Coffee Cupping & Barista Workshop', res_lab),
+        ("VIP Chef's Table 7-Course Degustation Experience", res_chef_table, 18.0, 23.0),
+        ('Banquets & Wedding Catering Consultation', tasting_room, 10.0, 19.0),
+        ('Artisan Coffee Cupping & Barista Workshop', res_lab, 9.0, 17.0),
     ]
-    for type_name, room in sample_type_rooms:
+    for type_name, room, h_from, h_to in sample_type_rooms:
         apt = AppType.search([('name', '=', type_name)], limit=1)
         if not apt or not room:
             continue
@@ -191,6 +252,13 @@ def load_appointment_venue_suite_demo_data(env):
                     vals['booking_target'] = 'resources'
                 if apt.resource_ids != room:
                     vals['resource_ids'] = [Command.set(room.ids)]
+                if not apt.availability_ids:
+                    vals['availability_ids'] = [
+                        Command.create({'day_of_week': str(dow), 'start_time': h_from, 'end_time': h_to})
+                        for dow in range(7)
+                    ]
+                if not apt.is_published:
+                    vals['is_published'] = True
                 if vals:
                     apt.write(vals)
                 for booking in AppBooking.search([('appointment_type_id', '=', apt.id)]):

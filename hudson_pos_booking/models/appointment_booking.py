@@ -127,10 +127,11 @@ class AppointmentBooking(models.Model):
     allowed_resource_ids = fields.Many2many(
         'appointment.resource',
         compute='_compute_allowed_resource_ids',
-        help="Resources allowed for this booking based on appointment type and website booking toggle."
+        help="Resources allowed for this booking based on appointment type."
     )
     resource_ids = fields.Many2many(
-        domain="[('id', 'in', allowed_resource_ids)]"
+        'appointment.resource',
+        string='Resource',
     )
     has_food_order = fields.Boolean(
         string='Has Pre-ordered Food',
@@ -274,16 +275,13 @@ class AppointmentBooking(models.Model):
         Resource = self.env['appointment.resource'].sudo()
         for booking in self:
             company = (booking.company_id if hasattr(booking, 'company_id') and booking.company_id else False) or self.env.company
-            if booking.appointment_type_id:
-                if booking.appointment_type_id.resource_ids:
-                    booking.allowed_resource_ids = booking.appointment_type_id.resource_ids
-                else:
-                    booking.allowed_resource_ids = Resource._get_allowed_booking_resources(
-                        company=company,
-                        exclude_appointment_type_id=booking.appointment_type_id.id,
-                    )
+            if booking.appointment_type_id and booking.appointment_type_id.resource_ids:
+                booking.allowed_resource_ids = booking.appointment_type_id.resource_ids
             else:
-                booking.allowed_resource_ids = Resource._get_allowed_booking_resources(company=company)
+                booking.allowed_resource_ids = Resource.search([
+                    '|', ('company_id', '=', False), ('company_id', '=', company.id),
+                    ('active', '=', True),
+                ])
 
     @api.constrains('appointment_type_id', 'resource_ids')
     def _check_exclusive_event_table(self):
@@ -291,12 +289,15 @@ class AppointmentBooking(models.Model):
         for booking in self:
             if not booking.appointment_type_id or booking.appointment_type_id.booking_target != 'resources' or not booking.resource_ids:
                 continue
+            table_resources = booking.resource_ids.filtered(lambda r: getattr(r, 'pos_table_id', False))
+            if not table_resources:
+                continue
             owners = AppType.search([
                 ('active', '=', True),
                 ('booking_target', '=', 'resources'),
-                ('resource_ids', 'in', booking.resource_ids.ids),
+                ('resource_ids', 'in', table_resources.ids),
             ])
-            for res in booking.resource_ids:
+            for res in table_resources:
                 res_owners = owners.filtered(lambda at: res in at.resource_ids)
                 if res_owners and booking.appointment_type_id not in res_owners:
                     raise ValidationError(_(

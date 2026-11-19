@@ -30,12 +30,31 @@ MARKETING_XML_FILES = [
     ('demo/marketing/event_track_demo.xml', 'event.track', None),
     ('demo/marketing/mass_mailing_demo.xml', 'mailing.mailing', None),
     ('demo/marketing/mass_mailing_sms_demo.xml', 'mailing.mailing', ('mailing.mailing', 'mailing_type', 'sms')),
+    # Marketing Card renders every card as an image: skipped when the server has no wkhtmltoimage
+    ('demo/marketing/marketing_card_demo.xml', 'card.campaign', 'card_images'),
 ]
+
+
+def _card_images_available():
+    """True when card images can be rendered (wkhtmltoimage 0.12+ found by Odoo).
+
+    Creating a card campaign renders its preview image immediately; without wkhtmltoimage
+    (e.g. Odoo's Windows installer ships wkhtmltopdf only) that raises an error.
+    """
+    try:
+        from odoo.addons.base_report_wkhtmltox.models.ir_actions_report import _wkhtml  # noqa: PLC0415
+        from odoo.tools import parse_version  # noqa: PLC0415
+        version = _wkhtml().wkhtmltoimage_version
+        return bool(version) and version >= parse_version('0.12.0')
+    except Exception:  # noqa: BLE001
+        return False
 
 
 def _is_available(env, model, selection_check):
     if model not in env:
         return False
+    if selection_check == 'card_images':
+        return _card_images_available()
     if selection_check:
         sel_model, field, value = selection_check
         selection = env[sel_model].fields_get([field]).get(field, {}).get('selection') or []

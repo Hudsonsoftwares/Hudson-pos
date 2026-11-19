@@ -121,7 +121,9 @@ def _gst(env):
         partner = _ref(env, xid)
         if not partner:
             continue
-        vals = {'is_company': True, 'l10n_in_gst_treatment': treatment, 'country_id': india.id}
+        vals = {'is_company': True, 'country_id': india.id}
+        if 'l10n_in_gst_treatment' in env['res.partner']._fields:
+            vals['l10n_in_gst_treatment'] = treatment
         if move_to and not partner.vat:
             city, st, zip_code = move_to
             vals.update({'city': city, 'state_id': states[st].id, 'zip': zip_code})
@@ -136,7 +138,10 @@ def _gst(env):
     for xid in ('rc_sale_partner_priya',):
         p = _ref(env, xid)
         if p:
-            p.write({'l10n_in_gst_treatment': 'consumer', 'state_id': p.state_id.id or (kerala and kerala.id)})
+            p_vals = {'state_id': p.state_id.id or (kerala and kerala.id)}
+            if 'l10n_in_gst_treatment' in env['res.partner']._fields:
+                p_vals['l10n_in_gst_treatment'] = 'consumer'
+            p.write(p_vals)
 
     # HSN / SAC codes (needed on e-invoices)
     if 'l10n_in_hsn_code' in env['product.template']._fields:

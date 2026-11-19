@@ -3,18 +3,23 @@
 """Resto Cafe Solutions - Project & Timesheet demo data.
 
 Idempotent: every record is bound to an xmlid of this module (prefix ``rc_prj_``).
-  * 5 projects (renovation, Onam menu launch, Marina Bay wedding execution, central kitchen
-    expansion, website revamp) with their own stages, tags, milestones, sub-tasks, dependencies,
-    priorities, deadlines, assignees and project status updates
+  * 8 colourful projects (renovation, Onam menu launch, Marina Bay wedding execution, central
+    kitchen expansion, website revamp, monsoon food festival, staff training academy, zero-waste
+    kitchen) with their own stages, 13 coloured tags, milestones, sub-tasks, dependencies,
+    1-3 star priorities, deadlines, assignees, colour-coded tasks, kanban cover pictures and a
+    history of On Track / At Risk / Off Track / On Hold / Complete status updates
   * The wedding project is billed on timesheets: a "Event Coordination (hours)" service line on the
     Sales suite's confirmed Marina Bay order; logged hours become billable/delivered quantity
-  * ~60 timesheet lines over the last 4 weeks for the Resto Cafe employees
+  * ~6 weeks of daily timesheets (Mon-Sat, up to today) for every project team, Administrator included
   * Personal to-dos (project_todo)
+Fields that the installed apps do not provide (e.g. ``allow_timesheets`` without Timesheets) are
+skipped, so the projects and tasks load with or without Timesheets.
 """
 import logging
 from datetime import timedelta
 
 from odoo import Command, fields
+from odoo.tools import file_open
 
 _logger = logging.getLogger(__name__)
 
@@ -32,16 +37,25 @@ def _bind(env, xid, record):
     return record
 
 
+def _clean(env, model, vals):
+    """Drop values for fields the installed apps do not provide (e.g. ``allow_timesheets`` only
+    exists with Timesheets): one missing field must not abort the whole Project demo."""
+    fields_ = env[model]._fields
+    return {k: v for k, v in vals.items() if k in fields_}
+
+
 def _get_or_create(env, xid, model, vals):
     rec = _ref(env, xid)
     if rec and rec.exists():
         return rec
-    return _bind(env, xid, env[model].sudo().create(vals))
+    return _bind(env, xid, env[model].sudo().create(_clean(env, model, vals)))
 
 
 TAGS = [('rc_prj_tag_kitchen', 'Kitchen', 1), ('rc_prj_tag_marketing', 'Marketing', 2), ('rc_prj_tag_event', 'Event', 3),
         ('rc_prj_tag_urgent', 'Urgent', 4), ('rc_prj_tag_vendor', 'Vendor', 5), ('rc_prj_tag_it', 'IT', 6),
-        ('rc_prj_tag_compliance', 'Compliance', 7), ('rc_prj_tag_design', 'Design', 8)]
+        ('rc_prj_tag_compliance', 'Compliance', 7), ('rc_prj_tag_design', 'Design', 8),
+        ('rc_prj_tag_festival', 'Festival', 9), ('rc_prj_tag_training', 'Training', 11), ('rc_prj_tag_hr', 'HR', 6),
+        ('rc_prj_tag_sustain', 'Sustainability', 10), ('rc_prj_tag_finance', 'Finance', 3)]
 
 STAGES = ['Backlog', 'To Do', 'In Progress', 'Review', 'Done']
 
@@ -68,6 +82,18 @@ PROJECTS = [
      'In Progress', 'New website design, table QR ordering and packaged-food webshop integration.',
      ['Sneha Pillai', 'Priya Menon', 'Suresh Kumar'], None,
      ('on_track', 60, 'Home, Shop and Events pages live; appointment booking redesign in review.')),
+    ('rc_prj_monsoon', 'Monsoon Food Festival 2026', 'admin', None, 3, ['rc_prj_tag_festival', 'rc_prj_tag_kitchen', 'rc_prj_tag_marketing'], -15, 25,
+     'In Progress', 'A two-week rainy-season festival: kappa & karimeen, hot pazhampori, rain-themed decor and live music.',
+     ['Lakshmi Iyer', 'Gokul Krishna', 'Anjali Das', 'Faisal Ahmed', 'Administrator'], None,
+     ('on_track', 40, 'Menu locked and tasted; decor and promotion running on schedule.')),
+    ('rc_prj_academy', 'Staff Training Academy', 'arjun', None, 5, ['rc_prj_tag_training', 'rc_prj_tag_hr'], -35, 45,
+     'In Progress', 'In-house academy for baristas, servers and cooks: curriculum, micro-videos, hygiene certification and mentoring.',
+     ['Deepa Krishnan', 'Manoj Pillai', 'Reshma Babu', 'Nikhil Raj'], None,
+     ('at_risk', 50, 'Video recording is behind: two trainers on leave. Hygiene batch 1 still on track.')),
+    ('rc_prj_green', 'Zero-Waste Green Kitchen', 'admin', None, 10, ['rc_prj_tag_sustain', 'rc_prj_tag_kitchen', 'rc_prj_tag_compliance'], -50, 30,
+     'In Progress', 'Cut food waste by 40% and remove single-use plastic: waste audit, composting, leaf packaging and solar hot water.',
+     ['Sabu Thomas', 'Thomas Mathew', 'Ajay Menon', 'Fathima Rasheed', 'Administrator'], None,
+     ('on_track', 75, 'Composter running; food waste already down 28% against the baseline.')),
 ]
 
 # milestones: project xid, name, deadline offset, reached
@@ -78,6 +104,9 @@ MILESTONES = [
     ('rc_prj_wedding', 'Menu & headcount confirmed', -8, True), ('rc_prj_wedding', 'Event day', 12, False),
     ('rc_prj_central_kitchen', 'FSSAI approval', 15, False), ('rc_prj_central_kitchen', 'Equipment installed', 50, False),
     ('rc_prj_website', 'Pages redesigned', -5, True), ('rc_prj_website', 'Online ordering go-live', 20, False),
+    ('rc_prj_monsoon', 'Menu locked', -6, True), ('rc_prj_monsoon', 'Festival opening', 12, False),
+    ('rc_prj_academy', 'Curriculum ready', -18, True), ('rc_prj_academy', 'First batch certified', 20, False),
+    ('rc_prj_green', 'Waste baseline', -28, True), ('rc_prj_green', 'Plastic-free kitchen', 15, False),
 ]
 
 # tasks: xid, project, name, stage, assignees, priority, deadline offset, tags, milestone index (name), hours, parent xid, depends on xids
@@ -113,7 +142,71 @@ TASKS = [
     ('rc_prj_t_web_appt', 'rc_prj_website', 'Table booking & appointment pages', 'Review', ['admin'], '1', 2, ['rc_prj_tag_design'], 'Online ordering go-live', 10, None, ['rc_prj_t_web_pages']),
     ('rc_prj_t_web_qr', 'rc_prj_website', 'Table QR self-ordering rollout', 'In Progress', ['arjun'], '1', 10, ['rc_prj_tag_it'], 'Online ordering go-live', 16, None, []),
     ('rc_prj_t_web_seo', 'rc_prj_website', 'SEO & Google Business profile', 'To Do', ['admin'], '0', 18, ['rc_prj_tag_marketing'], 'Online ordering go-live', 6, None, ['rc_prj_t_web_pages']),
+    # Monsoon festival
+    ('rc_prj_t_mon_menu', 'rc_prj_monsoon', 'Curate 12-dish monsoon menu (kappa, karimeen, pazhampori)', 'Done', ['admin'], '2', -8, ['rc_prj_tag_kitchen'], 'Menu locked', 10, None, []),
+    ('rc_prj_t_mon_decor', 'rc_prj_monsoon', 'Rain-themed decor & lighting', 'In Progress', ['arjun'], '1', 5, ['rc_prj_tag_design'], 'Festival opening', 14, None, []),
+    ('rc_prj_t_mon_promo', 'rc_prj_monsoon', 'Instagram reels & influencer tasting', 'In Progress', ['admin'], '2', 4, ['rc_prj_tag_marketing'], 'Festival opening', 8, None, ['rc_prj_t_mon_menu']),
+    ('rc_prj_t_mon_pos', 'rc_prj_monsoon', 'Festival combo pricing in POS', 'Review', ['admin'], '1', 6, ['rc_prj_tag_it'], 'Festival opening', 5, None, ['rc_prj_t_mon_menu']),
+    ('rc_prj_t_mon_fish', 'rc_prj_monsoon', 'Confirm fresh-fish supplier (daily 6 a.m.)', 'To Do', ['arjun'], '3', 3, ['rc_prj_tag_vendor', 'rc_prj_tag_urgent'], 'Festival opening', 3, None, []),
+    ('rc_prj_t_mon_music', 'rc_prj_monsoon', 'Book live chenda & fusion band', 'Backlog', ['arjun'], '0', 15, ['rc_prj_tag_event'], 'Festival opening', 2, None, []),
+    # Training academy
+    ('rc_prj_t_aca_curriculum', 'rc_prj_academy', 'Design barista & service curriculum', 'Done', ['arjun'], '1', -20, ['rc_prj_tag_training'], 'Curriculum ready', 16, None, []),
+    ('rc_prj_t_aca_videos', 'rc_prj_academy', 'Record 10 micro-learning videos', 'In Progress', ['admin'], '2', 7, ['rc_prj_tag_training', 'rc_prj_tag_design'], 'First batch certified', 20, None, ['rc_prj_t_aca_curriculum']),
+    ('rc_prj_t_aca_hygiene', 'rc_prj_academy', 'Food hygiene certification - batch 1', 'In Progress', ['arjun'], '3', 2, ['rc_prj_tag_compliance', 'rc_prj_tag_urgent'], 'First batch certified', 12, None, []),
+    ('rc_prj_t_aca_quiz', 'rc_prj_academy', 'Online quizzes in eLearning', 'Review', ['admin'], '0', 10, ['rc_prj_tag_it'], 'First batch certified', 6, None, ['rc_prj_t_aca_curriculum']),
+    ('rc_prj_t_aca_mentors', 'rc_prj_academy', 'Assign mentors to new joiners', 'To Do', ['arjun'], '1', 14, ['rc_prj_tag_hr'], 'First batch certified', 4, None, ['rc_prj_t_aca_videos']),
+    ('rc_prj_t_aca_feedback', 'rc_prj_academy', 'Trainee feedback survey', 'Backlog', ['admin'], '0', 30, ['rc_prj_tag_hr'], 'First batch certified', 3, None, []),
+    # Zero-waste kitchen
+    ('rc_prj_t_grn_audit', 'rc_prj_green', 'Food-waste audit (2 weeks of weighing)', 'Done', ['admin'], '1', -30, ['rc_prj_tag_sustain'], 'Waste baseline', 18, None, []),
+    ('rc_prj_t_grn_compost', 'rc_prj_green', 'Install on-site composter', 'Done', ['arjun'], '2', -12, ['rc_prj_tag_sustain', 'rc_prj_tag_vendor'], 'Plastic-free kitchen', 10, None, ['rc_prj_t_grn_audit']),
+    ('rc_prj_t_grn_packaging', 'rc_prj_green', 'Switch to areca-leaf takeaway packaging', 'In Progress', ['admin'], '2', 6, ['rc_prj_tag_sustain', 'rc_prj_tag_vendor'], 'Plastic-free kitchen', 8, None, []),
+    ('rc_prj_t_grn_solar', 'rc_prj_green', 'Solar water heater quotation', 'Review', ['admin'], '0', 12, ['rc_prj_tag_finance'], 'Plastic-free kitchen', 4, None, []),
+    ('rc_prj_t_grn_menu', 'rc_prj_green', 'Zero-waste specials (peel & stem recipes)', 'To Do', ['arjun'], '1', 18, ['rc_prj_tag_kitchen', 'rc_prj_tag_sustain'], 'Plastic-free kitchen', 6, None, ['rc_prj_t_grn_packaging']),
+    ('rc_prj_t_grn_report', 'rc_prj_green', 'Monthly sustainability report', 'Backlog', ['admin'], '0', 28, ['rc_prj_tag_finance'], 'Plastic-free kitchen', 3, None, []),
 ]
+
+# Kanban colour stripe per task: urgent = red, done = green, review = yellow, in progress = light blue,
+# to do = dark blue, backlog = salmon (Odoo colour indexes)
+def _task_color(stage_name, tag_xids):
+    if 'rc_prj_tag_urgent' in tag_xids:
+        return 1
+    return {'Done': 10, 'Review': 3, 'In Progress': 4, 'To Do': 8}.get(stage_name, 6)
+
+
+# In-progress tasks shown with the orange "Changes Requested" state
+CHANGES_REQUESTED = {'rc_prj_t_wed_logistics', 'rc_prj_t_aca_videos', 'rc_prj_t_mon_decor'}
+
+# Cover pictures on kanban cards (public images shipped with Odoo)
+COVERS = {
+    'rc_prj_t_onam_menu': 'pos_restaurant/static/img/food_category.jpg',
+    'rc_prj_t_onam_photo': 'pos_restaurant/static/img/th-pasta-4f.png',
+    'rc_prj_t_roof_furniture': 'mass_mailing_themes/static/src/img/theme_coffeebreak/s_default_image_block_banner.jpg',
+    'rc_prj_t_wed_layout': 'pos_restaurant/static/img/floor_main.jpeg',
+    'rc_prj_t_mon_menu': 'pos_restaurant/static/img/th-burger.png',
+    'rc_prj_t_mon_promo': 'pos_restaurant/static/img/product_mojito.png',
+    'rc_prj_t_mon_pos': 'pos_restaurant/static/img/th-pizza-fu.png',
+    'rc_prj_t_aca_curriculum': 'pos_restaurant/static/img/th-espresso.png',
+    'rc_prj_t_grn_menu': 'pos_restaurant/static/img/drink_category.jpg',
+}
+
+# Earlier status updates (days ago, status, progress %, text): a coloured history on each project
+UPDATE_HISTORY = {
+    'rc_prj_rooftop': [(23, 'on_track', 20, 'Design approved by management; vendor shortlist ready.'),
+                       (12, 'on_track', 40, 'Pergola order placed; civil work started.')],
+    'rc_prj_onam': [(20, 'on_track', 30, 'Draft menu of 26 dishes ready for costing.'),
+                    (9, 'at_risk', 55, 'Banana-leaf supplier short on volume; backup vendor being onboarded.')],
+    'rc_prj_wedding': [(14, 'on_track', 20, 'Contract signed and advance received.'),
+                       (7, 'on_track', 35, 'Menu tasting with the couple went well.')],
+    'rc_prj_central_kitchen': [(40, 'on_track', 15, 'Layout drawings approved.'),
+                               (16, 'at_risk', 25, 'FSSAI asked for revised drainage drawings.')],
+    'rc_prj_website': [(18, 'on_hold', 30, 'Paused one week for the Onam campaign.'),
+                       (8, 'on_track', 50, 'Design system done; pages being rebuilt.')],
+    'rc_prj_monsoon': [(10, 'on_track', 20, 'Festival concept approved; menu tasting scheduled.')],
+    'rc_prj_academy': [(25, 'on_track', 25, 'Curriculum signed off by the head chef.'),
+                       (11, 'on_track', 40, 'First 4 videos recorded.')],
+    'rc_prj_green': [(35, 'on_track', 30, 'Two-week waste audit completed: 42 kg/day baseline.'),
+                     (14, 'done', 60, 'Composter installed and running - milestone complete.')],
+}
 
 TODOS = [
     ('rc_prj_todo_1', 'Call Federal Bank about POS card settlement', 'admin', 1),
@@ -147,9 +240,10 @@ def _billing_line(env, so_xid):
     line = _ref(env, 'rc_prj_so_line_coordination')
     if line:
         return line
+    valid_service_type = 'timesheet' if 'timesheet' in dict(env['product.template']._fields['service_type'].selection) else 'manual'
     product = _get_or_create(env, 'rc_prj_prod_coordination', 'product.product', {
         'name': 'Event Coordination (hours)', 'type': 'service', 'list_price': 1500, 'standard_price': 600,
-        'uom_id': env.ref('uom.product_uom_hour').id, 'invoice_policy': 'delivery', 'service_type': 'timesheet',
+        'uom_id': env.ref('uom.product_uom_hour').id, 'invoice_policy': 'delivery', 'service_type': valid_service_type,
         'service_tracking': 'no', 'sale_ok': True, 'purchase_ok': False, 'available_in_pos': False,
         'taxes_id': [Command.set(env.company.account_sale_tax_id.ids)],
         'description_sale': 'Event manager and coordinator time, billed on timesheets.',
@@ -178,16 +272,19 @@ def _projects(env):
             'name': name, 'user_id': users[mgr].id, 'color': color, 'description': f'<p>{desc}</p>',
             'tag_ids': [Command.set([tags[t].id for t in tag_xids])],
             'date_start': today + timedelta(days=start), 'date': today + timedelta(days=end),
-            'allow_timesheets': True, 'allow_milestones': True, 'allow_task_dependencies': True,
+            'allow_milestones': True, 'allow_task_dependencies': True,
             'privacy_visibility': 'portal' if partner else 'employees', 'label_tasks': 'Tasks',
             'type_ids': stage_ids,
             'favorite_user_ids': [Command.link(users['admin'].id)],
         }
+        if 'allow_timesheets' in env['project.project']._fields:
+            vals['allow_timesheets'] = True
         if partner:
             vals['partner_id'] = partner.id
         if pstage in pstages:
             vals['stage_id'] = pstages[pstage].id
-        project = _bind(env, xid, env['project.project'].sudo().with_context(mail_create_nosubscribe=True).create(vals))
+        project = _bind(env, xid, env['project.project'].sudo().with_context(mail_create_nosubscribe=True).create(
+            _clean(env, 'project.project', vals)))
         line = _billing_line(env, so_xid)
         if line:
             project.write({'allow_billable': True, 'sale_line_id': line.id, 'partner_id': line.order_id.partner_id.id})
@@ -234,11 +331,16 @@ def _tasks(env, projects, milestones):
         if project.sale_line_id:
             vals['sale_line_id'] = project.sale_line_id.id
             vals['partner_id'] = project.partner_id.id
-        task = _bind(env, xid, env['project.task'].sudo().with_context(mail_create_nosubscribe=True).create(vals))
+        vals['color'] = _task_color(stage_name, tag_xids)
+        task = _bind(env, xid, env['project.task'].sudo().with_context(mail_create_nosubscribe=True).create(
+            _clean(env, 'project.task', vals)))
         if stage_name == 'Done':
             task.state = '1_done'
         elif stage_name == 'Review':
             task.state = '03_approved' if prio == '0' else '02_changes_requested'
+        elif xid in CHANGES_REQUESTED:
+            task.state = '02_changes_requested'
+        _set_cover(env, task, xid, COVERS.get(xid))
         tasks[xid] = task
     return tasks
 
@@ -254,35 +356,115 @@ def _updates(env, projects):
         })
 
 
+def _set_cover(env, task, task_xid, path):
+    """Attach a public Odoo image to the task and show it as the kanban card cover."""
+    if not path or 'displayed_image_id' not in task._fields or task.displayed_image_id:
+        return
+    xid = f'{task_xid}_cover'
+    if _ref(env, xid):
+        return
+    try:
+        with file_open(path, 'rb') as f:
+            data = f.read()
+    except (OSError, ValueError):
+        return  # the app providing the picture is not installed
+    mimetype = 'image/png' if path.endswith('.png') else 'image/jpeg'
+    attachment = _bind(env, xid, env['ir.attachment'].sudo().create({
+        'name': path.rsplit('/', 1)[-1], 'raw': data, 'mimetype': mimetype,
+        'res_model': 'project.task', 'res_id': task.id,
+    }))
+    task.displayed_image_id = attachment
+
+
+def _update_history(env, projects):
+    """Older status updates, so each project shows a coloured status timeline."""
+    users = _users(env)
+    today = fields.Date.context_today(env['res.users'])
+    managers = {p[0]: p[2] for p in PROJECTS}
+    for pxid, entries in UPDATE_HISTORY.items():
+        if pxid not in projects:
+            continue
+        for i, (days_ago, status, progress, text) in enumerate(entries, start=1):
+            _get_or_create(env, f'{pxid}_update_h{i}', 'project.update', {
+                'name': f'Status update - week of {(today - timedelta(days=days_ago)).strftime("%d %b")}',
+                'project_id': projects[pxid].id, 'status': status, 'progress': progress,
+                'date': today - timedelta(days=days_ago), 'user_id': users[managers[pxid]].id,
+                'description': f'<p>{text}</p>',
+            })
+    # the latest update (created by _updates) must stay the project's current status
+    for pxid, project in projects.items():
+        latest = _ref(env, f'{pxid}_update')
+        if latest and 'last_update_id' in project._fields and project.last_update_id != latest:
+            project.sudo().last_update_id = latest
+
+
+# Activity texts per kind of work, used to describe timesheet lines
+TIMESHEET_TEXTS_BY_TAG = {
+    'rc_prj_tag_kitchen': ['Recipe trials', 'Tasting with chefs', 'Prep-line rehearsal', 'Plating photos'],
+    'rc_prj_tag_marketing': ['Content shoot', 'Social media planning', 'Copywriting', 'Campaign review'],
+    'rc_prj_tag_vendor': ['Vendor call', 'Quote comparison', 'Procurement follow-up', 'Delivery check'],
+    'rc_prj_tag_it': ['Configuration', 'Testing on tablets', 'Bug fixing', 'User walkthrough'],
+    'rc_prj_tag_design': ['Design review', 'Mood board', 'Layout drawing', 'Site measurement'],
+    'rc_prj_tag_compliance': ['Documentation', 'Inspection prep', 'SOP writing', 'Licence follow-up'],
+    'rc_prj_tag_training': ['Trainer session', 'Video recording', 'Assessment', 'Coaching on the floor'],
+    'rc_prj_tag_hr': ['One-to-one', 'Onboarding', 'Survey design', 'Roster planning'],
+    'rc_prj_tag_sustain': ['Waste weighing', 'Composter check', 'Supplier sampling', 'Data entry'],
+    'rc_prj_tag_finance': ['Cost analysis', 'Budget review', 'Report preparation'],
+    'rc_prj_tag_event': ['Event planning', 'Client meeting', 'Site visit & coordination'],
+}
+TIMESHEET_HOURS = [2.0, 1.5, 3.0, 0.5, 4.0, 2.5, 1.0, 3.5, 2.0, 1.5]
+
+
 def _timesheets(env, projects, tasks):
-    if _ref(env, 'rc_prj_ts_1'):
+    """~6 weeks of daily timesheets (Mon-Sat) for every project team, including today, so the
+    Timesheets grid, 'My Timesheets' (Administrator) and the project/task reports are well filled.
+    Deterministic, at most 8 h per employee and day."""
+    if _ref(env, 'rc_prj_tsx_1'):
         return
     today = fields.Date.context_today(env['res.users'])
     Employee = env['hr.employee'].sudo()
     by_project = {}
-    for (xid, *_r) in TASKS:
-        pxid = _r[0]
-        if xid in tasks:
-            by_project.setdefault(pxid, []).append(tasks[xid])
-    n = 0
-    for p_idx, (pxid, name, _m, _p, _c, _t, start, _e, _s, _d, emp_names, _so, _u) in enumerate(PROJECTS):
-        emps = Employee.search([('name', 'in', emp_names)])
-        ptasks = [t for t in by_project.get(pxid, []) if t.stage_id.name != 'Backlog']
-        if not emps or not ptasks:
+    for (xid, pxid, *_r) in TASKS:
+        task = tasks.get(xid)
+        if task and task.stage_id.name != 'Backlog':
+            by_project.setdefault(pxid, []).append((xid, task))
+    task_tags = {t[0]: t[7] for t in TASKS}
+    booked = {}
+    vals_list = []
+    for p_idx, (pxid, _n, _m, _p, _c, _t, start, _e, _s, _d, emp_names, _so, _u) in enumerate(PROJECTS):
+        project = projects.get(pxid)
+        ptasks = by_project.get(pxid, [])
+        if not project or not ptasks:
             continue
-        for k in range(12):
-            day = today - timedelta(days=(k * 2 + p_idx) % 27 + 1)
-            if day.weekday() == 6:
-                day -= timedelta(days=1)
-            emp = emps[(k + p_idx) % len(emps)]
-            task = ptasks[(k * 3 + p_idx) % len(ptasks)]
-            hours = [1.5, 2.0, 3.0, 4.0, 2.5, 6.0, 1.0, 3.5][(k + p_idx) % 8]
-            n += 1
-            line = env['account.analytic.line'].sudo().create({
-                'name': TIMESHEET_TEXTS[(k + p_idx) % len(TIMESHEET_TEXTS)], 'project_id': projects[pxid].id, 'task_id': task.id,
-                'employee_id': emp.id, 'unit_amount': hours, 'date': day,
-            })
-            _bind(env, f'rc_prj_ts_{n}', line)
+        emps = Employee.browse()
+        for name in emp_names:  # one employee per name (names can repeat)
+            emps |= Employee.search([('name', '=', name)], limit=1)
+        first_day = max(start, -41)
+        for d in range(0, -first_day + 1):
+            day = today - timedelta(days=d)
+            if day.weekday() == 6:  # closed on Sundays
+                continue
+            for e_idx, emp in enumerate(emps):
+                if (d * 7 + e_idx * 3 + p_idx) % 5 == 0:  # ~1 day in 5 off this project
+                    continue
+                hours = TIMESHEET_HOURS[(d + e_idx * 2 + p_idx) % len(TIMESHEET_HOURS)]
+                used = booked.get((emp.id, day), 0.0)
+                hours = min(hours, 8.0 - used)
+                if hours <= 0:
+                    continue
+                booked[(emp.id, day)] = used + hours
+                txid, task = ptasks[(d + e_idx) % len(ptasks)]
+                texts = next((TIMESHEET_TEXTS_BY_TAG[t] for t in task_tags.get(txid, []) if t in TIMESHEET_TEXTS_BY_TAG),
+                             TIMESHEET_TEXTS)
+                vals_list.append({
+                    'name': texts[(d + e_idx) % len(texts)], 'project_id': project.id, 'task_id': task.id,
+                    'employee_id': emp.id, 'unit_amount': hours, 'date': day,
+                })
+    lines = env['account.analytic.line'].sudo().create(vals_list)
+    env['ir.model.data'].sudo().create([{
+        'module': MODULE, 'name': f'rc_prj_tsx_{n}', 'model': 'account.analytic.line', 'res_id': line.id, 'noupdate': True,
+    } for n, line in enumerate(lines, start=1)])
+    _logger.info("Hudson POS: %s demo timesheet lines created.", len(lines))
 
 
 def _todos(env):
@@ -309,6 +491,7 @@ def load_project_suite_demo_data(env):
         ('milestones', lambda: ctx.update(milestones=_milestones(env, ctx['projects']))),
         ('tasks', lambda: ctx.update(tasks=_tasks(env, ctx['projects'], ctx['milestones']))),
         ('updates', lambda: _updates(env, ctx['projects'])),
+        ('update history', lambda: _update_history(env, ctx['projects'])),
         ('timesheets', lambda: 'account.analytic.line' in env and 'project_id' in env['account.analytic.line']._fields
          and _timesheets(env, ctx['projects'], ctx['tasks'])),
         ('to-dos', lambda: _todos(env)),

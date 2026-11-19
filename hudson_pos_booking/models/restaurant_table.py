@@ -44,14 +44,17 @@ class AppointmentType(models.Model):
         for at in self:
             if not at.active or at.booking_target != 'resources' or not at.resource_ids:
                 continue
+            table_resources = at.resource_ids.filtered(lambda r: getattr(r, 'pos_table_id', False))
+            if not table_resources:
+                continue
             conflicts = self.sudo().search([
                 ('id', '!=', at.id),
                 ('active', '=', True),
                 ('booking_target', '=', 'resources'),
-                ('resource_ids', 'in', at.resource_ids.ids),
+                ('resource_ids', 'in', table_resources.ids),
             ])
             if conflicts:
-                overlap = at.resource_ids & conflicts.mapped('resource_ids')
+                overlap = table_resources & conflicts.mapped('resource_ids')
                 raise ValidationError(_(
                     "Table/Resource %(res)s is already assigned to %(atype)s. "
                     "A table given to one event/appointment type cannot be given to another.",
@@ -61,12 +64,42 @@ class AppointmentType(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('resource_ids') and not vals.get('company_id'):
+                added_res_ids = []
+                for cmd in vals['resource_ids']:
+                    if isinstance(cmd, (list, tuple)):
+                        if cmd[0] in (4,):
+                            added_res_ids.append(cmd[1])
+                        elif cmd[0] in (6,):
+                            added_res_ids.extend(cmd[2])
+                if added_res_ids:
+                    res_recs = self.env['appointment.resource'].sudo().browse(added_res_ids)
+                    comp = res_recs.mapped('company_id')[:1]
+                    if comp:
+                        vals['company_id'] = comp.id
         res = super().create(vals_list)
         self.env['appointment.type'].invalidate_model(['allowed_resource_ids'])
         self.env['appointment.resource'].invalidate_model(['allow_website_booking', 'pos_table_id'])
         return res
 
     def write(self, vals):
+        if 'resource_ids' in vals and not vals.get('company_id'):
+            for at in self:
+                if not at.company_id:
+                    added_res_ids = []
+                    for cmd in vals['resource_ids']:
+                        if isinstance(cmd, (list, tuple)):
+                            if cmd[0] in (4,):
+                                added_res_ids.append(cmd[1])
+                            elif cmd[0] in (6,):
+                                added_res_ids.extend(cmd[2])
+                    if added_res_ids:
+                        res_recs = self.env['appointment.resource'].sudo().browse(added_res_ids)
+                        comp = res_recs.mapped('company_id')[:1]
+                        if comp:
+                            vals['company_id'] = comp.id
+                            break
         res = super().write(vals)
         if {'resource_ids', 'booking_target', 'active', 'company_id'}.intersection(vals.keys()):
             self.env['appointment.type'].invalidate_model(['allowed_resource_ids'])
@@ -108,7 +141,7 @@ class AppointmentResource(models.Model):
             resource.pos_table_id = table
             if table:
                 resource.allow_website_booking = bool(
-                    table.active and table.allow_website_booking and table._get_active_booking_configs()
+                    table.active and table.allow_website_booking
                 )
             else:
                 resource.allow_website_booking = bool(resource.active)
@@ -139,7 +172,7 @@ class AppointmentResource(models.Model):
         ])
         all_linked_res_ids = all_tables.mapped('appointment_resource_id').ids
         allowed_res_ids = all_tables.filtered(
-            lambda t: t.active and t.allow_website_booking and bool(t._get_active_booking_configs())
+            lambda t: t.active and t.allow_website_booking
         ).mapped('appointment_resource_id').ids
         if want_true:
             return [
@@ -163,7 +196,7 @@ class AppointmentResource(models.Model):
             ('appointment_resource_id', '!=', False),
             ('floor_id.active', '=', True),
             '|', ('company_id', '=', False), ('company_id', '=', company.id),
-        ]).filtered(lambda t: bool(t._get_active_booking_configs()))
+        ])
         resources = enabled_tables.mapped('appointment_resource_id').filtered(
             lambda r: r.active and (not r.company_id or r.company_id == company)
         )
@@ -184,7 +217,8 @@ class AppointmentResource(models.Model):
             if exclude_appointment_type_id and isinstance(exclude_appointment_type_id, int):
                 other_domain.append(('id', '!=', exclude_appointment_type_id))
             taken_res = self.env['appointment.type'].sudo().search(other_domain).mapped('resource_ids')
-            resources = resources - taken_res
+            taken_tables = taken_res.filtered(lambda r: r.id in table_res_ids)
+            resources = resources - taken_tables
         return resources
 
     @api.model
@@ -372,13 +406,8 @@ class RestaurantTable(models.Model):
 
         for table in self:
             company = table._get_table_company()
-            active_configs = table._get_active_booking_configs()
             is_table_active = table.active if hasattr(table, 'active') else True
-            is_eligible_for_website = bool(active_configs and is_table_active and table.allow_website_booking)
-
-            # Avoid polluting appointment.resource for orphaned default floors / non-booking POS tables
-            if not table.appointment_resource_id and not active_configs and not force_create:
-                continue
+            is_eligible_for_website = bool(is_table_active and table.allow_website_booking)
 
             name = table._get_default_resource_name()
             capacity = table.seats or 1
@@ -418,16 +447,13 @@ class RestaurantTable(models.Model):
                     update_vals['linked_resource_ids'] = [(5, 0, 0)]
                 resource.write(update_vals)
 
-            # Never auto-allocate resources onto appointment.type by default (client adds them per appointment type).
-            # Still unlink from any appointment.type where this table is no longer eligible (website booking disabled,
-            # archived, detached floor, or company mismatch).
             existing_app_types = AppType.search([('resource_ids', 'in', [resource.id])])
             if is_eligible_for_website:
                 stale_app_types = existing_app_types.filtered(
                     lambda at: at.company_id and at.company_id.id != company.id
                 )
             else:
-                stale_app_types = existing_app_types
+                stale_app_types = existing_app_types.filtered(lambda at: getattr(at, 'is_event_booking', False))
             for stale_at in stale_app_types:
                 stale_at.with_context(skip_table_sync=True).write({'resource_ids': [(3, resource.id)]})
         self.env['appointment.type'].invalidate_model(['allowed_resource_ids'])
@@ -508,7 +534,7 @@ class RestaurantTable(models.Model):
             stale_ids = []
             for res in at.resource_ids:
                 tbl = table_by_res.get(res.id)
-                if tbl and (not tbl.active or not tbl.allow_website_booking or not tbl._get_active_booking_configs()):
+                if tbl and not tbl.active:
                     stale_ids.append(res.id)
             if stale_ids:
                 at.with_context(skip_table_sync=True).write({

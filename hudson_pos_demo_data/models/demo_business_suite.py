@@ -1041,8 +1041,14 @@ def load_business_suite_demo_data(env):
             apt_vals = {
                 'name': "VIP Chef's Table 7-Course Degustation Experience",
                 'appointment_duration': 2.0,
+                'booking_target': 'resources',
+                'is_published': True,
                 'location': 'custom',
                 'location_details': "Chef's Table Suite - Hudson Restaurant Main Kitchen",
+                'availability_ids': [
+                    Command.create({'day_of_week': str(dow), 'start_time': 18.0, 'end_time': 23.0})
+                    for dow in range(7)
+                ],
             }
             if res_chef_table:
                 apt_vals['resource_ids'] = [Command.link(res_chef_table.id)]
@@ -1053,8 +1059,14 @@ def load_business_suite_demo_data(env):
             apt_catering = AppType.create({
                 'name': 'Banquets & Wedding Catering Consultation',
                 'appointment_duration': 1.0,
+                'booking_target': 'resources',
+                'is_published': True,
                 'location': 'custom',
                 'location_details': 'Hudson Executive Conference Lounge & Tasting Room',
+                'availability_ids': [
+                    Command.create({'day_of_week': str(dow), 'start_time': 10.0, 'end_time': 19.0})
+                    for dow in range(7)
+                ],
             })
 
         apt_coffee = AppType.search([('name', '=', 'Artisan Coffee Cupping & Barista Workshop')], limit=1)
@@ -1062,8 +1074,14 @@ def load_business_suite_demo_data(env):
             apt_vals = {
                 'name': 'Artisan Coffee Cupping & Barista Workshop',
                 'appointment_duration': 0.75,
+                'booking_target': 'resources',
+                'is_published': True,
                 'location': 'custom',
                 'location_details': 'Hudson Specialty Coffee Lab',
+                'availability_ids': [
+                    Command.create({'day_of_week': str(dow), 'start_time': 9.0, 'end_time': 17.0})
+                    for dow in range(7)
+                ],
             }
             if res_lab:
                 apt_vals['resource_ids'] = [Command.link(res_lab.id)]

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <!-- Marketing Card demo: every festival attendee gets a personal "I'm going" card to
+             share on social media. Loaded only when the server can render card images
+             (wkhtmltoimage), see demo_marketing_suite.py. -->
+        <record id="rc_card_tag_festival" model="card.campaign.tag">
+            <field name="name">Festival</field>
+        </record>
+
+        <record id="rc_card_campaign_xmas_fest" model="card.campaign">
+            <field name="name">Christmas Festival - I'm Going!</field>
+            <field name="card_template_id" ref="marketing_card.card_template_lila"/>
+            <field name="preview_record_ref" eval="'event.registration,%d' % ref('rc_event_xmas_fest_reg_1')"/>
+            <field name="tag_ids" eval="[Command.set([ref('rc_card_tag_festival')])]"/>
+            <field name="user_id" ref="base.user_admin"/>
+
+            <!-- Card layouts print the sub-header (small) above the header (big):
+                 attendee name on top, then the message. -->
+            <field name="content_sub_header_dyn" eval="True"/>
+            <field name="content_sub_header_path">name</field>
+            <field name="content_header">I'm going to the Christmas Festival!</field>
+            <field name="content_section">Resto Cafe, Marine Drive, Kochi</field>
+            <field name="content_sub_section1">Live counters</field>
+            <field name="content_sub_section2">Carols &amp; wine pairing</field>
+            <field name="content_button">Join me</field>
+
+            <field name="post_suggestion">I'm going to the Christmas Food &amp; Wine Festival at Resto Cafe, Kochi! Three days of cake mixing, live counters, carols and wine pairing. Who's joining me?</field>
+            <field name="request_title">Tell your friends you're coming!</field>
+            <field name="request_description">Share your personal festival card on LinkedIn, X or Facebook. Every share helps us make this year's festival even bigger.</field>
+            <field name="reward_message" type="html">
+                <p>Thank you for sharing!</p>
+                <p>Show this screen at the festival entrance for a free cup of our Christmas spiced coffee.</p>
+            </field>
+        </record>
+    </data>
+</odoo>

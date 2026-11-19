@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kitchen Label List View -->
+    <record id="view_kitchen_label_list" model="ir.ui.view">
+        <field name="name">kitchen.label.list</field>
+        <field name="model">kitchen.label</field>
+        <field name="arch" type="xml">
+            <list string="Kitchen Labels" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="kitchen_label"/>
+                <field name="category"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kitchen Label Form View -->
+    <record id="view_kitchen_label_form" model="ir.ui.view">
+        <field name="name">kitchen.label.form</field>
+        <field name="model">kitchen.label</field>
+        <field name="arch" type="xml">
+            <form string="Kitchen Label">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Standard Label"/>
+                        <h1><field name="name" placeholder="e.g., Bills of Materials"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kitchen_label" placeholder="e.g., Recipes"/>
+                            <field name="category"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" placeholder="Optional context or description..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kitchen Label Search View -->
+    <record id="view_kitchen_label_search" model="ir.ui.view">
+        <field name="name">kitchen.label.search</field>
+        <field name="model">kitchen.label</field>
+        <field name="arch" type="xml">
+            <search string="Search Kitchen Labels">
+                <field name="name"/>
+                <field name="kitchen_label"/>
+                <filter string="Manufacturing" name="cat_mrp" domain="[('category', '=', 'mrp')]"/>
+                <filter string="Quality" name="cat_quality" domain="[('category', '=', 'quality')]"/>
+                <filter string="Maintenance" name="cat_maintenance" domain="[('category', '=', 'maintenance')]"/>
+                <filter string="PLM" name="cat_plm" domain="[('category', '=', 'plm')]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Category" name="groupby_category" domain="[]" context="{'group_by': 'category'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kitchen Label Action -->
+    <record id="action_kitchen_label" model="ir.actions.act_window">
+        <field name="name">Kitchen Labels</field>
+        <field name="res_model">kitchen.label</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_kitchen_label_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define standard-to-kitchen terminology mappings.
+            </p>
+            <p>
+                When Kitchen Mode is enabled in Manufacturing Settings, visible labels matching
+                the standard terms will be replaced by the configured kitchen terms.
+                Administrators can edit the kitchen wording at any time without modifying code.
+            </p>
+        </field>
+    </record>
+
+    <!-- Kitchen Labels Menu Item under Manufacturing -> Configuration -->
+    <menuitem id="menu_kitchen_label"
+              name="Kitchen Labels"
+              parent="mrp.menu_mrp_configuration"
+              action="action_kitchen_label"
+              sequence="99"
+              groups="base.group_system"/>
+
+    <!-- Deactivate Procurement Scheduler menus whose action returns False and does not work from the web UI -->
+    <record id="mrp.menu_procurement_compute_mrp" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="mrp.mrp_planning_menu_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="stock.menu_procurement_compute" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>
