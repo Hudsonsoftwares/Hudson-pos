@@ -44,6 +44,11 @@
                             <span t-foreach="entry.tags" t-as="tag" t-key="tag_index"
                                   class="badge text-bg-secondary" t-out="tag"/>
                         </div>
+                        <div t-if="entry.guest_note" class="o_hw_guest_note small text-muted mt-1 text-break"
+                             title="Anything we should know">
+                            <i class="oi oi-fw" data-icon="comment" aria-hidden="true"/>
+                            <t t-out="entry.guest_note"/>
+                        </div>
                     </div>
 
                     <div class="o_hw_times d-flex gap-3 text-center small">
@@ -54,7 +59,7 @@
                         <div>
                             <div class="text-muted">Est. wait</div>
                             <div class="fw-bold">
-                                <t t-if="entry.state === 'waiting'" t-out="this.formatMinutes(entry.estimated_wait)"/>
+                                <t t-if="entry.state === 'waiting'" t-out="entry.estimated_wait_label or this.formatMinutes(entry.estimated_wait)"/>
                                 <t t-else="">Now</t>
                             </div>
                         </div>
@@ -92,15 +97,59 @@
                     <t t-out="this.props.entry.floor_pref_label"/>
                 </span>
                 <span class="badge text-bg-light border" t-out="this.props.entry.share_table_label"/>
+                <span t-foreach="this.guestTags" t-as="tag" t-key="tag_index"
+                      class="badge text-bg-secondary" t-out="tag"/>
                 <button class="btn btn-light btn-sm ms-auto" t-on-click="() => this.refresh()" title="Refresh">
                     <i class="oi oi-fw" data-icon="refresh" aria-hidden="true"/>
                 </button>
+            </div>
+
+            <!-- Guest's own words: context for the host, never a rule. -->
+            <div t-if="this.guestNote" class="o_hw_guest_note px-3 py-2 border-bottom small text-break">
+                <span class="fw-bold">Anything we should know:</span>
+                <span class="ms-1" style="white-space: pre-line;" t-out="this.guestNote"/>
             </div>
 
             <div t-if="!this.state.saving and !this.stillWaiting" class="alert alert-danger rounded-0 mb-0 py-2 px-3 o_hw_seat_stale" role="alert"
                  t-out="this.staleMessage"/>
             <div t-elif="this.state.message" class="alert alert-warning rounded-0 mb-0 py-2 px-3 o_hw_seat_message" role="alert"
                  t-out="this.state.message"/>
+
+            <div t-if="!this.state.loading and this.state.preferenceRelaxed" class="alert alert-info rounded-0 mb-0 py-2 px-3 small o_hw_pref_relaxed" role="status">
+                No suitable table on <b t-out="this.preferredFloorName"/> right now: every floor is offered.
+            </div>
+
+            <!-- Closest suitable seating arrangements right now, best first (server ranked). -->
+            <div t-if="!this.state.loading" class="o_hw_arrangements px-3 py-2 border-bottom small">
+                <div class="fw-bold mb-1">Recommended for a party of <t t-out="this.partySize"/></div>
+                <div t-if="!this.arrangements.length" class="o_hw_no_arrangement text-muted">
+                    No table or combination of free tables can seat the whole party right now.
+                </div>
+                <div t-else="" class="d-flex flex-wrap gap-2">
+                    <button t-foreach="this.arrangements" t-as="arrangement" t-key="arrangement.key"
+                            class="btn btn-sm text-start o_hw_arrangement"
+                            t-att-class="{
+                                'btn-primary': this.isArrangementSelected(arrangement),
+                                'btn-outline-primary': !this.isArrangementSelected(arrangement),
+                                'o_hw_arrangement_best': arrangement_first,
+                                'o_hw_combo': arrangement.table_ids.length > 1,
+                            }"
+                            t-att-data-tables="arrangement.table_numbers.join('+')"
+                            t-on-click="() => this.selectArrangement(arrangement)">
+                        <div class="fw-bold">
+                            <t t-out="this.arrangementTitle(arrangement)"/>
+                            <span t-if="this.floors.length > 1" class="fw-normal"> · <t t-out="arrangement.floor_name"/></span>
+                            <span t-if="arrangement_first" class="badge text-bg-success ms-1">Best</span>
+                            <span t-if="arrangement.shared" class="badge text-bg-info ms-1">Shared</span>
+                            <span t-if="arrangement.hint" class="badge text-bg-info ms-1">Suggested</span>
+                        </div>
+                        <div class="o_hw_arrangement_detail">
+                            <t t-out="this.arrangementDetail(arrangement)"/>
+                            <span t-if="this.arrangementFit(arrangement)" class="opacity-75"> · <t t-out="this.arrangementFit(arrangement)"/></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
 
             <div t-if="this.floors.length > 1" class="o_hw_floor_tabs d-flex flex-wrap gap-2 px-3 pt-3">
                 <button t-foreach="this.floors" t-as="floor" t-key="floor.id"
@@ -129,43 +178,53 @@
                         <button t-foreach="this.tablesOf(this.currentFloor)" t-as="table" t-key="table.id"
                                 class="o_hw_table btn btn-outline-secondary d-flex flex-column align-items-center justify-content-center"
                                 t-att-class="{
-                                    'active btn-primary text-white': table.id === this.state.tableId,
+                                    'active btn-primary text-white': this.isSelected(table),
                                     'o_hw_table_match': this.status(table) === 'match',
                                     'o_hw_table_shared': this.status(table) === 'shared',
-                                    'o_hw_table_small': this.tooSmall(table),
+                                    'o_hw_table_small': this.status(table) === 'too_small',
                                     'o_hw_table_busy': this.status(table) === 'busy',
                                     'o_hw_table_other': this.status(table) === 'other_floor',
+                                    'o_hw_table_hint': table.hint and this.isPickable(table),
                                 }"
                                 t-att-data-table="table.table_number"
                                 t-att-data-status="this.status(table)"
                                 t-att-title="this.reason(table)"
-                                t-att-disabled="!this.isSelectable(table)"
+                                t-att-disabled="!this.isPickable(table)"
                                 t-on-click="() => this.selectTable(table)">
                             <span class="fs-3 fw-bold lh-1" t-out="table.table_number"/>
-                            <span class="small">
+                            <span class="small o_hw_table_seats">
                                 <i class="oi oi-fw" data-icon="group" aria-hidden="true"/>
-                                <t t-out="table.seats"/>
+                                <t t-out="this.tableSeatsLabel(table) or table.seats"/>
+                            </span>
+                            <span t-if="table.seats and (table.occupied or this.status(table) === 'shared')" class="small o_hw_table_available">
+                                <t t-out="table.free_seats"/> seats available
                             </span>
                             <span t-if="this.status(table) === 'match'" class="small fw-bold">Suitable</span>
-                            <span t-elif="this.status(table) === 'shared'" class="small fw-bold">
-                                Shared · <t t-out="this.state.matches[table.id].free_seats"/> free
-                            </span>
-                            <span t-elif="this.tooSmall(table)" class="small fw-bold">Too small</span>
+                            <span t-elif="this.status(table) === 'shared'" class="small fw-bold">Shared</span>
+                            <span t-elif="this.status(table) === 'too_small'" class="small fw-bold" title="Only usable combined with another free table">Too small</span>
                             <span t-elif="this.status(table) === 'busy'" class="small fw-bold">Occupied</span>
                             <span t-elif="this.status(table) === 'other_floor'" class="small">Other floor</span>
+                            <span t-if="table.hint and this.isPickable(table)" class="badge text-bg-info mt-1" title="Matches the guest's notes / tags">Suggested</span>
                         </button>
+                    </div>
+                    <div t-if="this.selectedRows.length" class="o_hw_selection small mt-3 d-flex flex-wrap align-items-center gap-2">
+                        <span class="fw-bold" t-out="this.selectionLabel"/>
+                        <span t-if="!this.selectionFits" class="text-warning">
+                            Not enough seats yet: tap another free table on this floor to combine it.
+                        </span>
+                        <button class="btn btn-link btn-sm p-0" t-on-click="() => this.clearSelection()">Clear</button>
                     </div>
                 </t>
             </div>
 
             <t t-set-slot="footer">
                 <button class="btn btn-primary btn-lg o_hw_seat_open"
-                        t-att-disabled="!this.state.tableId or this.state.saving or !this.stillWaiting"
+                        t-att-disabled="!this.canConfirm"
                         t-on-click="() => this.confirm(true)">
                     Seat &amp; Open Table
                 </button>
                 <button class="btn btn-secondary btn-lg o_hw_seat_only"
-                        t-att-disabled="!this.state.tableId or this.state.saving or !this.stillWaiting"
+                        t-att-disabled="!this.canConfirm"
                         t-on-click="() => this.confirm(false)">
                     Seat Only
                 </button>

@@ -6,7 +6,7 @@
     <!-- Appointment list: event emoji in front of the type name -->
     <template id="appointment_type_index_inherit_celebration" inherit_id="appointment.appointment_type_index">
         <xpath expr="//h3[hasclass('premium-card-title')]" position="attributes">
-            <attribute name="t-out">(appt.event_emoji + ' ' if appt.event_emoji else '') + appt.name</attribute>
+            <attribute name="t-out">(appt.event_emoji + ' ' if appt.is_event_booking and appt.event_emoji else '') + appt.name</attribute>
         </xpath>
         <!-- Celebration tables are assigned by the restaurant: never list them to customers -->
         <xpath expr="//div[hasclass('o_appointment_type_card_staff')]/t[@t-if=&quot;appt.booking_target == 'resources'&quot;]" position="attributes">
@@ -26,10 +26,10 @@
                     <strong><i class="fa fa-exclamation-triangle me-1"></i> Booking Notice:</strong>
                     <t t-if="request.params.get('msg')" t-out="request.params.get('msg')"/>
                     <t t-elif="request.params.get('error') == 'missing_fields'">
-                        Please fill in all required booking details (Name, Phone number, and mandatory celebration fields).
+                        Please fill in all required booking details (Name, Phone number<t t-if="appointment_type.is_event_booking">, and mandatory celebration fields</t>).
                     </t>
                     <t t-elif="request.params.get('error') in ('missing_datetime', 'invalid_datetime')">
-                        Please select a valid date and time slot for your celebration.
+                        Please select a valid date and time slot for your <t t-if="appointment_type.is_event_booking">celebration</t><t t-else="">booking</t>.
                     </t>
                     <t t-elif="request.params.get('error') == 'closed_day'">
                         The selected date and time slot is closed for bookings. Please choose another time.
@@ -46,7 +46,7 @@
             <input t-if="wish_token" type="hidden" name="wish_token" t-att-value="wish_token"/>
         </xpath>
         <xpath expr="//h4[hasclass('fw-bold')]/t[@t-out='appointment_type.name']" position="before">
-            <span t-if="appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
+            <span t-if="appointment_type.is_event_booking and appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
         </xpath>
     </template>
 
@@ -75,6 +75,10 @@
         <xpath expr="//t[@t-foreach='appointment_type.question_ids']/div" position="before">
             <t t-set="q_prefill" t-value="question_prefills.get(question.id, '') if question_prefills else ''"/>
         </xpath>
+        <!-- Event Type / Special Day Date / Celebrant / Occasion questions only when 'Event / Celebration Booking' is on -->
+        <xpath expr="//t[@t-foreach='appointment_type.question_ids']/div" position="attributes">
+            <attribute name="t-if">question in appointment_type._hudson_website_questions()</attribute>
+        </xpath>
         <xpath expr="//t[@t-if=&quot;question.question_type == 'char'&quot;]/input" position="attributes">
             <attribute name="t-att-value">q_prefill</attribute>
         </xpath>
@@ -98,20 +102,20 @@
             </t>
         </xpath>
         <xpath expr="//h4/t[@t-out='appointment_type.name']" position="before">
-            <span t-if="appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
+            <span t-if="appointment_type.is_event_booking and appointment_type.event_emoji" class="me-2"><t t-out="appointment_type.event_emoji"/></span>
         </xpath>
     </template>
 
     <!-- Confirmation page: celebration details -->
     <template id="appointment_confirmation_inherit_celebration" inherit_id="appointment.appointment_confirmation">
         <xpath expr="//h4[hasclass('fw-normal')]/t[@t-out='appointment_type.name']" position="before">
-            <span t-if="appointment_type.event_emoji" class="me-1"><t t-out="appointment_type.event_emoji"/></span>
+            <span t-if="appointment_type.is_event_booking and appointment_type.event_emoji" class="me-1"><t t-out="appointment_type.event_emoji"/></span>
         </xpath>
         <xpath expr="//hr[hasclass('mt-4')][hasclass('mb-4')]" position="before">
-            <t t-if="booking and (booking.sudo().celebration_type or booking.sudo().celebrant_name or booking.sudo().occasion_title or booking.sudo().occasion_date)">
+            <t t-if="booking and booking.sudo().appointment_type_id.is_event_booking and (booking.sudo().celebration_type or booking.sudo().celebrant_name or booking.sudo().occasion_title or booking.sudo().occasion_date)">
                 <div class="mb-4 p-3 rounded-3 bg-light" style="font-size: 13px;">
                     <div class="fw-bold mb-1">
-                        <span t-if="appointment_type.event_emoji" class="me-1"><t t-out="appointment_type.event_emoji"/></span>
+                        <span t-if="appointment_type.is_event_booking and appointment_type.event_emoji" class="me-1"><t t-out="appointment_type.event_emoji"/></span>
                         Celebration Details
                     </div>
                     <div class="text-muted" t-if="booking.sudo().celebration_type">

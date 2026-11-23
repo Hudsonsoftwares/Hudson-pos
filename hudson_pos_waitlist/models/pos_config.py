@@ -13,6 +13,7 @@ from odoo.tools.binary import BinaryBytes
 _WAITLIST_POS_FIELDS = {
     'enable_qr_self_join', 'waitlist_token', 'qr_join_url',
     'qr_code_image', 'qr_code_url', 'qr_code_outdated', 'waitlist_minutes_per_party',
+    'waitlist_max_party_size',
 }
 
 
@@ -54,14 +55,24 @@ class PosConfig(models.Model):
         compute='_compute_qr_join_url',
         help="True when the Odoo base URL changed after the QR image was generated.",
     )
-    # Technical name kept from earlier versions (no data migration); the meaning is now a flat
-    # average, never multiplied by the guest's place in the queue.
+    # Technical name kept from earlier versions (no data migration). Baseline / fallback pace of
+    # the dynamic estimate (pos.waitlist.entry._queue_wait_estimates), never position x value.
     waitlist_minutes_per_party = fields.Integer(
         string="Average Waiting Time",
         default=10,
-        help="Estimated average wait, in minutes, shown to every waiting guest on their "
-             "Track My Waitlist page. The same value for everyone: it is never multiplied by "
-             "the guest's place in the queue, and the queue position is never shown. Minimum 1.",
+        help="Baseline waitlist pace, in minutes: roughly how often a table frees up for the "
+             "next waiting party. Used until enough recent seatings are recorded to measure the "
+             "real pace. Each guest's estimate is computed from the live POS tables, their "
+             "party size, the guests ahead and that pace; it is never place in line x this value. "
+             "Minimum 1.",
+    )
+
+    waitlist_max_party_size = fields.Integer(
+        string="Maximum Party Size",
+        default=0,
+        help="Largest party a guest can enter on the QR Join Waitlist form. "
+             "0 = automatic: the total seats of this POS's largest floor (its tables can be "
+             "combined for one party). Applied the same way on the phone and on the server.",
     )
 
     @api.constrains('waitlist_minutes_per_party')
@@ -69,6 +80,30 @@ class PosConfig(models.Model):
         for config in self:
             if config.waitlist_minutes_per_party < 1:
                 raise ValidationError(_("Average Waiting Time must be at least 1 minute."))
+
+    @api.constrains('waitlist_max_party_size')
+    def _check_waitlist_max_party_size(self):
+        for config in self:
+            if config.waitlist_max_party_size < 0:
+                raise ValidationError(_("Maximum Party Size cannot be negative (0 = automatic)."))
+
+    def _waitlist_party_size_limit(self):
+        """Largest party the QR join accepts for this POS; 0 = no limit.
+
+        The configured Maximum Party Size, else derived from the current floor plan: the total
+        seats of the largest active floor (tables of one floor can be combined for one party).
+        No limit when the POS has no floor plan or a table has no seat count.
+        """
+        self.ensure_one()
+        if self.waitlist_max_party_size > 0:
+            return self.waitlist_max_party_size
+        tables = self.env['pos.waitlist.entry'].sudo()._seatable_tables(self)
+        if not tables or any(not t.seats for t in tables):
+            return 0
+        seats_per_floor = {}
+        for table in tables:
+            seats_per_floor[table.floor_id] = seats_per_floor.get(table.floor_id, 0) + table.seats
+        return max(seats_per_floor.values())
 
     # ------------------------------------------------------------------
     # Token / URL

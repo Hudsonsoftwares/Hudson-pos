@@ -13,10 +13,13 @@
                 <field name="preferred_floor_id" optional="show" placeholder="Any Floor"/>
                 <field name="share_table" optional="show"/>
                 <field name="tag_ids" widget="many2many_tags" optional="show"/>
+                <field name="guest_note" optional="show"/>
+                <field name="partner_id" optional="hide"/>
                 <field name="config_id" optional="show"/>
                 <field name="source" optional="hide"/>
                 <field name="join_time"/>
-                <field name="quoted_wait" optional="show"/>
+                <field name="estimated_wait_label" optional="show"/>
+                <field name="quoted_wait" optional="hide"/>
                 <field name="table_id" optional="show"/>
                 <field name="position" optional="show"/>
                 <field name="state" widget="badge"
@@ -44,6 +47,7 @@
                         <group>
                             <field name="guest_name"/>
                             <field name="phone"/>
+                            <field name="partner_id"/>
                             <field name="party_size"/>
                             <field name="tag_ids" widget="many2many_tags"/>
                         </group>
@@ -59,12 +63,19 @@
                             <field name="join_time"/>
                             <field name="end_time" invisible="not end_time"/>
                             <field name="table_id" invisible="not table_id"/>
+                            <field name="table_ids" widget="many2many_tags" invisible="not table_ids"/>
+                            <field name="pos_order_id" invisible="not pos_order_id"/>
+                            <field name="shared_seating" invisible="not shared_seating"/>
                         </group>
                         <group>
+                            <field name="estimated_wait_label" invisible="state != 'waiting'"/>
                             <field name="quoted_wait"/>
                             <field name="position" invisible="state != 'waiting'"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
+                    </group>
+                    <group string="Anything We Should Know" invisible="not guest_note">
+                        <field name="guest_note" nolabel="1" colspan="2"/>
                     </group>
                 </sheet>
             </form>
@@ -107,6 +118,7 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="code" optional="hide" placeholder="Generated from name"/>
+                <field name="floor_ids" widget="many2many_tags" optional="show" options="{'no_create': True}"/>
                 <field name="active" widget="boolean_toggle"/>
             </list>
         </field>

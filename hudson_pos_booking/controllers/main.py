@@ -222,7 +222,7 @@ class PosAppointmentController(AppointmentController):
     def appointment_info(self, appointment_type, **kwargs):
         res = super().appointment_info(appointment_type, **kwargs)
         if hasattr(res, 'qcontext'):
-            wish_prefill = self._get_wish_prefill_context(appointment_type, kwargs)
+            wish_prefill = self._get_wish_prefill_context(appointment_type, kwargs) if appointment_type.sudo().is_event_booking else {}
             question_prefills = {}
             if wish_prefill:
                 for q in appointment_type.sudo().question_ids:
@@ -260,7 +260,13 @@ class PosAppointmentController(AppointmentController):
             if exclude_ids:
                 food_domain.append(('id', 'not in', exclude_ids))
 
-            food_products = request.env['product.product'].sudo().search(food_domain, order='sequence, name asc', limit=500)
+            prefood_enabled = appointment_type.sudo()._hudson_prefood_allowed()
+            res.qcontext['prefood_enabled'] = prefood_enabled
+            if prefood_enabled:
+                food_products = request.env['product.product'].sudo().search(food_domain, order='sequence, name asc', limit=500)
+            else:
+                # Pre-Food Required is off: the Pre-Order Food card (and Special Notes) are hidden.
+                food_products = request.env['product.product'].sudo().browse()
 
             categories_map = {}
             combos_dict = {}
@@ -391,7 +397,10 @@ class PosAppointmentController(AppointmentController):
                 answers_dict.setdefault(q_id, []).append(str(val).strip())
 
         Answer = request.env['appointment.answer'].sudo()
-        for req_q in appointment_type.sudo().question_ids.filtered('is_required'):
+        # Celebration questions are hidden (and not required) when 'Event / Celebration Booking' is off
+        website_questions = appointment_type.sudo()._hudson_website_questions()
+        answers_dict = {q_id: v for q_id, v in answers_dict.items() if q_id in website_questions.ids}
+        for req_q in website_questions.filtered('is_required'):
             if not any(v for v in answers_dict.get(req_q.id, []) if v):
                 return request.redirect(error_url + 'missing_fields')
 
@@ -684,6 +693,11 @@ class PosAppointmentController(AppointmentController):
     @http.route(['/appointment/<model("appointment.type"):appointment_type>/submit'], type='http', auth='public', website=True, methods=['POST'])
     def appointment_submit(self, appointment_type, **kwargs):
         import re
+        if not appointment_type.sudo()._hudson_prefood_allowed():
+            # Pre-Food is disabled for this type: ignore any food lines or special notes that were posted.
+            kwargs = {k: v for k, v in kwargs.items()
+                      if not (k.startswith('food_qty_') or k.startswith('food_combo_data_')
+                              or k in ('customer_notes', 'special_requests', 'notes'))}
         response = self._hudson_book_appointment(appointment_type, **kwargs)
         booking = None
         if hasattr(response, 'qcontext') and 'booking' in response.qcontext:

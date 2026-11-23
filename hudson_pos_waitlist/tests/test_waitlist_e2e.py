@@ -32,7 +32,7 @@ class TestWaitlistEndToEnd(TestFrontendCommon):
     # Guest phone helpers (anonymous HTTP, like a phone that scanned the QR)
     # ------------------------------------------------------------------
     def phone_join(self, **values):
-        data = {'guest_name': 'Ada Lovelace', 'phone': '+1 555 010 0001', 'party_size': '4',
+        data = {'guest_name': 'Ada Lovelace', 'phone': '+91 95501 00001', 'phone_country': 'IN', 'party_size': '4',
                 'preferred_floor': self.Entry._floor_public_key(self.pos_config, self.main_floor),
                 'share_table': 'private'}
         data.update(values)
@@ -43,9 +43,11 @@ class TestWaitlistEndToEnd(TestFrontendCommon):
         return self.Entry.sudo().search([('access_token', '=', access_token)]), access_token
 
     def status_json(self, access_token):
+        """The guest page's poll: 200 while waiting, 410 (final state, tracking ended) once closed."""
         response = self.url_open(f'/waitlist/s/{access_token}/json')
-        self.assertEqual(response.status_code, 200)
-        return response.json()
+        data = response.json()
+        self.assertEqual(response.status_code, 200 if data['active'] else 410)
+        return data
 
     def status_page(self, access_token):
         response = self.url_open(f'/waitlist/s/{access_token}')
@@ -61,7 +63,9 @@ class TestWaitlistEndToEnd(TestFrontendCommon):
                          ('W-001', 'waiting', 'qr', 4, self.main_floor))
         self.assertEqual(ada.config_id, self.pos_config)
         status = self.status_json(ada_token)
-        self.assertEqual((status['state'], status['estimated_wait']), ('waiting', 10))
+        # Main Floor has free 4-seat tables: no wait, whatever the configured average.
+        self.assertEqual((status['state'], status['estimated_wait'], status['estimated_wait_label']),
+                         ('waiting', 0, '~0–5 min'))
         self.assertNotIn('position', status)
 
         self.pos_config.with_user(self.pos_user).open_ui()
@@ -148,6 +152,16 @@ class TestWaitlistEndToEnd(TestFrontendCommon):
         if (!$('wl_stats').hidden) { throw new Error('position still shown while seated'); }
         if (!$('wl_alerts').hidden) { throw new Error('alert controls still shown'); }
         if (document.querySelector('[id*="called"]')) { throw new Error('a Called element is still on the page'); }
+        // Seated is the end of tracking: no more polling, way back to the QR join form.
+        await until(() => $('wl_live_text').textContent === 'Tracking ended for this visit', 'tracking ended');
+        await until(() => !$('wl_join_again').hidden, 'join again link');
+        let calls = 0;
+        window.fetch = (...args) => { calls++; return realFetch(...args); };
+        window.dispatchEvent(new Event('focus'));
+        window.dispatchEvent(new Event('online'));
+        await sleep(4500);  // longer than one poll interval
+        window.fetch = realFetch;
+        if (calls) { throw new Error('the seated page kept polling (' + calls + ' requests)'); }
         console.log('test successful');
     } catch (e) {
         console.error('Status page E2E failed: ' + e.message);
@@ -167,13 +181,18 @@ class TestWaitlistEndToEnd(TestFrontendCommon):
         extra = Tag.create([{'name': 'Anniversary Celebration Dinner'},
                             {'name': 'Window seat please if available'},
                             {'name': 'Allergy: nuts and shellfish'}])
-        long_name = 'Bartholomew Maximilian Fitzgerald-Montgomery of Westminster Estates'
+        long_name = 'Bartholomew Maximilian Fitzgerald Montgomery of Westminster Estates'
+        # Above the floor plan's own capacity: allowed by the POS's Maximum Party Size.
+        self.pos_config.waitlist_max_party_size = 60
         big, big_token = self.phone_join(guest_name=long_name, party_size='50')
         big.sudo().tag_ids = [(6, 0, Tag.search([]).ids)]
+        # A table never seats a party short of seats: give the big party two large tables.
+        self.tables[2].seats = 50
+        self.tables[4].seats = 50
         self.assertEqual(len(big.tag_ids), 6)
         others = {}
         for i, name in enumerate(('Grace Hopper', 'Cancel Me', 'Leave Me', 'No Show Me'), start=2):
-            others[f'W-{i:03d}'], _t = self.phone_join(guest_name=name, phone=f'+1 555 030 00{i:02d}',
+            others[f'W-{i:03d}'], _t = self.phone_join(guest_name=name, phone=f'+91 95503 000{i:02d}',
                                                        party_size='2')
         self.pos_config.with_user(self.pos_user).open_ui()
         occupied = self.env['pos.order'].create({
@@ -206,7 +225,7 @@ class TestWaitlistEndToEnd(TestFrontendCommon):
         cases = [('cancelled', 'waiting', 'Cancelled'), ('left', 'waiting', 'Left'),
                  ('no_show', 'waiting', 'No Show')]
         for i, (target, start, label) in enumerate(cases):
-            entry, access_token = self.phone_join(phone=f'+1 555 020 00{i:02d}')
+            entry, access_token = self.phone_join(phone=f'+91 95502 000{i:02d}')
             result = self.Entry.with_user(self.pos_user).pos_change_state(
                 self.pos_config.id, entry.id, start, target)
             self.assertTrue(result['ok'], result['message'])
@@ -216,7 +235,7 @@ class TestWaitlistEndToEnd(TestFrontendCommon):
             self.assertIn(label, page)
             self.assertIn('This waitlist entry is closed', page)
             # The guest can rejoin with the same phone once the entry is closed.
-            again, _token = self.phone_join(phone=f'+1 555 020 00{i:02d}')
+            again, _token = self.phone_join(phone=f'+91 95502 000{i:02d}')
             self.assertNotEqual(again, entry)
             again.sudo().write({'state': 'cancelled'})
 

@@ -23,8 +23,8 @@ class TestWaitlistPosActions(WaitlistCommon):
         return Entry.pos_change_state(entry.config_id.id, entry.id, expected, new)
 
     def test_queue_payload(self):
-        self.join(phone='5550000001', tags=['birthday'])
-        self.join(phone='5550000002', party_size='6', share_table='share')
+        self.join(phone='9550000001', tags=['birthday'])
+        self.join(phone='9550000002', party_size='6', share_table='share')
         queue = self.Entry.with_user(self.host).get_pos_queue(self.config_a.id)
         self.assertTrue(queue['enabled'])
         self.assertTrue(queue['server_time'])
@@ -41,8 +41,8 @@ class TestWaitlistPosActions(WaitlistCommon):
 
     def test_estimated_wait_uses_pos_setting(self):
         self.config_a.waitlist_minutes_per_party = 7
-        self.join(phone='5550000001')
-        self.join(phone='5550000002')
+        self.join(phone='9550000001')
+        self.join(phone='9550000002')
         waits = [e['estimated_wait'] for e in self.Entry.get_pos_queue(self.config_a.id)['entries']]
         self.assertEqual(waits, [7, 7])
 
@@ -85,7 +85,7 @@ class TestWaitlistPosActions(WaitlistCommon):
     def test_every_allowed_transition(self):
         allowed = [('waiting', 'seated'), ('waiting', 'cancelled'), ('waiting', 'left'), ('waiting', 'no_show')]
         for i, (start, target) in enumerate(allowed):
-            entry, _created = self.join(phone=f'55500001{i:02d}')
+            entry, _created = self.join(phone=f'95500001{i:02d}')
             result = self.change(entry, start, target)
             self.assertTrue(result['ok'], (start, target, result['message']))
             self.assertEqual(entry.state, target)
@@ -98,7 +98,7 @@ class TestWaitlistPosActions(WaitlistCommon):
             self.assertEqual(result['state'], 'waiting')
         self.assertEqual(entry.state, 'waiting')
         for closed in ('seated', 'cancelled', 'left', 'no_show'):
-            other, _created = self.join(phone=f'55500009{len(closed):02d}')
+            other, _created = self.join(phone=f'95500009{len(closed):02d}')
             self.change(other, 'waiting', closed)
             for target in ('waiting', 'seated', 'cancelled'):
                 if target == closed:
@@ -304,7 +304,7 @@ class TestWaitlistSeatConcurrency(test_waitlist_join.TestWaitlistConcurrency):
             table = env['restaurant.table'].create({'table_number': 7, 'floor_id': floor.id, 'seats': 4})
             Entry = env['pos.waitlist.entry']
             entries = Entry.browse()
-            for phone in ('5550000001', '5550000002'):
+            for phone in ('9550000001', '9550000002'):
                 entry, _c = Entry._join_from_qr(config, _form(phone=phone))
                 entries |= entry
             entry_ids, table_id, floor_id = entries.ids, table.id, floor.id
@@ -332,6 +332,53 @@ class TestWaitlistSeatConcurrency(test_waitlist_join.TestWaitlistConcurrency):
             cr.execute("SELECT count(*) FROM pos_waitlist_entry WHERE table_id = %s AND state = 'seated'",
                        (table_id,))
             self.assertEqual(cr.fetchone()[0], 1)
+
+    def test_two_terminals_same_table_combination(self):
+        """Terminal A and B seat two parties of 4 at the same 2 + 2 combination: one wins."""
+        with db_connect(self.dbname).cursor() as cr:
+            env = self._env(cr)
+            config = env['pos.config'].browse(self.config_id)
+            floor = env['restaurant.floor'].create({'name': 'Race Floor 3', 'pos_config_ids': [(4, config.id)]})
+            tables = env['restaurant.table'].create([
+                {'table_number': 10, 'floor_id': floor.id, 'seats': 2},
+                {'table_number': 11, 'floor_id': floor.id, 'seats': 2},
+            ])
+            Entry = env['pos.waitlist.entry']
+            entries = Entry.browse()
+            for phone in ('9550000001', '9550000002'):
+                entry, _c = Entry._join_from_qr(config, _form(phone=phone, party_size='4'))
+                entries |= entry
+            entry_ids, table_ids, floor_id = entries.ids, tables.ids, floor.id
+            cr.flush()
+            cr.transaction = None
+            cr.commit()
+        self.addCleanup(self._cleanup_floor, floor_id)
+
+        barrier = threading.Barrier(2)
+        results = []
+        threads = [threading.Thread(target=self._seat_in_new_transaction,
+                                    args=(entry_id, table_ids, barrier, results), daemon=True)
+                   for entry_id in entry_ids]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join(20)
+        self.assertFalse([t for t in threads if t.is_alive()], "terminals did not finish")
+        self.assertFalse([r for r in results if r[0] == 'error'], results)
+        self.assertEqual(sorted(r[1] for r in results), [False, True], results)
+        loser = next(r for r in results if not r[1])
+        self.assertEqual(loser[2], 'waiting', "the other party stays waiting to pick again")
+
+        with db_connect(self.dbname).cursor() as cr:
+            cr.execute("SELECT count(*) FROM pos_waitlist_entry WHERE config_id = %s AND state = 'seated'",
+                       (self.config_id,))
+            self.assertEqual(cr.fetchone()[0], 1)
+            cr.execute("SELECT count(*) FROM restaurant_table WHERE id = %s AND parent_id = %s",
+                       (table_ids[1], table_ids[0]))
+            self.assertEqual(cr.fetchone()[0], 1, "merged once under the main table")
+            # Unmerge so the cleanup can delete the tables.
+            cr.execute("UPDATE restaurant_table SET parent_id = NULL WHERE floor_id = %s", (floor_id,))
+            cr.commit()
 
     def test_two_terminals_seat_same_guest_at_different_tables(self):
         with db_connect(self.dbname).cursor() as cr:

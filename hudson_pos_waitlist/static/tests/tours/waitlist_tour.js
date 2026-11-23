@@ -21,11 +21,11 @@ registry.category("web_tour.tours").add("hudson_pos_waitlist_tour", {
             },
             {
                 content: "First guest with details and estimated wait",
-                trigger: `${entry("W-001")}:contains("Ada Lovelace"):contains("Main Floor"):contains("Private table"):contains("10 min")`,
+                trigger: `${entry("W-001")}:contains("Ada Lovelace"):contains("Main Floor"):contains("Private table"):contains("~0–5 min")`,
             },
             {
-                content: "Second guest: same flat average wait (10 min, not 20)",
-                trigger: `${entry("W-002")}:contains("Grace Hopper"):contains("10 min")`,
+                content: "Second guest: free tables left for them too (never 2nd in line x 10)",
+                trigger: `${entry("W-002")}:contains("Grace Hopper"):contains("~0–5 min")`,
             },
             {
                 content: "Waiting guest offers Seat Guest directly; no Call step exists",
@@ -274,7 +274,8 @@ registry.category("web_tour.tours").add("hudson_pos_waitlist_e2e_tour", {
                 run: async () => {
                     const body = new URLSearchParams({
                         guest_name: "Grace Hopper",
-                        phone: "+1 555 010 0002",
+                        phone: "+91 95501 00002",
+                        phone_country: "IN",
                         party_size: "3",
                         share_table: "share",
                     });
@@ -404,7 +405,8 @@ registry.category("web_tour.tours").add("hudson_pos_waitlist_ui_edge_tour", {
                 run: async () => {
                     const body = new URLSearchParams({
                         guest_name: "Phone Joiner",
-                        phone: "+1 555 030 0006",
+                        phone: "+91 95503 00006",
+                        phone_country: "IN",
                         party_size: "2",
                         preferred_floor: "any",
                         share_table: "private",
@@ -490,8 +492,8 @@ registry.category("web_tour.tours").add("hudson_pos_waitlist_ui_edge_tour", {
                 trigger: `.o_hw_floor_tabs:has(button:contains("Main Floor")):has(button:contains("Second Floor"))`,
             },
             {
-                content: "Occupied table 5 shown but not pickable; free tables marked too small for 50",
-                trigger: `.o_hudson_waitlist_tables .o_hw_table[data-table="4"].o_hw_table_small:contains("Too small")`,
+                content: "Occupied table 5 shown but not pickable; the 50-seat table 4 is suitable and recommended",
+                trigger: `.o_hudson_waitlist_tables .o_hw_table[data-table="4"][data-status="match"]:contains("Suitable")`,
                 run: () => {
                     const t5 = document.querySelector('.o_hudson_waitlist_tables .o_hw_table[data-table="5"]');
                     if (!t5 || !t5.disabled || t5.dataset.status !== "busy" || !t5.textContent.includes("Occupied")) {

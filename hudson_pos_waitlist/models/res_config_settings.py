@@ -12,6 +12,8 @@ class ResConfigSettings(models.TransientModel):
     pos_qr_code_outdated = fields.Boolean(related='pos_config_id.qr_code_outdated')
     pos_waitlist_minutes_per_party = fields.Integer(
         related='pos_config_id.waitlist_minutes_per_party', readonly=False)
+    pos_waitlist_max_party_size = fields.Integer(
+        related='pos_config_id.waitlist_max_party_size', readonly=False)
 
     def _qr_pos_config(self):
         self.ensure_one()

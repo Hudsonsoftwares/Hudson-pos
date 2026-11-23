@@ -20,7 +20,7 @@ class TestWaitlistPosUi(TestFrontendCommon):
         cls.Entry = cls.env['pos.waitlist.entry']
         cls.tables = {t.table_number: t for t in cls.pos_config.floor_ids.table_ids}
 
-    def _waiting_guest(self, phone='5550000001', name='Ada Lovelace', **kw):
+    def _waiting_guest(self, phone='9550000001', name='Ada Lovelace', **kw):
         entry, _c = self.Entry._join_from_qr(self.pos_config, _form(guest_name=name, phone=phone, **kw))
         return entry
 
@@ -95,7 +95,7 @@ class TestWaitlistPosUi(TestFrontendCommon):
 
     def test_same_table_cannot_get_two_guests(self):
         first = self._waiting_guest()
-        second = self._waiting_guest(phone='5550000002', name='Grace Hopper')
+        second = self._waiting_guest(phone='9550000002', name='Grace Hopper')
         table = self.tables[2]
         self.assertTrue(self._seat(first, table)['ok'])
         result = self._seat(second, table)
@@ -142,7 +142,7 @@ class TestWaitlistPosUi(TestFrontendCommon):
         main_floor_key = Entry._floor_public_key(self.pos_config, self.main_floor)
         first, _c = Entry._join_from_qr(self.pos_config, _form(guest_name='Ada Lovelace',
                                                                preferred_floor=main_floor_key))
-        second, _c = Entry._join_from_qr(self.pos_config, _form(guest_name='Grace Hopper', phone='5550000002'))
+        second, _c = Entry._join_from_qr(self.pos_config, _form(guest_name='Grace Hopper', phone='9550000002'))
 
         self.pos_config.with_user(self.pos_user).open_ui()
         self.start_pos_tour('hudson_pos_waitlist_tour', pos_config=self.pos_config)

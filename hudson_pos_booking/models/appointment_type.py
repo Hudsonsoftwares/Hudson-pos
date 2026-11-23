@@ -31,6 +31,9 @@ LEGACY_EVENT_TYPE_XMLIDS = (
 
 LIFE_EVENT_ANSWERS = ('Birthday', 'Anniversary', 'Engagement', 'Wedding', 'Other')
 
+# Question roles that belong to the Event / Celebration booking flow.
+CELEBRATION_QUESTION_ROLES = ('celebration_type', 'occasion_date', 'celebrant_name', 'occasion_title')
+
 
 class AppointmentTypePos(models.Model):
     _name = 'appointment.type'
@@ -85,6 +88,81 @@ class AppointmentTypePos(models.Model):
             "Celebrate with family & friends — Grab a party here: {booking_url}"
         ),
         help="Available placeholders: {guest_name}, {celebrant_name}, {event_name}, {occasion_title}, {special_day}, {company_name}, {booking_url}")
+
+    # ------------------------------------------------------------------
+    # Website Pre-Food option (available on every appointment type)
+    # ------------------------------------------------------------------
+    pre_food_required = fields.Boolean(
+        string='Pre-Food Required', default=False,
+        help="Show the Pre-Order Food selection and Special Notes on the website booking form.")
+
+    # ------------------------------------------------------------------
+    # 'Event / Celebration Booking' toggle -> celebration questions on the website
+    # ------------------------------------------------------------------
+    @api.model
+    def _hudson_celebration_questions(self):
+        """Reusable Event Type + Special Day Date questions provisioned by the bridge."""
+        Question = self.env['appointment.question'].sudo()
+        questions = Question.browse()
+        for xml_id in ('question_event_celebration_type', 'question_event_occasion_date'):
+            rec = self.env.ref(f'hudson_pos_booking.{xml_id}', raise_if_not_found=False)
+            if rec and rec.exists():
+                questions |= rec
+        return questions
+
+    def _hudson_ensure_celebration_setup(self):
+        """Attach the celebration questions (and a default emoji) to celebration types."""
+        questions = self._hudson_celebration_questions()
+        for at in self.sudo().filtered('is_event_booking'):
+            vals = {}
+            missing = questions - at.question_ids
+            if missing:
+                vals['question_ids'] = [(4, q.id) for q in missing]
+            if not at.event_emoji:
+                vals['event_emoji'] = '🎉'
+            if vals:
+                at.with_context(hudson_skip_celebration_setup=True).write(vals)
+
+    @api.onchange('is_event_booking')
+    def _onchange_is_event_booking_questions(self):
+        for at in self:
+            if at.is_event_booking:
+                at.question_ids |= self._hudson_celebration_questions()
+                if not at.event_emoji:
+                    at.event_emoji = '🎉'
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        if not self.env.context.get('hudson_skip_celebration_setup'):
+            records.filtered('is_event_booking')._hudson_ensure_celebration_setup()
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        if vals.get('is_event_booking') and not self.env.context.get('hudson_skip_celebration_setup'):
+            self._hudson_ensure_celebration_setup()
+        return res
+
+    def _hudson_is_celebration_question(self, question):
+        """Celebration questions (Event Type, Special Day Date, Celebrant, Occasion)
+        are shown / required on the website only when 'Event / Celebration Booking' is on."""
+        self.ensure_one()
+        question = question.sudo()
+        return bool(question.is_occasion_date or question.question_role in CELEBRATION_QUESTION_ROLES)
+
+    def _hudson_website_questions(self):
+        """Questions shown and validated on the website booking form."""
+        self.ensure_one()
+        at = self.sudo()
+        if at.is_event_booking:
+            return at.question_ids
+        return at.question_ids.filtered(lambda q: not at._hudson_is_celebration_question(q))
+
+    def _hudson_prefood_allowed(self):
+        """Website shows / accepts food pre-orders and special notes only when this is True."""
+        self.ensure_one()
+        return bool(self.sudo().pre_food_required)
 
     # ------------------------------------------------------------------
     # Resource (table) configuration hints for celebration types. A type

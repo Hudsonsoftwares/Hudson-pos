@@ -56,8 +56,18 @@
             opacity: 0.45;
             text-decoration: none;
         }
+        &.o_hw_table_hint:not(.active) {
+            box-shadow: 0 0 0 2px rgba($info, 0.45);
+        }
     }
     .o_hw_floor_preferred {
         border-width: 2px;
+    }
+    .o_hw_arrangement {
+        min-width: 11rem;
+        line-height: 1.3;
+        &.o_hw_arrangement_best:not(.btn-primary) {
+            border-width: 2px;
+        }
     }
 }

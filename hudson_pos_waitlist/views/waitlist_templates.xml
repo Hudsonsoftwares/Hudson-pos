@@ -249,6 +249,30 @@
                         line-height: 1.5;
                         list-style: none;
                     }
+                    .wl-input-invalid { border-color: #e74c3c; }
+                    .wl-input-invalid:focus { border-color: #e74c3c; box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.25); }
+                    .wl-field-error { margin-top: 6px; font-size: 0.82rem; line-height: 1.4; color: #ff8a7a; }
+                    .wl-phone { display: flex; align-items: stretch; gap: 8px; }
+                    /* Country picker: closed it shows the flag and calling code; the phone's own
+                       list opens with the full country names. */
+                    .wl-phone-cc {
+                        flex: 0 0 7.2rem;
+                        width: 7.2rem;
+                        padding: 14px 8px;
+                        font-weight: 700;
+                        font-size: 0.95rem;
+                        color: var(--wl-gold-light);
+                        background: rgba(216, 168, 78, 0.1);
+                        border: 1px solid var(--wl-card-border);
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        cursor: pointer;
+                    }
+                    .wl-phone-cc option { color: #18120e; background: #fff; }
+                    .wl-phone .wl-input[type="tel"] { flex: 1 1 auto; min-width: 0; }
+                    .wl-note { margin-top: 10px; resize: vertical; min-height: 64px; font-size: 0.95rem; }
+                    .wl-note::placeholder, .wl-input::placeholder { color: rgba(163, 149, 138, 0.7); }
                     .wl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
                     .wl-btn-primary[disabled] { opacity: 0.6; cursor: wait; transform: none; }
 
@@ -357,6 +381,46 @@
                         50% { box-shadow: 0 0 0 6px rgba(245, 207, 123, 0.55), 0 24px 60px rgba(0, 0, 0, 0.65); border-color: var(--wl-gold-light); }
                     }
                     .wl-alerts { margin-top: 20px; }
+                    .wl-toggle {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 12px;
+                        width: 100%;
+                        padding: 14px 16px;
+                        font: inherit;
+                        text-align: left;
+                        color: var(--wl-cream);
+                        background: rgba(255, 255, 255, 0.04);
+                        border: 1px solid var(--wl-card-border);
+                        border-radius: 14px;
+                        cursor: pointer;
+                    }
+                    .wl-toggle-text { font-weight: 700; font-size: 0.92rem; }
+                    .wl-toggle-state { display: block; font-size: 0.78rem; font-weight: 500; color: var(--wl-muted); margin-top: 2px; }
+                    .wl-switch {
+                        flex: 0 0 auto;
+                        position: relative;
+                        width: 50px;
+                        height: 28px;
+                        border-radius: 999px;
+                        background: rgba(255, 255, 255, 0.18);
+                        transition: background 0.2s ease;
+                    }
+                    .wl-switch::after {
+                        content: "";
+                        position: absolute;
+                        top: 3px;
+                        left: 3px;
+                        width: 22px;
+                        height: 22px;
+                        border-radius: 50%;
+                        background: #fff;
+                        transition: transform 0.2s ease;
+                    }
+                    .wl-toggle[aria-checked="true"] .wl-switch { background: var(--wl-green); }
+                    .wl-toggle[aria-checked="true"] .wl-switch::after { transform: translateX(22px); }
+                    .wl-toggle:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(216, 168, 78, 0.35); }
                     .wl-alerts-on {
                         padding: 12px 14px;
                         border-radius: 12px;
@@ -378,6 +442,7 @@
                     }
                     .wl-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--wl-green); animation: pulse 2s infinite; }
                     .wl-live-off .wl-live-dot { background: #e74c3c; }
+                    .wl-live-ended .wl-live-dot { background: var(--wl-muted); animation: none; }
 
                     /* ---------- Find My Place ---------- */
                     .wl-find {
@@ -461,18 +526,31 @@
 
                 <!-- Restaurant / POS come from the URL token only: no hidden ids in this form. -->
                 <form class="wl-form" method="post" t-att-action="form_action" id="wl_join_form" novalidate="novalidate">
+                    <!-- Client-side checks mirror pos.waitlist.entry._validate_join_values; the server re-checks everything. -->
                     <div class="wl-field">
                         <label class="wl-label" for="wl_guest_name">Guest Name <span class="wl-req">*</span></label>
                         <input class="wl-input" type="text" id="wl_guest_name" name="guest_name"
-                               required="required" maxlength="80" autocomplete="name"
+                               required="required" t-att-maxlength="max_guest_name" autocomplete="name"
+                               aria-describedby="wl_guest_name_err"
                                t-att-value="values.get('guest_name')"/>
+                        <div class="wl-field-error" id="wl_guest_name_err" hidden="hidden" aria-live="polite"/>
                     </div>
 
                     <div class="wl-field">
                         <label class="wl-label" for="wl_phone">Phone Number <span class="wl-req">*</span></label>
-                        <input class="wl-input" type="tel" id="wl_phone" name="phone"
-                               required="required" maxlength="32" autocomplete="tel" inputmode="tel"
-                               t-att-value="values.get('phone')"/>
+                        <div class="wl-phone">
+                            <t t-set="selected_country" t-value="values.get('phone_country') or default_phone_country"/>
+                            <select class="wl-input wl-phone-cc" id="wl_phone_country" name="phone_country"
+                                    aria-label="Country" autocomplete="tel-country-code">
+                                <option t-foreach="phone_countries" t-as="opt" t-att-value="opt[0]"
+                                        t-att-selected="opt[0] == selected_country"><t t-out="opt[1]"/></option>
+                            </select>
+                            <input class="wl-input" type="tel" id="wl_phone" name="phone"
+                                   required="required" maxlength="32" autocomplete="tel-national" inputmode="tel"
+                                   placeholder="Phone number" aria-describedby="wl_phone_err"
+                                   t-att-value="values.get('phone')"/>
+                        </div>
+                        <div class="wl-field-error" id="wl_phone_err" hidden="hidden" aria-live="polite"/>
                     </div>
 
                     <div class="wl-field">
@@ -480,10 +558,12 @@
                         <div class="wl-stepper">
                             <button type="button" class="wl-step-btn" data-step="-1" aria-label="Fewer guests">−</button>
                             <input class="wl-input" type="number" id="wl_party_size" name="party_size"
-                                   required="required" min="1" t-att-max="max_party_size" step="1" inputmode="numeric"
+                                   required="required" min="1" t-att-max="max_party_size or None" step="1" inputmode="numeric"
+                                   aria-describedby="wl_party_size_err"
                                    t-att-value="values.get('party_size') or 2"/>
                             <button type="button" class="wl-step-btn" data-step="1" aria-label="More guests">+</button>
                         </div>
+                        <div class="wl-field-error" id="wl_party_size_err" hidden="hidden" aria-live="polite"/>
                     </div>
 
                     <fieldset class="wl-field" t-if="floor_options" id="wl_floor_field">
@@ -508,15 +588,18 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="wl-field" t-if="tags">
+                    <fieldset class="wl-field">
                         <legend class="wl-label">Anything we should know? <span style="text-transform:none;letter-spacing:0;color:var(--wl-muted);font-weight:500;">(optional)</span></legend>
-                        <div class="wl-choices">
+                        <div class="wl-choices" t-if="tags">
                             <label class="wl-choice" t-foreach="tags" t-as="tag">
                                 <input type="checkbox" name="tags" t-att-value="tag[0]"
                                        t-att-checked="tag[0] in (values.get('tags') or [])"/>
                                 <span><t t-out="tag[1]"/></span>
                             </label>
                         </div>
+                        <textarea class="wl-input wl-note" id="wl_guest_note" name="guest_note" rows="2"
+                                  t-att-maxlength="max_guest_note" aria-label="Anything we should know"
+                                  placeholder="e.g. allergies, a quiet corner, a special occasion"><t t-out="values.get('guest_note') or ''"/></textarea>
                     </fieldset>
 
                     <!-- Honeypot: invisible to people, filled in by naive bots. -->
@@ -536,9 +619,19 @@
                         <div t-if="find.get('error')" class="wl-errors" role="alert" id="wl_find_error"><t t-out="find['error']"/></div>
                         <div class="wl-field">
                             <label class="wl-label" for="wl_find_phone">Phone Number <span class="wl-req">*</span></label>
-                            <input class="wl-input" type="tel" id="wl_find_phone" name="phone"
-                                   required="required" maxlength="32" autocomplete="tel" inputmode="tel"
-                                   t-att-value="find.get('phone')"/>
+                            <div class="wl-phone">
+                                <t t-set="find_country" t-value="find.get('phone_country') or default_phone_country"/>
+                                <select class="wl-input wl-phone-cc" id="wl_find_phone_country" name="phone_country"
+                                        aria-label="Country" autocomplete="tel-country-code">
+                                    <option t-foreach="phone_countries" t-as="opt" t-att-value="opt[0]"
+                                            t-att-selected="opt[0] == find_country"><t t-out="opt[1]"/></option>
+                                </select>
+                                <input class="wl-input" type="tel" id="wl_find_phone" name="phone"
+                                       required="required" maxlength="32" autocomplete="tel-national" inputmode="tel"
+                                       placeholder="Phone number" aria-describedby="wl_find_phone_err"
+                                       t-att-value="find.get('phone')"/>
+                            </div>
+                            <div class="wl-field-error" id="wl_find_phone_err" hidden="hidden" aria-live="polite"/>
                         </div>
                         <div class="wl-hp" aria-hidden="true">
                             <label for="wl_find_website">Website</label>
@@ -548,20 +641,98 @@
                     </form>
                 </details>
             </div>
+            <!-- Phone rules for every country (client-side convenience; the server re-validates). -->
+            <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.12/bundle/libphonenumber-max.js" defer="defer"/>
             <script>
                 (function () {
                     var form = document.getElementById('wl_join_form');
                     var size = document.getElementById('wl_party_size');
-                    var max = parseInt(size.getAttribute('max'), 10) || 50;
+                    /* 0 / missing = no limit for this restaurant (same rule as the server). */
+                    var max = parseInt(size.getAttribute('max'), 10) || 0;
                     document.querySelectorAll('.wl-step-btn').forEach(function (btn) {
                         btn.addEventListener('click', function () {
                             var v = (parseInt(size.value, 10) || 0) + parseInt(btn.dataset.step, 10);
-                            size.value = Math.min(Math.max(v, 1), max);
+                            v = Math.max(v, 1);
+                            size.value = max ? Math.min(v, max) : v;
+                            check(size, checkSize);
                         });
                     });
+
+                    /* ---- Same rules as pos.waitlist.entry (_clean_guest_name / _clean_phone) ---- */
+                    var NAME_RE = /^\p{L}[\p{L}\p{M}]*( \p{L}[\p{L}\p{M}]*)*$/u;
+                    var PHONE_INVALID = 'Please enter a valid phone number for the selected country.';
+                    function checkName(input) {
+                        var v = input.value.trim().replace(/\s+/g, ' ');
+                        if (!v) { return 'Please enter your name.'; }
+                        if (!NAME_RE.test(v)) { return 'Please enter a name using letters and spaces only.'; }
+                        return '';
+                    }
+                    /* Any country: validated with libphonenumber (same rules as the server's
+                       "phonenumbers" library) for the country picked next to the field. */
+                    function checkPhone(input) {
+                        var v = input.value.trim();
+                        if (!v) { return 'Please enter your phone number.'; }
+                        if (!/^\+?[0-9\s().\-]+$/.test(v)) { return PHONE_INVALID; }
+                        var country = document.getElementById(input.id + '_country').value;
+                        var lib = window.libphonenumber;
+                        if (!lib || !lib.parsePhoneNumberFromString) {
+                            /* Library unavailable (offline / blocked): length only, the server checks fully. */
+                            var n = v.replace(/\D/g, '').length;
+                            return n &gt;= 6 &amp;&amp; n &lt;= 15 ? '' : PHONE_INVALID;
+                        }
+                        var number = lib.parsePhoneNumberFromString(v, country);
+                        if (!number || !number.isValid()) { return PHONE_INVALID; }
+                        if (number.country === 'IN' &amp;&amp; !/^[789][0-9]{9}$/.test(String(number.nationalNumber))) {
+                            return 'Please enter a valid 10-digit Indian mobile number starting with 7, 8 or 9.';
+                        }
+                        return '';
+                    }
+                    function checkSize(input) {
+                        var raw = String(input.value).trim();
+                        var n = /^[0-9]+$/.test(raw) ? parseInt(raw, 10) : 0;
+                        if (n &lt; 1 || (max &amp;&amp; n &gt; max)) {
+                            return max ? 'Party size must be a whole number between 1 and ' + max
+                                         + '. For a larger group, please speak with the host.'
+                                       : 'Party size must be a whole number of at least 1.';
+                        }
+                        return '';
+                    }
+                    function check(input, rule) {
+                        var msg = rule(input);
+                        var box = document.getElementById(input.id + '_err');
+                        box.textContent = msg;
+                        box.hidden = !msg;
+                        input.classList.toggle('wl-input-invalid', !!msg);
+                        input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+                        return !msg;
+                    }
+                    var nameInput = document.getElementById('wl_guest_name');
+                    var phoneInput = document.getElementById('wl_phone');
+                    var findPhone = document.getElementById('wl_find_phone');
+                    [[nameInput, checkName], [phoneInput, checkPhone], [size, checkSize], [findPhone, checkPhone]].forEach(function (pair) {
+                        /* Show a field's error once the guest leaves it, then live while they fix it. */
+                        pair[0].addEventListener('blur', function () { if (pair[0].value) { check(pair[0], pair[1]); } });
+                        pair[0].addEventListener('input', function () {
+                            if (pair[0].classList.contains('wl-input-invalid')) { check(pair[0], pair[1]); }
+                        });
+                    });
+                    /* Changing the country re-checks a number already typed. */
+                    [phoneInput, findPhone].forEach(function (input) {
+                        document.getElementById(input.id + '_country').addEventListener('change', function () {
+                            if (input.value) { check(input, checkPhone); }
+                        });
+                    });
+
                     form.addEventListener('submit', function (ev) {
                         var btn = document.getElementById('wl_submit');
                         if (btn.disabled) { ev.preventDefault(); return; }
+                        var ok = [check(nameInput, checkName), check(phoneInput, checkPhone), check(size, checkSize)];
+                        if (ok.indexOf(false) !== -1) {
+                            ev.preventDefault();
+                            var bad = form.querySelector('.wl-input-invalid');
+                            if (bad) { bad.focus(); }
+                            return;
+                        }
                         /* The server also recovers repeated submits; this only spares the round trip. */
                         btn.disabled = true;
                         btn.textContent = 'Joining…';
@@ -570,12 +741,17 @@
                     findForm.addEventListener('submit', function (ev) {
                         var btn = document.getElementById('wl_find_submit');
                         if (btn.disabled) { ev.preventDefault(); return; }
+                        if (!check(findPhone, checkPhone)) { ev.preventDefault(); findPhone.focus(); return; }
                         btn.disabled = true;
                         btn.textContent = 'Searching…';
                     });
                     var find = document.getElementById('wl_find');
                     if (find.open) { find.scrollIntoView({block: 'center'}); }
-                    window.addEventListener('pageshow', function () {
+                    window.addEventListener('pageshow', function (ev) {
+                        /* Back button after joining / leaving: the browser restored an old copy of
+                           this form (and its "Track My Waitlist" link). Ask the server again: it
+                           only offers a visit that is still active, and a submit creates a new one. */
+                        if (ev.persisted) { window.location.reload(); return; }
                         var btn = document.getElementById('wl_submit');
                         btn.disabled = false;
                         btn.textContent = 'Join Waitlist';
@@ -609,25 +785,36 @@
                 </span>
 
                 <!-- Every block is rendered; the live updater only toggles / fills them (no page reloads). -->
-                <!-- Waiting: only the POS's Average Waiting Time. No queue position, no parties ahead. -->
+                <!-- Waiting: this guest's own estimated wait range (live POS tables, queue, seating pace). No queue position, no parties ahead. -->
                 <div id="wl_stats" class="wl-stats wl-stats-single" t-att-hidden="None if state == 'waiting' else 'hidden'">
                     <div class="wl-on-list">You're on the waitlist</div>
                     <div class="wl-stat">
-                        <div class="wl-stat-label">Estimated Average Wait</div>
-                        <div class="wl-stat-value">~<span id="wl_wait"><t t-out="status['estimated_wait']"/></span> <small style="font-size:0.9rem;font-weight:600;">minutes</small></div>
+                        <div class="wl-stat-label">Estimated wait</div>
+                        <div class="wl-stat-value"><span id="wl_wait"><t t-out="status['estimated_wait_label']"/></span></div>
+                        <div class="wl-bookmark" style="margin-top:6px;">Updated based on current table availability. An estimate, not a guarantee.</div>
                     </div>
                 </div>
-                <!-- Seated: the host assigned a table. Waiting -> Seated is the only "your turn" moment. -->
-                <div id="wl_seated_alert" class="wl-seated-alert" role="alert" t-att-hidden="None if state == 'seated' else 'hidden'">
+                <!-- Seated: the host assigned a table. Waiting -> Seated is the only "your turn" moment
+                     and the end of tracking for this visit (no more live updates). The final page
+                     still names the table while the guest's order is in progress. -->
+                <div id="wl_seated_alert" class="wl-seated-alert" role="alert" t-att-hidden="None if state == 'seated' and not status['completed'] else 'hidden'">
                     <i class="fa fa-bell" aria-hidden="true"/>
                     <b>Your table is ready!</b>
                     <span id="wl_seated_table" t-att-hidden="None if status['table'] else 'hidden'">Please go to Table <t t-out="status['table'] or ''"/>.</span>
                     <span id="wl_seated_host" t-att-hidden="'hidden' if status['table'] else None">Please come to the host stand.</span>
                 </div>
-                <p id="wl_msg_seated" class="wl-message" style="margin:18px 0 0;" t-att-hidden="None if state == 'seated' else 'hidden'">Enjoy your meal!</p>
+                <p id="wl_msg_seated" class="wl-message" style="margin:18px 0 0;" t-att-hidden="None if state == 'seated' and not status['completed'] else 'hidden'">Enjoy your meal!</p>
+                <p id="wl_msg_completed" class="wl-message" style="margin:18px 0 0;" t-att-hidden="None if status['completed'] else 'hidden'">
+                    Your visit is complete. Thank you for dining with us! Scan the QR code again to join the waitlist for a new visit.
+                </p>
                 <p id="wl_msg_closed" class="wl-message" style="margin:18px 0 0;" t-att-hidden="None if state in ('cancelled', 'left', 'no_show') else 'hidden'">
                     This waitlist entry is closed. Scan the QR code again if you'd like to rejoin.
                 </p>
+                <!-- A closed visit (Seated included) is never reused: rejoining is a new visit from
+                     the restaurant's normal QR join form. -->
+                <a t-if="join_url" id="wl_join_again" class="wl-btn-primary" style="margin-top:16px;text-decoration:none;"
+                   t-att-href="join_url"
+                   t-att-hidden="'hidden' if status['active'] else None">Join the waitlist again</a>
 
                 <div class="wl-divider"/>
 
@@ -635,33 +822,36 @@
                     <div class="wl-detail"><dt>Party Size</dt><dd><t t-out="status['party_size']"/></dd></div>
                     <div class="wl-detail"><dt>Preferred Floor</dt><dd><t t-out="status['floor_pref']"/></dd></div>
                     <div class="wl-detail"><dt>Table Sharing</dt><dd><t t-out="status['share_table']"/></dd></div>
-                    <div class="wl-detail" t-if="status['tags']"><dt>Notes</dt><dd><t t-out="', '.join(status['tags'])"/></dd></div>
+                    <div class="wl-detail" t-if="status['tags'] or status['note']"><dt>Notes</dt><dd style="white-space:pre-line;"><t t-out="', '.join(status['tags'] + ([status['note']] if status['note'] else []))"/></dd></div>
                     <div class="wl-detail"><dt>Status</dt><dd id="wl_detail_state"><t t-out="status['state_label']"/></dd></div>
                     <div class="wl-detail" id="wl_detail_table_row" t-att-hidden="None if status['table'] else 'hidden'"><dt>Table</dt><dd id="wl_detail_table"><t t-out="status['table'] or ''"/></dd></div>
                 </dl>
 
-                <!-- Browsers only allow sound / vibration after one tap on the page. -->
+                <!-- Sound / vibration preference: saved on this phone (survives refresh and reopening).
+                     Browsers still need one tap on the page before they let it play a sound. -->
                 <div id="wl_alerts" class="wl-alerts" t-att-hidden="None if status['active'] else 'hidden'">
-                    <button type="button" id="wl_alerts_btn" class="wl-btn-secondary">
-                        <i class="fa fa-bell-o" aria-hidden="true"/> Turn on sound &amp; vibration alerts
+                    <button type="button" id="wl_alerts_btn" class="wl-toggle" role="switch" aria-checked="true"
+                            aria-labelledby="wl_alerts_label">
+                        <span>
+                            <span class="wl-toggle-text" id="wl_alerts_label"><i class="fa fa-bell-o" aria-hidden="true"/> Sound &amp; vibration alerts</span>
+                            <span class="wl-toggle-state" id="wl_alerts_state">On</span>
+                        </span>
+                        <span class="wl-switch" aria-hidden="true"/>
                     </button>
-                    <div id="wl_alerts_on" hidden="hidden">
-                        <div class="wl-alerts-on">
-                            <i class="fa fa-bell" aria-hidden="true"/> Sound &amp; vibration alerts are on.
-                        </div>
-                        <p class="wl-bookmark" id="wl_alerts_tip">
-                            <b>Tip:</b> Keep this page open or bookmark it to easily check your waitlist status.
-                        </p>
-                    </div>
+                    <p class="wl-bookmark" id="wl_alerts_tip">
+                        <b>Tip:</b> Keep this page open or bookmark it to easily check your waitlist status.
+                    </p>
                 </div>
 
-                <div class="wl-live" id="wl_live"><span class="wl-live-dot"/> <span id="wl_live_text">Live updates</span></div>
+                <div t-if="status['active']" class="wl-live" id="wl_live"><span class="wl-live-dot"/> <span id="wl_live_text">Live updates</span></div>
+                <div t-else="" class="wl-live wl-live-ended" id="wl_live"><span class="wl-live-dot"/> <span id="wl_live_text">Tracking ended for this visit</span></div>
             </div>
-            <div id="wl_status_poll" hidden="hidden" t-att-data-url="status_url + '/json'"/>
+            <!-- Only a waiting guest is tracked: a closed page (Seated included) has no live updater. -->
+            <div t-if="status_url" id="wl_status_poll" hidden="hidden" t-att-data-url="status_url + '/json'"/>
             <script>
                 (function () {
                     function $(id) { return document.getElementById(id); }
-                    var url = $('wl_status_poll').dataset.url;
+                    var url = $('wl_status_poll') ? $('wl_status_poll').dataset.url : null;
                     var card = $('wl_status_card');
                     var state = card.dataset.state;
                     var CLOSED = {cancelled: 1, left: 1, no_show: 1};
@@ -705,32 +895,65 @@
                     function vibrate(pattern) {
                         try { if (navigator.vibrate) { navigator.vibrate(pattern); } } catch (e) { /* unsupported (iPhone) */ }
                     }
+                    /* ---- On / Off preference, kept on this phone across refreshes and visits ----
+                       localStorage first, a plain cookie as fallback (private tabs, storage blocked).
+                       Default On: alerts behave as before until the guest switches them off. */
+                    var PREF = 'hudson_wl_alerts';
+                    function readPref() {
+                        var v = null;
+                        try { v = window.localStorage.getItem(PREF); } catch (e) { /* storage blocked */ }
+                        if (v !== 'on' &amp;&amp; v !== 'off') {
+                            var m = document.cookie.match(/(?:^|;\s*)hudson_wl_alerts=(on|off)/);
+                            v = m ? m[1] : 'on';
+                        }
+                        return v !== 'off';
+                    }
+                    function savePref(on) {
+                        var v = on ? 'on' : 'off';
+                        try { window.localStorage.setItem(PREF, v); } catch (e) { /* storage blocked */ }
+                        document.cookie = PREF + '=' + v + '; path=/waitlist/; max-age=31536000; SameSite=Lax';
+                    }
+                    var alertsOn = readPref();
+                    function paintAlerts() {
+                        $('wl_alerts_btn').setAttribute('aria-checked', alertsOn ? 'true' : 'false');
+                        $('wl_alerts_state').textContent = alertsOn
+                            ? 'On: your phone will ring and vibrate when your table is ready.'
+                            : 'Off: tap to turn on.';
+                    }
+                    paintAlerts();
                     $('wl_alerts_btn').addEventListener('click', function () {
-                        ctx();
-                        chime(1);
-                        vibrate(120);
-                        $('wl_alerts_btn').hidden = true;
-                        $('wl_alerts_on').hidden = false;
+                        alertsOn = !alertsOn;
+                        savePref(alertsOn);
+                        paintAlerts();
+                        if (alertsOn) {
+                            ctx();
+                            chime(1);
+                            vibrate(120);
+                        }
                     });
-                    /* Any tap also unlocks audio. */
-                    document.addEventListener('pointerdown', function () { ctx(); }, {once: true});
+                    /* Any tap also unlocks audio (needed again after every page load). */
+                    document.addEventListener('pointerdown', function () { if (alertsOn) { ctx(); } }, {once: true});
 
-                    function alertSeated() {
-                        vibrate([500, 200, 500, 200, 900]);
-                        chime(3);
-                        document.title = '🔔 Your table is ready!';
+                    function flash(title) {
+                        document.title = title;
                         card.classList.remove('wl-flash');
                         void card.offsetWidth;
                         card.classList.add('wl-flash');
                     }
+                    function alertSeated() {
+                        if (alertsOn) {
+                            vibrate([500, 200, 500, 200, 900]);
+                            chime(3);
+                        }
+                        flash('🔔 Your table is ready!');
+                    }
                     /* Every other status change (Left, Cancelled, No Show, back to Waiting...). */
                     function alertStatus(label) {
-                        vibrate([300, 150, 300]);
-                        chime(1);
-                        document.title = '🔔 ' + label;
-                        card.classList.remove('wl-flash');
-                        void card.offsetWidth;
-                        card.classList.add('wl-flash');
+                        if (alertsOn) {
+                            vibrate([300, 150, 300]);
+                            chime(1);
+                        }
+                        flash('🔔 ' + label);
                     }
 
                     /* ---- Live update: fill the page in place, never reload ---- */
@@ -743,29 +966,41 @@
                         $('wl_state_badge').className = 'wl-badge wl-state ' + (state === 'waiting' ? 'wl-badge-open'
                             : (state === 'seated' ? 'wl-state-seated' : 'wl-state-done'));
                         $('wl_state_dot').hidden = !s.active;
-                        $('wl_wait').textContent = s.estimated_wait;
+                        $('wl_wait').textContent = s.estimated_wait_label || '';
+                        var atTable = state === 'seated' &amp;&amp; !s.completed;
                         $('wl_stats').hidden = state !== 'waiting';
-                        $('wl_seated_alert').hidden = state !== 'seated';
+                        $('wl_seated_alert').hidden = !atTable;
                         $('wl_seated_table').textContent = 'Please go to Table ' + (s.table || '') + '.';
                         $('wl_seated_table').hidden = !s.table;
                         $('wl_seated_host').hidden = !!s.table;
-                        $('wl_msg_seated').hidden = state !== 'seated';
+                        $('wl_msg_seated').hidden = !atTable;
+                        $('wl_msg_completed').hidden = !s.completed;
                         $('wl_detail_table').textContent = s.table || '';
                         $('wl_detail_table_row').hidden = !s.table;
                         $('wl_msg_closed').hidden = !CLOSED[state];
+                        if ($('wl_join_again')) { $('wl_join_again').hidden = !!s.active; }
                         $('wl_alerts').hidden = !s.active;
                         if (state !== prev) {
                             if (state === 'seated') { alertSeated(); } else { alertStatus(s.state_label); }
                         }
+                        if (!s.active) { endTracking(); }
                     }
                     function setLive(ok) {
+                        if (gone) { return; }
                         $('wl_live').classList.toggle('wl-live-off', !ok);
                         $('wl_live_text').textContent = ok ? 'Live updates' : 'Reconnecting…';
                     }
-                    /* Every state, closed ones included, follows the server while the page is
-                       visible: a host or back-office correction (e.g. Cancelled back to Waiting)
-                       shows within seconds. Hidden tabs slow down; they catch up on return. */
-                    var gone = false;
+                    /* Only a waiting guest is tracked. As soon as the server reports the visit closed
+                       (Seated is the end of the journey, or Cancelled / Left / No Show) the page shows
+                       that final state and stops for good: the server answers 410 from then on. */
+                    var gone = !url;
+                    function endTracking() {
+                        gone = true;
+                        clearTimeout(timer);
+                        $('wl_live').classList.remove('wl-live-off');
+                        $('wl_live').classList.add('wl-live-ended');
+                        $('wl_live_text').textContent = 'Tracking ended for this visit';
+                    }
                     function schedule() {
                         clearTimeout(timer);
                         if (gone) { return; }
@@ -773,7 +1008,7 @@
                     }
                     function renderGone() {
                         /* Entry removed from the back office: closed for good, stop polling. */
-                        gone = true;
+                        endTracking();
                         if (!CLOSED[state]) { alertStatus('Closed'); }
                         state = 'cancelled';
                         card.dataset.state = state;
@@ -784,12 +1019,14 @@
                         $('wl_stats').hidden = true;
                         $('wl_seated_alert').hidden = true;
                         $('wl_msg_seated').hidden = true;
+                        $('wl_msg_completed').hidden = true;
                         $('wl_detail_table_row').hidden = true;
                         $('wl_msg_closed').hidden = false;
+                        if ($('wl_join_again')) { $('wl_join_again').hidden = false; }
                         $('wl_alerts').hidden = true;
                     }
                     function poll() {
-                        if (inflight) { return; }
+                        if (inflight || gone) { return; }
                         inflight = true;
                         clearTimeout(timer);
                         /* A request stuck in the tunnel is aborted, so the loop can never stall. */
@@ -798,7 +1035,8 @@
                         fetch(url + '?t=' + Date.now(), {cache: 'no-store', credentials: 'same-origin', signal: ctrl ? ctrl.signal : undefined})
                             .then(function (r) {
                                 if (r.status === 404) { return {gone: true}; }
-                                if (!r.ok) { throw new Error(String(r.status)); }
+                                /* 410: the visit is closed; the body is its final state (shown once). */
+                                if (!r.ok &amp;&amp; r.status !== 410) { throw new Error(String(r.status)); }
                                 return r.json();
                             })
                             .then(function (s) { setLive(true); if (s.gone) { renderGone(); } else { render(s); } })

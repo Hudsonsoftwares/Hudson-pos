@@ -3,7 +3,7 @@
 
 {
     'name': 'POS Demo Data (Restaurant, Cafe, Loyalty & Inventory)',
-    'version': '20.0.1.0.37',
+    'version': '20.0.1.0.39',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
     'summary': 'Declarative XML & Python Demo Data for POS (Restaurant, Cafe, Loyalty & Inventory), auto-installed and loaded per app as apps get installed',
@@ -109,6 +109,7 @@
         'point_of_sale._assets_pos': [
             'hudson_pos_demo_data/static/src/overrides/control_buttons.js',
             'hudson_pos_demo_data/static/src/overrides/combo_configurator.js',
+            'hudson_pos_demo_data/static/src/overrides/combo_configurator.xml',
         ],
     },
     'demo': [],

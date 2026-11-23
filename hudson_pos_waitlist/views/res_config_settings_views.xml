@@ -20,13 +20,25 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <label for="pos_waitlist_minutes_per_party" class="col-lg-3 o_light_label" string="Average Waiting Time"/>
+                                <div class="col-lg-3">
+                                    <label for="pos_waitlist_minutes_per_party" class="o_light_label" string="Average Waiting Time"/>
+                                    <sup class="text-info p-1 ms-1" style="cursor: help;" data-tooltip-touch-tap-to-show="true"
+                                         data-tooltip="Baseline pace of the waitlist (minimum 1), used until enough recent seatings are recorded. Each guest's estimate is computed live from the POS tables (free / occupied, sizes), their party size, the guests ahead and the recent seating rate; it is never place in line x this value, and guests only see a range.">?</sup>
+                                </div>
                                 <div class="col-lg-9">
                                     <field name="pos_waitlist_minutes_per_party" class="oe_inline" style="width: 5rem;"/>
                                     <span class="ms-1">min</span>
-                                    <div class="text-muted small">
-                                        Shown to every waiting guest as their estimated average wait (minimum 1). Never multiplied by their place in line; the queue position is not shown.
-                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-3">
+                                    <label for="pos_waitlist_max_party_size" class="o_light_label" string="Maximum Party Size"/>
+                                    <sup class="text-info p-1 ms-1" style="cursor: help;" data-tooltip-touch-tap-to-show="true"
+                                         data-tooltip="Largest party guests can enter on the QR form. 0 = automatic: the total seats of this POS's largest floor (its tables can be combined).">?</sup>
+                                </div>
+                                <div class="col-lg-9">
+                                    <field name="pos_waitlist_max_party_size" class="oe_inline" style="width: 5rem;"/>
+                                    <span class="ms-1">guests</span>
                                 </div>
                             </div>
                             <div class="alert alert-warning py-2 mb-2" role="alert" invisible="not pos_qr_code_outdated">

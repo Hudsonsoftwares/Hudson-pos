@@ -195,6 +195,11 @@ class KitchenLabel(models.Model):
                 companies = self.env['res.company'].sudo().search([('kitchen_mode', '=', True)])
                 if companies:
                     self._ensure_company_labels(companies)
+        # Ensure menu_kitchen_label only has mrp.group_mrp_routings
+        kitchen_menu = self.env.ref('hudson_kitchen_terms.menu_kitchen_label', raise_if_not_found=False)
+        routing_group = self.env.ref('mrp.group_mrp_routings', raise_if_not_found=False)
+        if kitchen_menu and routing_group:
+            kitchen_menu.group_ids = routing_group
 
     @api.model
     def _ensure_company_labels(self, companies):
@@ -225,10 +230,15 @@ class KitchenLabel(models.Model):
     @api.model
     def _invalidate_terminology_caches(self):
         """
-        Terminology is applied on top of the cached menus/views, so this only
-        drops the 'default' ormcache (menus) so every worker reloads cleanly.
+        Terminology is applied on top of the cached menus/views, so this
+        drops the ormcache (menus, groups, etc.) so every worker reloads cleanly.
         """
-        self.env.transaction.invalidate_ormcache('default')
+        self.env.invalidate_all()
+        for cache_name in ('default', 'groups'):
+            try:
+                self.env.transaction.invalidate_ormcache(cache_name)
+            except Exception:
+                pass
 
     @api.model_create_multi
     def create(self, vals_list):

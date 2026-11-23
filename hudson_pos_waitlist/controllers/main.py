@@ -14,7 +14,7 @@ try:
 except ImportError:
     from odoo.http import content_disposition
 
-from ..models.pos_waitlist_entry import ANY_FLOOR, SHARE_TABLE_SELECTION, MAX_PARTY_SIZE
+from ..models.pos_waitlist_entry import ANY_FLOOR, SHARE_TABLE_SELECTION, MAX_GUEST_NAME, MAX_GUEST_NOTE
 
 _logger = logging.getLogger(__name__)
 
@@ -40,7 +40,8 @@ _LOOKUP_RATE_WINDOW = 10 * 60  # seconds
 
 # Form fields read from the POST body. Everything else is ignored.
 # No table field: guests pick a floor / area only, the host picks the table.
-_JOIN_FORM_FIELDS = ('guest_name', 'phone', 'party_size', 'preferred_floor', 'share_table')
+_JOIN_FORM_FIELDS = ('guest_name', 'phone', 'phone_country', 'party_size', 'preferred_floor', 'share_table',
+                     'guest_note')
 
 
 class PosWaitlistController(http.Controller):
@@ -82,6 +83,11 @@ class PosWaitlistController(http.Controller):
             httponly=True, samesite='Lax', secure=secure)
         return response
 
+    def _forget_entry(self, response, pos_config):
+        """Drop this browser's tracking cookie for ``pos_config`` (the visit is over)."""
+        response.delete_cookie(self._tracking_cookie_name(pos_config), path='/waitlist/')
+        return response
+
     def _get_tracking_entry(self, pos_config):
         access_token = request.httprequest.cookies.get(self._tracking_cookie_name(pos_config))
         Entry = request.env['pos.waitlist.entry'].sudo()
@@ -89,13 +95,24 @@ class PosWaitlistController(http.Controller):
             return Entry.browse()
         return Entry._get_active_tracking_entry(pos_config, access_token)
 
+    def _get_seated_entry(self, pos_config):
+        """This browser's remembered visit for ``pos_config`` if the guest is seated and still
+        at their table, else empty."""
+        access_token = request.httprequest.cookies.get(self._tracking_cookie_name(pos_config))
+        Entry = request.env['pos.waitlist.entry'].sudo()
+        if not access_token or not _ACCESS_TOKEN_RE.match(access_token):
+            return Entry.browse()
+        return Entry._get_seated_tracking_entry(pos_config, access_token)
+
     def _render_join_form(self, pos_config, restaurant_token, values=None, errors=None, status=200,
                           find=None):
         tags = request.env['pos.waitlist.tag'].sudo().search([])
         Entry = request.env['pos.waitlist.entry'].sudo()
+        # Read on every request from the POS's current active floors: new / renamed floors show
+        # up without regenerating the QR code.
         floor_options = Entry._public_floor_options(pos_config)
         tracking_entry = self._get_tracking_entry(pos_config)
-        return request.render('hudson_pos_waitlist.waitlist_join_page', {
+        response = request.render('hudson_pos_waitlist.waitlist_join_page', {
             # Find My Place panel: {'open': bool, 'phone': str, 'error': str}
             'find': find or {},
             'find_action': f'/waitlist/join/{restaurant_token}/find',
@@ -109,13 +126,24 @@ class PosWaitlistController(http.Controller):
             'company': pos_config.company_id,
             'form_action': f'/waitlist/join/{restaurant_token}',
             'values': values or {'preferred_floor': ANY_FLOOR, 'share_table': 'private', 'tags': []},
+            # Country picker for the phone number (ISO codes only); the restaurant's country first.
+            'phone_countries': Entry._public_phone_countries(),
+            'default_phone_country': Entry._phone_region(pos_config),
             'errors': errors or [],
             # Any Floor + this POS's own floors. Hidden when the POS has no floor plan.
             'floor_options': floor_options if len(floor_options) > 1 else [],
             'share_table_options': SHARE_TABLE_SELECTION,
             'tags': [(t.code, t.name) for t in tags],
-            'max_party_size': MAX_PARTY_SIZE,
+            # 0 = no limit. The server applies the same limit on submit.
+            'max_party_size': pos_config._waitlist_party_size_limit(),
+            'max_guest_name': MAX_GUEST_NAME,
+            'max_guest_note': MAX_GUEST_NOTE,
         }, status=status, headers=_PUBLIC_PAGE_HEADERS)
+        if not tracking_entry and request.httprequest.cookies.get(self._tracking_cookie_name(pos_config)):
+            # The remembered visit is closed (left, cancelled, no show, completed) or unknown:
+            # it is never offered again. A new visit starts from this form as a new entry.
+            self._forget_entry(response, pos_config)
+        return response
 
     @http.route('/waitlist/join/<string:restaurant_token>', type='http', auth='public',
                 methods=['GET'], website=False, sitemap=False)
@@ -125,6 +153,13 @@ class PosWaitlistController(http.Controller):
         if not pos_config or not pos_config.enable_qr_self_join:
             _logger.info("QR Self Join unavailable (%s token)", 'disabled' if pos_config else 'unknown')
             return self._unavailable()
+        if not kwargs.get('new'):
+            # Seated and still at the table: Back from the status page (or scanning the QR again)
+            # shows the guest's own status, not an empty join form. "Join the waitlist again"
+            # on the status page passes ?new=1 to start a new visit on purpose.
+            seated = self._get_seated_entry(pos_config)
+            if seated:
+                return request.redirect(f'/waitlist/s/{seated.access_token}', code=303, local=True)
         return self._render_join_form(pos_config, restaurant_token)
 
     # csrf=False: guests are anonymous and their session may be reset between GET and POST by
@@ -196,7 +231,8 @@ class PosWaitlistController(http.Controller):
             return self._unavailable()
 
         phone = (post.get('phone') or '')[:64]
-        find = {'open': True, 'phone': phone}
+        country = (post.get('phone_country') or '')[:8]
+        find = {'open': True, 'phone': phone, 'phone_country': country}
         if post.get('website'):
             # Honeypot: bots get the panel back with nothing revealed.
             return self._render_join_form(pos_config, restaurant_token, find=find)
@@ -209,7 +245,7 @@ class PosWaitlistController(http.Controller):
 
         Entry = request.env['pos.waitlist.entry'].sudo()
         try:
-            entry = Entry._find_my_place(pos_config, phone)
+            entry = Entry._find_my_place(pos_config, phone, country or None)
         except ValidationError as e:
             find['error'] = str(e.args[0])
             return self._render_join_form(pos_config, restaurant_token, find=find, status=400)
@@ -235,27 +271,45 @@ class PosWaitlistController(http.Controller):
         if not entry:
             return self._unavailable()
         status = entry._public_status()
+        config = entry.config_id
         response = request.render('hudson_pos_waitlist.waitlist_status_page', {
             'page_title': _("Track My Waitlist"),
             'restaurant_name': status['restaurant_name'],
             'company': entry.config_id.company_id,
             'status': status,
             'existing': bool(existing),
-            'status_url': f'/waitlist/s/{access_token}',
+            # Live updates only while waiting: a closed page (Seated included) never polls.
+            'status_url': f'/waitlist/s/{access_token}' if status['active'] else False,
+            # A closed visit (Seated, Left, Cancelled, No Show) is never reopened: the guest
+            # goes back to the restaurant's normal QR join form, which creates a new visit.
+            'join_url': (f'/waitlist/join/{config.waitlist_token}?new=1'
+                         if config.enable_qr_self_join and config.waitlist_token else False),
         }, headers=_PUBLIC_PAGE_HEADERS)
-        if status['active']:
+        if status['active'] or (entry.state == 'seated' and entry._seating_active()):
+            # Waiting, or seated and still at the table: the join form sends this browser back
+            # here (see waitlist_join).
             # Opening the link on another device makes that device's form show it too.
             self._remember_entry(response, entry)
+        elif request.httprequest.cookies.get(self._tracking_cookie_name(config)) == access_token:
+            # This closed visit is no longer this browser's current one.
+            self._forget_entry(response, config)
         return response
 
     @http.route('/waitlist/s/<string:access_token>/json', type='http', auth='public',
                 methods=['GET'], website=False, sitemap=False)
     def waitlist_status_json(self, access_token, **kwargs):
-        """Polled by the status page to refresh state / estimated wait without reloading."""
+        """Polled by the status page to refresh state / estimated wait without reloading.
+
+        Only a waiting entry is tracked. Once it is closed (Seated, Cancelled, Left, No Show) the
+        answer is ``410 Gone`` carrying the final state once more (so the page that was polling
+        shows "Seated - Table 4"), and the page stops: tracking for that visit has ended.
+        """
         entry = self._get_entry_by_access_token(access_token)
         if not entry:
             raise NotFound()
-        return request.make_json_response(entry._public_status(), headers=_PUBLIC_PAGE_HEADERS)
+        status = entry._public_status()
+        return request.make_json_response(status, headers=_PUBLIC_PAGE_HEADERS,
+                                          status=200 if status['active'] else 410)
 
     def _qr_png(self, restaurant_token):
         """Stored QR PNG of an enabled POS, or 404."""

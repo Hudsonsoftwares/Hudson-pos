@@ -86,7 +86,7 @@ class TestWaitlistStatusSync(HttpCase, WaitlistCommon):
     # ------------------------------------------------------------------
     def test_pos_actions_reach_backend_and_guest(self):
         flows = [('waiting', 'seated')]
-        entry, _c = self.join(phone='5550000001')
+        entry, _c = self.join(phone='9550000001')
         for start, target in flows:
             self._clear_bus()
             self.assertTrue(self.Entry.with_user(self.host).pos_change_state(
@@ -94,7 +94,7 @@ class TestWaitlistStatusSync(HttpCase, WaitlistCommon):
             self.assertSynced(entry, f"after POS {start} -> {target}")
         for i, (start, target) in enumerate([('waiting', 'cancelled'), ('waiting', 'left'),
                                              ('waiting', 'no_show')]):
-            other, _c = self.join(phone=f'55500002{i:02d}')
+            other, _c = self.join(phone=f'95500002{i:02d}')
             self._clear_bus()
             self.assertTrue(self.Entry.with_user(self.host).pos_change_state(
                 self.config_a.id, other.id, start, target)['ok'])
@@ -107,12 +107,12 @@ class TestWaitlistStatusSync(HttpCase, WaitlistCommon):
         self.assertTrue(any(entry.id in m['entry_ids'] for m in self._bus_messages('hudson_waitlist_changed')))
 
     def test_backend_message_carries_no_guest_data(self):
-        entry, _c = self.join(guest_name='Private Person', phone='5557770001')
+        entry, _c = self.join(guest_name='Private Person', phone='9557770001')
         self._clear_bus()
         entry.with_user(self.manager).write({'state': 'seated'})
         for message in self._bus_messages('hudson_waitlist_changed'):
             flat = repr(message)
-            for secret in ('Private Person', '5557770001', entry.sudo().access_token):
+            for secret in ('Private Person', '9557770001', entry.sudo().access_token):
                 self.assertNotIn(secret, flat)
             self.assertEqual(set(message), {'entry_ids', 'company_ids'})
 
@@ -127,8 +127,8 @@ class TestWaitlistStatusSync(HttpCase, WaitlistCommon):
     # Backend views follow live (browser)
     # ------------------------------------------------------------------
     def test_backend_views_follow_pos_live(self):
-        self.join(phone='5550000001', guest_name='Ada Lovelace')
-        self.join(phone='5550000002', guest_name='Grace Hopper')
+        self.join(phone='9550000001', guest_name='Ada Lovelace')
+        self.join(phone='9550000002', guest_name='Grace Hopper')
         self.env['pos.waitlist.entry'].search([('config_id', '!=', self.config_a.id)]).sudo().unlink()
         action = self.env.ref('hudson_pos_waitlist.action_pos_waitlist_entry')
         self.start_tour(f'/odoo/action-{action.id}', 'hudson_pos_waitlist_backend_sync_tour', login='admin')

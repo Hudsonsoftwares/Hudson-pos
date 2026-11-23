@@ -699,8 +699,8 @@
             </div>
 
             <!-- CUSTOMER SPECIAL REQUESTS & NOTES CARD (FULL WIDTH) -->
-            <!-- Hidden when the appointment type already asks a 'Special Requests' question -->
-            <div t-if="'special_requests' not in appointment_type.question_ids.mapped('question_role')"
+            <!-- Shown only when 'Pre-Food Required' is enabled; hidden when the type already asks a 'Special Requests' question -->
+            <div t-if="prefood_enabled and 'special_requests' not in appointment_type.question_ids.mapped('question_role')"
                  class="card shadow-sm rounded-4 mt-3 mb-4 p-4 w-100 o_booking_card">
                 <div class="d-flex align-items-start gap-3">
                     <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 o_booking_icon_badge"
@@ -735,7 +735,8 @@
     <!-- 3. Pre-Order Food reminder, Table Assignment & Invoice Download on Confirmation Page -->
     <template id="appointment_confirmation_inherit_dine_in_food" inherit_id="appointment.appointment_confirmation">
         <xpath expr="//div[hasclass('o_appointment_confirmation')]//div[hasclass('premium-card')]/div[hasclass('row')]" position="after">
-            <div t-if="booking" class="card shadow-sm rounded-4 mt-4 overflow-hidden o_booking_card">
+            <!-- Restaurant card (table details, welcome, food, notes, invoice) only when 'Pre-Food Required' is enabled -->
+            <div t-if="booking and booking.sudo().appointment_type_id.pre_food_required" class="card shadow-sm rounded-4 mt-4 overflow-hidden o_booking_card">
                 <!-- Decorative Top Accent -->
                 <div style="height: 5px; background: linear-gradient(90deg, #10b981, #f59e0b, #6366f1);"/>
 

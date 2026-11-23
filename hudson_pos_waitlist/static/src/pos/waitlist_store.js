@@ -110,8 +110,10 @@ patch(PosStore.prototype, {
     },
 
     /**
-     * Server matching of the POS tables against one guest (floor, party size, sharing,
-     * availability): {available_ids, busy, tables: [{id, status, reason, ...}], preferred_floor_id}.
+     * Server matching of the POS tables against one guest (party size, availability, floor,
+     * sharing, hints): {available_ids, busy, tables: [{id, status, reason, ...}], floors,
+     * combinations, preferred_floor_id, preference_relaxed}. Floors and tables are the
+     * server's current ones, not the ones loaded when this POS session opened.
      */
     async loadSeatableTables(entry = null) {
         return await this.data.call(WAITLIST_MODEL, "get_seatable_tables", [
@@ -130,19 +132,24 @@ patch(PosStore.prototype, {
     },
 
     /**
-     * Seat a waiting guest at an existing table (Waiting -> Seated). The server re-checks the entry and the
-     * table under a lock; on refusal the result carries fresh availability to pick again.
+     * Seat a waiting guest at one existing table, or at several tables combined for a large
+     * party (Waiting -> Seated). The server re-checks the entry and every table under a lock;
+     * on refusal the result carries fresh availability to pick again.
      */
-    async seatWaitlistGuest(entry, tableId) {
+    async seatWaitlistGuest(entry, tableIds) {
+        const ids = (Array.isArray(tableIds) ? tableIds : [tableIds]).filter(Boolean);
         this.waitlist.busy[entry.id] = true;
         try {
             const result = await this.data.call(WAITLIST_MODEL, "pos_seat_guest", [
                 this.config.id,
                 entry.id,
                 entry.state,
-                tableId || false,
+                ids.length > 1 ? ids : ids[0] || false,
             ]);
             this._applyWaitlistQueue(result.queue);
+            if (result.ok && result.merged_tables?.length) {
+                await this.applyWaitlistTableMerge(result.merged_tables);
+            }
             this.notification.add(result.message, { type: result.ok ? "success" : "warning" });
             return result;
         } finally {
@@ -151,15 +158,56 @@ patch(PosStore.prototype, {
     },
 
     /**
+     * The server already merged the extra tables under the main one. Replay it through the
+     * floor plan's own merge call so this terminal's floor plan (and the other devices, via
+     * the standard device sync) show one combined table, released when its order is paid.
+     */
+    async applyWaitlistTableMerge(merges) {
+        for (const merge of merges) {
+            try {
+                await this.data.callRelated("restaurant.table", "set_parent_id", [merge.id], {
+                    parent_id: merge.parent_id,
+                    parent_side: merge.parent_side,
+                    config_id: this.config.id,
+                });
+            } catch (error) {
+                console.warn("Waitlist: could not refresh merged table", merge.id, error);
+            }
+        }
+    },
+
+    /** The guest's res.partner (created / reused at QR join), loaded on demand. */
+    async getWaitlistPartner(partnerId) {
+        if (!partnerId) {
+            return null;
+        }
+        const known = this.models["res.partner"]?.get(partnerId);
+        if (known) {
+            return known;
+        }
+        try {
+            const found = await this.data.searchRead("res.partner", [["id", "=", partnerId]]);
+            return found?.[0] || null;
+        } catch {
+            return null; // offline / no access: the order simply opens without a customer
+        }
+    },
+
+    /**
      * Continue with the normal restaurant flow: open the table exactly as tapping it on the
      * floor plan does (setTableFromUi), so ordering, kitchen, payment are the standard ones.
      *
-     * Free table: its order is created up front the same way setTable would (addNewOrder
-     * with the table) carrying the party size, and flagged as "guests set" so the standard
-     * guest-count popup does not overwrite the waitlist party size.
-     * Shared table: the table's existing order opens and the party is added to its guests.
+     * Free table: the guest's own order is created up front the same way setTable would
+     * (addNewOrder with the table) carrying the party size, and flagged as "guests set" so the
+     * standard guest-count popup does not overwrite the waitlist party size.
+     * Shared table: the guest gets their OWN new order on the same table (never the other
+     * party's order): separate bills, each paid on its own; the table stays taken until every
+     * order on it is paid. The other orders of the table stay reachable from the order list.
+     * Combined tables: the main table's order serves the whole party (the others are merged).
+     * ``orderUuid`` is issued by the server when seating: it keeps this order separate on sync.
+     * The waitlist customer is set on the guest's own order.
      */
-    async openWaitlistTable(tableId, partySize, shared = false) {
+    async openWaitlistTable(tableId, partySize, shared = false, partnerId = false, orderUuid = false) {
         let table = this.models["restaurant.table"]?.get(tableId);
         if (!table) {
             return;
@@ -168,18 +216,32 @@ patch(PosStore.prototype, {
             table = table.getParent();
         }
         const openOrders = this.getTableOrders(table.id).filter((o) => !o.finalized);
-        if (!openOrders.length && partySize) {
-            const order = this.addNewOrder({ table_id: table });
+        if ((!openOrders.length || shared) && partySize) {
+            const data = { table_id: table };
+            if (orderUuid && !this.models["pos.order"].getBy("uuid", orderUuid)) {
+                data.uuid = orderUuid;
+            }
+            const order = this.addNewOrder(data);
             order.setCustomerCount(partySize);
             order.uiState.guestSetted = true;
+            const partner = await this.getWaitlistPartner(partnerId);
+            if (partner) {
+                order.setPartner(partner);
+            }
+            if (shared) {
+                // setTableFromUi would select the table's first order (the other party's).
+                await this.setTable(table, order.uuid);
+                this.setOrder(order);
+                this.navigate("ProductScreen", { orderUuid: order.uuid });
+                return;
+            }
             await this.setTableFromUi(table, order.uuid);
             return;
         }
         await this.setTableFromUi(table);
         const order = this.getOrder();
         if (order && order.table_id?.id === table.id && !order.finalized && partySize) {
-            const base = shared ? order.customer_count || 0 : 0;
-            order.setCustomerCount(base + partySize);
+            order.setCustomerCount(partySize);
             order.uiState.guestSetted = true;
         }
     },

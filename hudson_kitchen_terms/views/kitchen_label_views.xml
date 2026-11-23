@@ -91,7 +91,11 @@
               parent="mrp.menu_mrp_configuration"
               action="action_kitchen_label"
               sequence="99"
-              groups="base.group_system"/>
+              groups="mrp.group_mrp_routings"/>
+
+    <record id="menu_kitchen_label" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('mrp.group_mrp_routings')])]"/>
+    </record>
 
     <!-- Deactivate Procurement Scheduler menus whose action returns False and does not work from the web UI -->
     <record id="mrp.menu_procurement_compute_mrp" model="ir.ui.menu">
