@@ -17,7 +17,7 @@ Each floor gets a designed layout, as if drawn in Point of Sale > Floor plan > E
 Format (see pos_restaurant/static/src/app/services/floor_plan): restaurant.floor.floor_plan_layout =
 {bgColor, decorations: [...]}, restaurant.table.floor_plan_layout = {uuid, shape, left, top, width,
 height, color}. Decorations are shapes ('rect', 'circle'), 'line', 'text' and 'image' (an image by
-url; the illustrations are SVG files of this module: static/src/img/floor_plan). Decorations are
+url; the illustrations are the SVG decor library of hudson_pos_theme: static/src/img/floor_plan). Decorations are
 drawn below the tables, in list order.
 """
 import hashlib
@@ -28,7 +28,8 @@ _logger = logging.getLogger(__name__)
 
 DATA_MODULE = 'hudson_pos_demo_data'
 THEME_MODULE = 'hudson_pos_theme'
-IMG = f'/{THEME_MODULE}/static/src/img/floor_plan'
+OLD_IMG = f'/{DATA_MODULE}/static/src/img/floor_plan'  # old copies in the demo module (removed in 20.0.1.0.31)
+IMG = f'/{THEME_MODULE}/static/src/img/floor_plan'  # the vectors belong to the theme (shipped to clients)
 ODOO_IMG = '/pos_restaurant/static/floor_plan'
 
 WALL = '#4e342e'
@@ -380,4 +381,30 @@ def upgrade_untouched_floor_plans(env):
                     table.write({'floor_plan_layout': table_layout(floor_xid, number, spec)})
             upgraded.append(floor.name)
     return upgraded
-    return upgraded
+
+
+def repoint_floor_plan_images(env):
+    """Point floor plan illustrations that still load from the old copies in hudson_pos_demo_data at the
+    decor library of hudson_pos_theme (the copies are removed from the demo module). Only the url of
+    our own illustrations changes; the user's layout is kept."""
+    from .demo_guard import unguarded
+    if 'restaurant.floor' not in env:
+        return []
+    fixed = []
+    with unguarded():
+        for floor in env['restaurant.floor'].sudo().with_context(active_test=False).search([]):
+            layout = floor.floor_plan_layout
+            if not isinstance(layout, dict) or not layout.get('decorations'):
+                continue
+            changed = False
+            decorations = []
+            for deco in layout['decorations']:
+                url = isinstance(deco, dict) and deco.get('url')
+                if isinstance(url, str) and url.startswith(OLD_IMG + '/'):
+                    deco = dict(deco, url=IMG + url[len(OLD_IMG):])
+                    changed = True
+                decorations.append(deco)
+            if changed:
+                floor.write({'floor_plan_layout': dict(layout, decorations=decorations)})
+                fixed.append(floor.name)
+    return fixed

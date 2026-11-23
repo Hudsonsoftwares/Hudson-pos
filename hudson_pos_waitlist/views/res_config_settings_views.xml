@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Point of Sale > Configuration > Settings (per selected POS) -->
+    <record id="res_config_settings_view_form_inherit_waitlist" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.waitlist</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <block id="restaurant_section" position="after">
+                <block title="Waitlist" id="pos_waitlist_section" invisible="not pos_config_id">
+                    <setting id="pos_qr_self_join_setting" string="Enable QR Self Join"
+                             help="Guests scan a QR code at the entrance to join this restaurant's waitlist.">
+                        <field name="pos_enable_qr_self_join"/>
+                        <div class="content-group mt16" invisible="not pos_enable_qr_self_join">
+                            <div class="row mb-2">
+                                <label for="pos_qr_join_url" class="col-lg-3 o_light_label" string="QR Join URL"/>
+                                <div class="col-lg-9">
+                                    <field name="pos_qr_join_url" widget="CopyClipboardChar"/>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <label for="pos_waitlist_minutes_per_party" class="col-lg-3 o_light_label" string="Average Waiting Time"/>
+                                <div class="col-lg-9">
+                                    <field name="pos_waitlist_minutes_per_party" class="oe_inline" style="width: 5rem;"/>
+                                    <span class="ms-1">min</span>
+                                    <div class="text-muted small">
+                                        Shown to every waiting guest as their estimated average wait (minimum 1). Never multiplied by their place in line; the queue position is not shown.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning py-2 mb-2" role="alert" invisible="not pos_qr_code_outdated">
+                                The Odoo base URL changed since this QR was generated. Click Generate QR Code to update it.
+                            </div>
+                            <div class="mb-2" invisible="not pos_qr_code_image">
+                                <field name="pos_qr_code_image" widget="image" options="{'size': [180, 180]}"/>
+                            </div>
+                            <div class="text-muted mb-2" invisible="pos_qr_code_image">
+                                No QR code yet. Click Generate QR Code.
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-primary" icon="fa-qrcode"/>
+                                <button name="action_download_qr_code" type="object" string="Download QR Code" class="btn-secondary" icon="fa-download" invisible="not pos_qr_code_image"/>
+                                <button name="action_print_qr_code" type="object" string="Print QR Code" class="btn-secondary" icon="fa-print" invisible="not pos_qr_code_image"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </block>
+        </field>
+    </record>
+</odoo>

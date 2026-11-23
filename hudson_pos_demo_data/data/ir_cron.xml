@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Loads the demo data queued by module installs/upgrades (models/demo_autoloader.py) in the
+         background, one suite per transaction, so installing a module never runs into the request
+         time limits of a hosted server. Triggered right after each install; the interval is only a
+         safety net and does nothing when the queue is empty. -->
+    <record id="ir_cron_load_demo_queue" model="ir.cron">
+        <field name="name">Hudson Demo Data: load queued demo suites</field>
+        <field name="model_id" ref="model_hudson_pos_demo_autoloader"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_load_queue()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

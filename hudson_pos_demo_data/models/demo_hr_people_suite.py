@@ -393,30 +393,60 @@ def _skills(env):
 
 def _leave_types(env):
     WET = env['hr.work.entry.type'].sudo()
-    india = env.ref('base.in')
+    # Ensure any existing custom leave types are global (country_id = False)
+    all_codes = [code for _xid, _name, code, *_ in LEAVE_TYPES]
+    for existing in WET.search([('code', 'in', all_codes)]):
+        if existing.country_id:
+            existing.write({'country_id': False})
+
     res = {}
     for xid, name, code, req_alloc, validation, unit, unpaid, _days, color, doc in LEAVE_TYPES:
         vals = {
-            'name': name, 'code': code, 'country_id': india.id, 'count_as': 'absence', 'requires_allocation': req_alloc,
+            'name': name, 'code': code, 'country_id': False, 'count_as': 'absence', 'requires_allocation': req_alloc,
             'leave_validation_type': validation, 'request_unit': unit, 'unit_of_measure': 'day', 'color': color,
             'employee_requests': code == 'RC_CO', 'allocation_validation_type': 'hr' if code == 'RC_CO' else 'no_validation',
         }
         optional = {'unpaid': unpaid, 'support_document': doc, 'time_off_selectable': True, 'amount_rate': 0.0 if unpaid else 1.0,
                     'include_in_leave_encashment': code == 'RC_EL', 'l10n_in_is_sandwich_leave': code == 'RC_EL'}
         vals.update({k: v for k, v in optional.items() if k in WET._fields})
-        res[xid] = _get_or_create(env, xid, 'hr.work.entry.type', vals, [('code', '=', code), ('country_id', '=', india.id)])
+        rec = _get_or_create(env, xid, 'hr.work.entry.type', vals, [('code', '=', code), ('country_id', '=', False)])
+        if rec and rec.country_id:
+            rec.write({'country_id': False})
+        res[xid] = rec
     return res
 
 
 def _public_holidays(env):
-    for xid, name, day in KERALA_HOLIDAYS:
-        if _ref(env, xid):
-            continue
-        d = fields.Date.to_date(day)
-        _get_or_create(env, xid, 'resource.calendar.leaves', {
-            'name': name, 'company_id': env.company.id, 'calendar_id': False, 'resource_id': False,
-            'date_from': _utc(d, 0.0), 'date_to': _utc(d, 23.0 + 59 / 60),
-        })
+    companies = env['res.company'].sudo().search([])
+    Holiday = env['resource.calendar.leaves'].sudo()
+    for comp in companies:
+        for xid, name, day in KERALA_HOLIDAYS:
+            cxid = f'{xid}_{comp.id}'
+            if _ref(env, cxid):
+                continue
+            if comp.id == 1 and _ref(env, xid):
+                continue
+            d = fields.Date.to_date(day)
+            d_from = _utc(d, 0.0)
+            d_to = _utc(d, 23.0 + 59 / 60)
+            # Check if any public holiday already exists for this company covering this date
+            existing = Holiday.search([
+                ('resource_id', '=', False),
+                ('company_id', '=', comp.id),
+                ('date_from', '<=', d_to),
+                ('date_to', '>=', d_from),
+            ], limit=1)
+            if existing:
+                _bind(env, cxid, existing)
+                continue
+            try:
+                with env.cr.savepoint():
+                    _get_or_create(env, cxid, 'resource.calendar.leaves', {
+                        'name': name, 'company_id': comp.id, 'calendar_id': False, 'resource_id': False,
+                        'date_from': d_from, 'date_to': d_to,
+                    })
+            except Exception as e:
+                _logger.warning("Hudson POS: public holiday '%s' for %s skipped: %s", name, comp.name, e)
 
 
 def _allocations(env, ltypes):

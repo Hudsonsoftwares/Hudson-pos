@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_knowledge_empty_trash" model="ir.cron">
+        <field name="name">Knowledge: Permanently delete expired trashed articles</field>
+        <field name="model_id" ref="model_knowledge_management_article"/>
+        <field name="state">code</field>
+        <field name="code">model._gc_trashed_articles()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

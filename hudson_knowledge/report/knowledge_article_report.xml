@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ─────────────────────────────────────────────────────────────
+         Article PDF ("Download PDF" in the article ⋮ menu)
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="action_report_knowledge_article" model="ir.actions.report">
+        <field name="name">Article (PDF)</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hudson_knowledge.report_knowledge_article</field>
+        <field name="print_report_name">(object.name or 'Article').replace('/', '-')</field>
+        <field name="binding_model_id" ref="model_knowledge_management_article"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_knowledge_article">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+              <!-- div.article: Odoo wraps each one in the report layout
+                   (charset, Bootstrap, base URL) and renders it on its own pages. -->
+              <div class="article" t-att-data-oe-model="doc._name" t-att-data-oe-id="doc.id"
+                   t-att-data-oe-lang="doc.env.context.get('lang')">
+                <div class="page o_knowledge_pdf">
+                    <style>
+                        .o_knowledge_pdf { font-size: 14px; line-height: 1.5; color: #212529; }
+                        .o_knowledge_pdf h1, .o_knowledge_pdf h2, .o_knowledge_pdf h3,
+                        .o_knowledge_pdf p, .o_knowledge_pdf li, .o_knowledge_pdf td, .o_knowledge_pdf th {
+                            font-family: "Helvetica Neue", Arial, "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+                        }
+                        .o_knowledge_pdf_cover {
+                            height: 220px; overflow: hidden; margin-bottom: 16px; border-radius: 4px;
+                        }
+                        .o_knowledge_pdf_cover img { display: block; width: 100%; position: relative; }
+                        .o_knowledge_pdf_emoji {
+                            font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
+                        }
+                        .o_knowledge_pdf_icon {
+                            font-size: 48px; line-height: 1; margin-bottom: 8px;
+                            font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
+                        }
+                        .o_knowledge_pdf_body table td, .o_knowledge_pdf_body table th {
+                            border: 1px solid #dee2e6; padding: 4px 8px; text-align: left; vertical-align: top;
+                        }
+                        .o_knowledge_pdf_body table th { background: #f8f9fa; }
+                        .o_knowledge_pdf_body img { max-width: 100%; height: auto; }
+                        .o_knowledge_pdf_body table { width: 100%; border-collapse: collapse; }
+                        .o_knowledge_pdf_body pre { white-space: pre-wrap; }
+                        .o_knowledge_pdf_body blockquote {
+                            border-left: 4px solid #dee2e6; padding-left: 12px; color: #6c757d;
+                        }
+                        .o_knowledge_pdf_items { margin: 12px 0; page-break-inside: avoid; }
+                        .o_knowledge_pdf_items h4 { font-size: 16px; margin-bottom: 6px; }
+                    </style>
+                    <!-- Cropped like the app's object-position: top P% of the
+                         frame minus P% of the image height. -->
+                    <div t-if="doc.cover_image_url" class="o_knowledge_pdf_cover">
+                        <t t-set="cover_pos" t-value="doc.cover_position or '50%'"/>
+                        <img t-att-src="doc._get_pdf_cover_url()" alt=""
+                             t-attf-style="top: {{ cover_pos }}; -webkit-transform: translateY(-{{ cover_pos }}); transform: translateY(-{{ cover_pos }});"/>
+                    </div>
+                    <div t-if="doc.icon" class="o_knowledge_pdf_icon" t-out="doc.icon"/>
+                    <div class="o_knowledge_pdf_body" t-out="doc._get_pdf_body_html()"/>
+                </div>
+              </div>
+            </t>
+        </t>
+    </template>
+</odoo>

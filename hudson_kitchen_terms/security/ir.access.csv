@@ -1,3 +1,4 @@
 id,name,model_id,group_id/id,operation,domain
 access_kitchen_label_admin,kitchen.label.admin,kitchen.label,base.group_system,crud,
 access_kitchen_label_user,kitchen.label.user,kitchen.label,base.group_user,r,
+kitchen_label_comp_rule,kitchen.label company rule,kitchen.label,,crud,"['|', ('company_id', 'in', company_ids), ('company_id', '=', False)]"

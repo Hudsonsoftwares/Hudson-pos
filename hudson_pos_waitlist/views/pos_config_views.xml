@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- POS configuration form: "Waitlist" tab -->
+    <record id="pos_config_view_form_inherit_waitlist" model="ir.ui.view">
+        <field name="name">pos.config.form.inherit.waitlist</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Waitlist" name="waitlist_configuration">
+                    <div class="row mt16 o_settings_container">
+                        <setting id="qr_self_join" string="Enable QR Self Join"
+                                 help="Guests scan a QR code at the entrance to join this restaurant's waitlist.">
+                            <field name="enable_qr_self_join"/>
+                        </setting>
+                    </div>
+
+                    <div invisible="not enable_qr_self_join">
+                        <separator string="QR Self Join"/>
+                        <group>
+                            <field name="qr_join_url" widget="CopyClipboardChar"/>
+                            <field name="waitlist_token" groups="base.group_no_one"/>
+                            <label for="waitlist_minutes_per_party"/>
+                            <div class="o_row">
+                                <field name="waitlist_minutes_per_party" class="oe_inline"/>
+                                <span>minutes</span>
+                            </div>
+                        </group>
+                        <div class="alert alert-warning py-2" role="alert" invisible="not qr_code_outdated">
+                            The Odoo base URL changed since this QR was generated
+                            (it encodes <field name="qr_code_url" class="d-inline fw-bold"/>).
+                            Click Generate QR Code to update it.
+                        </div>
+                        <group>
+                            <label for="qr_code_image" string="QR Code"/>
+                            <div>
+                                <field name="qr_code_image" widget="image" options="{'size': [220, 220]}" invisible="not qr_code_image"/>
+                                <span class="text-muted" invisible="qr_code_image">No QR code yet. Click Generate QR Code.</span>
+                            </div>
+                        </group>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-primary" icon="fa-qrcode"/>
+                            <button name="action_download_qr_code" type="object" string="Download QR Code" class="btn-secondary" icon="fa-download" invisible="not qr_code_image"/>
+                            <button name="action_print_qr_code" type="object" string="Print QR Code" class="btn-secondary" icon="fa-print" invisible="not qr_code_image"/>
+                        </div>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="pos_config_view_tree_inherit_waitlist" model="ir.ui.view">
+        <field name="name">pos.config.tree.inherit.waitlist</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_config_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="enable_qr_self_join" string="QR Self Join" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- QR ordering payment pages (/pos/pay/...) are rendered with the website layout, so
+         website_livechat injects its chat button there. Live Chat is not part of QR ordering:
+         switch it off on these pages only (website_livechat honours `no_livechat`). -->
+    <template id="pos_online_payment_pay_no_livechat" inherit_id="pos_online_payment.pay" name="QR Ordering Payment: no Live Chat">
+        <xpath expr="//t[@t-call='portal.frontend_layout']" position="attributes">
+            <attribute name="no_livechat">True</attribute>
+        </xpath>
+    </template>
+
+    <template id="pos_online_payment_confirmation_no_livechat" inherit_id="pos_online_payment.pay_confirmation" name="QR Ordering Payment Confirmation: no Live Chat">
+        <xpath expr="//t[@t-call='web.frontend_layout']" position="attributes">
+            <attribute name="no_livechat">True</attribute>
+        </xpath>
+    </template>
+
+    <template id="pos_online_payment_status_no_livechat" inherit_id="pos_online_payment.pos_payment_status" name="QR Ordering Payment Status: no Live Chat">
+        <xpath expr="//t[@t-call='web.frontend_layout']" position="attributes">
+            <attribute name="no_livechat">True</attribute>
+        </xpath>
+    </template>
+</odoo>

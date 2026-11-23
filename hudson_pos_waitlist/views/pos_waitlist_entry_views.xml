@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Back-office view of the queue. Hosts work from the POS Waitlist panel (static/src/pos). -->
+    <record id="pos_waitlist_entry_view_list" model="ir.ui.view">
+        <field name="name">pos.waitlist.entry.list</field>
+        <field name="model">pos.waitlist.entry</field>
+        <field name="arch" type="xml">
+            <list js_class="hudson_waitlist_list" decoration-muted="state in ('seated', 'cancelled', 'left', 'no_show')">
+                <field name="token"/>
+                <field name="guest_name"/>
+                <field name="phone"/>
+                <field name="party_size"/>
+                <field name="preferred_floor_id" optional="show" placeholder="Any Floor"/>
+                <field name="share_table" optional="show"/>
+                <field name="tag_ids" widget="many2many_tags" optional="show"/>
+                <field name="config_id" optional="show"/>
+                <field name="source" optional="hide"/>
+                <field name="join_time"/>
+                <field name="quoted_wait" optional="show"/>
+                <field name="table_id" optional="show"/>
+                <field name="position" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'waiting'"
+                       decoration-info="state == 'seated'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="pos_waitlist_entry_view_form" model="ir.ui.view">
+        <field name="name">pos.waitlist.entry.form</field>
+        <field name="model">pos.waitlist.entry</field>
+        <field name="arch" type="xml">
+            <form js_class="hudson_waitlist_form">
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"
+                           statusbar_visible="waiting,seated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="token" readonly="1" placeholder="Assigned on save"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="guest_name"/>
+                            <field name="phone"/>
+                            <field name="party_size"/>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="config_id"/>
+                            <field name="preferred_floor_id" placeholder="Any Floor"
+                                   domain="[('pos_config_ids', 'in', config_id)]"
+                                   options="{'no_create': True}"/>
+                            <field name="share_table"/>
+                            <field name="source"/>
+                        </group>
+                        <group>
+                            <field name="join_time"/>
+                            <field name="end_time" invisible="not end_time"/>
+                            <field name="table_id" invisible="not table_id"/>
+                        </group>
+                        <group>
+                            <field name="quoted_wait"/>
+                            <field name="position" invisible="state != 'waiting'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="pos_waitlist_entry_view_search" model="ir.ui.view">
+        <field name="name">pos.waitlist.entry.search</field>
+        <field name="model">pos.waitlist.entry</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="token"/>
+                <field name="guest_name"/>
+                <field name="phone"/>
+                <field name="config_id"/>
+                <filter name="active_queue" string="Active" domain="[('state', '=', 'waiting')]"/>
+                <filter name="today" string="Today" domain="[('queue_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="qr" string="QR Self Join" domain="[('source', '=', 'qr')]"/>
+                <group>
+                    <filter name="group_config" string="Point of Sale" context="{'group_by': 'config_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pos_waitlist_entry" model="ir.actions.act_window">
+        <field name="name">Waitlist</field>
+        <field name="res_model">pos.waitlist.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active_queue': 1}</field>
+    </record>
+
+    <record id="pos_waitlist_tag_view_list" model="ir.ui.view">
+        <field name="name">pos.waitlist.tag.list</field>
+        <field name="model">pos.waitlist.tag</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code" optional="hide" placeholder="Generated from name"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pos_waitlist_tag" model="ir.actions.act_window">
+        <field name="name">Waitlist Tags</field>
+        <field name="res_model">pos.waitlist.tag</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <menuitem id="menu_pos_waitlist_entry" name="Waitlist"
+              parent="point_of_sale.menu_point_of_sale" action="action_pos_waitlist_entry"
+              sequence="40" groups="point_of_sale.group_pos_user"/>
+    <menuitem id="menu_pos_waitlist_tag" name="Waitlist Tags"
+              parent="point_of_sale.menu_point_config_product" action="action_pos_waitlist_tag"
+              sequence="90" groups="point_of_sale.group_pos_manager"/>
+</odoo>

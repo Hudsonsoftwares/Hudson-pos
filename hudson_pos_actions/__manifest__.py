@@ -3,7 +3,7 @@
 
 {
     'name': 'POS Actions Menu Enhancements',
-    'version': '20.0.1.0.11',
+    'version': '20.0.1.0.13',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
     'summary': 'Enhanced POS Actions (3-dot) menu and Self-Order configuration matching Odoo Online SaaS',
@@ -17,9 +17,10 @@
         - Enables Mobile Self-Order Table service with Pay after Each Order without enterprise restrictions
         - Enables persistent 'Order Now' button and streamlined Cancel Order on Self-Order Landing & Cart
     """,
-    'depends': ['point_of_sale', 'pos_restaurant', 'pos_sale', 'pos_self_order'],
+    'depends': ['point_of_sale', 'pos_restaurant', 'pos_sale', 'pos_self_order', 'pos_online_payment_self_order'],
     'data': [
         'views/res_config_settings_views.xml',
+        'views/pos_online_payment_templates.xml',
     ],
     'assets': {
         'point_of_sale._assets_pos': [

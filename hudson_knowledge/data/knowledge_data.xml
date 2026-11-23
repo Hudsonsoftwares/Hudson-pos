@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Default Welcome Article -->
+    <record id="knowledge_article_welcome" model="knowledge.management.article">
+        <field name="name">Welcome to Hudson Knowledge</field>
+        <field name="icon">🏠</field>
+        <field name="sequence">1</field>
+        <field name="visibility">workspace</field>
+        <field name="body_html"><![CDATA[
+<h1>Welcome to Hudson Knowledge 📚</h1>
+<p>This is your company's knowledge base. Use it to create, share and manage articles, documentation and guides.</p>
+<h2>Getting Started</h2>
+<ul>
+    <li>Click <strong>+ New Article</strong> in the sidebar to create your first article</li>
+    <li>Use the <strong>rich text editor</strong> to add headings, lists, images and more</li>
+    <li>Type <strong>/</strong> anywhere in an article to access quick commands</li>
+    <li>Build <strong>Item Kanbans</strong>, <strong>Item Lists</strong> and <strong>Item Calendars</strong> directly inside articles</li>
+</ul>
+<h2>Organize your knowledge</h2>
+<p>Articles are organized into three sections:</p>
+<ul>
+    <li><strong>Workspace</strong> — visible to all internal users</li>
+    <li><strong>Shared</strong> — visible to specific users you invite</li>
+    <li><strong>Private</strong> — only visible to you</li>
+</ul>
+        ]]></field>
+    </record>
+
+    <!-- Default Article Templates -->
+    <record id="knowledge_template_meeting" model="knowledge.management.article.template">
+        <field name="category_id" ref="knowledge_template_category_productivity"/>
+        <field name="name">Meeting Notes</field>
+        <field name="icon">📝</field>
+        <field name="sequence">10</field>
+        <field name="body_html"><![CDATA[
+<h1>Meeting Notes</h1>
+<p><strong>Date:</strong> </p>
+<p><strong>Attendees:</strong> </p>
+<p><strong>Agenda:</strong> </p>
+<hr/>
+<h2>Discussion Points</h2>
+<ul><li></li></ul>
+<h2>Action Items</h2>
+<ul><li></li></ul>
+<h2>Next Steps</h2>
+<ul><li></li></ul>
+        ]]></field>
+    </record>
+
+    <record id="knowledge_template_sop" model="knowledge.management.article.template">
+        <field name="category_id" ref="knowledge_template_category_company"/>
+        <field name="name">Standard Operating Procedure</field>
+        <field name="icon">📋</field>
+        <field name="sequence">20</field>
+        <field name="body_html"><![CDATA[
+<h1>Standard Operating Procedure</h1>
+<p><strong>Purpose:</strong> </p>
+<p><strong>Scope:</strong> </p>
+<p><strong>Owner:</strong> </p>
+<hr/>
+<h2>Procedure Steps</h2>
+<ol>
+    <li><strong>Step 1:</strong> </li>
+    <li><strong>Step 2:</strong> </li>
+    <li><strong>Step 3:</strong> </li>
+</ol>
+<h2>References</h2>
+<ul><li></li></ul>
+        ]]></field>
+    </record>
+
+    <record id="knowledge_template_onboarding" model="knowledge.management.article.template">
+        <field name="category_id" ref="knowledge_template_category_company"/>
+        <field name="name">Employee Onboarding</field>
+        <field name="icon">👋</field>
+        <field name="sequence">30</field>
+        <field name="body_html"><![CDATA[
+<h1>Employee Onboarding</h1>
+<p>Welcome to the team! This guide will help you get started.</p>
+<h2>Week 1 Checklist</h2>
+<ul>
+    <li>Complete HR paperwork</li>
+    <li>Set up workstation and accounts</li>
+    <li>Meet the team</li>
+    <li>Review company policies</li>
+</ul>
+<h2>Key Contacts</h2>
+<ul>
+    <li><strong>Manager:</strong> </li>
+    <li><strong>HR:</strong> </li>
+    <li><strong>IT Support:</strong> </li>
+</ul>
+<h2>Resources</h2>
+<ul><li></li></ul>
+        ]]></field>
+    </record>
+
+    <!-- Tiny House Catalog Template (Matches Image 1 reference) -->
+    <record id="knowledge_template_catalog" model="knowledge.management.article.template">
+        <field name="category_id" ref="knowledge_template_category_sales"/>
+        <field name="name">Tiny House Catalog</field>
+        <field name="icon">🏡</field>
+        <field name="sequence">40</field>
+        <field name="body_html"><![CDATA[
+<h1>Tiny House Catalog</h1>
+<p class="lead">Explore our curated collection of architectural designs, modern layouts, and sustainable micro-homes.</p>
+<div class="o_knowledge_item_view_host" data-embedded="knowledgeItemView" data-oe-protected="true" contenteditable="false" data-embedded-props='{"viewType": "kanban", "name": "Available Models"}'></div>
+<p><br></p>
+<h2>Available Models ✅</h2>
+<div class="o_knowledge_item_view_host" data-embedded="knowledgeItemView" data-oe-protected="true" contenteditable="false" data-embedded-props='{"viewType": "list", "name": "Model Specifications &amp; Pricing"}'></div>
+<p><br></p>
+<h2>How to find the perfect model for your needs 🥰</h2>
+<p>Here is a short guide that will help you pick the right tiny house for you:</p>
+<ul>
+    <li><strong>Footprint & Mobility:</strong> Determine whether you plan to keep your home stationary or towable on a trailer.</li>
+    <li><strong>Off-Grid Capabilities:</strong> Evaluate solar packages, rainwater harvesting, and composting toilet systems.</li>
+    <li><strong>Interior Customization:</strong> Loft bedrooms vs. ground-floor master suites, compact kitchenettes, and foldable dining tables.</li>
+</ul>
+<p><img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1200&q=80" alt="Tiny Home" class="img-fluid rounded my-3" style="max-height:360px; object-fit:cover; width:100%;"/></p>
+<p><em>Contact our architectural advisory team to schedule a custom walkthrough session.</em></p>
+        ]]></field>
+    </record>
+
+    <!-- Product Feature Specification (PRD) Template -->
+    <record id="knowledge_template_prd" model="knowledge.management.article.template">
+        <field name="category_id" ref="knowledge_template_category_product"/>
+        <field name="name">Product Feature Spec (PRD)</field>
+        <field name="icon">🚀</field>
+        <field name="sequence">50</field>
+        <field name="body_html"><![CDATA[
+<h1>Product Feature Specification 🚀</h1>
+<p><strong>Owner:</strong> Product Management | <strong>Status:</strong> In Review | <strong>Target Release:</strong> Q4</p>
+<hr/>
+<h2>1. Problem Statement & Motivation</h2>
+<p>Users require an automated, streamlined solution to eliminate recurring manual data entry and improve team turnaround times.</p>
+<h2>2. Scope & Key Deliverables</h2>
+<div class="o_knowledge_item_view_host" data-embedded="knowledgeItemView" data-oe-protected="true" contenteditable="false" data-embedded-props='{"viewType": "list", "name": "Functional Deliverables"}'></div>
+<p><br></p>
+<h2>3. Execution Kanban</h2>
+<div class="o_knowledge_item_view_host" data-embedded="knowledgeItemView" data-oe-protected="true" contenteditable="false" data-embedded-props='{"viewType": "kanban", "name": "Implementation Phases"}'></div>
+<p><br></p>
+<h2>4. Key Performance Metrics</h2>
+<ul>
+    <li>User task completion efficiency improved by 35%</li>
+    <li>Zero critical blocking bugs during rollout week</li>
+</ul>
+        ]]></field>
+    </record>
+
+    <!-- Sprint Planning & Task Tracker Template -->
+    <record id="knowledge_template_sprint" model="knowledge.management.article.template">
+        <field name="category_id" ref="knowledge_template_category_product"/>
+        <field name="name">Sprint Planning Board</field>
+        <field name="icon">⚡</field>
+        <field name="sequence">60</field>
+        <field name="body_html"><![CDATA[
+<h1>Sprint Planning Board ⚡</h1>
+<p><strong>Sprint:</strong> 2026-Q3-S4 | <strong>Dates:</strong> Sept 21 – Oct 5 | <strong>Scrum Lead:</strong> Team Lead</p>
+<hr/>
+<h2>Sprint Goals</h2>
+<ol>
+    <li>Deliver v1.1 feature enhancements with 100% automated test coverage.</li>
+    <li>Improve frontend latency across high-volume listing tables.</li>
+</ol>
+<h2>Sprint Work Board</h2>
+<div class="o_knowledge_item_view_host" data-embedded="knowledgeItemView" data-oe-protected="true" contenteditable="false" data-embedded-props='{"viewType": "kanban", "name": "Sprint Tasks"}'></div>
+<p><br></p>
+<h2>Retrospective & Notes</h2>
+<p>Document blockers, dependencies, and action points during sprint demos.</p>
+        ]]></field>
+    </record>
+</odoo>

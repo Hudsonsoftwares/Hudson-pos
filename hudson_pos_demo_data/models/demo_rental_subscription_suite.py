@@ -221,6 +221,56 @@ def load_rental_demo_data(env):
                 _create_rental_order(env, spec, prods)
         except Exception as e:
             _logger.exception("Hudson POS: Rental demo order %s failed: %s", spec[0], e)
+    try:
+        with env.cr.savepoint():
+            _refresh_rental_dashboard_dates(env)
+    except Exception as e:
+        _logger.exception("Hudson POS: Failed to refresh rental dashboard dates: %s", e)
+
+
+def _refresh_rental_dashboard_dates(env):
+    """Keep demo rental order dates fresh relative to now so all dashboard tiles stay populated."""
+    now = fields.Datetime.now()
+
+    # 1. Today pickup (rc_rent_so_nest_launch) -> is_today=True, rental_status='pickup'
+    nest = _ref(env, 'rc_rent_so_nest_launch')
+    if nest and nest.exists():
+        nest.write({
+            'rental_start_date': now + timedelta(hours=2),
+            'rental_end_date': now + timedelta(days=2),
+        })
+
+    # 2. Late pickup (rc_rent_so_runners_late_pickup) -> is_late=True, rental_status='pickup'
+    runners = _ref(env, 'rc_rent_so_runners_late_pickup')
+    if runners and runners.exists():
+        runners.write({
+            'rental_start_date': now - timedelta(days=1, hours=3),
+            'rental_end_date': now + timedelta(days=1),
+        })
+
+    # 3. Today return (rc_rent_so_bluewave_offsite) -> is_today=True, rental_status='return'
+    blue = _ref(env, 'rc_rent_so_bluewave_offsite')
+    if blue and blue.exists():
+        blue.write({
+            'rental_start_date': now - timedelta(days=2),
+            'rental_end_date': now + timedelta(hours=3),
+        })
+
+    # 4. Late return (rc_rent_so_grand_late_return) -> is_late=True, rental_status='return'
+    grand = _ref(env, 'rc_rent_so_grand_late_return')
+    if grand and grand.exists():
+        grand.write({
+            'rental_start_date': now - timedelta(days=5),
+            'rental_end_date': now - timedelta(days=1, hours=2),
+        })
+
+    # 5. Future pickup (rc_rent_so_marina_wedding)
+    marina = _ref(env, 'rc_rent_so_marina_wedding')
+    if marina and marina.exists():
+        marina.write({
+            'rental_start_date': now + timedelta(days=4),
+            'rental_end_date': now + timedelta(days=6),
+        })
 
 
 # =========================================================================== SUBSCRIPTIONS

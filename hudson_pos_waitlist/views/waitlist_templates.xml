@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Base Public Waitlist Document Layout -->
+    <template id="waitlist_layout">
+        &lt;!DOCTYPE html&gt;
+        <html lang="en">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <meta name="referrer" content="same-origin"/>
+                <title><t t-out="page_title or 'Waitlist'"/><t t-if="restaurant_name"> - <t t-out="restaurant_name"/></t></title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+                <style>
+                    :root {
+                        --wl-bg: #100b08;
+                        --wl-card: #1c1511;
+                        --wl-card-border: rgba(216, 168, 78, 0.22);
+                        --wl-gold: #d8a84e;
+                        --wl-gold-light: #f5cf7b;
+                        --wl-gold-grad: linear-gradient(135deg, #f5cf7b 0%, #efbe58 45%, #d8a84e 100%);
+                        --wl-cream: #fcf9f4;
+                        --wl-muted: #a3958a;
+                        --wl-green: #2ecc71;
+                        --wl-green-bg: rgba(46, 204, 113, 0.12);
+                    }
+                    * { box-sizing: border-box; margin: 0; padding: 0; }
+                    body {
+                        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+                        background: radial-gradient(circle at 50% 10%, rgba(216, 168, 78, 0.12), transparent 45%), var(--wl-bg);
+                        color: var(--wl-cream);
+                        min-height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 20px 16px;
+                        -webkit-font-smoothing: antialiased;
+                    }
+                    .wl-container {
+                        width: 100%;
+                        max-width: 440px;
+                        margin: 0 auto;
+                    }
+                    .wl-card {
+                        background: var(--wl-card);
+                        border: 1px solid var(--wl-card-border);
+                        border-radius: 20px;
+                        padding: 34px 24px;
+                        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.04);
+                        text-align: center;
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    .wl-card::before {
+                        content: "";
+                        position: absolute;
+                        top: 0; left: 0; right: 0;
+                        height: 3px;
+                        background: var(--wl-gold-grad);
+                    }
+                    .wl-brand-icon {
+                        width: 68px;
+                        height: 68px;
+                        margin: 0 auto 18px;
+                        background: rgba(216, 168, 78, 0.12);
+                        border: 1px solid var(--wl-card-border);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: var(--wl-gold);
+                        font-size: 26px;
+                        box-shadow: 0 8px 24px rgba(216, 168, 78, 0.18);
+                    }
+                    .wl-restaurant-name {
+                        font-family: 'Playfair Display', Georgia, serif;
+                        font-size: 1.85rem;
+                        font-weight: 700;
+                        color: #ffffff;
+                        line-height: 1.2;
+                        margin-bottom: 6px;
+                    }
+                    .wl-subtitle {
+                        font-size: 0.8rem;
+                        letter-spacing: 0.16em;
+                        text-transform: uppercase;
+                        color: var(--wl-gold);
+                        font-weight: 700;
+                        margin-bottom: 18px;
+                    }
+                    .wl-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                        padding: 6px 14px;
+                        border-radius: 999px;
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        letter-spacing: 0.04em;
+                    }
+                    .wl-badge-open {
+                        background: var(--wl-green-bg);
+                        color: var(--wl-green);
+                        border: 1px solid rgba(46, 204, 113, 0.3);
+                    }
+                    .wl-badge-closed {
+                        background: rgba(231, 76, 60, 0.12);
+                        color: #e74c3c;
+                        border: 1px solid rgba(231, 76, 60, 0.3);
+                    }
+                    .wl-badge-dot {
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 50%;
+                        background: currentColor;
+                        display: inline-block;
+                        animation: pulse 2s infinite;
+                    }
+                    @keyframes pulse {
+                        0%, 100% { opacity: 1; transform: scale(1); }
+                        50% { opacity: 0.4; transform: scale(0.8); }
+                    }
+                    .wl-divider {
+                        height: 1px;
+                        background: var(--wl-card-border);
+                        margin: 22px 0;
+                    }
+                    .wl-message {
+                        color: var(--wl-muted);
+                        font-size: 0.95rem;
+                        line-height: 1.6;
+                        margin-bottom: 24px;
+                    }
+                    .wl-btn-primary {
+                        display: block;
+                        width: 100%;
+                        padding: 16px 20px;
+                        background: var(--wl-gold-grad);
+                        color: #18120e;
+                        font-weight: 800;
+                        font-size: 0.92rem;
+                        letter-spacing: 0.08em;
+                        text-transform: uppercase;
+                        border: none;
+                        border-radius: 999px;
+                        cursor: pointer;
+                        text-decoration: none;
+                        box-shadow: 0 10px 28px rgba(216, 168, 78, 0.35);
+                        transition: transform 0.2s ease, box-shadow 0.2s ease;
+                    }
+                    .wl-btn-primary:hover, .wl-btn-primary:active {
+                        transform: translateY(-2px);
+                        box-shadow: 0 14px 34px rgba(216, 168, 78, 0.5);
+                    }
+                    .wl-phase-note {
+                        margin-top: 18px;
+                        padding: 12px 14px;
+                        background: rgba(255, 255, 255, 0.04);
+                        border: 1px dashed rgba(216, 168, 78, 0.25);
+                        border-radius: 12px;
+                        font-size: 0.78rem;
+                        color: var(--wl-muted);
+                        line-height: 1.5;
+                    }
+                    .wl-phase-note strong { color: var(--wl-gold-light); }
+                    .wl-footer {
+                        text-align: center;
+                        margin-top: 20px;
+                        font-size: 0.72rem;
+                        color: rgba(255, 255, 255, 0.35);
+                        letter-spacing: 0.06em;
+                    }
+                    .wl-footer a { color: var(--wl-gold); text-decoration: none; }
+
+                    /* ---------- Join form ---------- */
+                    .wl-form { text-align: left; }
+                    .wl-field { margin-bottom: 18px; border: 0; }
+                    .wl-label {
+                        display: block;
+                        font-size: 0.78rem;
+                        font-weight: 700;
+                        letter-spacing: 0.06em;
+                        text-transform: uppercase;
+                        color: var(--wl-gold-light);
+                        margin-bottom: 8px;
+                    }
+                    .wl-label .wl-req { color: var(--wl-gold); }
+                    .wl-input {
+                        width: 100%;
+                        padding: 14px 16px;
+                        font: inherit;
+                        font-size: 1rem;
+                        color: var(--wl-cream);
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 1px solid rgba(255, 255, 255, 0.14);
+                        border-radius: 12px;
+                        outline: none;
+                        -webkit-appearance: none;
+                    }
+                    .wl-input:focus { border-color: var(--wl-gold); box-shadow: 0 0 0 3px rgba(216, 168, 78, 0.2); }
+                    .wl-stepper { display: flex; align-items: stretch; gap: 8px; }
+                    .wl-stepper .wl-input { text-align: center; font-weight: 700; font-size: 1.15rem; }
+                    .wl-step-btn {
+                        flex: 0 0 52px;
+                        font-size: 1.4rem;
+                        font-weight: 700;
+                        color: var(--wl-gold-light);
+                        background: rgba(216, 168, 78, 0.1);
+                        border: 1px solid var(--wl-card-border);
+                        border-radius: 12px;
+                        cursor: pointer;
+                    }
+                    .wl-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+                    .wl-choice { position: relative; flex: 1 1 auto; }
+                    .wl-choice input { position: absolute; opacity: 0; pointer-events: none; }
+                    .wl-choice span {
+                        display: block;
+                        text-align: center;
+                        padding: 12px 14px;
+                        font-size: 0.9rem;
+                        font-weight: 600;
+                        color: var(--wl-muted);
+                        background: rgba(255, 255, 255, 0.04);
+                        border: 1px solid rgba(255, 255, 255, 0.12);
+                        border-radius: 12px;
+                        cursor: pointer;
+                        transition: all 0.15s ease;
+                    }
+                    .wl-choice input:checked + span {
+                        color: #18120e;
+                        background: var(--wl-gold-grad);
+                        border-color: transparent;
+                    }
+                    .wl-choice input:focus-visible + span { box-shadow: 0 0 0 3px rgba(216, 168, 78, 0.35); }
+                    .wl-choices-stack .wl-choice { flex-basis: 100%; }
+                    .wl-errors {
+                        text-align: left;
+                        margin-bottom: 18px;
+                        padding: 12px 14px;
+                        border-radius: 12px;
+                        background: rgba(231, 76, 60, 0.12);
+                        border: 1px solid rgba(231, 76, 60, 0.35);
+                        color: #ff8a7a;
+                        font-size: 0.88rem;
+                        line-height: 1.5;
+                        list-style: none;
+                    }
+                    .wl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+                    .wl-btn-primary[disabled] { opacity: 0.6; cursor: wait; transform: none; }
+
+                    /* ---------- Status page ---------- */
+                    .wl-token-label { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--wl-muted); }
+                    .wl-token {
+                        font-family: 'Playfair Display', Georgia, serif;
+                        font-size: 3.4rem;
+                        font-weight: 700;
+                        line-height: 1.1;
+                        margin: 4px 0 14px;
+                        background: var(--wl-gold-grad);
+                        -webkit-background-clip: text;
+                        background-clip: text;
+                        color: transparent;
+                    }
+                    .wl-state { margin-bottom: 4px; }
+                    .wl-state-seated { background: rgba(245, 207, 123, 0.15); color: var(--wl-gold-light); border: 1px solid var(--wl-card-border); }
+                    .wl-state-done { background: rgba(255, 255, 255, 0.06); color: var(--wl-muted); border: 1px solid rgba(255, 255, 255, 0.14); }
+                    .wl-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 4px; }
+                    .wl-stats-single { grid-template-columns: 1fr; }
+                    .wl-on-list { font-size: 1.05rem; font-weight: 700; color: #fff; }
+                    .wl-stats-single .wl-stat-label { margin: 0 0 4px; }
+                    .wl-stat {
+                        padding: 14px 10px;
+                        border-radius: 14px;
+                        background: rgba(255, 255, 255, 0.04);
+                        border: 1px solid rgba(255, 255, 255, 0.08);
+                    }
+                    .wl-stat-value { font-size: 1.6rem; font-weight: 800; color: #fff; }
+                    .wl-stat-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wl-muted); margin-top: 2px; }
+                    .wl-details { text-align: left; margin-top: 8px; }
+                    .wl-detail {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 12px;
+                        padding: 10px 0;
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                        font-size: 0.9rem;
+                    }
+                    .wl-detail:last-child { border-bottom: 0; }
+                    .wl-detail dt { color: var(--wl-muted); }
+                    .wl-detail dd { color: var(--wl-cream); font-weight: 600; text-align: right; }
+                    .wl-notice {
+                        margin-bottom: 18px;
+                        padding: 12px 14px;
+                        border-radius: 12px;
+                        font-size: 0.85rem;
+                        line-height: 1.5;
+                        background: rgba(216, 168, 78, 0.1);
+                        border: 1px solid var(--wl-card-border);
+                        color: var(--wl-gold-light);
+                    }
+                    .wl-track {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 12px;
+                        margin-bottom: 20px;
+                        padding: 14px 16px;
+                        text-align: left;
+                        border-radius: 14px;
+                        background: rgba(216, 168, 78, 0.1);
+                        border: 1px solid var(--wl-card-border);
+                    }
+                    .wl-track-title { font-weight: 700; color: #fff; font-size: 0.92rem; }
+                    .wl-track-meta { font-size: 0.82rem; color: var(--wl-muted); margin-top: 2px; }
+                    .wl-track-meta b { color: var(--wl-gold-light); }
+                    .wl-track-btn {
+                        flex: 0 0 auto;
+                        padding: 10px 14px;
+                        border-radius: 999px;
+                        background: var(--wl-gold-grad);
+                        color: #18120e;
+                        font-weight: 800;
+                        font-size: 0.78rem;
+                        letter-spacing: 0.04em;
+                        text-decoration: none;
+                        white-space: nowrap;
+                    }
+                    /* ---------- Live status + alerts ---------- */
+                    [hidden] { display: none !important; }
+                    .wl-seated-alert {
+                        margin: 18px 0 0;
+                        padding: 18px 16px;
+                        border-radius: 16px;
+                        background: var(--wl-gold-grad);
+                        color: #18120e;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 4px;
+                        box-shadow: 0 12px 30px rgba(216, 168, 78, 0.4);
+                    }
+                    .wl-seated-alert .fa { font-size: 1.8rem; animation: wl-ring 1.2s ease-in-out infinite; }
+                    .wl-seated-alert b { font-size: 1.25rem; }
+                    .wl-seated-alert span { font-size: 0.92rem; font-weight: 600; }
+                    @keyframes wl-ring {
+                        0%, 60%, 100% { transform: rotate(0); }
+                        10%, 30%, 50% { transform: rotate(-14deg); }
+                        20%, 40% { transform: rotate(14deg); }
+                    }
+                    .wl-flash { animation: wl-flash 0.9s ease-in-out 4; }
+                    @keyframes wl-flash {
+                        0%, 100% { box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65); border-color: var(--wl-card-border); }
+                        50% { box-shadow: 0 0 0 6px rgba(245, 207, 123, 0.55), 0 24px 60px rgba(0, 0, 0, 0.65); border-color: var(--wl-gold-light); }
+                    }
+                    .wl-alerts { margin-top: 20px; }
+                    .wl-alerts-on {
+                        padding: 12px 14px;
+                        border-radius: 12px;
+                        font-size: 0.85rem;
+                        line-height: 1.5;
+                        color: var(--wl-green);
+                        background: var(--wl-green-bg);
+                        border: 1px solid rgba(46, 204, 113, 0.3);
+                    }
+                    .wl-live {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                        margin-top: 16px;
+                        font-size: 0.72rem;
+                        letter-spacing: 0.08em;
+                        text-transform: uppercase;
+                        color: var(--wl-muted);
+                    }
+                    .wl-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--wl-green); animation: pulse 2s infinite; }
+                    .wl-live-off .wl-live-dot { background: #e74c3c; }
+
+                    /* ---------- Find My Place ---------- */
+                    .wl-find {
+                        margin-top: 22px;
+                        padding-top: 18px;
+                        border-top: 1px solid var(--wl-card-border);
+                        text-align: center;
+                    }
+                    .wl-find summary {
+                        list-style: none;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                        color: var(--wl-muted);
+                        padding: 6px 0;
+                    }
+                    .wl-find summary::-webkit-details-marker { display: none; }
+                    .wl-find summary b { color: var(--wl-gold-light); text-decoration: underline; text-underline-offset: 3px; }
+                    .wl-find[open] summary { margin-bottom: 14px; }
+                    .wl-find-help { font-size: 0.85rem; color: var(--wl-muted); line-height: 1.5; margin-bottom: 14px; }
+                    .wl-btn-secondary {
+                        display: block;
+                        width: 100%;
+                        padding: 14px 20px;
+                        font: inherit;
+                        font-weight: 800;
+                        font-size: 0.85rem;
+                        letter-spacing: 0.08em;
+                        text-transform: uppercase;
+                        color: var(--wl-gold-light);
+                        background: transparent;
+                        border: 1px solid var(--wl-gold);
+                        border-radius: 999px;
+                        cursor: pointer;
+                    }
+                    .wl-btn-secondary[disabled] { opacity: 0.6; cursor: wait; }
+                    .wl-bookmark { margin-top: 18px; font-size: 0.78rem; color: var(--wl-muted); line-height: 1.5; }
+                </style>
+            </head>
+            <body>
+                <div class="wl-container">
+                    <t t-out="0"/>
+                    <div class="wl-footer">
+                        Powered by <b>Hudson POS Waitlist</b><t t-if="restaurant_name and company"> • <t t-out="company.name"/></t>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- Join Waitlist form (POST to the same /waitlist/join/<token> URL) -->
+    <template id="waitlist_join_page">
+        <t t-call="hudson_pos_waitlist.waitlist_layout">
+            <div class="wl-card">
+                <div class="wl-brand-icon">
+                    <i class="fa fa-cutlery" aria-hidden="true"/>
+                </div>
+
+                <h1 class="wl-restaurant-name"><t t-out="restaurant_name"/></h1>
+                <div class="wl-subtitle">Join Waitlist</div>
+
+                <span class="wl-badge wl-badge-open">
+                    <span class="wl-badge-dot"/> Waitlist open
+                </span>
+
+                <div class="wl-divider"/>
+
+                <!-- Track My Waitlist: only when this browser has an waiting entry for this POS -->
+                <div t-if="tracking" class="wl-track" id="wl_track">
+                    <div class="wl-track-text">
+                        <div class="wl-track-title">You're on the waitlist</div>
+                        <div class="wl-track-meta">
+                            <b><t t-out="tracking['token']"/></b> · <t t-out="tracking['state_label']"/>
+                        </div>
+                    </div>
+                    <a class="wl-track-btn" t-att-href="tracking['url']">Track My Waitlist</a>
+                </div>
+
+                <ul t-if="errors" class="wl-errors" role="alert">
+                    <li t-foreach="errors" t-as="err"><t t-out="err"/></li>
+                </ul>
+
+                <!-- Restaurant / POS come from the URL token only: no hidden ids in this form. -->
+                <form class="wl-form" method="post" t-att-action="form_action" id="wl_join_form" novalidate="novalidate">
+                    <div class="wl-field">
+                        <label class="wl-label" for="wl_guest_name">Guest Name <span class="wl-req">*</span></label>
+                        <input class="wl-input" type="text" id="wl_guest_name" name="guest_name"
+                               required="required" maxlength="80" autocomplete="name"
+                               t-att-value="values.get('guest_name')"/>
+                    </div>
+
+                    <div class="wl-field">
+                        <label class="wl-label" for="wl_phone">Phone Number <span class="wl-req">*</span></label>
+                        <input class="wl-input" type="tel" id="wl_phone" name="phone"
+                               required="required" maxlength="32" autocomplete="tel" inputmode="tel"
+                               t-att-value="values.get('phone')"/>
+                    </div>
+
+                    <div class="wl-field">
+                        <label class="wl-label" for="wl_party_size">Party Size <span class="wl-req">*</span></label>
+                        <div class="wl-stepper">
+                            <button type="button" class="wl-step-btn" data-step="-1" aria-label="Fewer guests">−</button>
+                            <input class="wl-input" type="number" id="wl_party_size" name="party_size"
+                                   required="required" min="1" t-att-max="max_party_size" step="1" inputmode="numeric"
+                                   t-att-value="values.get('party_size') or 2"/>
+                            <button type="button" class="wl-step-btn" data-step="1" aria-label="More guests">+</button>
+                        </div>
+                    </div>
+
+                    <fieldset class="wl-field" t-if="floor_options" id="wl_floor_field">
+                        <legend class="wl-label">Preferred Floor / Area</legend>
+                        <div class="wl-choices">
+                            <label class="wl-choice" t-foreach="floor_options" t-as="opt">
+                                <input type="radio" name="preferred_floor" t-att-value="opt[0]"
+                                       t-att-checked="(values.get('preferred_floor') or 'any') == opt[0]"/>
+                                <span><t t-out="opt[1]"/></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="wl-field">
+                        <legend class="wl-label">Table Sharing</legend>
+                        <div class="wl-choices wl-choices-stack">
+                            <label class="wl-choice" t-foreach="share_table_options" t-as="opt">
+                                <input type="radio" name="share_table" t-att-value="opt[0]"
+                                       t-att-checked="(values.get('share_table') or 'private') == opt[0]"/>
+                                <span><t t-out="opt[1]"/></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="wl-field" t-if="tags">
+                        <legend class="wl-label">Anything we should know? <span style="text-transform:none;letter-spacing:0;color:var(--wl-muted);font-weight:500;">(optional)</span></legend>
+                        <div class="wl-choices">
+                            <label class="wl-choice" t-foreach="tags" t-as="tag">
+                                <input type="checkbox" name="tags" t-att-value="tag[0]"
+                                       t-att-checked="tag[0] in (values.get('tags') or [])"/>
+                                <span><t t-out="tag[1]"/></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Honeypot: invisible to people, filled in by naive bots. -->
+                    <div class="wl-hp" aria-hidden="true">
+                        <label for="wl_website">Website</label>
+                        <input type="text" id="wl_website" name="website" tabindex="-1" autocomplete="off"/>
+                    </div>
+
+                    <button type="submit" class="wl-btn-primary" id="wl_submit">Join Waitlist</button>
+                </form>
+
+                <!-- Find My Place: recover an active entry on a new phone / browser. Works without JS. -->
+                <details class="wl-find" id="wl_find" t-att-open="'open' if find.get('open') else None">
+                    <summary>Already on the waitlist? <b>Find My Place</b></summary>
+                    <form class="wl-form wl-find-form" method="post" t-att-action="find_action" id="wl_find_form" novalidate="novalidate">
+                        <p class="wl-find-help">Enter the phone number you joined with and we'll take you back to your place in line.</p>
+                        <div t-if="find.get('error')" class="wl-errors" role="alert" id="wl_find_error"><t t-out="find['error']"/></div>
+                        <div class="wl-field">
+                            <label class="wl-label" for="wl_find_phone">Phone Number <span class="wl-req">*</span></label>
+                            <input class="wl-input" type="tel" id="wl_find_phone" name="phone"
+                                   required="required" maxlength="32" autocomplete="tel" inputmode="tel"
+                                   t-att-value="find.get('phone')"/>
+                        </div>
+                        <div class="wl-hp" aria-hidden="true">
+                            <label for="wl_find_website">Website</label>
+                            <input type="text" id="wl_find_website" name="website" tabindex="-1" autocomplete="off"/>
+                        </div>
+                        <button type="submit" class="wl-btn-secondary" id="wl_find_submit">Find My Place</button>
+                    </form>
+                </details>
+            </div>
+            <script>
+                (function () {
+                    var form = document.getElementById('wl_join_form');
+                    var size = document.getElementById('wl_party_size');
+                    var max = parseInt(size.getAttribute('max'), 10) || 50;
+                    document.querySelectorAll('.wl-step-btn').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            var v = (parseInt(size.value, 10) || 0) + parseInt(btn.dataset.step, 10);
+                            size.value = Math.min(Math.max(v, 1), max);
+                        });
+                    });
+                    form.addEventListener('submit', function (ev) {
+                        var btn = document.getElementById('wl_submit');
+                        if (btn.disabled) { ev.preventDefault(); return; }
+                        /* The server also recovers repeated submits; this only spares the round trip. */
+                        btn.disabled = true;
+                        btn.textContent = 'Joining…';
+                    });
+                    var findForm = document.getElementById('wl_find_form');
+                    findForm.addEventListener('submit', function (ev) {
+                        var btn = document.getElementById('wl_find_submit');
+                        if (btn.disabled) { ev.preventDefault(); return; }
+                        btn.disabled = true;
+                        btn.textContent = 'Searching…';
+                    });
+                    var find = document.getElementById('wl_find');
+                    if (find.open) { find.scrollIntoView({block: 'center'}); }
+                    window.addEventListener('pageshow', function () {
+                        var btn = document.getElementById('wl_submit');
+                        btn.disabled = false;
+                        btn.textContent = 'Join Waitlist';
+                        var fbtn = document.getElementById('wl_find_submit');
+                        fbtn.disabled = false;
+                        fbtn.textContent = 'Find My Place';
+                    });
+                })();
+            </script>
+        </t>
+    </template>
+
+    <!-- Track My Waitlist: only this guest's own entry -->
+    <template id="waitlist_status_page">
+        <t t-call="hudson_pos_waitlist.waitlist_layout">
+            <t t-set="state" t-value="status['state']"/>
+            <div class="wl-card" id="wl_status_card" t-att-data-state="state">
+                <h1 class="wl-restaurant-name"><t t-out="restaurant_name"/></h1>
+                <div class="wl-subtitle">Track My Waitlist</div>
+
+                <div t-if="existing" class="wl-notice">
+                    You're already on the waitlist. Here is your current status.
+                </div>
+
+                <div class="wl-token-label">Your number</div>
+                <div class="wl-token"><t t-out="status['token']"/></div>
+
+                <span id="wl_state_badge" t-attf-class="wl-badge wl-state #{'wl-badge-open' if state == 'waiting' else ('wl-state-seated' if state == 'seated' else 'wl-state-done')}">
+                    <span id="wl_state_dot" class="wl-badge-dot" t-att-hidden="None if status['active'] else 'hidden'"/>
+                    <span id="wl_state_label"><t t-out="status['state_label']"/></span>
+                </span>
+
+                <!-- Every block is rendered; the live updater only toggles / fills them (no page reloads). -->
+                <!-- Waiting: only the POS's Average Waiting Time. No queue position, no parties ahead. -->
+                <div id="wl_stats" class="wl-stats wl-stats-single" t-att-hidden="None if state == 'waiting' else 'hidden'">
+                    <div class="wl-on-list">You're on the waitlist</div>
+                    <div class="wl-stat">
+                        <div class="wl-stat-label">Estimated Average Wait</div>
+                        <div class="wl-stat-value">~<span id="wl_wait"><t t-out="status['estimated_wait']"/></span> <small style="font-size:0.9rem;font-weight:600;">minutes</small></div>
+                    </div>
+                </div>
+                <!-- Seated: the host assigned a table. Waiting -> Seated is the only "your turn" moment. -->
+                <div id="wl_seated_alert" class="wl-seated-alert" role="alert" t-att-hidden="None if state == 'seated' else 'hidden'">
+                    <i class="fa fa-bell" aria-hidden="true"/>
+                    <b>Your table is ready!</b>
+                    <span id="wl_seated_table" t-att-hidden="None if status['table'] else 'hidden'">Please go to Table <t t-out="status['table'] or ''"/>.</span>
+                    <span id="wl_seated_host" t-att-hidden="'hidden' if status['table'] else None">Please come to the host stand.</span>
+                </div>
+                <p id="wl_msg_seated" class="wl-message" style="margin:18px 0 0;" t-att-hidden="None if state == 'seated' else 'hidden'">Enjoy your meal!</p>
+                <p id="wl_msg_closed" class="wl-message" style="margin:18px 0 0;" t-att-hidden="None if state in ('cancelled', 'left', 'no_show') else 'hidden'">
+                    This waitlist entry is closed. Scan the QR code again if you'd like to rejoin.
+                </p>
+
+                <div class="wl-divider"/>
+
+                <dl class="wl-details">
+                    <div class="wl-detail"><dt>Party Size</dt><dd><t t-out="status['party_size']"/></dd></div>
+                    <div class="wl-detail"><dt>Preferred Floor</dt><dd><t t-out="status['floor_pref']"/></dd></div>
+                    <div class="wl-detail"><dt>Table Sharing</dt><dd><t t-out="status['share_table']"/></dd></div>
+                    <div class="wl-detail" t-if="status['tags']"><dt>Notes</dt><dd><t t-out="', '.join(status['tags'])"/></dd></div>
+                    <div class="wl-detail"><dt>Status</dt><dd id="wl_detail_state"><t t-out="status['state_label']"/></dd></div>
+                    <div class="wl-detail" id="wl_detail_table_row" t-att-hidden="None if status['table'] else 'hidden'"><dt>Table</dt><dd id="wl_detail_table"><t t-out="status['table'] or ''"/></dd></div>
+                </dl>
+
+                <!-- Browsers only allow sound / vibration after one tap on the page. -->
+                <div id="wl_alerts" class="wl-alerts" t-att-hidden="None if status['active'] else 'hidden'">
+                    <button type="button" id="wl_alerts_btn" class="wl-btn-secondary">
+                        <i class="fa fa-bell-o" aria-hidden="true"/> Turn on sound &amp; vibration alerts
+                    </button>
+                    <div id="wl_alerts_on" hidden="hidden">
+                        <div class="wl-alerts-on">
+                            <i class="fa fa-bell" aria-hidden="true"/> Sound &amp; vibration alerts are on.
+                        </div>
+                        <p class="wl-bookmark" id="wl_alerts_tip">
+                            <b>Tip:</b> Keep this page open or bookmark it to easily check your waitlist status.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="wl-live" id="wl_live"><span class="wl-live-dot"/> <span id="wl_live_text">Live updates</span></div>
+            </div>
+            <div id="wl_status_poll" hidden="hidden" t-att-data-url="status_url + '/json'"/>
+            <script>
+                (function () {
+                    function $(id) { return document.getElementById(id); }
+                    var url = $('wl_status_poll').dataset.url;
+                    var card = $('wl_status_card');
+                    var state = card.dataset.state;
+                    var CLOSED = {cancelled: 1, left: 1, no_show: 1};
+                    /* Same cadence as the KDS order-status screens. */
+                    var POLL_MS = 3000, IDLE_MS = 15000, TIMEOUT_MS = 8000;
+                    var timer = null, inflight = false;
+
+                    /* ---- Sound (Web Audio, like the KDS) + vibration ---- */
+                    var audioCtx = null;
+                    function ctx() {
+                        if (!audioCtx) {
+                            var AC = window.AudioContext || window.webkitAudioContext;
+                            if (AC) { audioCtx = new AC(); }
+                        }
+                        if (audioCtx &amp;&amp; audioCtx.state === 'suspended') { audioCtx.resume(); }
+                        return audioCtx;
+                    }
+                    function tone(c, freq, start, dur) {
+                        var o = c.createOscillator(), g = c.createGain();
+                        o.type = 'sine';
+                        o.frequency.value = freq;
+                        g.gain.setValueAtTime(0.0001, start);
+                        g.gain.exponentialRampToValueAtTime(0.6, start + 0.02);
+                        g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+                        o.connect(g);
+                        g.connect(c.destination);
+                        o.start(start);
+                        o.stop(start + dur + 0.05);
+                    }
+                    function chime(times) {
+                        var c = ctx();
+                        if (!c) { return; }
+                        var t = c.currentTime + 0.05;
+                        for (var i = 0; i &lt; times; i++) {
+                            tone(c, 880, t, 0.3);
+                            tone(c, 1174.7, t + 0.2, 0.3);
+                            tone(c, 1568, t + 0.4, 0.5);
+                            t += 1.1;
+                        }
+                    }
+                    function vibrate(pattern) {
+                        try { if (navigator.vibrate) { navigator.vibrate(pattern); } } catch (e) { /* unsupported (iPhone) */ }
+                    }
+                    $('wl_alerts_btn').addEventListener('click', function () {
+                        ctx();
+                        chime(1);
+                        vibrate(120);
+                        $('wl_alerts_btn').hidden = true;
+                        $('wl_alerts_on').hidden = false;
+                    });
+                    /* Any tap also unlocks audio. */
+                    document.addEventListener('pointerdown', function () { ctx(); }, {once: true});
+
+                    function alertSeated() {
+                        vibrate([500, 200, 500, 200, 900]);
+                        chime(3);
+                        document.title = '🔔 Your table is ready!';
+                        card.classList.remove('wl-flash');
+                        void card.offsetWidth;
+                        card.classList.add('wl-flash');
+                    }
+                    /* Every other status change (Left, Cancelled, No Show, back to Waiting...). */
+                    function alertStatus(label) {
+                        vibrate([300, 150, 300]);
+                        chime(1);
+                        document.title = '🔔 ' + label;
+                        card.classList.remove('wl-flash');
+                        void card.offsetWidth;
+                        card.classList.add('wl-flash');
+                    }
+
+                    /* ---- Live update: fill the page in place, never reload ---- */
+                    function render(s) {
+                        var prev = state;
+                        state = s.state;
+                        card.dataset.state = state;
+                        $('wl_state_label').textContent = s.state_label;
+                        $('wl_detail_state').textContent = s.state_label;
+                        $('wl_state_badge').className = 'wl-badge wl-state ' + (state === 'waiting' ? 'wl-badge-open'
+                            : (state === 'seated' ? 'wl-state-seated' : 'wl-state-done'));
+                        $('wl_state_dot').hidden = !s.active;
+                        $('wl_wait').textContent = s.estimated_wait;
+                        $('wl_stats').hidden = state !== 'waiting';
+                        $('wl_seated_alert').hidden = state !== 'seated';
+                        $('wl_seated_table').textContent = 'Please go to Table ' + (s.table || '') + '.';
+                        $('wl_seated_table').hidden = !s.table;
+                        $('wl_seated_host').hidden = !!s.table;
+                        $('wl_msg_seated').hidden = state !== 'seated';
+                        $('wl_detail_table').textContent = s.table || '';
+                        $('wl_detail_table_row').hidden = !s.table;
+                        $('wl_msg_closed').hidden = !CLOSED[state];
+                        $('wl_alerts').hidden = !s.active;
+                        if (state !== prev) {
+                            if (state === 'seated') { alertSeated(); } else { alertStatus(s.state_label); }
+                        }
+                    }
+                    function setLive(ok) {
+                        $('wl_live').classList.toggle('wl-live-off', !ok);
+                        $('wl_live_text').textContent = ok ? 'Live updates' : 'Reconnecting…';
+                    }
+                    /* Every state, closed ones included, follows the server while the page is
+                       visible: a host or back-office correction (e.g. Cancelled back to Waiting)
+                       shows within seconds. Hidden tabs slow down; they catch up on return. */
+                    var gone = false;
+                    function schedule() {
+                        clearTimeout(timer);
+                        if (gone) { return; }
+                        timer = setTimeout(poll, document.hidden ? IDLE_MS : POLL_MS);
+                    }
+                    function renderGone() {
+                        /* Entry removed from the back office: closed for good, stop polling. */
+                        gone = true;
+                        if (!CLOSED[state]) { alertStatus('Closed'); }
+                        state = 'cancelled';
+                        card.dataset.state = state;
+                        $('wl_state_label').textContent = 'Closed';
+                        $('wl_detail_state').textContent = 'Closed';
+                        $('wl_state_badge').className = 'wl-badge wl-state wl-state-done';
+                        $('wl_state_dot').hidden = true;
+                        $('wl_stats').hidden = true;
+                        $('wl_seated_alert').hidden = true;
+                        $('wl_msg_seated').hidden = true;
+                        $('wl_detail_table_row').hidden = true;
+                        $('wl_msg_closed').hidden = false;
+                        $('wl_alerts').hidden = true;
+                    }
+                    function poll() {
+                        if (inflight) { return; }
+                        inflight = true;
+                        clearTimeout(timer);
+                        /* A request stuck in the tunnel is aborted, so the loop can never stall. */
+                        var ctrl = window.AbortController ? new AbortController() : null;
+                        var abortTimer = ctrl ? setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS) : null;
+                        fetch(url + '?t=' + Date.now(), {cache: 'no-store', credentials: 'same-origin', signal: ctrl ? ctrl.signal : undefined})
+                            .then(function (r) {
+                                if (r.status === 404) { return {gone: true}; }
+                                if (!r.ok) { throw new Error(String(r.status)); }
+                                return r.json();
+                            })
+                            .then(function (s) { setLive(true); if (s.gone) { renderGone(); } else { render(s); } })
+                            .catch(function () { setLive(false); })
+                            .then(function () { clearTimeout(abortTimer); inflight = false; schedule(); });
+                    }
+                    /* Phones pause timers in the background: check at once when the guest comes back. */
+                    document.addEventListener('visibilitychange', function () { if (!document.hidden) { poll(); } });
+                    window.addEventListener('focus', poll);
+                    window.addEventListener('online', poll);
+                    window.addEventListener('pageshow', function (ev) { if (ev.persisted) { poll(); } });
+                    schedule();
+                })();
+            </script>
+        </t>
+    </template>
+
+    <!-- Shown for unknown, archived and disabled tokens alike: reveals nothing about the restaurant -->
+    <template id="waitlist_unavailable">
+        <t t-call="hudson_pos_waitlist.waitlist_layout">
+            <div class="wl-card">
+                <div class="wl-brand-icon">
+                    <i class="fa fa-clock-o" aria-hidden="true"/>
+                </div>
+                <h1 class="wl-restaurant-name">Waitlist Unavailable</h1>
+                <div class="wl-divider"/>
+                <p class="wl-message">
+                    This waitlist page is not available.
+                    Please speak with the host at the entrance.
+                </p>
+            </div>
+        </t>
+    </template>
+</odoo>

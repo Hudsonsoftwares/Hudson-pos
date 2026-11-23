@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ─────────────────────────────────────────────────────────────
+         Item Stage List View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_item_stage_list" model="ir.ui.view">
+        <field name="name">knowledge.management.item.stage.list</field>
+        <field name="model">knowledge.management.item.stage</field>
+        <field name="arch" type="xml">
+            <list string="Item Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="article_id"/>
+                <field name="fold"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_knowledge_item_stage_form" model="ir.ui.view">
+        <field name="name">knowledge.management.item.stage.form</field>
+        <field name="model">knowledge.management.item.stage</field>
+        <field name="arch" type="xml">
+            <form string="Stage">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="fold"/>
+                        <field name="article_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═════════════════════════════════════════════════════════════
+         Article Items — real Odoo views embedded in articles by the
+         "Build an Item Kanban / List / Calendar" commands.
+         Items are child articles (is_article_item = True).
+    ═════════════════════════════════════════════════════════════════ -->
+    <record id="view_knowledge_article_item_kanban" model="ir.ui.view">
+        <field name="name">knowledge.management.article.item.kanban</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" default_order="sequence, id"
+                    quick_create="1" group_create="1" group_edit="1" group_delete="1"
+                    records_draggable="1" sample="0" class="o_knowledge_item_kanban">
+                <field name="sequence"/>
+                <field name="stage_id"/>
+                <field name="item_date_start"/>
+                <field name="parent_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex align-items-start gap-2">
+                            <field name="icon" class="o_knowledge_item_card_icon"/>
+                            <field name="name" class="fw-bold text-break"/>
+                        </div>
+                        <div t-if="record.item_date_start.raw_value" class="small text-muted mt-1">
+                            <field name="item_date_start"/>
+                            <t t-if="record.item_date_end.raw_value"> → <field name="item_date_end"/></t>
+                        </div>
+                        <!-- Properties flagged "Display in Cards" -->
+                        <field name="article_properties" widget="properties"/>
+                        <footer class="pt-1">
+                            <div class="d-flex ms-auto align-items-center">
+                                <field name="create_uid" widget="many2one_avatar_user"/>
+                            </div>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_knowledge_article_item_list" model="ir.ui.view">
+        <field name="name">knowledge.management.article.item.list</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list string="Items" default_order="sequence, id" sample="0" class="o_knowledge_item_list">
+                <field name="sequence" widget="handle"/>
+                <field name="icon" string=" " nolabel="1" width="40px"/>
+                <field name="name" string="Article" width="240px"/>
+                <field name="stage_id" optional="show"/>
+                <field name="item_date_start" optional="show"/>
+                <field name="item_date_end" optional="show"/>
+                <field name="create_uid" string="Created by" widget="many2one_avatar_user" optional="hide"/>
+                <field name="write_date" string="Last Edited" optional="show"/>
+                <field name="parent_id" column_invisible="True"/>
+                <field name="article_properties"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_knowledge_article_item_calendar" model="ir.ui.view">
+        <field name="name">knowledge.management.article.item.calendar</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <calendar js_class="knowledge_item_calendar" string="Items"
+                      date_start="item_date_start" date_stop="item_date_end"
+                      mode="week" quick_create="1" show_date_picker="0" color="stage_id">
+                <field name="name"/>
+                <field name="stage_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_knowledge_article_item_search" model="ir.ui.view">
+        <field name="name">knowledge.management.article.item.search</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <search string="Search Items">
+                <field name="name" string="Article"/>
+                <field name="body_html" string="Content"/>
+                <field name="stage_id"/>
+                <filter string="My Items" name="my_items" domain="[('create_uid', '=', uid)]"/>
+                <separator/>
+                <filter string="Stage" name="group_stage" context="{'group_by': 'stage_id'}"/>
+                <filter string="Created by" name="group_create_uid" context="{'group_by': 'create_uid'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Item Kanban View (legacy knowledge.management.item model)
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_item_kanban" model="ir.ui.view">
+        <field name="name">knowledge.management.item.kanban</field>
+        <field name="model">knowledge.management.item</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" quick_create="1" group_create="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="stage_id"/>
+                <field name="user_id"/>
+                <field name="date"/>
+                <field name="kanban_state"/>
+                <field name="color"/>
+                <progressbar field="kanban_state"
+                             colors='{"normal": "200", "done": "success", "blocked": "danger"}'/>
+                <templates>
+                    <t t-name="card">
+                        <div class="fw-bold">
+                            <field name="name"/>
+                        </div>
+                        <div class="text-muted small mt-1">
+                            <field name="description"/>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <field name="date" widget="date" class="text-muted small"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Item List View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_item_list" model="ir.ui.view">
+        <field name="name">knowledge.management.item.list</field>
+        <field name="model">knowledge.management.item</field>
+        <field name="arch" type="xml">
+            <list string="Items" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="Name"/>
+                <field name="stage_id" string="Stage"/>
+                <field name="user_id" string="Assigned To"/>
+                <field name="date" string="Date"/>
+                <field name="kanban_state" string="State" widget="kanban_state_selection"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Item Calendar View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_item_calendar" model="ir.ui.view">
+        <field name="name">knowledge.management.item.calendar</field>
+        <field name="model">knowledge.management.item</field>
+        <field name="arch" type="xml">
+            <calendar string="Items" date_start="date" date_stop="date_end"
+                      color="user_id" mode="month" quick_create="1">
+                <field name="name"/>
+                <field name="user_id" filters="1"/>
+                <field name="stage_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Item Form View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_item_form" model="ir.ui.view">
+        <field name="name">knowledge.management.item.form</field>
+        <field name="model">knowledge.management.item</field>
+        <field name="arch" type="xml">
+            <form string="Item">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Item Name…"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="article_id"/>
+                            <field name="stage_id"
+                                   domain="[('article_id', '=', article_id)]"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="kanban_state"
+                                   widget="kanban_state_selection"/>
+                        </group>
+                        <group>
+                            <field name="date" string="Start Date"/>
+                            <field name="date_end" string="End Date"/>
+                            <field name="view_type"/>
+                            <field name="view_ref_id" string="View Block ID"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Add a description…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Item Search View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_item_search" model="ir.ui.view">
+        <field name="name">knowledge.management.item.search</field>
+        <field name="model">knowledge.management.item</field>
+        <field name="arch" type="xml">
+            <search string="Search Items">
+                <field name="name"/>
+                <field name="article_id"/>
+                <filter string="My Items" name="my_items"
+                        domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Stage" name="group_stage"
+                        context="{'group_by': 'stage_id'}"/>
+                <filter string="Article" name="group_article"
+                        context="{'group_by': 'article_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Window Action — Items
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="action_knowledge_item" model="ir.actions.act_window">
+        <field name="name">Items</field>
+        <field name="res_model">knowledge.management.item</field>
+        <field name="view_mode">kanban,list,calendar,form</field>
+        <field name="search_view_id" ref="view_knowledge_item_search"/>
+    </record>
+</odoo>

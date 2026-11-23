@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<!-- Article properties panel (Odoo Online "Add Properties") -->
+<t t-name="hudson_knowledge.KnowledgePropertiesPanel">
+    <div class="o_knowledge_properties_panel_inner">
+        <div class="o_knowledge_properties_header">
+            <span class="o_knowledge_properties_title">Properties</span>
+            <button type="button" class="o_knowledge_properties_close"
+                    title="Close properties" t-on-click="() => this.onClickClose()">
+                <i class="oi" data-icon="close"/>
+            </button>
+        </div>
+        <div class="o_knowledge_properties_body">
+            <Record t-key="this.recordMode"
+                    resModel="'knowledge.management.article'"
+                    resId="this.props.articleId"
+                    fieldNames="this.fieldNames"
+                    mode="this.recordMode"
+                    hooks="this.recordHooks"
+                    t-slot-scope="data">
+                <div class="o_field_widget o_field_properties w-100">
+                    <KnowledgePropertiesField name="'article_properties'"
+                                              record="data.record"
+                                              readonly="this.props.readonly"
+                                              editMode="!this.props.readonly"
+                                              columns="1"/>
+                </div>
+            </Record>
+        </div>
+    </div>
+</t>
+
+</templates>

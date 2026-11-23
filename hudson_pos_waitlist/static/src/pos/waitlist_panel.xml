@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="hudson_pos_waitlist.WaitlistPanel">
+        <Dialog title.translate="Waitlist" size="'lg'" bodyClass="'o_hudson_waitlist_panel p-0'">
+            <div class="o_hw_summary d-flex align-items-center gap-2 px-3 py-2 border-bottom">
+                <span class="badge rounded-pill text-bg-warning">
+                    <t t-out="this.waitingCount"/> Waiting
+                </span>
+                <button class="btn btn-light btn-sm ms-auto" t-on-click="() => this.refresh()" title="Refresh">
+                    <i class="oi oi-fw" data-icon="refresh" aria-hidden="true"/>
+                </button>
+            </div>
+
+            <div t-if="!this.entries.length" class="o_hw_empty text-center text-muted py-5">
+                <i class="oi oi-fw oi-lg d-block mb-2" data-icon="group" aria-hidden="true"/>
+                <t t-if="this.pos.waitlist.loaded">No guests are waiting.</t>
+                <t t-else="">Loading the waitlist...</t>
+            </div>
+
+            <ul t-else="" class="o_hw_list list-unstyled m-0">
+                <li t-foreach="this.entries" t-as="entry" t-key="entry.id"
+                    class="o_hw_entry d-flex flex-wrap align-items-center gap-3 px-3 py-3 border-bottom"
+                    t-att-class="{'opacity-50': this.isBusy(entry)}">
+
+                    <div class="o_hw_token text-center">
+                        <div class="fw-bold fs-4 lh-1" t-out="entry.token"/>
+                        <span class="badge mt-1 text-bg-warning">#<t t-out="entry.position"/> Waiting</span>
+                    </div>
+
+                    <div class="o_hw_guest flex-grow-1 min-w-0">
+                        <div class="fw-bold fs-5 text-truncate" t-att-title="entry.guest_name" t-out="entry.guest_name"/>
+                        <div class="d-flex flex-wrap gap-1 mt-1 small">
+                            <span class="badge text-bg-light border">
+                                <i class="oi oi-fw" data-icon="group" aria-hidden="true"/>
+                                <t t-out="entry.party_size"/>
+                            </span>
+                            <span class="badge text-bg-light border o_hw_floor_pref" title="Preferred floor / area">
+                                <i class="oi oi-fw" data-icon="restaurant" aria-hidden="true"/>
+                                <t t-out="entry.floor_pref_label"/>
+                            </span>
+                            <span class="badge text-bg-light border o_hw_share_pref" t-att-title="entry.share_table_label"
+                                  t-out="entry.share_table_short or entry.share_table_label"/>
+                            <span t-foreach="entry.tags" t-as="tag" t-key="tag_index"
+                                  class="badge text-bg-secondary" t-out="tag"/>
+                        </div>
+                    </div>
+
+                    <div class="o_hw_times d-flex gap-3 text-center small">
+                        <div>
+                            <div class="text-muted">Waited</div>
+                            <div class="fw-bold" t-out="this.waited(entry)"/>
+                        </div>
+                        <div>
+                            <div class="text-muted">Est. wait</div>
+                            <div class="fw-bold">
+                                <t t-if="entry.state === 'waiting'" t-out="this.formatMinutes(entry.estimated_wait)"/>
+                                <t t-else="">Now</t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="o_hw_actions d-flex flex-wrap gap-2 justify-content-end">
+                        <button t-foreach="this.actionsFor(entry)" t-as="action" t-key="action.state"
+                                class="btn btn-lg"
+                                t-att-class="action.cls"
+                                t-att-disabled="this.isBusy(entry)"
+                                t-on-click="() => this.onAction(entry, action)">
+                            <i class="oi oi-fw" t-att-data-icon="action.icon" aria-hidden="true"/>
+                            <t t-out="action.label"/>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary btn-lg" t-on-click="() => this.props.close()">Close</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="hudson_pos_waitlist.WaitlistTablePicker">
+        <Dialog size="'lg'" title="this.title" bodyClass="'o_hudson_waitlist_tables p-0'">
+
+            <div class="d-flex flex-wrap align-items-center gap-2 px-3 py-2 border-bottom small">
+                <span class="badge text-bg-light border">
+                    <i class="oi oi-fw" data-icon="group" aria-hidden="true"/>
+                    Party of <t t-out="this.props.entry.party_size"/>
+                </span>
+                <span class="badge text-bg-light border o_hw_floor_pref">
+                    <i class="oi oi-fw" data-icon="restaurant" aria-hidden="true"/>
+                    <t t-out="this.props.entry.floor_pref_label"/>
+                </span>
+                <span class="badge text-bg-light border" t-out="this.props.entry.share_table_label"/>
+                <button class="btn btn-light btn-sm ms-auto" t-on-click="() => this.refresh()" title="Refresh">
+                    <i class="oi oi-fw" data-icon="refresh" aria-hidden="true"/>
+                </button>
+            </div>
+
+            <div t-if="!this.state.saving and !this.stillWaiting" class="alert alert-danger rounded-0 mb-0 py-2 px-3 o_hw_seat_stale" role="alert"
+                 t-out="this.staleMessage"/>
+            <div t-elif="this.state.message" class="alert alert-warning rounded-0 mb-0 py-2 px-3 o_hw_seat_message" role="alert"
+                 t-out="this.state.message"/>
+
+            <div t-if="this.floors.length > 1" class="o_hw_floor_tabs d-flex flex-wrap gap-2 px-3 pt-3">
+                <button t-foreach="this.floors" t-as="floor" t-key="floor.id"
+                        class="btn btn-outline-secondary"
+                        t-att-class="{'active': floor.id === this.currentFloor?.id, 'o_hw_floor_preferred': this.isPreferred(floor), 'o_hw_floor_other text-muted': this.isOtherFloor(floor)}"
+                        t-att-data-floor="floor.name"
+                        t-on-click="() => this.selectFloor(floor)">
+                    <t t-out="floor.name"/>
+                    <span t-if="this.isPreferred(floor)" class="small ms-1">(Preferred)</span>
+                    <span class="badge rounded-pill ms-1"
+                          t-att-class="this.availableCount(floor) ? 'text-bg-success' : 'text-bg-secondary'"
+                          t-out="this.availableCount(floor)"/>
+                </button>
+            </div>
+
+            <div class="p-3">
+                <div t-if="this.state.loading" class="text-center text-muted py-4">Checking tables...</div>
+                <t t-else="">
+                    <div t-if="this.isOtherFloor(this.currentFloor)" class="o_hw_floor_note small text-muted mb-2">
+                        The guest asked for another floor: these tables are shown for information only.
+                    </div>
+                    <div t-if="!this.availableTables(this.currentFloor).length" class="o_hw_no_tables text-center text-muted pb-3">
+                        No free tables on this floor right now.
+                    </div>
+                    <div t-if="this.tablesOf(this.currentFloor).length" class="o_hw_table_grid">
+                        <button t-foreach="this.tablesOf(this.currentFloor)" t-as="table" t-key="table.id"
+                                class="o_hw_table btn btn-outline-secondary d-flex flex-column align-items-center justify-content-center"
+                                t-att-class="{
+                                    'active btn-primary text-white': table.id === this.state.tableId,
+                                    'o_hw_table_match': this.status(table) === 'match',
+                                    'o_hw_table_shared': this.status(table) === 'shared',
+                                    'o_hw_table_small': this.tooSmall(table),
+                                    'o_hw_table_busy': this.status(table) === 'busy',
+                                    'o_hw_table_other': this.status(table) === 'other_floor',
+                                }"
+                                t-att-data-table="table.table_number"
+                                t-att-data-status="this.status(table)"
+                                t-att-title="this.reason(table)"
+                                t-att-disabled="!this.isSelectable(table)"
+                                t-on-click="() => this.selectTable(table)">
+                            <span class="fs-3 fw-bold lh-1" t-out="table.table_number"/>
+                            <span class="small">
+                                <i class="oi oi-fw" data-icon="group" aria-hidden="true"/>
+                                <t t-out="table.seats"/>
+                            </span>
+                            <span t-if="this.status(table) === 'match'" class="small fw-bold">Suitable</span>
+                            <span t-elif="this.status(table) === 'shared'" class="small fw-bold">
+                                Shared · <t t-out="this.state.matches[table.id].free_seats"/> free
+                            </span>
+                            <span t-elif="this.tooSmall(table)" class="small fw-bold">Too small</span>
+                            <span t-elif="this.status(table) === 'busy'" class="small fw-bold">Occupied</span>
+                            <span t-elif="this.status(table) === 'other_floor'" class="small">Other floor</span>
+                        </button>
+                    </div>
+                </t>
+            </div>
+
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg o_hw_seat_open"
+                        t-att-disabled="!this.state.tableId or this.state.saving or !this.stillWaiting"
+                        t-on-click="() => this.confirm(true)">
+                    Seat &amp; Open Table
+                </button>
+                <button class="btn btn-secondary btn-lg o_hw_seat_only"
+                        t-att-disabled="!this.state.tableId or this.state.saving or !this.stillWaiting"
+                        t-on-click="() => this.confirm(false)">
+                    Seat Only
+                </button>
+                <button class="btn btn-light btn-lg" t-on-click="() => this.props.close()">Back</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="hudson_pos_waitlist.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('status-buttons')]" position="inside">
+            <button t-if="this.pos.showWaitlistButton"
+                    class="o_hw_navbar_btn btn btn-light btn-lg lh-lg position-relative order-first"
+                    t-on-click="() => this.openWaitlist()"
+                    title="Waitlist" aria-label="Waitlist">
+                <i class="oi oi-fw" data-icon="notifications" aria-hidden="true"/>
+                <span t-if="!this.ui.isSmall" class="ms-1">Waitlist</span>
+                <span t-if="this.pos.waitlistCount"
+                      class="o_hw_badge badge rounded-pill text-bg-danger ms-1"
+                      t-out="this.pos.waitlistCount"/>
+            </button>
+        </xpath>
+    </t>
+
+</templates>

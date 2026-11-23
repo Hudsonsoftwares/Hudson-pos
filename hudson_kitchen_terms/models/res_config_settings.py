@@ -14,4 +14,6 @@ class ResConfigSettings(models.TransientModel):
 
     def set_values(self):
         super().set_values()
+        if self.kitchen_mode and self.company_id:
+            self.env['kitchen.label']._ensure_company_labels(self.company_id)
         self.env['kitchen.label']._invalidate_terminology_caches()

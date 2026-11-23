@@ -129,12 +129,16 @@ def run_start(env):
 
 
 @contextlib.contextmanager
-def protect_existing(env):
-    """Run demo loading without modifying or deleting records that existed before this run."""
+def protect_existing(env, start=None):
+    """Run demo loading without modifying or deleting records that existed before this run.
+
+    ``start`` overrides the run start: the demo data is loaded by a scheduled action after the
+    install/upgrade (demo_autoloader.py), which passes the start of the install run it was queued by.
+    """
     if _GUARD.get() is not None:  # nested call: the outer guard already applies
         yield _GUARD.get()
         return
-    state = _GuardState(env, run_start(env))
+    state = _GuardState(env, start or run_start(env))
     token = _GUARD.set(state)
     try:
         yield state
@@ -217,3 +221,24 @@ class Base(models.AbstractModel):
             state.skip(old, 'deletion(s)')
         new = self - old
         return super(Base, new).unlink() if new else True
+
+
+# --------------------------------------------------------------------------- config parameters
+# Odoo 20 replaced ir.config_parameter.get_param/set_param by typed accessors (get_str/set_str...);
+# these helpers work with both APIs.
+def get_param(env, key, default=False):
+    icp = env['ir.config_parameter'].sudo()
+    if hasattr(icp, 'get_param'):
+        return icp.get_param(key, default)
+    return icp.get_str(key) or default
+
+
+def set_param(env, key, value):
+    """Set a parameter; a falsy value removes it."""
+    icp = env['ir.config_parameter'].sudo()
+    if hasattr(icp, 'set_param'):
+        return icp.set_param(key, value or False)
+    if not value:
+        icp.search([('key', '=', key)]).unlink()
+        return None
+    return icp.set_str(key, value)

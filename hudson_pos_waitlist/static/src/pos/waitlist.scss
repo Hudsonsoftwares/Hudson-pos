@@ -1,0 +1,63 @@
+.o_hudson_waitlist_panel {
+    .o_hw_list {
+        max-height: 65vh;
+        overflow-y: auto;
+    }
+    .o_hw_entry {
+        border-left: 4px solid $warning;
+    }
+    .o_hw_token {
+        min-width: 5.5rem;
+    }
+    // Keep name + tags beside the token: tags wrap inside this block instead of
+    // pushing the whole block onto its own row (long names / many tags).
+    .o_hw_guest {
+        flex: 1 1 14rem;
+    }
+    .o_hw_times > div {
+        min-width: 4.5rem;
+    }
+    .o_hw_table_badge {
+        white-space: nowrap;
+    }
+    @include media-breakpoint-down(md) {
+        .o_hw_actions {
+            width: 100%;
+            .btn {
+                flex: 1 1 auto;
+            }
+        }
+    }
+}
+
+.o_hudson_waitlist_tables {
+    .o_hw_table_grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+        gap: 0.75rem;
+        max-height: 55vh;
+        overflow-y: auto;
+    }
+    .o_hw_table {
+        min-height: 6rem;
+        border-radius: 0.75rem;
+        &.o_hw_table_match:not(.active) {
+            border-color: $success;
+        }
+        &.o_hw_table_shared:not(.active) {
+            border-color: $info;
+        }
+        &.o_hw_table_small:not(.active) {
+            border-style: dashed;
+            opacity: 0.75;
+        }
+        &.o_hw_table_busy,
+        &.o_hw_table_other {
+            opacity: 0.45;
+            text-decoration: none;
+        }
+    }
+    .o_hw_floor_preferred {
+        border-width: 2px;
+    }
+}

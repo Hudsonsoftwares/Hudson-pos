@@ -25,5 +25,51 @@
             <field name="sms_allow_unsubscribe" eval="True"/>
             <field name="state">draft</field>
         </record>
+        <!-- Sent SMS campaign with deliverability & click statistics -->
+        <record id="rc_mailing_sms_sent_flash_sale" model="mailing.mailing">
+            <field name="subject">Weekend Biryani &amp; Mandi Feast (SMS)</field>
+            <field name="mailing_type">sms</field>
+            <field name="mailing_model_id" ref="mass_mailing.model_mailing_list"/>
+            <field name="contact_list_ids" eval="[Command.set([ref('rc_list_loyalty')])]"/>
+            <field name="campaign_id" ref="rc_mkt_campaign_festive"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="body_plaintext">Ayshu's Culinary: Authentic Thalassery Biryani &amp; Arabian Mandi ready this weekend! Flat 15% off for members. Order: https://restocafe.example.com/order</field>
+            <field name="sms_allow_unsubscribe" eval="True"/>
+            <field name="state">done</field>
+            <field name="schedule_type">now</field>
+            <field name="sent_date" eval="(DateTime.today() + relativedelta(days=-3, hours=-2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+
+        <record id="rc_sms_trace_vivek" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sms_sent_flash_sale"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_vivek"/>
+            <field name="trace_type">sms</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_festive"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-3, hours=-2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-3, hours=-1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+
+        <record id="rc_sms_trace_deepa" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sms_sent_flash_sale"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_deepa"/>
+            <field name="trace_type">sms</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_festive"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-3, hours=-2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">sent</field>
+        </record>
+
+        <record id="rc_sms_trace_sneha" model="mailing.trace">
+            <field name="mass_mailing_id" ref="rc_mailing_sms_sent_flash_sale"/>
+            <field name="model">mailing.contact</field>
+            <field name="res_id" ref="rc_mc_sneha"/>
+            <field name="trace_type">sms</field>
+            <field name="campaign_id" ref="rc_mkt_campaign_festive"/>
+            <field name="sent_datetime" eval="(DateTime.today() + relativedelta(days=-3, hours=-2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="trace_status">open</field>
+            <field name="open_datetime" eval="(DateTime.today() + relativedelta(days=-3)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
     </data>
 </odoo>

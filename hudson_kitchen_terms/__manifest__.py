@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Kitchen Mode Terminology for Manufacturing',
-    'version': '1.0.0',
+    'version': '1.0.1',
     'category': 'Manufacturing/Manufacturing',
     'summary': 'Presentation-level Kitchen Mode terminology for Manufacturing (Recipes, Kitchen Stations, Tasks, etc.)',
     'description': """
@@ -9,6 +9,9 @@ Kitchen Mode Terminology for Odoo Manufacturing
 ===============================================
 Enables restaurant/kitchen terminology for the Manufacturing module without
 altering any underlying business logic, models, workflows, or database records.
+
+Supports Multi-Company configuration: each company can enable or customize
+its own kitchen terminology mappings independently, or inherit global defaults.
 
 When Kitchen Mode is enabled:
 - Bills of Materials -> Recipes
@@ -36,6 +39,7 @@ Manufacturing -> Configuration -> Kitchen Labels
     'assets': {
         'web.assets_backend': [
             'hudson_kitchen_terms/static/src/js/kitchen_terms.js',
+            'hudson_kitchen_terms/static/src/js/kitchen_label_views.js',
         ],
     },
     'installable': True,

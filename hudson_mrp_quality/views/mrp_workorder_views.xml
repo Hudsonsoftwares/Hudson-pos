@@ -6,19 +6,57 @@
         <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
         <field name="priority">25</field>
         <field name="arch" type="xml">
-            <xpath expr="//sheet" position="inside">
-                <notebook invisible="not quality_point_ids">
-                    <page string="Instructions / Quality Steps" name="instructions">
-                        <field name="quality_point_ids" readonly="1">
-                            <list string="Steps">
-                                <field name="sequence" widget="handle"/>
-                                <field name="title" string="Title"/>
-                                <field name="test_type" string="Type"/>
-                                <field name="name" string="Reference"/>
-                            </list>
-                        </field>
-                    </page>
-                </notebook>
+            <!-- Show the steps as a tab next to Time Tracking, inside the
+                 existing notebook, instead of a separate notebook below it. -->
+            <xpath expr="//notebook/page[@name='time_tracking']" position="after">
+                <page string="Instructions / Quality Steps" name="instructions" invisible="not quality_point_ids">
+                    <field name="quality_point_ids" readonly="1">
+                        <list string="Steps">
+                            <field name="sequence" widget="handle"/>
+                            <field name="title" string="Title"/>
+                            <field name="test_type" string="Type"/>
+                            <field name="name" string="Reference"/>
+                        </list>
+                        <!-- Read-only popup for operators: instructions only,
+                             no attachments or technical fields. -->
+                        <form string="Instruction / Quality Step">
+                            <sheet>
+                                <div class="oe_title">
+                                    <h1><field name="title" readonly="1"/></h1>
+                                </div>
+                                <group>
+                                    <group>
+                                        <field name="name" string="Reference" readonly="1"/>
+                                        <field name="test_type" string="Type" readonly="1"/>
+                                    </group>
+                                    <group invisible="test_type != 'measure'">
+                                        <label for="norm"/>
+                                        <div class="o_row">
+                                            <field name="norm" readonly="1"/>
+                                            <field name="norm_unit" readonly="1"/>
+                                        </div>
+                                        <label for="tolerance_min" string="Tolerance"/>
+                                        <div class="o_row">
+                                            <span>from </span>
+                                            <field name="tolerance_min" readonly="1"/>
+                                            <span> to </span>
+                                            <field name="tolerance_max" readonly="1"/>
+                                        </div>
+                                    </group>
+                                </group>
+                                <group string="Instructions" invisible="not instructions">
+                                    <field name="instructions" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                <group string="Notes" invisible="not notes">
+                                    <field name="notes" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                                <group string="Message If Failure" invisible="not failure_message or test_type not in ('passfail', 'measure')">
+                                    <field name="failure_message" nolabel="1" colspan="2" readonly="1"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
             </xpath>
         </field>
     </record>

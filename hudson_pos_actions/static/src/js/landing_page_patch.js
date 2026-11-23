@@ -112,6 +112,26 @@ patch(CartPage.prototype, {
 });
 
 patch(SelfOrder.prototype, {
+    initProducts() {
+        // Stock bug: with "Restrict categories" on but no category selected, productCategories IS the
+        // config's iface_available_categ_ids array, and products without a POS category (e.g. the
+        // pos_self_order_event dummy products) make it push "Uncategorised" into that read-only
+        // array -> "The 'iface_available_categ_ids' array cannot be modified". An empty restriction
+        // restricts nothing, so load the products as if the restriction were off.
+        const config = this.config;
+        if (!config?.limit_categories || config.iface_available_categ_ids?.length) {
+            return super.initProducts(...arguments);
+        }
+        this.config = new Proxy(config, {
+            get: (target, key) => (key === "limit_categories" ? false : target[key]),
+        });
+        try {
+            return super.initProducts(...arguments);
+        } finally {
+            this.config = config;
+        }
+    },
+
     async _sendDraftOrderToServer() {
         const order = await super._sendDraftOrderToServer(...arguments);
         if (

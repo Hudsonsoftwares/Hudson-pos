@@ -1,0 +1,1516 @@
+<t name="Homepage" t-name="website.homepage">
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+        <!-- Cormorant Garamond / Playfair Display (regal fine-dining serif) + Plus Jakarta Sans (clean modern body & UI) -->
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <style>
+            /* ==========================================================================
+               AYSHU'S CULINARY RESTAURANT - KANJIRAPPALLY, KERALA
+               Warm Kerala Teak Wood &amp; Arabian Fusion Design System:
+               - Deep Teak &amp; Charcoal: #18120e / #221812
+               - Warm Radiant Brass &amp; Gold: #d8a84e / #efbe58
+               - Malabar Cardamom Green: #1f3d2b
+               - Silk Sand &amp; Malabar Cream: #fcf9f4 / #f4eee3
+               - Spiced Terracotta Accent: #c44d34
+               ========================================================================== */
+
+            :root {
+                --ay-teak: #18120e;
+                --ay-teak-deep: #100b08;
+                --ay-teak-card: #231914;
+                --ay-teak-border: rgba(216, 168, 78, 0.22);
+                --ay-gold: #d8a84e;
+                --ay-gold-light: #f5cf7b;
+                --ay-gold-glow: rgba(216, 168, 78, 0.35);
+                --ay-green: #1f3d2b;
+                --ay-green-light: #2b563c;
+                --ay-cream: #fcf9f4;
+                --ay-sand: #f4eee3;
+                --ay-sand-border: #e3d7c5;
+                --ay-terracotta: #c44d34;
+                --ay-ink: #1c140f;
+                --ay-muted: #8a7c72;
+                --ay-font-serif: 'Playfair Display', Georgia, serif;
+                --ay-font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+                --ay-radius: 6px;
+                --ay-ease: cubic-bezier(.22, 1, .36, 1);
+            }
+
+            #wrap.ay-fusion-home {
+                font-family: var(--ay-font-sans);
+                background-color: var(--ay-cream);
+                color: var(--ay-ink);
+                line-height: 1.65;
+                overflow-x: hidden;
+                -webkit-font-smoothing: antialiased;
+                text-rendering: optimizeLegibility;
+            }
+
+            #wrap.ay-fusion-home * {
+                box-sizing: border-box;
+            }
+
+            #wrap.ay-fusion-home h1,
+            #wrap.ay-fusion-home h2,
+            #wrap.ay-fusion-home h3,
+            #wrap.ay-fusion-home h4,
+            #wrap.ay-fusion-home .ay-serif {
+                font-family: var(--ay-font-serif);
+                font-weight: 700;
+                letter-spacing: -0.01em;
+            }
+
+            #wrap.ay-fusion-home a {
+                color: inherit;
+                text-decoration: none;
+                transition: all 0.28s var(--ay-ease);
+            }
+
+            /* Eyebrow &amp; Titles */
+            .ay-eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 0.74rem;
+                font-weight: 700;
+                letter-spacing: 0.26em;
+                text-transform: uppercase;
+                color: var(--ay-gold);
+                margin-bottom: 18px;
+            }
+
+            .ay-eyebrow::before,
+            .ay-eyebrow::after {
+                content: "";
+                width: 32px;
+                height: 1px;
+                background: currentColor;
+                opacity: 0.8;
+            }
+
+            .ay-eyebrow-dark {
+                color: var(--ay-green);
+            }
+
+            .ay-section-title {
+                font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+                line-height: 1.12;
+                color: var(--ay-teak);
+                margin-bottom: 20px;
+                font-weight: 700;
+            }
+
+            .ay-section-title em {
+                color: var(--ay-gold);
+                font-style: italic;
+            }
+
+            .ay-section-lead {
+                font-size: 1.08rem;
+                color: #5c4e45;
+                max-width: 640px;
+                line-height: 1.8;
+            }
+
+            /* Custom Brand Navbar */
+            .ay-nav {
+                background: var(--ay-teak);
+                border-bottom: 1px solid var(--ay-teak-border);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                padding: 16px 0;
+            }
+
+            .ay-nav-inner {
+                max-width: 1360px;
+                margin: 0 auto;
+                padding: 0 28px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .ay-nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            .ay-nav-logo-icon {
+                width: 38px;
+                height: 38px;
+                color: var(--ay-gold);
+            }
+
+            .ay-nav-title {
+                font-family: var(--ay-font-serif);
+                font-size: 1.35rem;
+                font-weight: 700;
+                color: #ffffff;
+                letter-spacing: 0.04em;
+                line-height: 1;
+            }
+
+            .ay-nav-sub {
+                font-size: 0.62rem;
+                font-weight: 700;
+                letter-spacing: 0.22em;
+                color: var(--ay-gold);
+                text-transform: uppercase;
+                margin-top: 4px;
+                display: block;
+            }
+
+            .ay-nav-menu {
+                display: flex;
+                align-items: center;
+                gap: 28px;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .ay-nav-menu a {
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 0.78rem;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+            }
+
+            .ay-nav-menu a:hover {
+                color: var(--ay-gold);
+            }
+
+            .ay-nav-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 22px;
+                border-radius: 999px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                background: linear-gradient(135deg, #efbe58 0%, #d8a84e 100%);
+                color: var(--ay-teak) !important;
+                box-shadow: 0 4px 16px rgba(216, 168, 78, 0.35);
+            }
+
+            .ay-nav-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 22px rgba(216, 168, 78, 0.5);
+            }
+
+            /* ==========================================================================
+               HERO BANNER (FULL SCREEN ATMOSPHERIC RESTAURANT AMBIANCE)
+               ========================================================================== */
+            .ay-hero {
+                min-height: 92vh;
+                position: relative;
+                display: flex;
+                align-items: center;
+                background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&amp;w=2070&amp;auto=format&amp;fit=crop') center/cover no-repeat;
+                color: #ffffff;
+                overflow: hidden;
+            }
+
+            .ay-hero::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    linear-gradient(180deg, rgba(16, 11, 8, 0.85) 0%, rgba(24, 18, 14, 0.78) 50%, rgba(24, 18, 14, 0.95) 100%),
+                    radial-gradient(ellipse at 30% 50%, rgba(216, 168, 78, 0.15), transparent 60%);
+            }
+
+            .ay-hero-container {
+                position: relative;
+                z-index: 2;
+                max-width: 1360px;
+                margin: 0 auto;
+                padding: 110px 28px 150px;
+                width: 100%;
+            }
+
+            .ay-hero-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                background: rgba(216, 168, 78, 0.15);
+                border: 1px solid var(--ay-gold);
+                padding: 8px 18px;
+                border-radius: 999px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--ay-gold);
+                margin-bottom: 24px;
+                backdrop-filter: blur(8px);
+            }
+
+            .ay-hero-title {
+                font-family: var(--ay-font-serif);
+                font-size: clamp(2.8rem, 6.2vw, 5.4rem);
+                font-weight: 700;
+                line-height: 1.05;
+                max-width: 920px;
+                margin-bottom: 24px;
+                color: #ffffff;
+                text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            }
+
+            .ay-hero-title span {
+                color: var(--ay-gold-light);
+                font-style: italic;
+            }
+
+            .ay-hero-desc {
+                font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+                color: #ded6cf;
+                max-width: 680px;
+                line-height: 1.8;
+                margin-bottom: 42px;
+                font-weight: 400;
+            }
+
+            .ay-hero-actions {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 18px;
+            }
+
+            .ay-btn-primary {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 36px;
+                border-radius: 999px;
+                background: linear-gradient(135deg, #efbe58 0%, #d8a84e 100%);
+                color: var(--ay-teak) !important;
+                font-size: 0.82rem;
+                font-weight: 800;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                box-shadow: 0 10px 30px rgba(216, 168, 78, 0.4);
+            }
+
+            .ay-btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 16px 36px rgba(216, 168, 78, 0.6);
+            }
+
+            .ay-btn-ghost {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 16px 32px;
+                border-radius: 999px;
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                color: #ffffff !important;
+                font-size: 0.82rem;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                backdrop-filter: blur(8px);
+                background: rgba(255, 255, 255, 0.06);
+            }
+
+            .ay-btn-ghost:hover {
+                border-color: var(--ay-gold);
+                color: var(--ay-gold) !important;
+                background: rgba(216, 168, 78, 0.1);
+                transform: translateY(-3px);
+            }
+
+            /* Hero Infobar */
+            .ay-hero-infobar {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(16, 11, 8, 0.88);
+                backdrop-filter: blur(14px);
+                border-top: 1px solid var(--ay-teak-border);
+                z-index: 3;
+            }
+
+            .ay-infobar-grid {
+                max-width: 1360px;
+                margin: 0 auto;
+                padding: 20px 28px;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+
+            .ay-info-item {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            .ay-info-item i {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: rgba(216, 168, 78, 0.12);
+                border: 1px solid var(--ay-teak-border);
+                color: var(--ay-gold);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+                flex-shrink: 0;
+            }
+
+            .ay-info-label {
+                font-size: 0.68rem;
+                font-weight: 700;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--ay-muted);
+                display: block;
+            }
+
+            .ay-info-val {
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: #ffffff;
+            }
+
+            /* ==========================================================================
+               SECTION 2: OUR STORY &amp; HERITAGE FUSION
+               ========================================================================== */
+            .ay-story {
+                padding: 120px 0;
+                background: var(--ay-sand);
+                position: relative;
+            }
+
+            .ay-story-collage {
+                position: relative;
+                min-height: 520px;
+            }
+
+            .ay-story-img-main {
+                width: 82%;
+                height: 440px;
+                object-fit: cover;
+                border-radius: var(--ay-radius);
+                box-shadow: 0 24px 60px rgba(24, 18, 14, 0.18);
+                border: 1px solid var(--ay-sand-border);
+            }
+
+            .ay-story-img-sub {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                width: 54%;
+                height: 280px;
+                object-fit: cover;
+                border-radius: var(--ay-radius);
+                border: 8px solid var(--ay-sand);
+                box-shadow: 0 20px 50px rgba(24, 18, 14, 0.22);
+            }
+
+            .ay-story-badge {
+                position: absolute;
+                top: 40px;
+                right: 30px;
+                background: var(--ay-teak);
+                color: var(--ay-gold);
+                border: 1px solid var(--ay-gold);
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            }
+
+            .ay-story-badge strong {
+                font-family: var(--ay-font-serif);
+                font-size: 2.2rem;
+                line-height: 1;
+                color: #ffffff;
+            }
+
+            .ay-story-badge span {
+                font-size: 0.62rem;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                margin-top: 4px;
+            }
+
+            .ay-story-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px;
+                margin-top: 40px;
+                padding-top: 32px;
+                border-top: 1px solid var(--ay-sand-border);
+            }
+
+            .ay-stat-box strong {
+                font-family: var(--ay-font-serif);
+                font-size: 2.6rem;
+                color: var(--ay-teak);
+                line-height: 1;
+                display: block;
+            }
+
+            .ay-stat-box span {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: var(--ay-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+            }
+
+            /* ==========================================================================
+               SECTION 3: SIGNATURE MENU SHOWCASE
+               ========================================================================== */
+            .ay-menu-section {
+                padding: 130px 0;
+                background: var(--ay-teak);
+                color: #ffffff;
+                position: relative;
+            }
+
+            .ay-menu-section .ay-section-title {
+                color: #ffffff;
+            }
+
+            .ay-menu-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+                gap: 30px;
+                margin-top: 55px;
+            }
+
+            .ay-dish-card {
+                background: var(--ay-teak-card);
+                border: 1px solid var(--ay-teak-border);
+                border-radius: var(--ay-radius);
+                overflow: hidden;
+                transition: transform 0.35s var(--ay-ease), box-shadow 0.35s var(--ay-ease), border-color 0.35s ease;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .ay-dish-card:hover {
+                transform: translateY(-8px);
+                border-color: var(--ay-gold);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+            }
+
+            .ay-dish-thumb {
+                height: 220px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .ay-dish-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.8s var(--ay-ease);
+            }
+
+            .ay-dish-card:hover .ay-dish-thumb img {
+                transform: scale(1.08);
+            }
+
+            .ay-dish-tag {
+                position: absolute;
+                top: 14px;
+                left: 14px;
+                background: rgba(24, 18, 14, 0.85);
+                backdrop-filter: blur(6px);
+                color: var(--ay-gold);
+                border: 1px solid var(--ay-teak-border);
+                padding: 4px 12px;
+                border-radius: 999px;
+                font-size: 0.65rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+            }
+
+            .ay-dish-body {
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                justify-content: space-between;
+            }
+
+            .ay-dish-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: 12px;
+                margin-bottom: 10px;
+            }
+
+            .ay-dish-title {
+                font-family: var(--ay-font-serif);
+                font-size: 1.35rem;
+                color: #ffffff;
+                margin: 0;
+            }
+
+            .ay-dish-price {
+                font-family: var(--ay-font-serif);
+                font-size: 1.45rem;
+                color: var(--ay-gold-light);
+                font-weight: 700;
+                white-space: nowrap;
+            }
+
+            .ay-dish-desc {
+                font-size: 0.88rem;
+                color: #b0a49c;
+                line-height: 1.6;
+                margin-bottom: 18px;
+            }
+
+            /* ==========================================================================
+               SECTION 4: RESERVATION WIDGET
+               ========================================================================== */
+            .ay-booking-section {
+                padding: 120px 0;
+                background: var(--ay-cream);
+                position: relative;
+            }
+
+            .ay-booking-card {
+                background: #ffffff;
+                border: 1px solid var(--ay-sand-border);
+                border-radius: var(--ay-radius);
+                box-shadow: 0 20px 60px rgba(24, 18, 14, 0.08);
+                overflow: hidden;
+            }
+
+            .ay-booking-header {
+                background: var(--ay-teak);
+                color: #ffffff;
+                padding: 45px 50px;
+                border-bottom: 1px solid var(--ay-teak-border);
+            }
+
+            .ay-booking-body {
+                padding: 50px;
+            }
+
+            .ay-form-label {
+                font-size: 0.76rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--ay-teak);
+                margin-bottom: 8px;
+                display: block;
+            }
+
+            .ay-form-control {
+                width: 100%;
+                padding: 14px 18px;
+                border: 1px solid var(--ay-sand-border);
+                border-radius: 4px;
+                background: var(--ay-cream);
+                font-family: var(--ay-font-sans);
+                font-size: 0.95rem;
+                color: var(--ay-ink);
+                transition: border-color 0.25s ease;
+            }
+
+            .ay-form-control:focus {
+                outline: none;
+                border-color: var(--ay-gold);
+                background: #ffffff;
+            }
+
+            /* ==========================================================================
+               SECTION 5: INSTAGRAM PHOTO GALLERY
+               ========================================================================== */
+            .ay-gallery-section {
+                padding: 110px 0 60px;
+                background: var(--ay-sand);
+            }
+
+            .ay-gallery-grid {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 16px;
+                margin-top: 40px;
+            }
+
+            .ay-gallery-item {
+                position: relative;
+                height: 260px;
+                overflow: hidden;
+                border-radius: var(--ay-radius);
+                display: block;
+            }
+
+            .ay-gallery-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.8s var(--ay-ease);
+            }
+
+            .ay-gallery-item:hover img {
+                transform: scale(1.12);
+            }
+
+            .ay-gallery-overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(24, 18, 14, 0.7);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                color: #ffffff;
+                padding: 16px;
+                text-align: center;
+            }
+
+            .ay-gallery-item:hover .ay-gallery-overlay {
+                opacity: 1;
+            }
+
+            .ay-gallery-overlay i {
+                font-size: 1.8rem;
+                color: var(--ay-gold);
+                margin-bottom: 8px;
+            }
+
+            .ay-gallery-overlay span {
+                font-size: 0.78rem;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+            }
+
+            /* ==========================================================================
+               SECTION 6: REVIEWS &amp; GOOGLE RATING
+               ========================================================================== */
+            .ay-reviews-section {
+                padding: 120px 0;
+                background: var(--ay-teak);
+                color: #ffffff;
+            }
+
+            .ay-rating-banner {
+                background: var(--ay-teak-card);
+                border: 1px solid var(--ay-teak-border);
+                padding: 30px 40px;
+                border-radius: var(--ay-radius);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 20px;
+                margin-bottom: 50px;
+            }
+
+            .ay-rating-stars {
+                color: var(--ay-gold);
+                font-size: 1.25rem;
+                letter-spacing: 2px;
+            }
+
+            .ay-review-card {
+                background: var(--ay-teak-card);
+                border: 1px solid var(--ay-teak-border);
+                border-radius: var(--ay-radius);
+                padding: 36px 32px;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .ay-review-text {
+                font-family: var(--ay-font-serif);
+                font-style: italic;
+                font-size: 1.08rem;
+                line-height: 1.7;
+                color: #ded6cf;
+                margin-bottom: 24px;
+            }
+
+            .ay-reviewer {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            .ay-reviewer-avatar {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: var(--ay-gold);
+                color: var(--ay-teak);
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+            }
+
+            .ay-reviewer strong {
+                display: block;
+                color: #ffffff;
+                font-size: 0.95rem;
+            }
+
+            .ay-reviewer span {
+                font-size: 0.74rem;
+                color: var(--ay-muted);
+            }
+
+            /* ==========================================================================
+               SECTION 7: LOCATION &amp; HOURS
+               ========================================================================== */
+            .ay-location-section {
+                padding: 110px 0;
+                background: var(--ay-cream);
+            }
+
+            .ay-loc-box {
+                background: #ffffff;
+                border: 1px solid var(--ay-sand-border);
+                border-radius: var(--ay-radius);
+                padding: 44px 38px;
+                height: 100%;
+                box-shadow: 0 12px 30px rgba(24, 18, 14, 0.05);
+            }
+
+            .ay-schedule-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 0;
+                border-bottom: 1px dashed var(--ay-sand-border);
+                font-size: 0.92rem;
+            }
+
+            .ay-schedule-row:last-child {
+                border-bottom: none;
+            }
+
+            /* ==========================================================================
+               FOOTER WITH OUTLINE WATERMARK
+               ========================================================================== */
+            .ay-footer {
+                background: var(--ay-teak-deep);
+                color: #ffffff;
+                padding: 100px 0 30px;
+                position: relative;
+                overflow: hidden;
+                border-top: 1px solid var(--ay-teak-border);
+            }
+
+            .ay-footer-tagline {
+                font-family: var(--ay-font-serif);
+                font-size: 1.8rem;
+                font-style: italic;
+                color: #ffffff;
+                margin: 20px 0;
+            }
+
+            .ay-footer-watermark {
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-family: var(--ay-font-serif);
+                font-size: clamp(5rem, 12vw, 13rem);
+                font-weight: 800;
+                color: transparent;
+                -webkit-text-stroke: 1.5px rgba(216, 168, 78, 0.09);
+                white-space: nowrap;
+                pointer-events: none;
+                user-select: none;
+                z-index: 1;
+            }
+
+            .ay-footer-bottom {
+                position: relative;
+                z-index: 2;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                padding-top: 24px;
+                margin-top: 80px;
+                font-size: 0.82rem;
+                color: rgba(255, 255, 255, 0.45);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            /* Responsive */
+            @media (max-width: 991px) {
+                .ay-nav-menu { display: none; }
+                .ay-infobar-grid { grid-template-columns: repeat(2, 1fr); }
+                .ay-gallery-grid { grid-template-columns: repeat(3, 1fr); }
+                .ay-story-collage { min-height: 420px; margin-bottom: 40px; }
+            }
+
+            @media (max-width: 575px) {
+                .ay-infobar-grid { grid-template-columns: 1fr; }
+                .ay-gallery-grid { grid-template-columns: repeat(2, 1fr); }
+                .ay-booking-body { padding: 30px 20px; }
+                .ay-booking-header { padding: 30px 20px; }
+            }
+        </style>
+    </t>
+
+    <t t-call="website.layout" pageName.f="homepage" head="head">
+        <div id="wrap" class="oe_structure ay-fusion-home">
+
+            <!-- ======================================================================
+                 NAVIGATION
+                 ====================================================================== -->
+            <nav class="ay-nav o_colored_level" data-name="Ayshu Navbar">
+                <div class="ay-nav-inner">
+                    <a href="/" class="ay-nav-brand">
+                        <svg class="ay-nav-logo-icon" viewBox="0 0 100 100" fill="currentColor">
+                            <!-- Radiant Teak &amp; Arabian Flame Crown -->
+                            <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                            <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                            <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                            <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                        </svg>
+                        <div>
+                            <span class="ay-nav-title">Ayshu's Culinary</span>
+                            <span class="ay-nav-sub">Aesthetic Cafe &amp; Arabian Kitchen</span>
+                        </div>
+                    </a>
+
+                    <ul class="ay-nav-menu">
+                        <li><a href="#story">Our Story</a></li>
+                        <li><a href="#menu">Signature Menu</a></li>
+                        <li><a href="#reserve">Reservation</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#reviews">Reviews</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="tel:+919122227221" class="text-white d-none d-md-inline-block fw-bold" style="font-size: 0.8rem; letter-spacing: 0.1em;">
+                            <i class="fa fa-phone text-warning me-1"/> 091222 27221
+                        </a>
+                        <a href="#reserve" class="ay-nav-btn">
+                            Book Table <i class="fa fa-arrow-right"/>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+
+            <!-- ======================================================================
+                 1. FULL-SCREEN HERO BANNER (ATMOSPHERIC RESTAURANT INTERIOR)
+                 ====================================================================== -->
+            <section class="ay-hero o_colored_level" data-name="Hero Banner">
+                <div class="ay-hero-container">
+                    <div class="ay-hero-badge">
+                        <i class="fa fa-map-marker"/> 26th Mile Bridge · Kanjirappally
+                    </div>
+                    <h1 class="ay-hero-title">
+                        Where Arabian Heritage Meets <span>Kerala Soul</span>
+                    </h1>
+                    <p class="ay-hero-desc">
+                        Aesthetic cafe featuring multicuisine dishes and signature Arabian specialties.
+                        Slow-cooked Kuzhimanthi, charcoal-seared Al Faham, freshly pulled rumali shawarmas,
+                        golden Turkish Kunafa, and specialty roasts in the heart of Kanjirappally.
+                    </p>
+                    <div class="ay-hero-actions">
+                        <a href="#reserve" class="ay-btn-primary">
+                            <i class="fa fa-calendar-check-o"/> Reserve a Table
+                        </a>
+                        <a href="#menu" class="ay-btn-ghost">
+                            Explore Menu <i class="fa fa-arrow-down"/>
+                        </a>
+                        <a href="tel:+919122227221" class="ay-btn-ghost">
+                            <i class="fa fa-phone"/> Call 091222 27221
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Bottom Infobar -->
+                <div class="ay-hero-infobar">
+                    <div class="ay-infobar-grid">
+                        <div class="ay-info-item">
+                            <i class="fa fa-clock-o"/>
+                            <div>
+                                <span class="ay-info-label">Open Daily</span>
+                                <span class="ay-info-val">11:00 AM – 11:00 PM</span>
+                            </div>
+                        </div>
+                        <div class="ay-info-item">
+                            <i class="fa fa-cutlery"/>
+                            <div>
+                                <span class="ay-info-label">Cuisine</span>
+                                <span class="ay-info-val">Arabian &amp; Multicuisine</span>
+                            </div>
+                        </div>
+                        <div class="ay-info-item">
+                            <i class="fa fa-star"/>
+                            <div>
+                                <span class="ay-info-label">Google Rating</span>
+                                <span class="ay-info-val">4.8 ★ (1,200+ Reviews)</span>
+                            </div>
+                        </div>
+                        <div class="ay-info-item">
+                            <i class="fa fa-users"/>
+                            <div>
+                                <span class="ay-info-label">Ambience</span>
+                                <span class="ay-info-val">Aesthetic Family Lounge</span>
+                            </div>
+                        </div>
+                        <div class="ay-chips">
+                            <span class="ay-chip"><i class="fa fa-fire"/> Charcoal Grilled</span>
+                            <span class="ay-chip"><i class="fa fa-coffee"/> Artisan Cafe</span>
+                            <span class="ay-chip"><i class="fa fa-users"/> Family Dining</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ======================================================================
+                 2. STORY &amp; HERITAGE FUSION
+                 ====================================================================== -->
+            <section class="ay-story o_colored_level" id="story" data-name="Our Story">
+                <div class="container-fluid px-lg-5 px-3">
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-6">
+                            <div class="ay-story-collage">
+                                <img src="https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&amp;w=1200&amp;auto=format&amp;fit=crop"
+                                     alt="Ayshu's Culinary Ambient Dining Room"
+                                     class="ay-story-img-main"/>
+                                <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&amp;w=800&amp;auto=format&amp;fit=crop"
+                                     alt="Aesthetic Cafe Lounge"
+                                     class="ay-story-img-sub"/>
+                                <div class="ay-story-badge">
+                                    <strong>4.8</strong>
+                                    <span>Google ★<br/>Rated</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <span class="ay-eyebrow ay-eyebrow-dark">The Ayshu Experience</span>
+                            <h2 class="ay-section-title">
+                                Handcrafted Spices, <em>Charcoal Embers</em> &amp; Warm Hospitality
+                            </h2>
+                            <p class="ay-section-lead">
+                                Located on the Kottayam–Kumily highway corridor at 26th Mile Bridge, Ayshu's Culinary Restaurant is built on a passion for authentic culinary traditions.
+                            </p>
+                            <p class="text-muted" style="line-height: 1.8;">
+                                From slow-steamed Kuzhimanthi prepared with aged Basmati rice and whole spices, to charcoal Al Faham seared to smoky perfection over open coals, every recipe is prepared fresh daily. Whether you are stopping for a quick artisan coffee in our cozy aesthetic cafe lounge or gathering your entire family for an evening banquet, you will find warmth in every detail.
+                            </p>
+
+                            <div class="ay-story-stats">
+                                <div class="ay-stat-box">
+                                    <strong>40+</strong>
+                                    <span>Signature Dishes</span>
+                                </div>
+                                <div class="ay-stat-box">
+                                    <strong>100%</strong>
+                                    <span>Charcoal Pit Cooked</span>
+                                </div>
+                                <div class="ay-stat-box">
+                                    <strong>3</strong>
+                                    <span>Dining &amp; Lounge Spaces</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ======================================================================
+                 3. INTERACTIVE SIGNATURE MENU SHOWCASE
+                 ====================================================================== -->
+            <section class="ay-menu-section o_colored_level" id="menu" data-name="Signature Menu">
+                <div class="container-fluid px-lg-5 px-3">
+                    <div class="text-center">
+                        <span class="ay-eyebrow">Signature Delicacies</span>
+                        <h2 class="ay-section-title">
+                            Our Chef's <em>Culinary Masterpieces</em>
+                        </h2>
+                        <p class="ay-section-lead mx-auto text-light opacity-75">
+                            Prepared with freshly hand-ground Malabar spices, heritage dum techniques, and authentic Arabian marinades.
+                        </p>
+                    </div>
+
+                    <div class="ay-menu-grid">
+                        <!-- Dish 1 -->
+                        <div class="ay-dish-card">
+                            <div class="ay-dish-thumb">
+                                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Signature Kuzhimanthi Platter"/>
+                                <span class="ay-dish-tag">Arabian Signature</span>
+                            </div>
+                            <div class="ay-dish-body">
+                                <div>
+                                    <div class="ay-dish-header">
+                                        <h3 class="ay-dish-title">Signature Kuzhimanthi</h3>
+                                        <span class="ay-dish-price">&#8377;280</span>
+                                    </div>
+                                    <p class="ay-dish-desc">Slow-steamed spiced basmati rice and charcoal-smoked tender chicken, served with spicy tomato salsa &amp; creamy garlic toum.</p>
+                                </div>
+                                <a href="#reserve" class="btn btn-sm btn-outline-warning w-100 fw-bold">Order / Reserve</a>
+                            </div>
+                        </div>
+
+                        <!-- Dish 2 -->
+                        <div class="ay-dish-card">
+                            <div class="ay-dish-thumb">
+                                <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Pepper Al Faham Charcoal Grilled"/>
+                                <span class="ay-dish-tag">Live Charcoal</span>
+                            </div>
+                            <div class="ay-dish-body">
+                                <div>
+                                    <div class="ay-dish-header">
+                                        <h3 class="ay-dish-title">Pepper Al Faham</h3>
+                                        <span class="ay-dish-price">&#8377;280</span>
+                                    </div>
+                                    <p class="ay-dish-desc">Chicken infused with freshly cracked Malabar black pepper, garlic &amp; Arabic herbs, char-grilled over live embers with kuboos.</p>
+                                </div>
+                                <a href="#reserve" class="btn btn-sm btn-outline-warning w-100 fw-bold">Order / Reserve</a>
+                            </div>
+                        </div>
+
+                        <!-- Dish 3 -->
+                        <div class="ay-dish-card">
+                            <div class="ay-dish-thumb">
+                                <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Malabar Chicken Dum Biryani"/>
+                                <span class="ay-dish-tag">Kerala Heritage</span>
+                            </div>
+                            <div class="ay-dish-body">
+                                <div>
+                                    <div class="ay-dish-header">
+                                        <h3 class="ay-dish-title">Malabar Dum Biryani</h3>
+                                        <span class="ay-dish-price">&#8377;190</span>
+                                    </div>
+                                    <p class="ay-dish-desc">Traditional Jeerakasala kaima rice layered with slow-cooked chicken masala, golden fried onions, ghee, raita &amp; date pickle.</p>
+                                </div>
+                                <a href="#reserve" class="btn btn-sm btn-outline-warning w-100 fw-bold">Order / Reserve</a>
+                            </div>
+                        </div>
+
+                        <!-- Dish 4 -->
+                        <div class="ay-dish-card">
+                            <div class="ay-dish-thumb">
+                                <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Golden Turkish Cheese Kunafa"/>
+                                <span class="ay-dish-tag">Signature Dessert</span>
+                            </div>
+                            <div class="ay-dish-body">
+                                <div>
+                                    <div class="ay-dish-header">
+                                        <h3 class="ay-dish-title">Turkish Cheese Kunafa</h3>
+                                        <span class="ay-dish-price">&#8377;180</span>
+                                    </div>
+                                    <p class="ay-dish-desc">Crisp golden spun kataifi pastry stuffed with gooey melted cheese, drenched in aromatic orange blossom syrup &amp; pistachios.</p>
+                                </div>
+                                <a href="#reserve" class="btn btn-sm btn-outline-warning w-100 fw-bold">Order / Reserve</a>
+                            </div>
+                        </div>
+
+                        <!-- Dish 5 -->
+                        <div class="ay-dish-card">
+                            <div class="ay-dish-thumb">
+                                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Aesthetic Artisan Spanish Latte"/>
+                                <span class="ay-dish-tag">Cafe Special</span>
+                            </div>
+                            <div class="ay-dish-body">
+                                <div>
+                                    <div class="ay-dish-header">
+                                        <h3 class="ay-dish-title">Artisan Spanish Latte</h3>
+                                        <span class="ay-dish-price">&#8377;150</span>
+                                    </div>
+                                    <p class="ay-dish-desc">Single-estate espresso pulled fresh, sweetened condensed milk, velvety micro-foam, served hot or iced in our cafe lounge.</p>
+                                </div>
+                                <a href="#reserve" class="btn btn-sm btn-outline-warning w-100 fw-bold">Order / Reserve</a>
+                            </div>
+                        </div>
+
+                        <!-- Dish 6 -->
+                        <div class="ay-dish-card">
+                            <div class="ay-dish-thumb">
+                                <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Specialty Mojitos and Faloodas"/>
+                                <span class="ay-dish-tag">Refreshment</span>
+                            </div>
+                            <div class="ay-dish-body">
+                                <div>
+                                    <div class="ay-dish-header">
+                                        <h3 class="ay-dish-title">Tender Coconut Shake</h3>
+                                        <span class="ay-dish-price">&#8377;120</span>
+                                    </div>
+                                    <p class="ay-dish-desc">Fresh elaneer pulp blended with thick dairy cream and vanilla ice-cream. The ultimate soothing cooler on the highway.</p>
+                                </div>
+                                <a href="#reserve" class="btn btn-sm btn-outline-warning w-100 fw-bold">Order / Reserve</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ MARQUEE ============ -->
+            <div class="ay-marquee" aria-hidden="true">
+                <div class="ay-track">
+                    <span>Al Faham</span><span>Kuzhimanthi</span><span>Dum Biryani</span><span>Kunafa</span><span>Artisan Coffee</span><span>Shawarma</span><span>Mandi</span><span>Fresh Mocktails</span>
+                    <span>Al Faham</span><span>Kuzhimanthi</span><span>Dum Biryani</span><span>Kunafa</span><span>Artisan Coffee</span><span>Shawarma</span><span>Mandi</span><span>Fresh Mocktails</span>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 4. DIRECT TABLE RESERVATION FORM
+                 ====================================================================== -->
+            <section class="ay-booking-section o_colored_level" id="reserve" data-name="Table Reservation">
+                <div class="container-fluid px-lg-5 px-3">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10 col-xl-9">
+                            <div class="ay-booking-card">
+                                <div class="ay-booking-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                    <div>
+                                        <span class="ay-eyebrow" style="color: var(--ay-gold);">Reserve Your Seat</span>
+                                        <h2 class="ay-section-title text-white mb-0" style="font-size: 2.4rem;">
+                                            Book a Table at <em>Ayshu's</em>
+                                        </h2>
+                                    </div>
+                                    <div class="text-end text-light opacity-75 small">
+                                        <i class="fa fa-phone me-1"/> Instant assistance: <strong>091222 27221</strong>
+                                    </div>
+                                </div>
+
+                                <div class="ay-booking-body">
+                                    <form action="tel:+919122227221" method="GET">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <label class="ay-form-label">Full Name</label>
+                                                <input type="text" class="ay-form-control" placeholder="e.g. Rahul Nair" required="required"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="ay-form-label">Phone Number</label>
+                                                <input type="tel" class="ay-form-control" placeholder="e.g. +91 98765 43210" required="required"/>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="ay-form-label">Reservation Date</label>
+                                                <input type="date" class="ay-form-control" required="required"/>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="ay-form-label">Preferred Time Slot</label>
+                                                <select class="ay-form-control">
+                                                    <option>Lunch Service (11:30 AM – 3:30 PM)</option>
+                                                    <option>Sunset Cafe &amp; Tea (4:00 PM – 7:00 PM)</option>
+                                                    <option selected="selected">Arabian Grills &amp; Dinner (7:00 PM – 11:00 PM)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="ay-form-label">Number of Guests</label>
+                                                <select class="ay-form-control">
+                                                    <option>1 – 2 Persons</option>
+                                                    <option selected="selected">3 – 5 Persons (Family Table)</option>
+                                                    <option>6 – 10 Persons (Large Gathering)</option>
+                                                    <option>10+ Persons (Private Banquet)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="ay-form-label">Seating Preference / Special Requests</label>
+                                                <input type="text" class="ay-form-control" placeholder="e.g. AC Family Lounge, High Chairs, Birthday Cake Request"/>
+                                            </div>
+                                            <div class="col-12 text-center mt-4">
+                                                <button type="submit" class="ay-btn-primary w-100 justify-content-center py-3" style="font-size: 0.95rem;">
+                                                    <i class="fa fa-calendar-check-o"/> Confirm My Reservation Now
+                                                </button>
+                                                <small class="text-muted d-block mt-2">Walk-ins are always welcomed! Pre-booking is recommended for weekend evenings.</small>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ======================================================================
+                 5. INSTAGRAM-STYLE PHOTO GALLERY
+                 ====================================================================== -->
+            <section class="ay-gallery-section o_colored_level" id="gallery" data-name="Photo Gallery">
+                <div class="container-fluid px-lg-5 px-3">
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3">
+                        <div>
+                            <span class="ay-eyebrow ay-eyebrow-dark">Visual Impressions</span>
+                            <h2 class="ay-section-title mb-0">Follow Our <em>Culinary Journey</em></h2>
+                        </div>
+                        <a href="https://instagram.com" target="_blank" class="ay-btn-ghost text-dark border-dark" style="background: transparent;">
+                            <i class="fa fa-instagram text-danger"/> @ayshusculinary
+                        </a>
+                    </div>
+
+                    <div class="ay-gallery-grid">
+                        <div class="ay-gallery-item">
+                            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Signature Mandi"/>
+                            <div class="ay-gallery-overlay">
+                                <i class="fa fa-instagram"/>
+                                <span>Slow Dum Kuzhimanthi</span>
+                            </div>
+                        </div>
+                        <div class="ay-gallery-item">
+                            <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Charcoal Grills"/>
+                            <div class="ay-gallery-overlay">
+                                <i class="fa fa-instagram"/>
+                                <span>Live Charcoal Al Faham</span>
+                            </div>
+                        </div>
+                        <div class="ay-gallery-item">
+                            <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Golden Kunafa"/>
+                            <div class="ay-gallery-overlay">
+                                <i class="fa fa-instagram"/>
+                                <span>Fresh Baked Kunafa</span>
+                            </div>
+                        </div>
+                        <div class="ay-gallery-item">
+                            <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Cozy Cafe Corner"/>
+                            <div class="ay-gallery-overlay">
+                                <i class="fa fa-instagram"/>
+                                <span>Aesthetic Cafe Corner</span>
+                            </div>
+                        </div>
+                        <div class="ay-gallery-item">
+                            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Artisan Coffee Roasts"/>
+                            <div class="ay-gallery-overlay">
+                                <i class="fa fa-instagram"/>
+                                <span>Specialty Pour Over</span>
+                            </div>
+                        </div>
+                        <div class="ay-gallery-item">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Evening Family Gathering"/>
+                            <div class="ay-gallery-overlay">
+                                <i class="fa fa-instagram"/>
+                                <span>Family Feasts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ======================================================================
+                 6. REVIEWS &amp; GOOGLE RATING
+                 ====================================================================== -->
+            <section class="ay-reviews-section o_colored_level" id="reviews" data-name="Guest Reviews">
+                <div class="container-fluid px-lg-5 px-3">
+                    <div class="ay-rating-banner">
+                        <div>
+                            <span class="text-uppercase fw-bold text-warning small tracking-wide">Verified Google Testimonials</span>
+                            <h3 class="ay-serif text-white mb-0" style="font-size: 1.8rem;">Loved by Travelers &amp; Families Alike</h3>
+                        </div>
+                        <div class="text-end">
+                            <div class="ay-rating-stars">★★★★★</div>
+                            <span class="text-light fw-bold">4.8 out of 5.0 Rating (1,200+ Reviews)</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-4">
+                            <div class="ay-review-card">
+                                <p class="ay-review-text">
+                                    "Hands down the best Al Faham and Kuzhimanthi on the Kottayam–Kumily highway. The meat was fall-apart tender and the aesthetic cafe ambiance is extraordinary."
+                                </p>
+                                <div class="ay-reviewer">
+                                    <div class="ay-reviewer-avatar">MF</div>
+                                    <div>
+                                        <strong>Muhammed Fazil</strong>
+                                        <span>Local Guide · Kanjirappally</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="ay-review-card">
+                                <p class="ay-review-text">
+                                    "We stopped at 26th Mile during our family road trip from Vagamon. The Turkish Cheese Kunafa and Spanish Latte were world-class! Very spacious and clean AC family lounge."
+                                </p>
+                                <div class="ay-reviewer">
+                                    <div class="ay-reviewer-avatar">AT</div>
+                                    <div>
+                                        <strong>Anjali &amp; Thomas</strong>
+                                        <span>Travelers from Kochi</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="ay-review-card">
+                                <p class="ay-review-text">
+                                    "Authentic Kerala Malabar Biryani combined with rich Arabian charcoal grills. The staff is polite, parking is easy right near Hyundai showroom, and the food comes piping hot."
+                                </p>
+                                <div class="ay-reviewer">
+                                    <div class="ay-reviewer-avatar">VN</div>
+                                    <div>
+                                        <strong>Dr. Vivek Nair</strong>
+                                        <span>Regular Guest</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ======================================================================
+                 7. LOCATION, OPERATING HOURS &amp; CONTACT
+                 ====================================================================== -->
+            <section class="ay-location-section o_colored_level" id="contact" data-name="Location &amp; Hours">
+                <div class="container-fluid px-lg-5 px-3">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="ay-loc-box">
+                                <span class="ay-eyebrow ay-eyebrow-dark">Find Us Easily</span>
+                                <h3 class="ay-section-title" style="font-size: 2.2rem;">Kanjirappally, Kerala</h3>
+                                <p class="text-muted mb-4">
+                                    Conveniently located directly off the highway, with dedicated guest parking.
+                                </p>
+
+                                <div class="mb-4">
+                                    <p class="mb-1"><strong class="text-dark">Address:</strong></p>
+                                    <p class="text-muted mb-3">26th Mile Bridge, near Hyundai showroom, Kanjirappally, Keralam 686518</p>
+                                    <p class="mb-1"><strong class="text-dark">Direct Phone:</strong></p>
+                                    <p class="mb-3"><a href="tel:+919122227221" class="text-dark fw-bold fs-5"><i class="fa fa-phone text-warning me-2"/> 091222 27221</a></p>
+                                </div>
+
+                                <div class="d-flex gap-3 flex-wrap">
+                                    <a href="https://maps.google.com/?q=Ayshu%27s+Culinary+Restaurant+Kanjirappally" target="_blank" class="ay-btn-primary">
+                                        <i class="fa fa-map-marker"/> Open in Google Maps
+                                    </a>
+                                    <a href="tel:+919122227221" class="ay-btn-ghost text-dark border-dark" style="background: transparent;">
+                                        <i class="fa fa-phone"/> Call Restaurant
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="ay-loc-box">
+                                <span class="ay-eyebrow ay-eyebrow-dark">Dining Schedule</span>
+                                <h3 class="ay-section-title" style="font-size: 2.2rem;">Hours of Service</h3>
+                                <p class="text-muted mb-4">
+                                    Open 7 days a week for continuous all-day dining and takeout.
+                                </p>
+
+                                <div class="ay-schedule-row">
+                                    <span class="fw-bold">Monday – Sunday (Full Day)</span>
+                                    <span class="badge bg-dark text-warning px-3 py-2">11:00 AM – 11:00 PM</span>
+                                </div>
+                                <div class="ay-schedule-row">
+                                    <span>Lunch Service (Mandi &amp; Biryani)</span>
+                                    <span class="text-muted">11:30 AM – 3:30 PM</span>
+                                </div>
+                                <div class="ay-schedule-row">
+                                    <span>Sunset Cafe &amp; Shawarma</span>
+                                    <span class="text-muted">4:00 PM – 7:00 PM</span>
+                                </div>
+                                <div class="ay-schedule-row">
+                                    <span>Arabian Grills, Al Faham &amp; Dinner</span>
+                                    <span class="text-muted">7:00 PM – 11:00 PM</span>
+                                </div>
+                                <div class="ay-schedule-row">
+                                    <span>Kitchen Last Order</span>
+                                    <span class="text-muted">10:30 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ======================================================================
+                 8. FOOTER WITH GRAND OUTLINE WATERMARK
+                 ====================================================================== -->
+            <footer class="ay-footer o_colored_level" data-name="Ayshu Footer">
+                <div class="container-fluid px-lg-5 px-3 position-relative" style="z-index: 2;">
+                    <div class="row g-5">
+                        <div class="col-lg-5">
+                            <div class="d-flex align-items-center gap-3">
+                                <svg class="ay-nav-logo-icon" viewBox="0 0 100 100" fill="currentColor">
+                                    <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                                    <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                                    <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                                    <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                                </svg>
+                                <div>
+                                    <h4 class="text-white mb-0 ay-serif fs-3">Ayshu's Culinary</h4>
+                                    <small class="text-warning text-uppercase letter-spacing-2">Kanjirappally, Kerala</small>
+                                </div>
+                            </div>
+                            <p class="ay-footer-tagline">
+                                "Flavours of Malabar. Soul of Arabia."
+                            </p>
+                            <p class="text-light opacity-50 small" style="max-width: 420px;">
+                                Aesthetic cafe featuring multicuisine dishes and signature Arabian specialties. 26th Mile Bridge, near Hyundai showroom, Kanjirappally.
+                            </p>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <span class="ay-eyebrow" style="color: var(--ay-gold);">Quick Links</span>
+                            <ul class="list-unstyled text-light opacity-75 small">
+                                <li class="mb-2"><a href="#menu" class="text-white">Signature Kuzhimanthi &amp; Al Faham</a></li>
+                                <li class="mb-2"><a href="#menu" class="text-white">Malabar Chicken Dum Biryani</a></li>
+                                <li class="mb-2"><a href="#menu" class="text-white">Turkish Cheese Kunafa &amp; Cafe</a></li>
+                                <li class="mb-2"><a href="#reserve" class="text-white">Reserve a Family Table</a></li>
+                                <li class="mb-2"><a href="#contact" class="text-white">Find Us on Google Maps</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <span class="ay-eyebrow" style="color: var(--ay-gold);">Hospitality &amp; Takeaway</span>
+                            <p class="text-light opacity-75 small mb-2">
+                                For parcel orders, bulk party catering, and private lounge bookings:
+                            </p>
+                            <p class="fs-4 text-warning fw-bold mb-3">
+                                <a href="tel:+919122227221" class="text-warning"><i class="fa fa-phone me-2"/>091222 27221</a>
+                            </p>
+                            <a href="#reserve" class="ay-btn-primary py-2 px-4" style="font-size: 0.75rem;">
+                                Instant Table Booking
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ay-fbottom">
+                        <div>&#169; 2026 Ayshu's Culinary Restaurant. All Rights Reserved.</div>
+                        <div>26th Mile Bridge, near Hyundai showroom, Kanjirappally, Kerala 686518</div>
+                    </div>
+                </div>
+
+                <!-- Giant Outline Typography Across Footer Base -->
+                <div class="ay-footer-watermark" aria-hidden="true">
+                    Ayshu's Culinary
+                </div>
+            </footer>
+
+        </div>
+    </t>
+</t>

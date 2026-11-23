@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="hudson_knowledge.KnowledgeItemView">
+    <div class="o_knowledge_item_view d-flex flex-column"
+         t-attf-class="o_knowledge_item_view_{{ this.viewType }}">
+        <t t-if="this.state.error">
+            <div class="alert alert-warning m-0">
+                This embedded view could not be loaded.
+            </div>
+        </t>
+        <t t-elif="this.state.viewIds">
+            <View t-props="this.viewProps"/>
+        </t>
+        <t t-else="">
+            <div class="p-3 text-muted">Loading…</div>
+        </t>
+    </div>
+</t>
+
+<t t-name="hudson_knowledge.KnowledgeItemCalendar.controlButtons">
+    <button t-if="this.model.canCreate and !this.uiService.isSmall" type="button"
+            class="btn btn-primary o_knowledge_item_calendar_new"
+            t-on-click="() => this.onKnowledgeNewItem()">New</button>
+</t>
+
+</templates>

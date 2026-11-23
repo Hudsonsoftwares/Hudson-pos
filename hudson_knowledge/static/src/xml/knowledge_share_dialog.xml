@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="hudson_knowledge.KnowledgeShareDialog">
+    <Dialog title="this.title" size="'md'" footer="false" withBodyPadding="false"
+            contentClass="'o_knowledge_share_dialog'">
+        <t t-if="this.state.data">
+            <!-- Share to web -->
+            <div class="o_knowledge_share_row">
+                <i class="oi o_knowledge_share_row_icon" data-icon="public"/>
+                <div class="flex-grow-1">
+                    <div class="o_knowledge_share_row_title">Share to web</div>
+                    <div class="o_knowledge_share_row_help">
+                        <t t-if="this.state.data.published_by_parent">Published through a parent article</t>
+                        <t t-else="">Publish this article and its sub-articles</t>
+                    </div>
+                </div>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input o_knowledge_share_web_toggle" type="checkbox" role="switch"
+                           t-att-checked="this.state.data.website_published"
+                           t-att-disabled="!this.canEdit or this.state.data.published_by_parent"
+                           t-on-change="(ev) => this.onTogglePublished(ev)"/>
+                </div>
+            </div>
+            <div t-if="this.state.data.website_published" class="o_knowledge_share_link px-4 pb-3">
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" readonly="readonly"
+                           t-att-value="this.state.data.public_url"
+                           t-on-focus="(ev) => ev.target.select()"/>
+                    <button class="btn btn-secondary" type="button" t-on-click="() => this.onCopyLink()">
+                        <i class="oi me-1" data-icon="content_copy"/>Copy
+                    </button>
+                </div>
+            </div>
+
+            <!-- General access -->
+            <div class="o_knowledge_share_row o_knowledge_share_separator">
+                <i class="oi o_knowledge_share_row_icon" data-icon="business"/>
+                <div class="flex-grow-1">
+                    <div class="o_knowledge_share_row_label">General Access</div>
+                    <div class="o_knowledge_share_row_help" t-out="this.generalAccessHelp"/>
+                </div>
+                <div class="position-relative">
+                    <t t-if="this.canEdit and this.state.data.is_root">
+                        <button type="button" class="btn o_knowledge_share_perm_btn o_knowledge_share_menu_toggle"
+                                t-on-click="() => this.toggleMenu('general')">
+                            <t t-out="this.generalAccessLabel"/>
+                        </button>
+                        <div t-if="this.state.openMenu === 'general'" class="o_knowledge_share_menu">
+                            <t t-foreach="['write', 'read']" t-as="perm" t-key="perm">
+                                <button type="button" class="o_knowledge_share_menu_item"
+                                        t-on-click="() => this.onSetGeneralAccess(perm)">
+                                    <i class="oi o_knowledge_share_check" data-icon="check"
+                                       t-att-class="{ 'invisible': !(this.state.data.visibility === 'workspace' and this.state.data.internal_permission === perm) }"/>
+                                    <t t-out="this.permissionLabels[perm]"/>
+                                </button>
+                            </t>
+                            <div class="dropdown-divider"/>
+                            <button type="button" class="o_knowledge_share_menu_item"
+                                    t-on-click="() => this.onSetGeneralAccess('members')">
+                                <i class="oi o_knowledge_share_check" data-icon="check"
+                                   t-att-class="{ 'invisible': this.state.data.visibility === 'workspace' }"/>
+                                Members only
+                            </button>
+                        </div>
+                    </t>
+                    <span t-else="" class="o_knowledge_share_perm_static"
+                          t-att-title="this.state.data.is_root ? '' : 'Inherited from the parent article'">
+                        <t t-out="this.generalAccessLabel"/>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Members header -->
+            <div class="o_knowledge_share_row o_knowledge_share_separator">
+                <div class="flex-grow-1 o_knowledge_share_row_title">Members</div>
+                <button t-if="this.canEdit" type="button" class="btn btn-primary o_knowledge_share_open_btn"
+                        t-on-click="() => this.openShareDialog()">
+                    <i class="oi me-1" data-icon="add"/>Share
+                </button>
+            </div>
+
+            <!-- Members -->
+            <div class="o_knowledge_share_members">
+                <t t-foreach="this.state.data.members" t-as="member" t-key="member.partner_id">
+                    <div class="o_knowledge_share_member">
+                        <img t-att-src="member.avatar" class="o_knowledge_share_avatar" alt=""/>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="o_knowledge_share_member_name">
+                                <t t-out="member.name"/>
+                                <span t-if="member.is_me" class="text-muted"> (You)</span>
+                                <span t-elif="member.is_guest" class="text-muted"> (Guest)</span>
+                                <i t-if="member.is_admin" class="oi ms-1 o_knowledge_share_admin" data-icon="settings"
+                                   title="Knowledge administrator"/>
+                            </div>
+                            <div class="o_knowledge_share_member_email text-truncate" t-out="member.email"/>
+                        </div>
+                        <div class="position-relative">
+                            <t t-if="this.canEdit and !member.is_me">
+                                <button type="button" class="btn o_knowledge_share_perm_btn o_knowledge_share_menu_toggle"
+                                        t-att-class="{ 'o_knowledge_share_perm_open': this.state.openMenu === member.partner_id }"
+                                        t-on-click="() => this.toggleMenu(member.partner_id)">
+                                    <t t-out="this.permissionLabels[member.permission]"/>
+                                </button>
+                                <div t-if="this.state.openMenu === member.partner_id" class="o_knowledge_share_menu">
+                                    <t t-foreach="member.is_guest ? ['none', 'read'] : ['none', 'read', 'write']" t-as="perm" t-key="perm">
+                                        <button type="button" class="o_knowledge_share_menu_item"
+                                                t-on-click="() => this.onSetMemberPermission(member, perm)">
+                                            <i class="oi o_knowledge_share_check" data-icon="check"
+                                               t-att-class="{ 'invisible': member.permission !== perm }"/>
+                                            <t t-out="this.permissionLabels[perm]"/>
+                                        </button>
+                                    </t>
+                                    <div class="dropdown-divider"/>
+                                    <button type="button" class="o_knowledge_share_menu_item"
+                                            t-on-click="() => this.onRemoveMember(member)">
+                                        <i class="oi o_knowledge_share_check invisible" data-icon="check"/>
+                                        Remove
+                                    </button>
+                                </div>
+                            </t>
+                            <span t-else="" class="o_knowledge_share_perm_static"
+                                  t-out="this.permissionLabels[member.permission]"/>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+        <t t-else="">
+            <div class="p-4 text-muted">Loading…</div>
+        </t>
+    </Dialog>
+</t>
+
+<t t-name="hudson_knowledge.KnowledgeShareInviteDialog">
+    <Dialog title="'Share'" size="'md'" contentClass="'o_knowledge_share_dialog o_knowledge_share_invite_dialog'">
+        <div class="o_knowledge_share_invite_form">
+            <div class="d-flex align-items-center mb-3">
+                <label class="o_knowledge_share_form_label">Permission</label>
+                <select class="form-select border-0 border-bottom rounded-0"
+                        t-on-change="(ev) => this.state.permission = ev.target.value">
+                    <option value="write" t-att-selected="this.state.permission === 'write'">Can edit</option>
+                    <option value="read" t-att-selected="this.state.permission === 'read'">Can read</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-start mb-3">
+                <label class="o_knowledge_share_form_label pt-1">Recipients</label>
+                <div class="flex-grow-1 position-relative o_knowledge_share_invite">
+                    <div class="d-flex flex-wrap align-items-center gap-1 border-bottom o_knowledge_share_input">
+                        <t t-foreach="this.state.selected" t-as="sel" t-key="sel.partner_id">
+                            <span class="badge rounded-pill o_knowledge_share_chip">
+                                <t t-out="sel.name"/>
+                                <i class="oi ms-1" data-icon="close" role="button"
+                                   t-on-click="() => this.onUnpick(sel.partner_id)"/>
+                            </span>
+                        </t>
+                        <input type="text" class="border-0 flex-grow-1 o_knowledge_share_search"
+                               placeholder="Add people or email addresses"
+                               t-att-value="this.state.search"
+                               t-on-input="(ev) => this.onSearchInput(ev)"
+                               t-on-focus="() => this.onSearchFocus()"
+                               t-on-keydown="(ev) => this.onSearchKeydown(ev)"/>
+                    </div>
+                    <div t-if="this.state.showSuggestions and this.state.suggestions.length"
+                         class="o_knowledge_share_suggestions">
+                        <t t-foreach="this.state.suggestions" t-as="sug" t-key="sug.partner_id">
+                            <button type="button" class="o_knowledge_share_suggestion"
+                                    t-on-click.stop="() => this.onPickSuggestion(sug)">
+                                <span class="fw-medium" t-out="sug.name"/>
+                                <span t-if="sug.is_new" class="text-muted">(Invite by email)</span>
+                                <span t-elif="sug.is_guest" class="text-muted">(Guest)</span>
+                                <span class="text-muted ms-auto" t-out="sug.email"/>
+                            </button>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex align-items-start">
+                <label class="o_knowledge_share_form_label pt-1">Message</label>
+                <textarea class="form-control border-0 border-bottom rounded-0" rows="2"
+                          placeholder="Extra comment..."
+                          t-on-input="(ev) => this.state.message = ev.target.value"/>
+            </div>
+        </div>
+        <t t-set-slot="footer">
+            <button class="btn btn-primary" t-att-disabled="this.state.busy"
+                    t-on-click="() => this.onShare()">Share</button>
+            <button class="btn btn-secondary" t-on-click="() => this.props.close()">Discard</button>
+        </t>
+    </Dialog>
+</t>
+
+<t t-name="hudson_knowledge.KnowledgeMoveDialog">
+    <Dialog title="'Move &quot;' + this.props.article.name + '&quot; to'" size="'md'"
+            contentClass="'o_knowledge_move_dialog'">
+        <input type="text" class="form-control mb-3" placeholder="Search an article..."
+               t-att-value="this.state.search" t-on-input="(ev) => this.onSearch(ev)"/>
+        <div class="o_knowledge_move_list">
+            <div class="o_knowledge_move_group">Sections</div>
+            <t t-foreach="this.sections" t-as="section" t-key="section.key">
+                <button type="button" class="o_knowledge_move_target"
+                        t-att-class="{ 'active': this.isSelected({ kind: 'section', id: section.key }) }"
+                        t-on-click="() => this.select({ kind: 'section', id: section.key, label: section.label })">
+                    <i class="oi me-2" t-att-data-icon="section.icon"/>
+                    <t t-out="section.label"/>
+                </button>
+            </t>
+            <div class="o_knowledge_move_group">Articles</div>
+            <t t-foreach="this.state.targets" t-as="target" t-key="target.id">
+                <button type="button" class="o_knowledge_move_target"
+                        t-att-class="{ 'active': this.isSelected({ kind: 'article', id: target.id }) }"
+                        t-on-click="() => this.select({ kind: 'article', id: target.id, label: target.name })">
+                    <span class="me-2" t-out="target.icon"/>
+                    <span class="text-truncate">
+                        <span t-if="target.path" class="text-muted"><t t-out="target.path"/> / </span>
+                        <t t-out="target.name"/>
+                    </span>
+                </button>
+            </t>
+            <div t-if="!this.state.targets.length" class="text-muted small px-2 py-1">No article found</div>
+        </div>
+        <t t-set-slot="footer">
+            <button class="btn btn-primary" t-att-disabled="!this.state.selected"
+                    t-on-click="() => this.onConfirm()">Move</button>
+            <button class="btn btn-secondary" t-on-click="() => this.props.close()">Discard</button>
+        </t>
+    </Dialog>
+</t>
+
+</templates>

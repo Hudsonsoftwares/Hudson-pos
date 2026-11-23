@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- "Knowledge" card of the portal home (/my): shown when the user is a
+         member of at least one article (counter knowledge_count, see
+         controllers/main.py). -->
+    <record id="portal_knowledge" model="portal.entry">
+        <field name="name">Knowledge</field>
+        <field name="description">Read the articles shared with you and write your own notes</field>
+        <field name="url">/knowledge/home</field>
+        <field name="image" type="bytes" file="hudson_knowledge/static/src/img/knowledge_portal.svg"/>
+        <field name="placeholder_count">knowledge_count</field>
+        <field name="category">common_category</field>
+        <field name="sequence" eval="120"/>
+    </record>
+</odoo>

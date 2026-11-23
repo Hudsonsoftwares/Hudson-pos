@@ -1,85 +1,334 @@
 <t name="Appointments" t-name="appointment.appointment_type_index">
     <t t-set="head">
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+        <!-- Playfair Display (headings) + Plus Jakarta Sans (body), same as the home page -->
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+        <!-- Odoo 20 no longer ships Font Awesome: load it so the fa-* icons on this page show -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
         <style>
-#wrap.o_appointment_index { background: #fbf7f0; font-family: 'Inter', system-ui, sans-serif; color: #3d332a; padding-bottom: 90px; }
-.o_appointment_index h1, .o_appointment_index h2, .o_appointment_index h3, .o_appointment_index h4 { font-family: 'Playfair Display', Georgia, serif; color: #15110e; }
-.rc-appt-hero { position: relative; padding: 170px 0 120px; margin-bottom: 70px; color: #f6efe4;
-  background: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.78) 55%, rgba(21,17,14,.4) 100%),
-              url('/theme_bistro/static/src/img/backgrounds/20.webp') center/cover no-repeat; }
-.rc-appt-hero .rc-eyebrow, .o_appointment_index .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: #c9a15d; }
-.o_appointment_index .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
-.rc-appt-hero h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.05; color: #fff !important; margin: 22px 0; max-width: 800px; }
-.rc-appt-hero h1 em { color: #c9a15d; }
-.rc-appt-hero p { color: #d9cfbf; font-size: 1.12rem; line-height: 1.8; max-width: 600px; }
-.rc-appt-hero .rc-perks { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 30px; color: #e7dccb; font-size: .92rem; }
-.rc-appt-hero .rc-perks i { color: #c9a15d; margin-right: 8px; }
-/* title row + search */
-.o_appointment_index .rc-appt-head h2 { font-size: clamp(1.9rem, 3.4vw, 2.7rem); margin: 10px 0 0; }
-.o_appointment_index .o_appointment_search .form-control { border-radius: 999px 0 0 999px; border-color: #e0d2bb; padding: 11px 18px; background: #fff; min-width: 240px; }
-.o_appointment_index .o_appointment_search .btn { border-radius: 0 999px 999px 0; background: #15110e; border-color: #15110e; color: #c9a15d; padding: 0 18px; }
-.o_appointment_index .o_appointment_search .btn:hover { background: #c9a15d; color: #15110e; }
-/* cards grid */
-.o_appointment_index .rc-appt-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px !important; }
-.o_appointment_index .o_appointment_type_card { flex-direction: column !important; background: #fff !important; border: 1px solid #efe5d5 !important; border-radius: 20px !important;
-  color: #3d332a !important; text-decoration: none; position: relative; transition: all .35s ease; box-shadow: none; height: 100%; }
-.o_appointment_index .o_appointment_type_card:hover { transform: translateY(-6px); box-shadow: 0 34px 60px -34px rgba(43,33,26,.55); border-color: #e3d2b4 !important; }
-.o_appointment_index .o_appointment_type_card_image { display: block !important; order: -1; width: 100%; height: 220px; background-size: cover; background-position: center; transition: transform .9s ease; }
-.o_appointment_index .o_appointment_type_card:not(:has(.o_appointment_type_card_image))::before { content: ""; order: -1; display: block; height: 220px;
-  background: linear-gradient(140deg, rgba(21,17,14,.55), rgba(21,17,14,.15)), url('/theme_bistro/static/src/img/configurator/set_1_landscape_md_2.webp') center/cover; }
-.o_appointment_index .o_appointment_type_card > .d-flex { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 26px 26px 76px !important; }
-.o_appointment_index .premium-card-title { font-size: 1.5rem; line-height: 1.25; color: #15110e; display: flex; align-items: center; }
-.o_appointment_index .premium-card-title > span.me-2 { width: 46px; height: 46px; min-width: 46px; border-radius: 50%; background: #15110e; display: inline-flex; align-items: center; justify-content: center; font-size: 1.35rem; margin-right: 14px !important; }
-.o_appointment_index .o_appointment_type_card_info { flex-direction: row !important; flex-wrap: wrap; gap: 10px 22px !important; color: #6f6253; font-size: .92rem; }
-.o_appointment_index .o_appointment_type_card_info .fw-semibold { font-weight: 500 !important; }
-.o_appointment_index .o_appointment_type_card_info .oi { color: #c9a15d; }
-.o_appointment_index .o_appointment_chip { background: #f4ecdf; color: #7a6a57; border-radius: 999px; padding: 4px 12px 4px 4px; font-size: .82rem; display: inline-flex; align-items: center; gap: 8px; }
-.o_appointment_index .o_appointment_avatar { width: 26px; height: 26px; background: #15110e; color: #c9a15d; font-size: .75rem; font-weight: 600; }
-.o_appointment_index .o_appointment_type_card::after { content: "Book now  \2192"; position: absolute; left: 26px; right: 26px; bottom: 22px; text-align: center;
-  padding: 11px; border-radius: 999px; background: #15110e; color: #c9a15d; font-weight: 600; font-size: .9rem; transition: all .3s ease; }
-.o_appointment_index .o_appointment_type_card:hover::after { background: #c9a15d; color: #15110e; }
-.o_appointment_index .o_appointment_unpublished { position: absolute; top: 14px; right: 14px; border-radius: 999px; }
-/* how it works */
-.o_appointment_index .rc-appt-steps { margin-top: 80px; background: #15110e; border-radius: 24px; padding: 54px 46px; color: #f6efe4; }
-.o_appointment_index .rc-appt-steps h3 { color: #fff; font-size: clamp(1.7rem, 3vw, 2.3rem); margin: 12px 0 30px; }
-.o_appointment_index .rc-appt-steps h3 em { color: #c9a15d; }
-.o_appointment_index .rc-step { display: flex; gap: 16px; }
-.o_appointment_index .rc-step b { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #c9a15d; line-height: 1; }
-.o_appointment_index .rc-step h4 { color: #fff; font-size: 1.15rem; margin: 0 0 6px; }
-.o_appointment_index .rc-step p { color: #a99a86; margin: 0; font-size: .92rem; line-height: 1.6; }
-/* website header: dark glass, same as the homepage */
-header#top { background: rgba(21,17,14,.92) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
-header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
-header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary), header#top .navbar button:not(.btn-primary):not(.dropdown-item),
-header#top .navbar .navbar-brand, header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
-header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
-header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
-header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
-header#top .offcanvas { background: #1f1813 !important; }
-header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
-header#top .offcanvas .btn-close { filter: invert(1); }
-header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
-@media (max-width: 767px) { .rc-appt-hero { padding: 140px 0 80px; } .o_appointment_index .rc-appt-grid { grid-template-columns: 1fr; } .o_appointment_index .rc-appt-steps { padding: 36px 24px; } }
+            /* =====================================================================
+               AYSHU'S CULINARY - Reservations &amp; Celebrations, Kanjirappally
+               ===================================================================== */
+            #wrap.o_appointment_index {
+                --ay-teak: #18120e; --ay-teak-deep: #100b08; --ay-teak-card: #231914;
+                --ay-line: rgba(216,168,78,.22);
+                --ay-gold: #d8a84e; --ay-gold-light: #f5cf7b;
+                --ay-gold-grad: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%);
+                --ay-green: #1f3d2b; --ay-green-light: #2b563c;
+                --ay-cream: #fcf9f4; --ay-sand: #f4eee3; --ay-sand-line: #e3d7c5;
+                --ay-ink: #1c140f; --ay-muted: #8a7c72; --ay-body: #5c4e45;
+                --ay-serif: 'Playfair Display', Georgia, serif;
+                --ay-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+                --ay-radius: 14px; --ay-ease: cubic-bezier(.22,1,.36,1);
+                background: var(--ay-cream); font-family: var(--ay-sans); color: var(--ay-ink); line-height: 1.65;
+                overflow-x: hidden; -webkit-font-smoothing: antialiased;
+                /* the appointment module adds 40px top padding here, which showed as a white strip under the navbar */
+                padding-top: 0 !important; min-height: 0;
+            }
+            .o_appointment_index h1, .o_appointment_index h2, .o_appointment_index h3, .o_appointment_index h4 {
+                font-family: var(--ay-serif); font-weight: 700; color: var(--ay-teak); letter-spacing: -.01em;
+            }
+            .o_appointment_index a { text-decoration: none; }
+            .o_appointment_index a:focus-visible, .o_appointment_index button:focus-visible { outline: 2px solid var(--ay-gold); outline-offset: 3px; }
+            .o_appointment_index .ay-eyebrow {
+                display: inline-flex; align-items: center; gap: 12px;
+                font-size: .74rem; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: var(--ay-gold);
+            }
+            .o_appointment_index .ay-eyebrow::before { content: ""; width: 32px; height: 1px; background: currentColor; opacity: .8; }
+            .o_appointment_index .ay-eyebrow-green { color: var(--ay-green); }
+            .o_appointment_index .ay-title em { color: var(--ay-gold); font-style: italic; font-weight: 600; }
+            .o_appointment_index .ay-btn {
+                display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border-radius: 999px;
+                font-size: .78rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; border: 1px solid transparent;
+                transition: transform .3s var(--ay-ease), box-shadow .3s var(--ay-ease), background .3s ease, color .3s ease, border-color .3s ease;
+            }
+            .o_appointment_index .ay-btn-gold { background: var(--ay-gold-grad); color: var(--ay-teak) !important; box-shadow: 0 10px 30px rgba(216,168,78,.38); }
+            .o_appointment_index .ay-btn-gold:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(216,168,78,.58); }
+            .o_appointment_index .ay-btn-ghost { border-color: rgba(255,255,255,.35); color: #fff !important; background: rgba(255,255,255,.06); backdrop-filter: blur(8px); }
+            .o_appointment_index .ay-btn-ghost:hover { border-color: var(--ay-gold); color: var(--ay-gold-light) !important; transform: translateY(-3px); }
+
+            /* ---------- hero ---------- */
+            .o_appointment_index .ay-appt-hero {
+                position: relative; color: #fff; overflow: hidden; padding: 150px 0 0;
+                background: url('https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&amp;w=2000&amp;auto=format&amp;fit=crop') center/cover no-repeat;
+            }
+            .o_appointment_index .ay-appt-hero::before {
+                content: ""; position: absolute; inset: 0;
+                background:
+                    radial-gradient(ellipse at 25% 40%, rgba(216,168,78,.16), transparent 60%),
+                    linear-gradient(100deg, rgba(16,11,8,.95) 0%, rgba(24,18,14,.84) 50%, rgba(24,18,14,.45) 100%);
+            }
+            .o_appointment_index .ay-appt-hero > .container { position: relative; z-index: 2; padding-bottom: 80px; }
+            .o_appointment_index .ay-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+            .o_appointment_index .ay-brand-crest { width: 56px; height: 56px; color: var(--ay-gold); flex-shrink: 0; filter: drop-shadow(0 4px 14px rgba(216,168,78,.35)); }
+            .o_appointment_index .ay-brand-name {
+                font-family: var(--ay-serif); font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.8rem); line-height: 1; letter-spacing: .02em;
+                background: var(--ay-gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+            }
+            .o_appointment_index .ay-brand-sub { margin-top: 8px; font-size: .72rem; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: #e9e1d9; }
+            .o_appointment_index .ay-appt-hero h1 {
+                font-size: clamp(2.6rem, 5.6vw, 4.8rem); line-height: 1.06; color: #fff !important; margin: 22px 0; max-width: 820px;
+                text-shadow: 0 4px 24px rgba(0,0,0,.45);
+            }
+            .o_appointment_index .ay-appt-hero h1 em { color: var(--ay-gold-light); font-style: italic; font-weight: 600; }
+            .o_appointment_index .ay-appt-hero p { color: #ded6cf; font-size: 1.1rem; line-height: 1.85; max-width: 620px; }
+            .o_appointment_index .ay-hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+            .o_appointment_index .ay-perks { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+            .o_appointment_index .ay-perks span {
+                display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; border-radius: 999px;
+                border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.05); color: #e9e1d9; font-size: .82rem; font-weight: 600;
+            }
+            .o_appointment_index .ay-perks .fa { color: var(--ay-gold); }
+            .o_appointment_index .ay-infobar { position: relative; z-index: 3; background: rgba(16,11,8,.9); backdrop-filter: blur(14px); border-top: 1px solid var(--ay-line); }
+            .o_appointment_index .ay-info { display: flex; align-items: center; gap: 14px; padding: 22px 10px; }
+            .o_appointment_index .ay-info i {
+                width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+                background: rgba(216,168,78,.12); border: 1px solid var(--ay-line); color: var(--ay-gold); font-size: 1.05rem;
+            }
+            .o_appointment_index .ay-info small { display: block; font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ay-muted); }
+            .o_appointment_index .ay-info b, .o_appointment_index .ay-info a { color: #fff; font-size: .94rem; font-weight: 700; }
+
+            /* ---------- title row + search ---------- */
+            .o_appointment_index .ay-appt-main { padding: 90px 0 0; }
+            .o_appointment_index .ay-appt-head h2 { font-size: clamp(2rem, 3.6vw, 3rem); margin: 12px 0 0; }
+            .o_appointment_index .ay-appt-head p { color: var(--ay-body); margin: 10px 0 0; max-width: 560px; }
+            .o_appointment_index .o_appointment_search .input-group { box-shadow: 0 14px 30px -20px rgba(24,18,14,.4); border-radius: 999px; }
+            .o_appointment_index .o_appointment_search .form-control {
+                border-radius: 999px 0 0 999px; border: 1px solid var(--ay-sand-line); border-right: 0; padding: 13px 20px; background: #fff;
+                min-width: 260px; font-family: var(--ay-sans); font-size: .92rem;
+            }
+            .o_appointment_index .o_appointment_search .form-control:focus { border-color: var(--ay-gold); box-shadow: none; }
+            .o_appointment_index .o_appointment_search .btn {
+                border-radius: 0 999px 999px 0; background: var(--ay-teak); border-color: var(--ay-teak); color: var(--ay-gold-light); padding: 0 22px;
+            }
+            .o_appointment_index .o_appointment_search .btn:hover { background: var(--ay-gold-grad); color: var(--ay-teak); border-color: var(--ay-gold); }
+
+            /* ---------- appointment cards ---------- */
+            .o_appointment_index .ay-appt-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 28px !important; }
+            .o_appointment_index .o_appointment_type_card {
+                flex-direction: column !important; background: #fff !important; border: 1px solid var(--ay-sand-line) !important; border-radius: var(--ay-radius) !important;
+                color: var(--ay-ink) !important; position: relative; height: 100%; box-shadow: 0 1px 2px rgba(24,18,14,.04);
+                transition: transform .4s var(--ay-ease), box-shadow .4s var(--ay-ease), border-color .4s ease;
+            }
+            .o_appointment_index .o_appointment_type_card:hover { transform: translateY(-8px); box-shadow: 0 34px 60px -32px rgba(24,18,14,.5); border-color: var(--ay-gold) !important; }
+            .o_appointment_index .o_appointment_type_card::before {
+                content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; z-index: 3; background: var(--ay-gold-grad); transition: width .5s var(--ay-ease);
+            }
+            .o_appointment_index .o_appointment_type_card:hover::before { width: 100%; }
+            .o_appointment_index .o_appointment_type_card_image {
+                display: block !important; order: -1; width: 100%; height: 220px; background-size: cover; background-position: center;
+                position: relative;
+            }
+            /* cards without their own image get Ayshu's dining room photo */
+            .o_appointment_index .o_appointment_type_card:not(:has(.o_appointment_type_card_image)) > .d-flex::before {
+                content: ""; display: block; height: 220px; margin: -26px -26px 6px; width: calc(100% + 52px);
+                background: linear-gradient(160deg, rgba(24,18,14,.15), rgba(24,18,14,.55)),
+                            url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&amp;w=900&amp;auto=format&amp;fit=crop') center/cover;
+            }
+            .o_appointment_index .o_appointment_type_card > .d-flex { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 26px 26px 84px !important; }
+            .o_appointment_index .premium-card-title { font-size: 1.5rem; line-height: 1.25; color: var(--ay-teak); display: flex; align-items: center; }
+            .o_appointment_index .premium-card-title > span.me-2 {
+                width: 48px; height: 48px; min-width: 48px; border-radius: 50%; background: var(--ay-teak); display: inline-flex; align-items: center; justify-content: center;
+                font-size: 1.35rem; margin-right: 14px !important; box-shadow: 0 0 0 5px var(--ay-sand);
+            }
+            .o_appointment_index .o_appointment_type_card_info { flex-direction: row !important; flex-wrap: wrap; gap: 10px 22px !important; color: var(--ay-body); font-size: .9rem; }
+            .o_appointment_index .o_appointment_type_card_info .fw-semibold { font-weight: 600 !important; }
+            .o_appointment_index .o_appointment_type_card_info .oi { color: var(--ay-gold); }
+            .o_appointment_index .o_appointment_chip {
+                background: var(--ay-sand); color: var(--ay-body); border: 1px solid var(--ay-sand-line); border-radius: 999px;
+                padding: 4px 12px 4px 4px; font-size: .8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
+            }
+            .o_appointment_index .o_appointment_avatar { width: 26px; height: 26px; background: var(--ay-teak); color: var(--ay-gold-light); font-size: .74rem; font-weight: 800; }
+            .o_appointment_index .o_appointment_type_card::after {
+                content: "Book now  \2192"; position: absolute; left: 26px; right: 26px; bottom: 24px; text-align: center;
+                padding: 12px; border-radius: 999px; background: var(--ay-teak); color: var(--ay-gold-light);
+                font-weight: 800; font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; transition: all .3s ease;
+            }
+            .o_appointment_index .o_appointment_type_card:hover::after { background: var(--ay-gold-grad); color: var(--ay-teak); box-shadow: 0 10px 24px rgba(216,168,78,.4); }
+            .o_appointment_index .o_appointment_unpublished { position: absolute; top: 14px; right: 14px; z-index: 4; border-radius: 999px; }
+            .o_appointment_index .ay-empty { background: #fff; border: 1px dashed var(--ay-sand-line); border-radius: var(--ay-radius); padding: 50px 24px; }
+            .o_appointment_index .ay-empty .fa { font-size: 2.2rem; color: var(--ay-gold); margin-bottom: 14px; }
+
+            /* ---------- spaces ---------- */
+            .o_appointment_index .ay-spaces { margin-top: 100px; }
+            .o_appointment_index .ay-space {
+                position: relative; border-radius: var(--ay-radius); overflow: hidden; height: 300px; display: block;
+                box-shadow: 0 26px 54px -30px rgba(24,18,14,.7);
+            }
+            .o_appointment_index .ay-space img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ay-ease); }
+            .o_appointment_index .ay-space:hover img { transform: scale(1.08); }
+            .o_appointment_index .ay-space::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(16,11,8,.92) 100%); }
+            .o_appointment_index .ay-space-body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 24px 26px; }
+            .o_appointment_index .ay-space-tag {
+                display: inline-block; padding: 5px 12px; border-radius: 999px; background: var(--ay-gold-grad); color: var(--ay-teak);
+                font-size: .64rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+            }
+            .o_appointment_index .ay-space h4 { color: #fff; font-size: 1.6rem; margin: 12px 0 6px; }
+            .o_appointment_index .ay-space p { color: #d6ccc3; font-size: .88rem; margin: 0; line-height: 1.6; }
+
+            /* ---------- how it works ---------- */
+            .o_appointment_index .ay-steps {
+                margin-top: 100px; border-radius: 20px; padding: 58px 50px; color: #fff; position: relative; overflow: hidden;
+                background: radial-gradient(circle at 88% 12%, rgba(216,168,78,.18), transparent 45%), var(--ay-teak);
+            }
+            .o_appointment_index .ay-steps h3 { color: #fff; font-size: clamp(1.9rem, 3.2vw, 2.6rem); margin: 12px 0 36px; }
+            .o_appointment_index .ay-steps h3 em { color: var(--ay-gold-light); font-style: italic; }
+            .o_appointment_index .ay-step {
+                display: flex; gap: 18px; height: 100%; padding: 26px 24px; border-radius: 12px;
+                background: var(--ay-teak-card); border: 1px solid var(--ay-line); transition: border-color .3s ease, transform .3s var(--ay-ease);
+            }
+            .o_appointment_index .ay-step:hover { border-color: var(--ay-gold); transform: translateY(-4px); }
+            .o_appointment_index .ay-step b { font-family: var(--ay-serif); font-size: 2.4rem; line-height: 1; background: var(--ay-gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+            .o_appointment_index .ay-step h4 { color: #fff; font-size: 1.2rem; margin: 0 0 6px; }
+            .o_appointment_index .ay-step p { color: #b0a49c; margin: 0; font-size: .9rem; line-height: 1.65; }
+
+            /* ---------- help band ---------- */
+            .o_appointment_index .ay-help {
+                margin-top: 28px; border-radius: 20px; padding: 44px 50px; background: var(--ay-green); color: #fff;
+                display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
+            }
+            .o_appointment_index .ay-help h3 { color: #fff; font-size: clamp(1.6rem, 2.8vw, 2.2rem); margin: 10px 0 6px; }
+            .o_appointment_index .ay-help p { color: #c9d6cc; margin: 0; max-width: 560px; }
+            .o_appointment_index .ay-help .ay-eyebrow { color: var(--ay-gold-light); }
+            .o_appointment_index .ay-hours { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px 22px; color: #e3ece5; font-size: .86rem; }
+            .o_appointment_index .ay-hours .fa { color: var(--ay-gold-light); margin-right: 6px; }
+
+            /* ---------- motion &amp; responsive ---------- */
+            @keyframes ay-fade-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+            .o_appointment_index .ay-reveal { animation: ay-fade-up 1s var(--ay-ease) both; }
+            .o_appointment_index .ay-d1 { animation-delay: .15s; } .o_appointment_index .ay-d2 { animation-delay: .3s; } .o_appointment_index .ay-d3 { animation-delay: .45s; }
+            @media (prefers-reduced-motion: reduce) {
+                .o_appointment_index *, .o_appointment_index *::before, .o_appointment_index *::after { animation: none !important; transition: none !important; }
+            }
+            @media (max-width: 991px) {
+                .o_appointment_index .ay-appt-hero { padding-top: 120px; }
+            }
+            @media (max-width: 767px) {
+                .o_appointment_index .ay-appt-grid { grid-template-columns: 1fr; }
+                .o_appointment_index .ay-steps, .o_appointment_index .ay-help { padding: 36px 22px; }
+                .o_appointment_index .o_appointment_search, .o_appointment_index .o_appointment_search .form-control { width: 100%; min-width: 0; }
+                .o_appointment_index .ay-hero-actions .ay-btn { width: 100%; justify-content: center; }
+                .o_appointment_index .ay-brand-crest { width: 46px; height: 46px; }
+                .o_appointment_index .ay-brand-sub { letter-spacing: .16em; }
+            }
+
+            /* ---------- website header (navbar) matching across all pages ---------- */
+            header#top {
+                background: rgba(24,18,14,.94) !important;
+                backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+                border-bottom: 1px solid rgba(216,168,78,.22) !important;
+                transition: background .35s ease;
+            }
+            header#top.o_header_is_scrolled, header#top.o_header_affixed, header#top.o_top_fixed_element {
+                background: rgba(16,11,8,.97) !important;
+            }
+            header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+            header#top .navbar .nav-link,
+            header#top .navbar a:not(.dropdown-item):not(.btn-primary),
+            header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+            header#top .navbar .navbar-brand,
+            header#top .navbar .fa, header#top .navbar .oi {
+                color: #fcf9f4 !important;
+            }
+            header#top .navbar .navbar-brand {
+                font-family: 'Playfair Display', Georgia, serif !important;
+                font-weight: 700 !important;
+                letter-spacing: .03em !important;
+            }
+            header#top .navbar .nav-link {
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 600 !important;
+                font-size: .86rem !important;
+                letter-spacing: .02em !important;
+                text-transform: none !important;
+                position: relative;
+            }
+            header#top .navbar .nav-link::after {
+                content: ""; position: absolute; left: 50%; right: 50%; bottom: 4px; height: 1px; background: #d8a84e;
+                transition: left .35s ease, right .35s ease;
+            }
+            header#top .navbar .nav-link:hover::after, header#top .navbar .nav-link.active::after { left: 14px; right: 14px; }
+            header#top .navbar .nav-link:hover,
+            header#top .navbar .nav-link.active,
+            header#top .navbar .nav-item.active > .nav-link { color: #f5cf7b !important; }
+            header#top .navbar .btn-primary {
+                background: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%) !important;
+                border: 0 !important;
+                color: #18120e !important;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 700 !important;
+                font-size: .82rem !important;
+                letter-spacing: .08em !important;
+                text-transform: uppercase !important;
+                border-radius: 999px !important;
+                box-shadow: 0 4px 16px rgba(216,168,78,.35) !important;
+            }
+            header#top .o_navlink_background, header#top .navbar .btn-light, header#top .navbar .o_wsale_my_cart .btn {
+                background: rgba(252,249,244,.1) !important; border-color: rgba(252,249,244,.18) !important;
+            }
+            header#top .navbar-toggler { border-color: rgba(252,249,244,.4) !important; }
+            header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+            header#top .offcanvas { background: #18120e !important; color: #fcf9f4; }
+            header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item), header#top .offcanvas .btn-close { color: #fcf9f4 !important; }
+            header#top .offcanvas .btn-close { filter: invert(1); }
+            header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; text-transform: none; letter-spacing: 0; }
+            @media (max-width: 991px) {
+                header#top .navbar .nav-link::after { display: none; }
+            }
         </style>
     </t>
         <t t-call="website.layout" head="head">
             <div id="wrap" class="o_appointment_page o_appointment_index">
-                <section class="rc-appt-hero">
+
+                <!-- ===================== HERO ===================== -->
+                <section class="ay-appt-hero">
                     <div class="container">
-                        <span class="rc-eyebrow">Reservations &amp; Celebrations</span>
-                        <h1>Reserve your table, <em>celebrate your moments</em></h1>
-                        <p>Book a table by the backwaters or let us host your birthday, anniversary or big win. Pick an experience, choose a time and we'll take care of the rest.</p>
-                        <div class="rc-perks">
+                        <div class="ay-brand ay-reveal">
+                            <svg class="ay-brand-crest" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                                <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                                <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                                <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                                <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                            </svg>
+                            <div>
+                                <div class="ay-brand-name">Ayshu's Culinary</div>
+                                <div class="ay-brand-sub">Aesthetic Cafe &amp; Arabian Kitchen</div>
+                            </div>
+                        </div>
+                        <span class="ay-eyebrow ay-reveal ay-d1">Reservations &amp; Celebrations</span>
+                        <h1 class="ay-reveal ay-d1">Reserve your table, <em>celebrate your moments</em></h1>
+                        <p class="ay-reveal ay-d2">Book a family table for Kuzhimanthi night, a quiet corner in our cafe lounge, or let us host your birthday, anniversary or office party. Pick an experience, choose a time and we'll take care of the rest.</p>
+                        <div class="ay-hero-actions ay-reveal ay-d3">
+                            <a href="#ay-book" class="ay-btn ay-btn-gold"><i class="fa fa-calendar-check-o"/> Choose an experience</a>
+                            <a href="tel:+919122227221" class="ay-btn ay-btn-ghost"><i class="fa fa-phone"/> 091222 27221</a>
+                        </div>
+                        <div class="ay-perks ay-reveal ay-d3">
                             <span><i class="fa fa-bolt"/>Instant confirmation</span>
                             <span><i class="fa fa-birthday-cake"/>Cakes &amp; décor on request</span>
                             <span><i class="fa fa-calendar-times-o"/>Free changes up to 24 h before</span>
                         </div>
                     </div>
+                    <div class="ay-infobar">
+                        <div class="container">
+                            <div class="row g-0">
+                                <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-clock-o"/><div><small>Open daily</small><b>11:00 AM – 11:00 PM</b></div></div></div>
+                                <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-map-marker"/><div><small>Find us</small><b>26th Mile, Kanjirappally</b></div></div></div>
+                                <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-users"/><div><small>Groups</small><b>Banquets for 10+ guests</b></div></div></div>
+                                <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-phone"/><div><small>Need help?</small><a href="tel:+919122227221">091222 27221</a></div></div></div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
-                <div class="container">
-                    <div class="rc-appt-head d-flex flex-wrap align-items-end justify-content-between gap-3 mb-5">
-                        <div><span class="rc-eyebrow">Book online</span><h2>Choose your experience</h2></div>
+
+                <!-- ===================== EXPERIENCES (Odoo appointment types) ===================== -->
+                <div id="ay-book" class="container ay-appt-main">
+                    <div class="ay-appt-head d-flex flex-wrap align-items-end justify-content-between gap-4 mb-5">
+                        <div>
+                            <span class="ay-eyebrow ay-eyebrow-green">Book online</span>
+                            <h2 class="ay-title">Choose your <em>experience</em></h2>
+                            <p>Live availability for every table and celebration space. Walk-ins are always welcome; booking is recommended for weekend evenings.</p>
+                        </div>
                         <form action="/appointment" method="get" class="o_appointment_search" role="search">
                             <div class="input-group">
                                 <input type="search" name="search" class="form-control" placeholder="Search experiences..." aria-label="Search appointments" t-att-value="search or None"/>
@@ -91,14 +340,16 @@ header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #
                     </div>
 
                     <t t-if="not appointment_types">
-                        <div class="text-center py-5">
+                        <div class="ay-empty text-center">
+                            <i class="fa fa-calendar-o"/>
                             <p class="lead text-muted mb-2" t-if="search">No appointment matches "<t t-out="search"/>".</p>
                             <p class="lead text-muted mb-2" t-else="">No appointments are currently available for booking.</p>
                             <a t-if="search" href="/appointment" class="btn btn-link">Show all appointments</a>
+                            <p class="mb-0 mt-2" t-else="">Call us on <a href="tel:+919122227221"><strong>091222 27221</strong></a> and we'll reserve your table.</p>
                         </div>
                     </t>
 
-                    <div class="rc-appt-grid d-flex flex-column gap-3">
+                    <div class="ay-appt-grid d-flex flex-column gap-3">
                         <t t-foreach="appointment_types" t-as="appt">
                             <a t-attf-href="/appointment/#{appt.id}" class="premium-card o_cc o_cc1 o_appointment_type_card d-flex align-items-stretch p-0 overflow-hidden">
                                 <div class="d-flex flex-column flex-md-row flex-grow-1 align-items-md-center gap-3 p-4">
@@ -143,13 +394,71 @@ header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #
                             </a>
                         </t>
                     </div>
-                    <div class="rc-appt-steps">
-                        <span class="rc-eyebrow">How booking works</span>
+
+                    <!-- ===================== SPACES ===================== -->
+                    <div class="ay-spaces">
+                        <span class="ay-eyebrow ay-eyebrow-green">Where you'll sit</span>
+                        <h2 class="ay-title mt-3 mb-4" style="font-size: clamp(2rem, 3.4vw, 2.8rem);">Three spaces, <em>one warm welcome</em></h2>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="ay-space">
+                                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&amp;w=900&amp;auto=format&amp;fit=crop" alt="AC family lounge" loading="lazy"/>
+                                    <div class="ay-space-body">
+                                        <span class="ay-space-tag">Families</span>
+                                        <h4>AC Family Lounge</h4>
+                                        <p>Spacious tables for 3–10, high chairs on request, Kuzhimanthi platters to share.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="ay-space">
+                                    <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&amp;w=900&amp;auto=format&amp;fit=crop" alt="Aesthetic cafe lounge" loading="lazy"/>
+                                    <div class="ay-space-body">
+                                        <span class="ay-space-tag">Couples &amp; friends</span>
+                                        <h4>Aesthetic Cafe Lounge</h4>
+                                        <p>Cosy corners for coffee, Kunafa and long conversations from noon to night.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="ay-space">
+                                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&amp;w=900&amp;auto=format&amp;fit=crop" alt="Private banquet" loading="lazy"/>
+                                    <div class="ay-space-body">
+                                        <span class="ay-space-tag">10+ guests</span>
+                                        <h4>Private Banquet</h4>
+                                        <p>Birthdays, anniversaries and office parties with décor, cake and a set menu.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===================== HOW IT WORKS ===================== -->
+                    <div class="ay-steps">
+                        <span class="ay-eyebrow">How booking works</span>
                         <h3>Three steps to <em>your table</em></h3>
                         <div class="row g-4">
-                            <div class="col-md-4"><div class="rc-step"><b>01</b><div><h4>Pick an experience</h4><p>Table booking, birthday, anniversary or any celebration.</p></div></div></div>
-                            <div class="col-md-4"><div class="rc-step"><b>02</b><div><h4>Choose date and time</h4><p>See live availability and select the slot and party size that suit you.</p></div></div></div>
-                            <div class="col-md-4"><div class="rc-step"><b>03</b><div><h4>Arrive and enjoy</h4><p>Get instant confirmation; your table and any décor will be ready when you arrive.</p></div></div></div>
+                            <div class="col-md-4"><div class="ay-step"><b>01</b><div><h4>Pick an experience</h4><p>Family table, cafe lounge, birthday, anniversary or a private banquet.</p></div></div></div>
+                            <div class="col-md-4"><div class="ay-step"><b>02</b><div><h4>Choose date &amp; time</h4><p>See live availability for lunch, sunset cafe or Arabian grills &amp; dinner, and set your party size.</p></div></div></div>
+                            <div class="col-md-4"><div class="ay-step"><b>03</b><div><h4>Arrive &amp; enjoy</h4><p>Instant confirmation: your table, décor and cake will be ready when you walk in.</p></div></div></div>
+                        </div>
+                    </div>
+
+                    <!-- ===================== HELP BAND ===================== -->
+                    <div class="ay-help mb-5">
+                        <div>
+                            <span class="ay-eyebrow">Prefer to talk?</span>
+                            <h3>We're happy to plan it with you</h3>
+                            <p>For banquets, bulk party orders or special requests, call the restaurant directly.</p>
+                            <ul class="ay-hours">
+                                <li><i class="fa fa-clock-o"/>Lunch 11:30 AM – 3:30 PM</li>
+                                <li><i class="fa fa-coffee"/>Sunset cafe 4:00 – 7:00 PM</li>
+                                <li><i class="fa fa-fire"/>Grills &amp; dinner 7:00 – 11:00 PM</li>
+                            </ul>
+                        </div>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="tel:+919122227221" class="ay-btn ay-btn-gold"><i class="fa fa-phone"/> Call 091222 27221</a>
+                            <a href="https://maps.google.com/?q=Ayshu%27s+Culinary+Restaurant+Kanjirappally" target="_blank" rel="noopener" class="ay-btn ay-btn-ghost"><i class="fa fa-map-marker"/> Directions</a>
                         </div>
                     </div>
                 </div>

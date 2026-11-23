@@ -1,219 +1,587 @@
-<t t-name="website.services">
+<t name="Services" t-name="website.services">
     <t t-set="head">
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+        <!-- Playfair Display (headings) + Plus Jakarta Sans (body), same as the home page -->
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+        <!-- Odoo 20 no longer ships Font Awesome: load it so the fa-* icons on this page show -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
         <style>
-#wrap.rc-page { --ink: #15110e; --esp: #1f1813; --bean: #2b211a; --cream: #f6efe4; --paper: #fbf7f0; --gold: #c9a15d; --gold2: #e0c38c; --muted: #a99a86; --text: #3d332a;
-  font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--text); overflow-x: hidden; }
-#wrap.rc-page h1, #wrap.rc-page h2, #wrap.rc-page h3, #wrap.rc-page h4 { font-family: 'Playfair Display', Georgia, serif; color: var(--ink); }
-#wrap.rc-page a { text-decoration: none; }
-.rc-page .rc-eyebrow { display: inline-flex; align-items: center; gap: .75rem; font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); }
-.rc-page .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
-.rc-page .rc-title { font-size: clamp(2rem, 3.8vw, 3.1rem); line-height: 1.15; margin: 16px 0 18px; }
-.rc-page .rc-title em { color: #9a7a43; }
-.rc-page .rc-lead { color: #6f6253; font-size: 1.06rem; line-height: 1.8; max-width: 620px; }
-.rc-page .rc-btn { display: inline-flex; align-items: center; gap: .55rem; padding: 14px 28px; border-radius: 999px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; transition: all .3s ease; }
-.rc-page .rc-btn-gold { background: var(--gold); color: var(--ink) !important; box-shadow: 0 12px 30px -12px rgba(201,161,93,.7); }
-.rc-page .rc-btn-gold:hover { background: var(--gold2); transform: translateY(-2px); }
-.rc-page .rc-btn-ghost { border-color: rgba(246,239,228,.45); color: var(--cream) !important; }
-.rc-page .rc-btn-ghost:hover { background: var(--cream); color: var(--ink) !important; }
-.rc-page .rc-hero { position: relative; padding: 170px 0 120px; color: var(--cream); background-size: cover; background-position: center; }
-.rc-page .rc-hero h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.05; color: #fff; margin: 22px 0; max-width: 800px; }
-.rc-page .rc-hero h1 em { color: var(--gold); }
-.rc-page .rc-hero p { color: #d9cfbf; font-size: 1.12rem; line-height: 1.8; max-width: 600px; }
-.rc-page .rc-section { padding: 110px 0; }
-.rc-page .rc-dark { background: var(--ink); color: var(--cream); }
-.rc-page .rc-dark h2, .rc-page .rc-dark h3, .rc-page .rc-dark h4 { color: #fff; }
-.rc-page .rc-dark .rc-title em { color: var(--gold); }
-.rc-page .rc-dark .rc-lead { color: var(--muted); }
-/* steps */
-.rc-page .rc-step { position: relative; padding: 34px 28px; border-radius: 16px; background: var(--esp); border: 1px solid rgba(201,161,93,.18); height: 100%; }
-.rc-page .rc-step .rc-num { font-family: 'Playfair Display', serif; font-size: 3rem; line-height: 1; color: var(--gold); opacity: .9; }
-.rc-page .rc-step h4 { margin: 14px 0 8px; font-size: 1.3rem; }
-.rc-page .rc-step p { color: var(--muted); margin: 0; font-size: .95rem; line-height: 1.7; }
-/* header: dark glass like the homepage */
-header#top { background: rgba(21,17,14,.92) !important; backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,161,93,.22); }
-header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
-header#top .navbar .nav-link, header#top .navbar a:not(.dropdown-item):not(.btn-primary), header#top .navbar button:not(.btn-primary):not(.dropdown-item),
-header#top .navbar .navbar-brand, header#top .navbar .fa, header#top .navbar .oi { color: #f6efe4 !important; }
-header#top .navbar .nav-link:hover, header#top .navbar .nav-link.active { color: #c9a15d !important; }
-header#top .o_navlink_background { background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important; }
-header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
-header#top .offcanvas { background: #1f1813 !important; }
-header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item) { color: #f6efe4 !important; }
-header#top .offcanvas .btn-close { filter: invert(1); }
-header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
-@media (max-width: 991px) { .rc-page .rc-hero { padding: 140px 0 90px; } .rc-page .rc-section { padding: 80px 0; } }
+            /* =====================================================================
+               AYSHU'S CULINARY - Services, Catering &amp; Celebrations, Kanjirappally
+               Same palette, type and components as the home page
+               ===================================================================== */
+            #wrap.ay-services {
+                --ay-teak: #18120e; --ay-teak-deep: #100b08; --ay-teak-card: #231914;
+                --ay-line: rgba(216,168,78,.22);
+                --ay-gold: #d8a84e; --ay-gold-light: #f5cf7b;
+                --ay-gold-grad: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%);
+                --ay-green: #1f3d2b; --ay-green-light: #2b563c;
+                --ay-cream: #fcf9f4; --ay-sand: #f4eee3; --ay-sand-line: #e3d7c5;
+                --ay-ink: #1c140f; --ay-muted: #8a7c72; --ay-body: #5c4e45;
+                --ay-serif: 'Playfair Display', Georgia, serif;
+                --ay-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+                --ay-radius: 10px; --ay-ease: cubic-bezier(.22,1,.36,1);
+                font-family: var(--ay-sans); font-size: 1rem; color: var(--ay-ink); background: var(--ay-cream);
+                line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+            }
+            #wrap.ay-services h1, #wrap.ay-services h2, #wrap.ay-services h3, #wrap.ay-services h4 {
+                font-family: var(--ay-serif); font-weight: 700; letter-spacing: -.01em;
+            }
+            #wrap.ay-services a { text-decoration: none; }
+            #wrap.ay-services a:focus-visible { outline: 2px solid var(--ay-gold); outline-offset: 4px; border-radius: 6px; }
+            .ay-services ::selection { background: var(--ay-gold); color: var(--ay-teak); }
 
-.rc-page .rc-svc { background: #fff; border: 1px solid #efe5d5; border-radius: 18px; overflow: hidden; height: 100%; display: flex; flex-direction: column; transition: all .35s ease; }
-.rc-page .rc-svc:hover { transform: translateY(-6px); box-shadow: 0 34px 60px -34px rgba(43,33,26,.55); }
-.rc-page .rc-svc-img { position: relative; aspect-ratio: 16/11; overflow: hidden; }
-.rc-page .rc-svc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
-.rc-page .rc-svc:hover .rc-svc-img img { transform: scale(1.07); }
-.rc-page .rc-svc-tag { position: absolute; left: 16px; top: 16px; background: var(--ink); color: var(--gold); font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; }
-.rc-page .rc-svc-body { padding: 26px 26px 28px; display: flex; flex-direction: column; flex: 1; }
-.rc-page .rc-svc-body h3 { font-size: 1.45rem; margin-bottom: 10px; }
-.rc-page .rc-svc-body p { color: #6f6253; line-height: 1.75; font-size: .97rem; }
-.rc-page .rc-svc-body ul { list-style: none; padding: 0; margin: 0 0 22px; }
-.rc-page .rc-svc-body li { padding: 5px 0 5px 26px; position: relative; color: var(--text); font-size: .93rem; }
-.rc-page .rc-svc-body li::before { content: "\2713"; position: absolute; left: 0; color: var(--gold); font-weight: 700; }
-.rc-page .rc-svc-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px dashed #e7dac4; padding-top: 18px; }
-.rc-page .rc-svc-foot small { color: var(--muted); display: block; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
-.rc-page .rc-svc-foot b { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--ink); }
-.rc-page .rc-svc-foot .rc-btn { padding: 11px 20px; font-size: .88rem; }
-.rc-page .rc-cta { border-radius: 24px; padding: 70px 56px; color: var(--cream);
-  background: linear-gradient(110deg, rgba(21,17,14,.96) 35%, rgba(21,17,14,.55)), url('/theme_bistro/static/src/img/configurator/set_1_landscape_md_2.webp') center/cover; }
-.rc-page .rc-cta h2 { color: #fff; font-size: clamp(2rem, 3.6vw, 3rem); }
-.rc-page .rc-cta h2 em { color: var(--gold); }
-.rc-page .rc-cta p { color: #d9cfbf; max-width: 560px; line-height: 1.8; }
-.rc-page .rc-stats { display: flex; flex-wrap: wrap; gap: 44px; margin-top: 36px; }
-.rc-page .rc-stats strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.3rem; color: var(--gold); line-height: 1; }
-.rc-page .rc-stats span { font-size: .85rem; color: #cbbfae; }
+            /* ---------- eyebrow, titles ---------- */
+            .ay-services .ay-eyebrow {
+                display: inline-flex; align-items: center; gap: 12px;
+                font-size: .74rem; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: var(--ay-gold);
+            }
+            .ay-services .ay-eyebrow::before { content: ""; width: 32px; height: 1px; background: currentColor; opacity: .8; }
+            .ay-services .text-center .ay-eyebrow::after { content: ""; width: 32px; height: 1px; background: currentColor; opacity: .8; }
+            .ay-services .ay-section { padding: 120px 0; position: relative; }
+            .ay-services .ay-title { font-size: clamp(2.3rem, 4.4vw, 3.7rem); line-height: 1.12; color: var(--ay-teak); margin: 16px 0 20px; }
+            .ay-services .ay-title em { color: var(--ay-gold); font-style: italic; font-weight: 600; }
+            .ay-services .ay-lead { font-size: 1.06rem; color: var(--ay-body); max-width: 620px; line-height: 1.85; }
+            .ay-services .ay-dark { background: var(--ay-teak); color: #fff; }
+            .ay-services .ay-dark .ay-title { color: #fff; }
+            .ay-services .ay-dark .ay-title em { color: var(--ay-gold-light); }
+            .ay-services .ay-dark .ay-lead { color: #b8aca3; }
+            .ay-services .ay-light .ay-eyebrow { color: var(--ay-green); }
+
+            /* ---------- buttons ---------- */
+            .ay-services .ay-btn {
+                display: inline-flex; align-items: center; gap: 10px; padding: 15px 32px; border-radius: 999px;
+                font-size: .78rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; border: 1px solid transparent;
+                transition: transform .3s var(--ay-ease), box-shadow .3s var(--ay-ease), background .3s ease, color .3s ease, border-color .3s ease;
+            }
+            .ay-services .ay-btn .fa { font-size: .95rem; letter-spacing: 0; }
+            .ay-services .ay-btn-gold { background: var(--ay-gold-grad); color: var(--ay-teak) !important; box-shadow: 0 10px 30px rgba(216,168,78,.38); }
+            .ay-services .ay-btn-gold:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(216,168,78,.58); }
+            .ay-services .ay-btn-ghost { border-color: rgba(255,255,255,.35); color: #fff !important; background: rgba(255,255,255,.06); backdrop-filter: blur(8px); }
+            .ay-services .ay-btn-ghost:hover { border-color: var(--ay-gold); color: var(--ay-gold-light) !important; background: rgba(216,168,78,.1); transform: translateY(-3px); }
+            .ay-services .ay-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 38px; }
+
+            /* ---------- hero ---------- */
+            .ay-services .ay-svc-hero {
+                position: relative; color: #fff; overflow: hidden;
+                background: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&amp;w=2000&amp;auto=format&amp;fit=crop') center/cover no-repeat;
+            }
+            .ay-services .ay-svc-hero::before {
+                content: ""; position: absolute; inset: 0;
+                background:
+                    radial-gradient(ellipse at 25% 45%, rgba(216,168,78,.16), transparent 60%),
+                    linear-gradient(100deg, rgba(16,11,8,.95) 0%, rgba(24,18,14,.84) 48%, rgba(24,18,14,.45) 100%),
+                    linear-gradient(180deg, transparent 65%, rgba(16,11,8,.92) 100%);
+            }
+            .ay-services .ay-svc-hero > .container { position: relative; z-index: 2; padding-top: 140px; padding-bottom: 90px; }
+            .ay-services .ay-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+            .ay-services .ay-brand-crest { width: 56px; height: 56px; color: var(--ay-gold); flex-shrink: 0; filter: drop-shadow(0 4px 14px rgba(216,168,78,.35)); }
+            .ay-services .ay-brand-name {
+                font-family: var(--ay-serif); font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.8rem); line-height: 1; letter-spacing: .02em;
+                background: var(--ay-gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+            }
+            .ay-services .ay-brand-sub { margin-top: 8px; font-size: .72rem; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: #e9e1d9; }
+            .ay-services .ay-svc-hero h1 {
+                font-size: clamp(2.6rem, 5.8vw, 5rem); line-height: 1.06; color: #fff; margin: 22px 0; max-width: 860px;
+                text-shadow: 0 4px 24px rgba(0,0,0,.45);
+            }
+            .ay-services .ay-svc-hero h1 em { color: var(--ay-gold-light); font-style: italic; font-weight: 600; }
+            .ay-services .ay-svc-hero p { color: #ded6cf; font-size: clamp(1.02rem, 1.7vw, 1.15rem); line-height: 1.85; max-width: 640px; }
+            .ay-services .ay-hero-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+            .ay-services .ay-chip {
+                display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px; border-radius: 999px;
+                border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.05);
+                font-size: .76rem; font-weight: 600; color: #e9e1d9;
+            }
+            .ay-services .ay-chip .fa { color: var(--ay-gold); }
+            .ay-services .ay-infobar {
+                position: relative; z-index: 3;
+                background: rgba(16,11,8,.88); backdrop-filter: blur(14px); border-top: 1px solid var(--ay-line);
+            }
+            .ay-services .ay-info { display: flex; align-items: center; gap: 14px; padding: 22px 10px; }
+            .ay-services .ay-info i {
+                width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+                background: rgba(216,168,78,.12); border: 1px solid var(--ay-line); color: var(--ay-gold); font-size: 1.1rem;
+            }
+            .ay-services .ay-info small { display: block; font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ay-muted); }
+            .ay-services .ay-info b { color: #fff; font-size: .94rem; font-weight: 700; }
+            .ay-services .ay-info a { color: #fff; }
+
+            /* ---------- marquee ---------- */
+            .ay-services .ay-marquee { background: var(--ay-gold-grad); color: var(--ay-teak); overflow: hidden; padding: 18px 0; }
+            .ay-services .ay-marquee-track { display: flex; width: max-content; animation: ay-marquee 38s linear infinite; }
+            .ay-services .ay-marquee:hover .ay-marquee-track { animation-play-state: paused; }
+            .ay-services .ay-marquee span { font-family: var(--ay-serif); font-size: 1.6rem; font-weight: 700; font-style: italic; padding: 0 26px; white-space: nowrap; }
+            .ay-services .ay-marquee span::after { content: "\2726"; font-family: var(--ay-sans); font-style: normal; font-size: .8rem; margin-left: 52px; vertical-align: middle; }
+
+            /* ---------- service cards ---------- */
+            .ay-services .ay-svc-list { background: var(--ay-sand); }
+            .ay-services .ay-svc {
+                background: #fff; border: 1px solid var(--ay-sand-line); border-radius: var(--ay-radius); overflow: hidden;
+                height: 100%; display: flex; flex-direction: column; position: relative;
+                transition: transform .4s var(--ay-ease), box-shadow .4s var(--ay-ease), border-color .4s ease;
+            }
+            .ay-services .ay-svc::before { content: ""; position: absolute; left: 0; top: 0; z-index: 2; height: 3px; width: 0; background: var(--ay-gold-grad); transition: width .5s var(--ay-ease); }
+            .ay-services .ay-svc:hover { transform: translateY(-8px); border-color: #e2cfaa; box-shadow: 0 30px 60px -30px rgba(24,18,14,.45); }
+            .ay-services .ay-svc:hover::before { width: 100%; }
+            .ay-services .ay-svc-thumb { height: 230px; position: relative; overflow: hidden; }
+            .ay-services .ay-svc-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ay-ease); }
+            .ay-services .ay-svc:hover .ay-svc-thumb img { transform: scale(1.08); }
+            .ay-services .ay-svc-tag {
+                position: absolute; top: 14px; left: 14px; padding: 5px 13px; border-radius: 999px;
+                background: rgba(24,18,14,.85); backdrop-filter: blur(6px); border: 1px solid var(--ay-line);
+                color: var(--ay-gold-light); font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+            }
+            .ay-services .ay-svc-icon {
+                position: absolute; right: 22px; bottom: -28px; z-index: 2; width: 56px; height: 56px; border-radius: 50%;
+                background: var(--ay-teak); color: var(--ay-gold-light); display: flex; align-items: center; justify-content: center;
+                font-size: 1.25rem; box-shadow: 0 0 0 6px #fff; transition: transform .4s var(--ay-ease);
+            }
+            .ay-services .ay-svc:hover .ay-svc-icon { transform: rotate(-8deg) scale(1.06); }
+            .ay-services .ay-svc-body { padding: 30px 26px 26px; display: flex; flex-direction: column; flex: 1; }
+            .ay-services .ay-svc-body h3 { font-size: 1.45rem; color: var(--ay-teak); margin-bottom: 10px; }
+            .ay-services .ay-svc-body p { color: var(--ay-body); font-size: .92rem; line-height: 1.75; }
+            .ay-services .ay-svc-body ul { list-style: none; padding: 0; margin: 0 0 22px; }
+            .ay-services .ay-svc-body li { padding: 7px 0; border-top: 1px dashed var(--ay-sand-line); color: var(--ay-ink); font-size: .9rem; display: flex; gap: 10px; align-items: center; }
+            .ay-services .ay-svc-body li .fa { color: var(--ay-gold); width: 16px; }
+            .ay-services .ay-svc-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 18px; border-top: 1px solid var(--ay-sand-line); }
+            .ay-services .ay-svc-foot small { display: block; font-size: .64rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ay-muted); }
+            .ay-services .ay-svc-foot b { font-family: var(--ay-serif); font-size: 1.3rem; color: var(--ay-teak); white-space: nowrap; }
+            .ay-services .ay-svc-link {
+                display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; white-space: nowrap;
+                background: var(--ay-teak); color: var(--ay-gold-light) !important; border: 1px solid var(--ay-teak);
+                font-size: .68rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; transition: all .3s ease;
+            }
+            .ay-services .ay-svc-link:hover { background: var(--ay-gold-grad); color: var(--ay-teak) !important; border-color: transparent; }
+
+            /* ---------- why ayshu's ---------- */
+            .ay-services .ay-why { background: var(--ay-cream); }
+            .ay-services .ay-feature { display: flex; gap: 18px; align-items: flex-start; padding: 26px 0; border-bottom: 1px dashed var(--ay-sand-line); }
+            .ay-services .ay-feature:last-child { border-bottom: 0; }
+            .ay-services .ay-feature i {
+                width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+                background: var(--ay-teak); color: var(--ay-gold-light); font-size: 1.15rem; box-shadow: 0 0 0 6px var(--ay-sand);
+            }
+            .ay-services .ay-feature h4 { font-size: 1.25rem; color: var(--ay-teak); margin: 2px 0 6px; }
+            .ay-services .ay-feature p { color: var(--ay-body); font-size: .92rem; line-height: 1.7; margin: 0; }
+            .ay-services .ay-collage { position: relative; min-height: 540px; }
+            .ay-services .ay-collage img { position: absolute; object-fit: cover; border-radius: var(--ay-radius); }
+            .ay-services .ay-collage .ay-img-a { width: 76%; height: 80%; left: 0; top: 0; box-shadow: 0 24px 60px rgba(24,18,14,.2); }
+            .ay-services .ay-collage .ay-img-b { width: 54%; height: 52%; right: 0; bottom: 0; border: 8px solid var(--ay-cream); box-shadow: 0 20px 50px rgba(24,18,14,.25); }
+            .ay-services .ay-collage::before {
+                content: ""; position: absolute; left: -18px; top: -18px; width: 76%; height: 80%;
+                border: 1px solid var(--ay-gold); border-radius: var(--ay-radius); opacity: .45;
+            }
+            .ay-services .ay-stamp {
+                position: absolute; right: 26px; top: 34px; z-index: 2; width: 124px; height: 124px; border-radius: 50%;
+                background: var(--ay-teak); color: var(--ay-gold); border: 1px solid var(--ay-gold);
+                display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+                box-shadow: 0 12px 30px rgba(0,0,0,.35);
+            }
+            .ay-services .ay-stamp strong { font-family: var(--ay-serif); font-size: 2.3rem; line-height: 1; color: #fff; }
+            .ay-services .ay-stamp span { font-size: .6rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; margin-top: 4px; }
+
+            /* ---------- how it works ---------- */
+            .ay-services .ay-how { background: radial-gradient(circle at 85% 10%, rgba(216,168,78,.12), transparent 45%), var(--ay-green); color: #fff; }
+            .ay-services .ay-how .ay-title { color: #fff; }
+            .ay-services .ay-how .ay-title em { color: var(--ay-gold-light); }
+            .ay-services .ay-how .ay-lead { color: #c9d6cc; }
+            .ay-services .ay-step {
+                background: rgba(16,11,8,.28); border: 1px solid rgba(245,207,123,.22); border-radius: var(--ay-radius);
+                padding: 36px 30px; height: 100%; position: relative; transition: transform .35s var(--ay-ease), background .35s ease;
+            }
+            .ay-services .ay-step:hover { transform: translateY(-6px); background: rgba(16,11,8,.4); }
+            .ay-services .ay-step-num { position: absolute; right: 24px; top: 16px; font-family: var(--ay-serif); font-size: 3.6rem; font-weight: 800; color: rgba(245,207,123,.12); line-height: 1; }
+            .ay-services .ay-step-icon {
+                width: 52px; height: 52px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+                background: var(--ay-gold-grad); color: var(--ay-teak); font-size: 1.15rem;
+            }
+            .ay-services .ay-step h4 { color: #fff; font-size: 1.4rem; margin: 20px 0 8px; }
+            .ay-services .ay-step p { color: #c9d6cc; font-size: .92rem; line-height: 1.7; margin: 0; }
+
+            /* ---------- closing / cta band ---------- */
+            .ay-services .ay-closing { background: var(--ay-teak-deep); color: #fff; padding: 110px 0 120px; position: relative; overflow: hidden; text-align: center; border-top: 1px solid var(--ay-line); }
+            .ay-services .ay-closing .container { position: relative; z-index: 2; }
+            .ay-services .ay-crest { width: 54px; height: 54px; color: var(--ay-gold); }
+            .ay-services .ay-closing h2 { font-style: italic; font-weight: 600; font-size: clamp(1.9rem, 3.6vw, 3rem); color: #fff; margin: 22px auto 14px; max-width: 820px; line-height: 1.3; }
+            .ay-services .ay-closing h2 em { color: var(--ay-gold-light); }
+            .ay-services .ay-closing p { color: #a69a91; max-width: 560px; margin: 0 auto; }
+            .ay-services .ay-closing .ay-actions { justify-content: center; }
+            .ay-services .ay-watermark {
+                position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); z-index: 1;
+                font-family: var(--ay-serif); font-size: clamp(4.5rem, 12vw, 12rem); font-weight: 800; white-space: nowrap;
+                color: transparent; -webkit-text-stroke: 1.5px rgba(216,168,78,.1); pointer-events: none; user-select: none;
+            }
+
+            /* ---------- motion ---------- */
+            @keyframes ay-fade-up { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+            @keyframes ay-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+            .ay-services .ay-reveal { animation: ay-fade-up 1.1s var(--ay-ease) both; }
+            .ay-services .ay-d1 { animation-delay: .15s; } .ay-services .ay-d2 { animation-delay: .3s; } .ay-services .ay-d3 { animation-delay: .45s; } .ay-services .ay-d4 { animation-delay: .6s; }
+            @media (prefers-reduced-motion: reduce) {
+                .ay-services *, .ay-services *::before, .ay-services *::after { animation: none !important; transition: none !important; }
+            }
+
+            /* ---------- responsive ---------- */
+            @media (max-width: 991px) {
+                .ay-services .ay-section { padding: 88px 0; }
+                .ay-services .ay-svc-hero > .container { padding-top: 110px; padding-bottom: 70px; }
+                .ay-services .ay-collage { min-height: 440px; margin-bottom: 40px; }
+                .ay-services .ay-collage::before { display: none; }
+            }
+            @media (max-width: 575px) {
+                .ay-services .ay-section { padding: 72px 0; }
+                .ay-services .ay-actions .ay-btn { width: 100%; justify-content: center; }
+                .ay-services .ay-hero-chips { display: none; }
+                .ay-services .ay-brand-crest { width: 46px; height: 46px; }
+                .ay-services .ay-brand-sub { letter-spacing: .16em; }
+                .ay-services .ay-info { padding: 16px 6px; gap: 10px; }
+                .ay-services .ay-info i { width: 36px; height: 36px; font-size: .95rem; }
+                .ay-services .ay-svc-foot { flex-wrap: wrap; }
+                .ay-services .ay-stamp { width: 100px; height: 100px; right: 10px; }
+                .ay-services .ay-stamp strong { font-size: 1.8rem; }
+            }
+
+            /* ---------- website header (navbar) matching across all pages ---------- */
+            header#top {
+                background: rgba(24,18,14,.94) !important;
+                backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+                border-bottom: 1px solid rgba(216,168,78,.22) !important;
+                transition: background .35s ease;
+            }
+            header#top.o_header_is_scrolled, header#top.o_header_affixed, header#top.o_top_fixed_element {
+                background: rgba(16,11,8,.97) !important;
+            }
+            header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+            header#top .navbar .nav-link,
+            header#top .navbar a:not(.dropdown-item):not(.btn-primary),
+            header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+            header#top .navbar .navbar-brand,
+            header#top .navbar .fa, header#top .navbar .oi {
+                color: #fcf9f4 !important;
+            }
+            header#top .navbar .navbar-brand {
+                font-family: 'Playfair Display', Georgia, serif !important;
+                font-weight: 700 !important;
+                letter-spacing: .03em !important;
+            }
+            header#top .navbar .nav-link {
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 600 !important;
+                font-size: .86rem !important;
+                letter-spacing: .02em !important;
+                text-transform: none !important;
+                position: relative;
+            }
+            header#top .navbar .nav-link::after {
+                content: ""; position: absolute; left: 50%; right: 50%; bottom: 4px; height: 1px; background: #d8a84e;
+                transition: left .35s ease, right .35s ease;
+            }
+            header#top .navbar .nav-link:hover::after, header#top .navbar .nav-link.active::after { left: 14px; right: 14px; }
+            header#top .navbar .nav-link:hover,
+            header#top .navbar .nav-link.active,
+            header#top .navbar .nav-item.active > .nav-link { color: #f5cf7b !important; }
+            header#top .navbar .btn-primary {
+                background: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%) !important;
+                border: 0 !important;
+                color: #18120e !important;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 700 !important;
+                font-size: .82rem !important;
+                letter-spacing: .08em !important;
+                text-transform: uppercase !important;
+                border-radius: 999px !important;
+                box-shadow: 0 4px 16px rgba(216,168,78,.35) !important;
+            }
+            header#top .o_navlink_background, header#top .navbar .btn-light, header#top .navbar .o_wsale_my_cart .btn {
+                background: rgba(252,249,244,.1) !important; border-color: rgba(252,249,244,.18) !important;
+            }
+            header#top .navbar-toggler { border-color: rgba(252,249,244,.4) !important; }
+            header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+            header#top .offcanvas { background: #18120e !important; color: #fcf9f4; }
+            header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item), header#top .offcanvas .btn-close { color: #fcf9f4 !important; }
+            header#top .offcanvas .btn-close { filter: invert(1); }
+            header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; text-transform: none; letter-spacing: 0; }
+            @media (max-width: 991px) {
+                header#top .navbar .nav-link::after { display: none; }
+            }
         </style>
     </t>
     <t t-call="website.layout" head="head">
-        <div id="wrap" class="oe_structure oe_empty rc-page">
+        <div id="wrap" class="oe_structure ay-services">
 
-            <section class="rc-hero o_colored_level" data-name="Services Hero" style="background-image: linear-gradient(100deg, rgba(21,17,14,.95) 0%, rgba(21,17,14,.78) 55%, rgba(21,17,14,.4) 100%), url('/theme_bistro/static/src/img/configurator/ultrawide_lg_2.webp');">
+            <!-- ===================== HERO ===================== -->
+            <section class="ay-svc-hero o_colored_level" data-name="Services Hero">
                 <div class="container">
-                    <span class="rc-eyebrow">Our Services</span>
-                    <h1>Every celebration, <em>catered with heart</em></h1>
-                    <p>From office lunches to wedding feasts, candlelight dinners to custom cakes: our chefs, bakers and event team plan, cook and serve it all, so you can enjoy your day.</p>
-                    <div class="d-flex flex-wrap gap-3 mt-4">
-                        <a href="/plan-my-event" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Plan My Event</a>
-                        <a href="#rc-services" class="rc-btn rc-btn-ghost">Explore services <i class="fa fa-arrow-down"/></a>
+                    <div class="ay-brand ay-reveal">
+                        <svg class="ay-brand-crest" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                            <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                            <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                            <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                            <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                        </svg>
+                        <div>
+                            <div class="ay-brand-name">Ayshu's Culinary</div>
+                            <div class="ay-brand-sub">Aesthetic Cafe &amp; Arabian Kitchen</div>
+                        </div>
                     </div>
-                    <div class="rc-stats">
-                        <div><strong>1,200+</strong><span>events catered</span></div>
-                        <div><strong>20 – 2,000</strong><span>guests per event</span></div>
-                        <div><strong>4.9★</strong><span>client rating</span></div>
+                    <span class="ay-eyebrow ay-reveal ay-d1">Catering &amp; Celebrations</span>
+                    <h1 class="ay-reveal ay-d1">Every celebration, <em>catered with heart</em></h1>
+                    <p class="ay-reveal ay-d2">From office lunches to wedding feasts, candlelight dinners to custom Kunafa trays: our chefs, bakers and event team plan, cook and serve it all, so you can enjoy your day.</p>
+                    <div class="ay-actions ay-reveal ay-d3">
+                        <a href="/plan-my-event" class="ay-btn ay-btn-gold"><i class="fa fa-calendar-check-o"/> Plan My Event</a>
+                        <a href="#ay-services" class="ay-btn ay-btn-ghost">Explore Services <i class="fa fa-arrow-down"/></a>
+                    </div>
+                    <div class="ay-hero-chips ay-reveal ay-d4">
+                        <span class="ay-chip"><i class="fa fa-fire"/> Live Charcoal Counters</span>
+                        <span class="ay-chip"><i class="fa fa-cutlery"/> Free Menu Tasting</span>
+                        <span class="ay-chip"><i class="fa fa-user"/> One Dedicated Planner</span>
+                    </div>
+                </div>
+                <div class="ay-infobar">
+                    <div class="container">
+                        <div class="row g-0">
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-glass"/><div><small>Events catered</small><b>1,200+</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-users"/><div><small>Guests per event</small><b>10 – 1,000</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-star"/><div><small>Google rating</small><b>4.8 ★ (1,200+)</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-phone"/><div><small>Event desk</small><b><a href="tel:+919122227221">091222 27221</a></b></div></div></div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section id="rc-services" class="rc-section o_colored_level" data-name="Services">
+            <!-- ===================== MARQUEE ===================== -->
+            <section class="ay-marquee o_colored_level" data-name="Services Marquee">
+                <div class="ay-marquee-track">
+                    <span>Corporate Catering</span><span>Wedding Feasts</span><span>Candlelight Dining</span><span>Birthday Parties</span><span>Custom Cakes</span><span>Private Banquets</span>
+                    <span>Corporate Catering</span><span>Wedding Feasts</span><span>Candlelight Dining</span><span>Birthday Parties</span><span>Custom Cakes</span><span>Private Banquets</span>
+                </div>
+            </section>
+
+            <!-- ===================== SERVICES ===================== -->
+            <section id="ay-services" class="ay-section ay-svc-list ay-light o_colored_level" data-name="Services">
                 <div class="container">
                     <div class="text-center mb-5">
-                        <span class="rc-eyebrow">What we do</span>
-                        <h2 class="rc-title">Six ways we make your <em>occasion special</em></h2>
-                        <p class="rc-lead mx-auto">Every service comes with a free consultation, a menu tasting and one dedicated planner from first call to last plate.</p>
+                        <span class="ay-eyebrow">What we do</span>
+                        <h2 class="ay-title">Six ways we make your <em>occasion special</em></h2>
+                        <p class="ay-lead mx-auto">Every service comes with a free consultation, a menu tasting and one dedicated planner from first call to last plate.</p>
                     </div>
                     <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="rc-svc">
-                            <div class="rc-svc-img"><img src="/theme_bistro/static/src/img/configurator/set_catalog_landscape_lg_1.webp" alt="Corporate &amp; Event Catering" loading="lazy"/><span class="rc-svc-tag">Most booked</span></div>
-                            <div class="rc-svc-body">
-                                <h3>Corporate &amp; Event Catering</h3>
-                                <p>Office lunches, conferences, product launches and annual days, from 20 to 2,000 guests. Hot buffets, live counters and boxed meals delivered on time with serving staff.</p>
-                                <ul><li>Daily lunch subscriptions</li><li>Live dosa, appam &amp; grill counters</li><li>Veg, Jain &amp; diet-friendly menus</li></ul>
-                                <div class="rc-svc-foot">
-                                    <div><small>Starting</small><b>From $ 8 / guest</b></div>
-                                    <a class="rc-btn rc-btn-gold" href="/plan-my-event">Plan My Event</a>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-svc">
+                                <div class="ay-svc-thumb">
+                                    <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Corporate and event catering" loading="lazy"/>
+                                    <span class="ay-svc-tag">Most booked</span>
+                                    <span class="ay-svc-icon"><i class="fa fa-briefcase"/></span>
+                                </div>
+                                <div class="ay-svc-body">
+                                    <h3>Corporate &amp; Event Catering</h3>
+                                    <p>Office lunches, conferences, product launches and annual days. Hot buffets, live counters and boxed meals delivered on time with serving staff.</p>
+                                    <ul>
+                                        <li><i class="fa fa-check"/> Daily lunch subscriptions</li>
+                                        <li><i class="fa fa-check"/> Live Al Faham &amp; shawarma counters</li>
+                                        <li><i class="fa fa-check"/> Veg &amp; diet-friendly menus</li>
+                                    </ul>
+                                    <div class="ay-svc-foot">
+                                        <div><small>Starting</small><b>&#8377;350 / guest</b></div>
+                                        <a class="ay-svc-link" href="/plan-my-event">Plan Event <i class="fa fa-arrow-right"/></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="rc-svc">
-                            <div class="rc-svc-img"><img src="/theme_bistro/static/src/img/configurator/landscape_xl_2.webp" alt="Wedding Catering" loading="lazy"/><span class="rc-svc-tag">Signature</span></div>
-                            <div class="rc-svc-body">
-                                <h3>Wedding Catering</h3>
-                                <p>Traditional Kerala Sadya on banana leaf, Malabar biryani feasts or a modern multi-cuisine spread, with décor-matched counters and a mocktail bar.</p>
-                                <ul><li>Free menu tasting for the family</li><li>Sadya, North Indian &amp; continental</li><li>Dedicated event captain</li></ul>
-                                <div class="rc-svc-foot">
-                                    <div><small>Starting</small><b>From $ 12 / guest</b></div>
-                                    <a class="rc-btn rc-btn-gold" href="/plan-my-event">Plan My Event</a>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-svc">
+                                <div class="ay-svc-thumb">
+                                    <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Wedding catering" loading="lazy"/>
+                                    <span class="ay-svc-tag">Signature</span>
+                                    <span class="ay-svc-icon"><i class="fa fa-heart"/></span>
+                                </div>
+                                <div class="ay-svc-body">
+                                    <h3>Wedding &amp; Engagement Feasts</h3>
+                                    <p>Malabar dum biryani, Kuzhimanthi and Mandi spreads or a modern multi-cuisine buffet, with décor-matched counters and a mocktail bar.</p>
+                                    <ul>
+                                        <li><i class="fa fa-check"/> Free menu tasting for the family</li>
+                                        <li><i class="fa fa-check"/> Arabian, Malabar &amp; continental</li>
+                                        <li><i class="fa fa-check"/> Dedicated event captain</li>
+                                    </ul>
+                                    <div class="ay-svc-foot">
+                                        <div><small>Starting</small><b>&#8377;550 / guest</b></div>
+                                        <a class="ay-svc-link" href="/plan-my-event">Plan Event <i class="fa fa-arrow-right"/></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="rc-svc">
-                            <div class="rc-svc-img"><img src="/theme_bistro/static/src/img/content/s_images_constellation_default_image_2.webp" alt="Candlelight Dining" loading="lazy"/><span class="rc-svc-tag">For two</span></div>
-                            <div class="rc-svc-body">
-                                <h3>Candlelight Dining</h3>
-                                <p>A private table by the backwaters with candles, flowers and a 5-course chef's menu. Perfect for anniversaries, proposals and date nights.</p>
-                                <ul><li>Private decorated table</li><li>5-course chef's tasting menu</li><li>Live violin on request</li></ul>
-                                <div class="rc-svc-foot">
-                                    <div><small>Starting</small><b>From $ 85 / couple</b></div>
-                                    <a class="rc-btn rc-btn-gold" href="/plan-my-event">Plan My Event</a>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-svc">
+                                <div class="ay-svc-thumb">
+                                    <img src="https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Candlelight dining" loading="lazy"/>
+                                    <span class="ay-svc-tag">For two</span>
+                                    <span class="ay-svc-icon"><i class="fa fa-glass"/></span>
+                                </div>
+                                <div class="ay-svc-body">
+                                    <h3>Candlelight Dining</h3>
+                                    <p>A private, softly lit corner of our cafe lounge with candles, flowers and a chef's tasting menu. Perfect for anniversaries, proposals and date nights.</p>
+                                    <ul>
+                                        <li><i class="fa fa-check"/> Private decorated table</li>
+                                        <li><i class="fa fa-check"/> 5-course chef's tasting menu</li>
+                                        <li><i class="fa fa-check"/> Cake &amp; flowers on request</li>
+                                    </ul>
+                                    <div class="ay-svc-foot">
+                                        <div><small>Starting</small><b>&#8377;2,499 / couple</b></div>
+                                        <a class="ay-svc-link" href="/appointment">Reserve <i class="fa fa-arrow-right"/></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="rc-svc">
-                            <div class="rc-svc-img"><img src="/theme_bistro/static/src/img/configurator/set_2_square_md_4.webp" alt="Birthday Celebrations" loading="lazy"/><span class="rc-svc-tag">Family favourite</span></div>
-                            <div class="rc-svc-body">
-                                <h3>Birthday Celebrations</h3>
-                                <p>Kids' parties, milestone birthdays and surprise dinners with themed décor, a custom cake and a menu everyone will love.</p>
-                                <ul><li>Theme décor &amp; balloon setup</li><li>Kids' menu &amp; activity corner</li><li>Custom cake included</li></ul>
-                                <div class="rc-svc-foot">
-                                    <div><small>Starting</small><b>From $ 15 / guest</b></div>
-                                    <a class="rc-btn rc-btn-gold" href="/plan-my-event">Plan My Event</a>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-svc">
+                                <div class="ay-svc-thumb">
+                                    <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Birthday celebrations" loading="lazy"/>
+                                    <span class="ay-svc-tag">Family favourite</span>
+                                    <span class="ay-svc-icon"><i class="fa fa-birthday-cake"/></span>
+                                </div>
+                                <div class="ay-svc-body">
+                                    <h3>Birthday Celebrations</h3>
+                                    <p>Kids' parties, milestone birthdays and surprise dinners in our AC family lounge, with themed décor, a custom cake and a menu everyone will love.</p>
+                                    <ul>
+                                        <li><i class="fa fa-check"/> Theme décor &amp; balloon setup</li>
+                                        <li><i class="fa fa-check"/> Kids' menu &amp; high chairs</li>
+                                        <li><i class="fa fa-check"/> Custom cake included</li>
+                                    </ul>
+                                    <div class="ay-svc-foot">
+                                        <div><small>Starting</small><b>&#8377;450 / guest</b></div>
+                                        <a class="ay-svc-link" href="/plan-my-event">Plan Event <i class="fa fa-arrow-right"/></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="rc-svc">
-                            <div class="rc-svc-img"><img src="/theme_bistro/static/src/img/backgrounds/11.webp" alt="Custom Cake Orders" loading="lazy"/><span class="rc-svc-tag">Made to order</span></div>
-                            <div class="rc-svc-body">
-                                <h3>Custom Cake Orders</h3>
-                                <p>Designer cakes, wedding tiers, cupcakes and dessert tables baked fresh in our kitchen, including eggless, sugar-free and plum cake options.</p>
-                                <ul><li>Photo &amp; theme cakes</li><li>Eggless &amp; sugar-free</li><li>48-hour order time</li></ul>
-                                <div class="rc-svc-foot">
-                                    <div><small>Starting</small><b>From $ 18 / kg</b></div>
-                                    <a class="rc-btn rc-btn-gold" href="/plan-my-event">Plan My Event</a>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-svc">
+                                <div class="ay-svc-thumb">
+                                    <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Custom cakes and Kunafa trays" loading="lazy"/>
+                                    <span class="ay-svc-tag">Made to order</span>
+                                    <span class="ay-svc-icon"><i class="fa fa-gift"/></span>
+                                </div>
+                                <div class="ay-svc-body">
+                                    <h3>Custom Cakes &amp; Kunafa Trays</h3>
+                                    <p>Designer cakes, cupcakes, Kunafa trays and dessert tables baked fresh in our kitchen, including eggless and sugar-free options.</p>
+                                    <ul>
+                                        <li><i class="fa fa-check"/> Photo &amp; theme cakes</li>
+                                        <li><i class="fa fa-check"/> Eggless &amp; sugar-free</li>
+                                        <li><i class="fa fa-check"/> 48-hour order time</li>
+                                    </ul>
+                                    <div class="ay-svc-foot">
+                                        <div><small>Starting</small><b>&#8377;899 / kg</b></div>
+                                        <a class="ay-svc-link" href="/plan-my-event">Order <i class="fa fa-arrow-right"/></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="rc-svc">
-                            <div class="rc-svc-img"><img src="/theme_bistro/static/src/img/content/s_images_mosaic_default_image_5.webp" alt="Banquet Hall &amp; Room Booking" loading="lazy"/><span class="rc-svc-tag">Up to 250 guests</span></div>
-                            <div class="rc-svc-body">
-                                <h3>Banquet Hall &amp; Room Booking</h3>
-                                <p>Our air-conditioned banquet hall and private dining rooms for meetings, engagements and get-togethers, with in-house catering, AV and parking.</p>
-                                <ul><li>Hall for 50 to 250 guests</li><li>Projector, mic &amp; sound system</li><li>Valet parking</li></ul>
-                                <div class="rc-svc-foot">
-                                    <div><small>Starting</small><b>From $ 250 / slot</b></div>
-                                    <a class="rc-btn rc-btn-gold" href="/plan-my-event">Plan My Event</a>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-svc">
+                                <div class="ay-svc-thumb">
+                                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Banquet and private lounge" loading="lazy"/>
+                                    <span class="ay-svc-tag">10 – 120 guests</span>
+                                    <span class="ay-svc-icon"><i class="fa fa-building-o"/></span>
+                                </div>
+                                <div class="ay-svc-body">
+                                    <h3>Banquet &amp; Private Lounge</h3>
+                                    <p>Our air-conditioned banquet space and private lounge for meetings, engagements and get-togethers, with in-house catering, AV and guest parking.</p>
+                                    <ul>
+                                        <li><i class="fa fa-check"/> Private banquets for 10+ guests</li>
+                                        <li><i class="fa fa-check"/> Projector, mic &amp; sound system</li>
+                                        <li><i class="fa fa-check"/> Guest parking off the highway</li>
+                                    </ul>
+                                    <div class="ay-svc-foot">
+                                        <div><small>Starting</small><b>&#8377;5,000 / slot</b></div>
+                                        <a class="ay-svc-link" href="/appointment">Book <i class="fa fa-arrow-right"/></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </section>
 
-            <section class="rc-section rc-dark o_colored_level" data-name="How It Works">
+            <!-- ===================== WHY AYSHU'S ===================== -->
+            <section class="ay-section ay-why ay-light o_colored_level" data-name="Why Ayshu's">
                 <div class="container">
-                    <div class="text-center mb-5">
-                        <span class="rc-eyebrow">How it works</span>
-                        <h2 class="rc-title">From first call to <em>last plate</em></h2>
-                    </div>
-                    <div class="row g-4">
-                        <div class="col-md-6 col-lg-3"><div class="rc-step"><div class="rc-num">01</div><h4>Tell us your plan</h4><p>Share the date, guest count and budget through Plan My Event or a quick call.</p></div></div>
-                        <div class="col-md-6 col-lg-3"><div class="rc-step"><div class="rc-num">02</div><h4>Taste the menu</h4><p>Visit our restaurant for a free tasting and fine-tune every dish with our chef.</p></div></div>
-                        <div class="col-md-6 col-lg-3"><div class="rc-step"><div class="rc-num">03</div><h4>We set it up</h4><p>Décor, counters, crockery and staff arrive on time, fully briefed by your planner.</p></div></div>
-                        <div class="col-md-6 col-lg-3"><div class="rc-step"><div class="rc-num">04</div><h4>You celebrate</h4><p>Relax with your guests while we serve, clear up and leave the venue spotless.</p></div></div>
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-6">
+                            <div class="ay-collage">
+                                <img class="ay-img-a" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Kuzhimanthi platter for a party"/>
+                                <img class="ay-img-b" src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Specialty coffee bar"/>
+                                <div class="ay-stamp"><strong>4.8</strong><span>Google ★<br/>Rated</span></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="ay-eyebrow">Why Ayshu's</span>
+                            <h2 class="ay-title">Restaurant flavour, <em>delivered to your event</em></h2>
+                            <p class="ay-lead">The same charcoal pit, the same hand-ground spices and the same kitchen team that serve our dining room, brought to your table, hall or office.</p>
+                            <div class="ay-feature">
+                                <i class="fa fa-fire"/>
+                                <div><h4>Cooked fresh, on the day</h4><p>Kuzhimanthi, Mandi and Al Faham are slow-cooked the morning of your event, never reheated.</p></div>
+                            </div>
+                            <div class="ay-feature">
+                                <i class="fa fa-cutlery"/>
+                                <div><h4>Tasting before you commit</h4><p>Visit us in Kanjirappally for a free tasting and fine-tune every dish with our chef.</p></div>
+                            </div>
+                            <div class="ay-feature">
+                                <i class="fa fa-clock-o"/>
+                                <div><h4>On time, fully staffed</h4><p>Counters, crockery and uniformed staff arrive early, briefed by your planner.</p></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section class="rc-section o_colored_level" data-name="Call To Action">
+            <!-- ===================== HOW IT WORKS ===================== -->
+            <section class="ay-section ay-how o_colored_level" data-name="How It Works">
                 <div class="container">
-                    <div class="rc-cta">
-                        <span class="rc-eyebrow">Let's plan together</span>
-                        <h2 class="mt-3">Have a date in mind? <em>We'll handle the rest.</em></h2>
-                        <p>Send us your event details and our planner will call you within 24 hours with menu ideas and a quotation.</p>
-                        <div class="d-flex flex-wrap gap-3 mt-4">
-                            <a href="/plan-my-event" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Plan My Event</a>
-                            <a href="tel:+914842350000" class="rc-btn rc-btn-ghost"><i class="fa fa-phone"/> +91 484 235 0000</a>
+                    <div class="row align-items-end mb-5">
+                        <div class="col-lg-7">
+                            <span class="ay-eyebrow" style="color: #f5cf7b;">How it works</span>
+                            <h2 class="ay-title">From first call to <em>last plate</em></h2>
+                        </div>
+                        <div class="col-lg-5">
+                            <p class="ay-lead mb-0">Four simple steps, one planner, and nothing left for you to worry about on the day.</p>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-step"><span class="ay-step-num">01</span><span class="ay-step-icon"><i class="fa fa-pencil"/></span><h4>Tell us your plan</h4><p>Share the date, guest count and budget through Plan My Event or a quick call.</p></div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-step"><span class="ay-step-num">02</span><span class="ay-step-icon"><i class="fa fa-cutlery"/></span><h4>Taste the menu</h4><p>Visit our restaurant for a free tasting and fine-tune every dish with our chef.</p></div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-step"><span class="ay-step-num">03</span><span class="ay-step-icon"><i class="fa fa-truck"/></span><h4>We set it up</h4><p>Décor, counters, crockery and staff arrive on time, fully briefed by your planner.</p></div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-step"><span class="ay-step-num">04</span><span class="ay-step-icon"><i class="fa fa-glass"/></span><h4>You celebrate</h4><p>Relax with your guests while we serve, clear up and leave the venue spotless.</p></div>
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- ===================== CLOSING / CTA ===================== -->
+            <section class="ay-closing o_colored_level" data-name="Call To Action">
+                <div class="container">
+                    <svg class="ay-crest" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                        <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                        <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                        <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                        <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                    </svg>
+                    <h2>Have a date in mind? <em>We'll handle the rest.</em></h2>
+                    <p>Send us your event details and our planner will call you within 24 hours with menu ideas and a quotation.</p>
+                    <div class="ay-actions">
+                        <a href="/plan-my-event" class="ay-btn ay-btn-gold"><i class="fa fa-calendar-check-o"/> Plan My Event</a>
+                        <a href="tel:+919122227221" class="ay-btn ay-btn-ghost"><i class="fa fa-phone"/> 091222 27221</a>
+                    </div>
+                </div>
+                <div class="ay-watermark" aria-hidden="true">Ayshu's Culinary</div>
             </section>
 
         </div>

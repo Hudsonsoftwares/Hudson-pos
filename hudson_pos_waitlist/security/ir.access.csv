@@ -1,0 +1,9 @@
+id,name,model_id,group_id/id,operation,domain
+access_pos_waitlist_entry_user,pos.waitlist.entry user,pos.waitlist.entry,point_of_sale.group_pos_user,cru,
+access_pos_waitlist_entry_manager,pos.waitlist.entry manager,pos.waitlist.entry,point_of_sale.group_pos_manager,crud,
+rule_pos_waitlist_entry_multi_company,Waitlist entries multi-company,pos.waitlist.entry,,crud,"[('company_id', 'in', company_ids)]"
+access_pos_waitlist_tag_user,pos.waitlist.tag user,pos.waitlist.tag,point_of_sale.group_pos_user,r,
+access_pos_waitlist_tag_manager,pos.waitlist.tag manager,pos.waitlist.tag,point_of_sale.group_pos_manager,crud,
+access_pos_waitlist_counter_manager,pos.waitlist.counter manager,pos.waitlist.counter,point_of_sale.group_pos_manager,r,
+rule_pos_waitlist_counter_multi_company,Waitlist counters multi-company,pos.waitlist.counter,,crud,"[('config_id.company_id', 'in', company_ids)]"
+access_pos_waitlist_lookup_attempt_manager,pos.waitlist.lookup.attempt manager,pos.waitlist.lookup.attempt,point_of_sale.group_pos_manager,r,

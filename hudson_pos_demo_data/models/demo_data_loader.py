@@ -578,47 +578,63 @@ def _configure_product_variants(env):
     ]
 
     for tmpl_name, prefix, attr_defs in VARIANT_CONFIGS:
-        tmpl = ProductTemplate.search([('name', '=', tmpl_name)], limit=1)
-        if not tmpl:
-            continue
+        try:
+            with env.cr.savepoint():
+                tmpl = ProductTemplate.search([('name', '=', tmpl_name)], limit=1)
+                if not tmpl:
+                    continue
 
-        existing_attr_ids = set(tmpl.attribute_line_ids.mapped('attribute_id.id'))
-        target_attr_ids = set(a.id for a, _ in attr_defs)
+                existing_attr_ids = set(tmpl.attribute_line_ids.mapped('attribute_id.id'))
+                target_attr_ids = set(a.id for a, _ in attr_defs)
 
-        if existing_attr_ids != target_attr_ids:
-            if tmpl.attribute_line_ids:
-                tmpl.attribute_line_ids.unlink()
+                if existing_attr_ids != target_attr_ids:
+                    if tmpl.attribute_line_ids:
+                        try:
+                            tmpl.attribute_line_ids.unlink()
+                        except Exception:
+                            pass
+                    for attr, val_tuples in attr_defs:
+                        line = tmpl.attribute_line_ids.filtered(lambda l: l.attribute_id.id == attr.id)
+                        val_ids = [get_or_create_val(attr, vname, seq).id for vname, seq, _, _ in val_tuples]
+                        if not line:
+                            PTAL.create({
+                                'product_tmpl_id': tmpl.id,
+                                'attribute_id': attr.id,
+                                'value_ids': [Command.set(val_ids)],
+                            })
+                        else:
+                            try:
+                                line.value_ids = [Command.set(val_ids)]
+                            except Exception:
+                                pass
 
-            for attr, val_tuples in attr_defs:
-                val_ids = [get_or_create_val(attr, vname, seq).id for vname, seq, _, _ in val_tuples]
-                PTAL.create({
-                    'product_tmpl_id': tmpl.id,
-                    'attribute_id': attr.id,
-                    'value_ids': [Command.set(val_ids)],
-                })
+                # Configure price extras and internal codes
+                price_map = {}
+                code_map = {}
+                for attr, val_tuples in attr_defs:
+                    for vname, _, extra, code_suffix in val_tuples:
+                        price_map[(attr.id, vname)] = extra
+                        val_rec = AttributeValue.search([('attribute_id', '=', attr.id), ('name', '=', vname)], limit=1)
+                        if val_rec:
+                            code_map[(attr.id, val_rec.id)] = code_suffix
 
-        # Configure price extras and internal codes
-        price_map = {}
-        code_map = {}
-        for attr, val_tuples in attr_defs:
-            for vname, _, extra, code_suffix in val_tuples:
-                price_map[(attr.id, vname)] = extra
-                val_rec = AttributeValue.search([('attribute_id', '=', attr.id), ('name', '=', vname)], limit=1)
-                if val_rec:
-                    code_map[(attr.id, val_rec.id)] = code_suffix
+                for line in tmpl.attribute_line_ids:
+                    for ptav in line.product_template_value_ids:
+                        extra = price_map.get((line.attribute_id.id, ptav.name), 0.0)
+                        if ptav.price_extra != extra:
+                            ptav.price_extra = extra
 
-        for line in tmpl.attribute_line_ids:
-            for ptav in line.product_template_value_ids:
-                extra = price_map.get((line.attribute_id.id, ptav.name), 0.0)
-                if ptav.price_extra != extra:
-                    ptav.price_extra = extra
+                for idx, v in enumerate(tmpl.product_variant_ids, 1):
+                    if not v.default_code or v.default_code.startswith(prefix):
+                        suffixes = [code_map.get((ptav.attribute_id.id, ptav.product_attribute_value_id.id), '')
+                                    for ptav in v.product_template_attribute_value_ids]
+                        suffix_str = '-'.join(filter(None, suffixes))
+                        v.default_code = f'{prefix}-{suffix_str}' if suffix_str else f'{prefix}-{idx:02d}'
 
-        for idx, v in enumerate(tmpl.product_variant_ids, 1):
-            if not v.default_code or v.default_code.startswith(prefix):
-                suffixes = [code_map.get((ptav.attribute_id.id, ptav.product_attribute_value_id.id), '')
-                            for ptav in v.product_template_attribute_value_ids]
-                suffix_str = '-'.join(filter(None, suffixes))
-                v.default_code = f'{prefix}-{suffix_str}' if suffix_str else f'{prefix}-{idx:02d}'
+                if 'l10n_in_hsn_code' in tmpl._fields and not tmpl.l10n_in_hsn_code:
+                    tmpl.l10n_in_hsn_code = '996331'
+        except Exception as e:
+            _logger.exception("Hudson POS: configuring variant for %s failed: %s", tmpl_name, e)
 
 
 def _configure_combos(env):
@@ -629,24 +645,48 @@ def _configure_combos(env):
         return
 
     ProductCombo = env['product.combo'].sudo()
-    ProductProduct = env['product.product'].sudo()
     ProductTemplate = env['product.template'].sudo()
+
+    def wanted_items(product_names):
+        """One combo item per active variant, so QR ordering / POS list every variant as its own
+        choice. The variant's own price extra becomes the combo item's extra price."""
+        items = []
+        for pname in product_names:
+            tmpl = ProductTemplate.search([('name', '=', pname), ('type', '!=', 'combo')], limit=1)
+            for variant in tmpl.product_variant_ids:
+                items.append({'product_id': variant.id, 'extra_price': variant.price_extra or 0.0})
+        return items
 
     def get_or_create_combo(combo_name, product_names):
         combo = ProductCombo.search([('name', '=', combo_name)], limit=1)
-        items = []
-        for pname in product_names:
-            prod = ProductProduct.search([('name', '=', pname)], limit=1)
-            if prod:
-                items.append(Command.create({'product_id': prod.id, 'extra_price': 0}))
-        if combo:
-            combo.combo_item_ids.unlink()
-            combo.write({'combo_item_ids': items})
-        else:
-            combo = ProductCombo.create({
+        items = wanted_items(product_names)
+        if not items:
+            # Never empty a combo: an empty choice breaks combo selection and pricing.
+            _logger.warning("POS combo %s: none of %s found, existing items kept.", combo_name, product_names)
+            return combo or ProductCombo.create({'name': combo_name})
+        if not combo:
+            return ProductCombo.create({
                 'name': combo_name,
-                'combo_item_ids': items
+                'combo_item_ids': [Command.create(vals) for vals in items],
             })
+        # Incremental sync: add missing variants, drop items of variants that are gone.
+        # Existing items (and any extra price set by hand) are kept as they are.
+        existing = {item.product_id.id: item for item in combo.combo_item_ids}
+        wanted_ids = {vals['product_id'] for vals in items}
+        commands = [Command.create(vals) for vals in items if vals['product_id'] not in existing]
+        stale = [item for pid, item in existing.items() if pid not in wanted_ids]
+        try:
+            with env.cr.savepoint():
+                if commands:
+                    combo.write({'combo_item_ids': commands})
+        except Exception as e:
+            _logger.warning("POS combo %s: could not add items: %s", combo_name, e)
+        for item in stale:
+            try:
+                with env.cr.savepoint():
+                    item.unlink()  # restricted when already used on POS order lines: keep it then
+            except Exception:
+                pass
         return combo
 
     c_burgers = get_or_create_combo('Burgers', ['Cheese Burger', 'Bacon Burger'])

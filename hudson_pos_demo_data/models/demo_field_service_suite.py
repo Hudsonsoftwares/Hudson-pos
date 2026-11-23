@@ -26,6 +26,7 @@ from datetime import datetime, time, timedelta
 import pytz
 
 from odoo import Command, fields
+from .demo_guard import get_param, set_param
 
 _logger = logging.getLogger(__name__)
 
@@ -384,9 +385,8 @@ def load_field_service_suite_demo_data(env):
     if 'field.service.order' not in env or 'fs.planning.slot' not in env:
         _logger.info("Hudson POS: Field Service demo skipped (hudson_field_service / hudson_planning not installed).")
         return False
-    ICP = env['ir.config_parameter'].sudo()
-    if not ICP.get_param('hudson_field_service.default_hourly_rate'):
-        ICP.set_param('hudson_field_service.default_hourly_rate', '850')
+    if not get_param(env, 'hudson_field_service.default_hourly_rate'):
+        set_param(env, 'hudson_field_service.default_hourly_rate', '850')
     ctx = {}
     steps = [
         ('technicians', lambda: ctx.update(techs=_technicians(env))),

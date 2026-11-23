@@ -26,7 +26,7 @@ from lxml import etree
 
 from odoo.tools.convert import convert_xml_import
 
-from .demo_guard import guard_state, unguarded
+from .demo_guard import guard_state, unguarded, set_param
 
 _logger = logging.getLogger(__name__)
 
@@ -50,7 +50,8 @@ def _iter_records(root):
 
 
 def _filter_document(env, root):
-    """Remove records of missing models and fields missing on their model. Returns what was removed."""
+    """Remove records of missing models, fields missing on their model, and references to uninstalled modules.
+    Returns what was removed."""
     dropped_records, dropped_fields = [], []
     for rec, model in list(_iter_records(root)):
         if model not in env.registry:
@@ -60,11 +61,17 @@ def _filter_document(env, root):
                 dropped_records.append(f"{model}:{rec.get('id', '?')}")
     for rec, model in _iter_records(root):
         fields = env[model]._fields
-        for field in rec.findall('field'):
+        for field in list(rec.findall('field')):
             name = field.get('name')
             if name and name not in fields:
                 rec.remove(field)
                 dropped_fields.append(f"{model}.{name}")
+                continue
+            ref = field.get('ref')
+            if ref and '.' in ref and not ref.startswith(f"{MODULE}."):
+                if not env.ref(ref, raise_if_not_found=False):
+                    rec.remove(field)
+                    dropped_fields.append(f"{model}.{name} (missing ref: {ref})")
     return dropped_records, sorted(set(dropped_fields))
 
 
@@ -102,6 +109,8 @@ def _drop_deleted_records(env, root, xml_file, state):
     deleted (unless their model was only installed now). Records never loaded are created."""
     names = {n for n in (_own_xml_name(r.get('id')) for r, _m in _iter_records(root)) if n}
     existing = _existing_names(env, names)
+    if getattr(state, 'force', False):
+        return names, existing, []
     loaded_before = set(_loaded_records(env).get(xml_file, ())) | existing
     new_models = state.new_models()
     dropped = []
@@ -119,7 +128,7 @@ def _remember_loaded(env, xml_file, names):
     data = _loaded_records(env)
     data[xml_file] = sorted(set(data.get(xml_file, ())) | set(names))
     with unguarded():
-        env['ir.config_parameter'].sudo().set_param(LOADED_PARAM, json.dumps(data))
+        set_param(env, LOADED_PARAM, json.dumps(data))
 
 
 def load_demo_xml(env, module, xml_file, idref=None, mode='init', noupdate=True, **_kwargs):

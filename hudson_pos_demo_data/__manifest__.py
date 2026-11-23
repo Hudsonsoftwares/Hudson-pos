@@ -3,7 +3,7 @@
 
 {
     'name': 'POS Demo Data (Restaurant, Cafe, Loyalty & Inventory)',
-    'version': '20.0.1.0.26',
+    'version': '20.0.1.0.37',
     'category': 'Sales/Point of Sale',
     'author': 'Hudson',
     'summary': 'Declarative XML & Python Demo Data for POS (Restaurant, Cafe, Loyalty & Inventory), auto-installed and loaded per app as apps get installed',
@@ -43,6 +43,12 @@
           14 quotations and orders (draft, sent, expired, cancelled, delivered, down payment, invoiced, paid),
           promotions, coupons, promo code, corporate pricelist and a catering-van delivery method
         - Purchase & Inventory: Kerala suppliers, vendor prices, RFQs and purchase orders in every stage, receipts, bills, stock counts
+        - Purchase Agreements & Alternatives (when installed): Café Food Supplies, Restaurant Kitchen Supplies and
+          Beverage & Packaging Supplies purchase templates; 4 calls for tender (café dairy, espresso beans & tea,
+          sushi/grill fish, salad produce) built from the existing demo vendors and products - a main RFQ and an
+          alternative RFQ each, priced from the vendors' existing prices and lead times, to compare product lines
+          and choose a vendor per line; a confirmed
+          Basmati Rice blanket order (100 kg at Rs 120/kg) with a confirmed 40 kg release, a 30 kg RFQ and 30 kg open
         - Manufacturing & Shop Floor: kitchen work centres, routings, manufacturing orders in every state with live work-order timers
         - Quality & Maintenance: control points, checks, alerts; kitchen equipment, maintenance teams and requests
         - FEFO (First Expiry First Out): Perishables (FEFO) category & Perishables Chiller location, 6 products with
@@ -53,11 +59,29 @@
           validate, an RFQ), scrap of an expired lot and a FEFO delivery across the purchased lots
         - Inventory features: lot-tracked dairy, Central Kitchen Warehouse (3-step), storage locations, packages, packaging UoMs,
           FIFO/LIFO removal, reordering rules, receipt quality checks and vendor returns
+        - Inventory rules: inter-warehouse replenishment Distribution Center (DC) -> Transit -> Store 1 (S1) / Store 2 (S2):
+          warehouse supply routes, a cold-chain pull route through per-store reefer-van transit locations,
+          push rules putting store receipts away into the walk-in chillers, min/max replenishment rules per store
+          (and Buy rules at the DC) and the internal transfers they generated in every stage
         - Rental & Subscriptions: event-equipment rentals in every status; coffee/lunch/membership subscriptions with MRR
         - Planning: roles, shift templates, a 2-week staff rota and event-staff shifts linked to catering orders
         - Project & Timesheets: 5 Resto Cafe projects, tasks, milestones, updates, 60 timesheets, billable event coordination
+        - Project Templates (with Sales): Wedding & Banquet Catering, Corporate Lunch Onboarding, Kitchen Setup
+          Consultancy (invoiced on milestones), Birthday Party, Coffee Machine AMC and Cooking Masterclass templates
+          with stages, milestones, tasks and sub-tasks; 6 service products that create a project from their
+          template when a sales order is confirmed; confirmed orders with their generated projects and quotations
+        - Sign (when installed): Employee Employment, Vendor Supply, Customer Catering and Recipe Confidentiality
+          (NDA) templates in Sign > Templates, each with its agreement PDF, 2-3 signer roles in signing order and
+          Signature, Initials, Name, Date, Text, Checkbox, Company, Email, Selection and Multiline fields
+        - Knowledge (when installed): Restaurant Operations, Employee Onboarding, Food Safety & Hygiene and Kitchen
+          SOP articles with nested sub-articles, headings, lists, check lists, tables, images, banners, columns,
+          cover images, properties and embedded Item Kanban / List / Calendar views with their items
         - Fleet, Lunch & Expenses: KL-registered vans and EV scooters with services/contracts; staff lunch vendors and orders;
           expenses in every state incl. re-invoicing to catering orders
+        - Batch Transfers & fleet delivery: 5 delivery routes combining 15 orders - several orders of one customer
+          (Harbour Park Hotel, BlueWave) and orders of different customers - done, in progress and draft, stops
+          sorted by PIN code, plus open deliveries to add to a batch; with Stock Transport (stock_fleet) each
+          batch gets its fleet vehicle, driver and payload weight/volume load %
         - Approvals & PLM: price-change, equipment and discount approvals; recipe change orders with BoM versions
         - Helpdesk: customer care, catering, webshop and IT/POS teams, SLAs, 25 tickets with ratings, refunds and coupons
         - HR: 22 staff, contracts, skills & FSSAI certificates, leave types/allocations/requests, Kerala holidays, attendance
@@ -80,10 +104,11 @@
     # installed (now or later) by models/demo_autoloader.py.
     'depends': ['base'],
     'auto_install': True,
-    'data': [],
+    'data': ['data/ir_cron.xml'],
     'assets': {
         'point_of_sale._assets_pos': [
             'hudson_pos_demo_data/static/src/overrides/control_buttons.js',
+            'hudson_pos_demo_data/static/src/overrides/combo_configurator.js',
         ],
     },
     'demo': [],

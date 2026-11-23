@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template List View -->
+    <record id="view_knowledge_template_list" model="ir.ui.view">
+        <field name="name">knowledge.management.article.template.list</field>
+        <field name="model">knowledge.management.article.template</field>
+        <field name="arch" type="xml">
+            <list string="Templates">
+                <field name="sequence" widget="handle"/>
+                <field name="icon" string=""/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Template Kanban View -->
+    <record id="view_knowledge_template_kanban" model="ir.ui.view">
+        <field name="name">knowledge.management.article.template.kanban</field>
+        <field name="model">knowledge.management.article.template</field>
+        <field name="arch" type="xml">
+            <kanban class="o_knowledge_template_kanban">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="icon"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="card" class="o_knowledge_template_card p-3">
+                        <div class="o_kanban_record_title d-flex align-items-center gap-2">
+                            <span class="fs-3"><field name="icon"/></span>
+                            <strong><field name="name"/></strong>
+                        </div>
+                        <div class="o_kanban_record_body text-muted small mt-1">
+                            <field name="description"/>
+                        </div>
+                        <div class="o_kanban_record_bottom mt-2">
+                            <button name="action_use_template" type="object"
+                                    class="btn btn-sm btn-primary">Use Template</button>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Template Form View -->
+    <record id="view_knowledge_template_form" model="ir.ui.view">
+        <field name="name">knowledge.management.article.template.form</field>
+        <field name="model">knowledge.management.article.template</field>
+        <field name="arch" type="xml">
+            <form string="Template">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="icon"/>
+                            <field name="category_id"/>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                            <field name="cover_image_url"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <field name="body_html"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Template Search View -->
+    <record id="view_knowledge_template_search" model="ir.ui.view">
+        <field name="name">knowledge.management.article.template.search</field>
+        <field name="model">knowledge.management.article.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_id"/>
+                <group>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Template Categories -->
+    <record id="view_knowledge_template_category_list" model="ir.ui.view">
+        <field name="name">knowledge.management.article.template.category.list</field>
+        <field name="model">knowledge.management.article.template.category</field>
+        <field name="arch" type="xml">
+            <list string="Template Categories" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_knowledge_template_category" model="ir.actions.act_window">
+        <field name="name">Template Categories</field>
+        <field name="res_model">knowledge.management.article.template.category</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Template Window Action -->
+    <record id="action_knowledge_template" model="ir.actions.act_window">
+        <field name="name">Templates</field>
+        <field name="res_model">knowledge.management.article.template</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_group_category': 1}</field>
+    </record>
+</odoo>

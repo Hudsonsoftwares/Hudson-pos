@@ -2,229 +2,366 @@
     <t t-set="head">
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+        <!-- Playfair Display (regal serif headings) + Plus Jakarta Sans (clean body, menu, buttons) -->
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+        <!-- Odoo 20 no longer ships Font Awesome: load it so the fa-* icons on this page show -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
         <style>
-            /* ================= Resto Cafe Solutions - Home ================= */
-            #wrap.rc-home {
-                --rc-ink: #15110e;
-                --rc-espresso: #1f1813;
-                --rc-bean: #2b211a;
-                --rc-cream: #f6efe4;
-                --rc-sand: #e9dcc7;
-                --rc-gold: #c9a15d;
-                --rc-gold-soft: #e0c38c;
-                --rc-leaf: #3f6b4b;
-                --rc-muted: #a99a86;
-                font-family: 'Inter', system-ui, sans-serif;
-                color: var(--rc-cream);
-                background: var(--rc-ink);
+            /* =====================================================================
+               AYSHU'S CULINARY - Aesthetic Cafe &amp; Arabian Kitchen, Kanjirappally
+               Warm Kerala teak, radiant brass, Malabar cardamom green, silk sand
+               ===================================================================== */
+            #wrap.ay-home {
+                --ay-teak: #18120e;
+                --ay-teak-deep: #100b08;
+                --ay-teak-card: #231914;
+                --ay-line: rgba(216,168,78,.22);
+                --ay-gold: #d8a84e;
+                --ay-gold-light: #f5cf7b;
+                --ay-gold-grad: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%);
+                --ay-green: #1f3d2b;
+                --ay-green-light: #2b563c;
+                --ay-cream: #fcf9f4;
+                --ay-sand: #f4eee3;
+                --ay-sand-line: #e3d7c5;
+                --ay-terracotta: #c44d34;
+                --ay-ink: #1c140f;
+                --ay-muted: #8a7c72;
+                --ay-body: #5c4e45;
+                --ay-serif: 'Playfair Display', Georgia, serif;
+                --ay-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+                --ay-radius: 10px;
+                --ay-ease: cubic-bezier(.22,1,.36,1);
+                font-family: var(--ay-sans);
+                font-size: 1rem;
+                color: var(--ay-ink);
+                background: var(--ay-cream);
+                line-height: 1.65;
                 overflow-x: hidden;
+                -webkit-font-smoothing: antialiased;
+                text-rendering: optimizeLegibility;
             }
-            #wrap.rc-home h1, #wrap.rc-home h2, #wrap.rc-home h3, #wrap.rc-home .rc-serif {
-                font-family: 'Playfair Display', Georgia, serif;
-                letter-spacing: -0.01em;
+            #wrap.ay-home h1, #wrap.ay-home h2, #wrap.ay-home h3, #wrap.ay-home h4, #wrap.ay-home .ay-serif {
+                font-family: var(--ay-serif); font-weight: 700; letter-spacing: -.01em;
             }
-            #wrap.rc-home a { text-decoration: none; }
-            .rc-home .rc-eyebrow {
-                display: inline-flex; align-items: center; gap: .75rem;
-                font-size: .78rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase;
-                color: var(--rc-gold);
-            }
-            .rc-home .rc-eyebrow::before { content: ""; width: 38px; height: 1px; background: currentColor; }
-            .rc-home .rc-section { padding: 120px 0; position: relative; }ok i need one more modification ,currently in this life apoinmnt if i didnt configur the resuorse ,if its publishes the customer can see the apointmnt and when clik teh apoint he canot choose t pick  time and valid date picing as ell as party size shrink it dropdown to 1 
-            .rc-home .rc-title { font-size: clamp(2.1rem, 4vw, 3.4rem); line-height: 1.12; color: var(--rc-cream); margin: 18px 0 20px; }
-            .rc-home .rc-title em { color: var(--rc-gold); font-style: italic; }
-            .rc-home .rc-lead { color: var(--rc-muted); font-size: 1.08rem; line-height: 1.8; max-width: 560px; }
+            #wrap.ay-home a { text-decoration: none; }
+            #wrap.ay-home a:focus-visible { outline: 2px solid var(--ay-gold); outline-offset: 4px; border-radius: 6px; }
+            .ay-home ::selection { background: var(--ay-gold); color: var(--ay-teak); }
 
-            /* buttons */
-            .rc-home .rc-btn {
-                display: inline-flex; align-items: center; gap: .6rem;
-                padding: 15px 30px; border-radius: 999px; font-weight: 600; font-size: .95rem;
-                transition: all .35s ease; border: 1px solid transparent;
+            /* ---------- eyebrow, titles ---------- */
+            .ay-home .ay-eyebrow {
+                display: inline-flex; align-items: center; gap: 12px;
+                font-size: .74rem; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: var(--ay-gold);
             }
-            .rc-home .rc-btn-gold { background: var(--rc-gold); color: var(--rc-ink) !important; box-shadow: 0 12px 30px -10px rgba(201,161,93,.6); }
-            .rc-home .rc-btn-gold:hover { background: var(--rc-gold-soft); transform: translateY(-2px); }
-            .rc-home .rc-btn-ghost { border-color: rgba(246,239,228,.45); color: var(--rc-cream) !important; backdrop-filter: blur(6px); }
-            .rc-home .rc-btn-ghost:hover { background: var(--rc-cream); color: var(--rc-ink) !important; }
+            .ay-home .ay-eyebrow::before { content: ""; width: 32px; height: 1px; background: currentColor; opacity: .8; }
+            .ay-home .text-center .ay-eyebrow::after { content: ""; width: 32px; height: 1px; background: currentColor; opacity: .8; }
+            .ay-home .ay-section { padding: 120px 0; position: relative; }
+            .ay-home .ay-title { font-size: clamp(2.3rem, 4.4vw, 3.7rem); line-height: 1.12; color: var(--ay-teak); margin: 16px 0 20px; }
+            .ay-home .ay-title em { color: var(--ay-gold); font-style: italic; font-weight: 600; }
+            .ay-home .ay-lead { font-size: 1.06rem; color: var(--ay-body); max-width: 620px; line-height: 1.85; }
+            .ay-home .ay-dark { background: var(--ay-teak); color: #fff; }
+            .ay-home .ay-dark .ay-title { color: #fff; }
+            .ay-home .ay-dark .ay-title em { color: var(--ay-gold-light); }
+            .ay-home .ay-dark .ay-lead { color: #b8aca3; }
+            .ay-home .ay-light .ay-eyebrow { color: var(--ay-green); }
+
+            /* ---------- buttons ---------- */
+            .ay-home .ay-btn {
+                display: inline-flex; align-items: center; gap: 10px; padding: 15px 32px; border-radius: 999px;
+                font-size: .78rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; border: 1px solid transparent;
+                transition: transform .3s var(--ay-ease), box-shadow .3s var(--ay-ease), background .3s ease, color .3s ease, border-color .3s ease;
+            }
+            .ay-home .ay-btn .fa { font-size: .95rem; letter-spacing: 0; }
+            .ay-home .ay-btn-gold { background: var(--ay-gold-grad); color: var(--ay-teak) !important; box-shadow: 0 10px 30px rgba(216,168,78,.38); }
+            .ay-home .ay-btn-gold:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(216,168,78,.58); }
+            .ay-home .ay-btn-ghost { border-color: rgba(255,255,255,.35); color: #fff !important; background: rgba(255,255,255,.06); backdrop-filter: blur(8px); }
+            .ay-home .ay-btn-ghost:hover { border-color: var(--ay-gold); color: var(--ay-gold-light) !important; background: rgba(216,168,78,.1); transform: translateY(-3px); }
+            .ay-home .ay-btn-dark { border-color: rgba(28,20,15,.3); color: var(--ay-teak) !important; background: transparent; }
+            .ay-home .ay-btn-dark:hover { border-color: var(--ay-gold); background: var(--ay-teak); color: var(--ay-gold-light) !important; transform: translateY(-3px); }
+            .ay-home .ay-btn-green { background: var(--ay-green); color: #fff !important; }
+            .ay-home .ay-btn-green:hover { background: var(--ay-green-light); transform: translateY(-3px); box-shadow: 0 14px 30px rgba(31,61,43,.35); }
 
             /* ---------- hero ---------- */
-            .rc-home .rc-hero {
-                min-height: 100vh; display: flex; align-items: center; position: relative;
-                background: url('/theme_bistro/static/src/img/configurator/ultrawide_lg_5.webp') center/cover no-repeat;
+            .ay-home .ay-hero {
+                min-height: 100vh; position: relative; display: flex; align-items: center; color: #fff; overflow: hidden;
+                background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&amp;w=2070&amp;auto=format&amp;fit=crop') center/cover no-repeat;
             }
-            .rc-home .rc-hero::before {
+            .ay-home .ay-hero::before {
                 content: ""; position: absolute; inset: 0;
-                background: linear-gradient(100deg, rgba(21,17,14,.94) 0%, rgba(21,17,14,.78) 45%, rgba(21,17,14,.35) 100%);
+                background:
+                    radial-gradient(ellipse at 25% 45%, rgba(216,168,78,.16), transparent 60%),
+                    linear-gradient(100deg, rgba(16,11,8,.95) 0%, rgba(24,18,14,.82) 45%, rgba(24,18,14,.4) 100%),
+                    linear-gradient(180deg, transparent 65%, rgba(16,11,8,.92) 100%);
             }
-            .rc-home .rc-hero .container { position: relative; z-index: 2; padding-top: 110px; padding-bottom: 150px; }
-            .rc-home .rc-hero h1 { font-size: clamp(2.8rem, 6.4vw, 5.6rem); line-height: 1.02; margin: 26px 0; max-width: 820px; color: #fff; }
-            .rc-home .rc-hero h1 em { color: var(--rc-gold); font-style: italic; }
-            .rc-home .rc-hero p { font-size: 1.15rem; color: #d9cfbf; max-width: 540px; line-height: 1.8; }
-            .rc-home .rc-hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 38px; }
-            .rc-home .rc-hero-badge {
-                position: absolute; right: 7%; top: 30%; z-index: 2; width: 170px; height: 170px; border-radius: 50%;
-                border: 1px solid rgba(201,161,93,.6); display: flex; flex-direction: column; align-items: center; justify-content: center;
-                text-align: center; color: var(--rc-gold); background: rgba(21,17,14,.45); backdrop-filter: blur(4px);
-                animation: rc-spin-in 1.4s ease both .6s;
+            /* "> .container" only: the info bar has its own .container and must stay compact */
+            .ay-home .ay-hero > .container { position: relative; z-index: 2; padding-top: 120px; padding-bottom: 180px; }
+            .ay-home .ay-brand { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; }
+            .ay-home .ay-brand-crest { width: 64px; height: 64px; color: var(--ay-gold); flex-shrink: 0; filter: drop-shadow(0 4px 14px rgba(216,168,78,.35)); }
+            .ay-home .ay-brand-name {
+                font-family: var(--ay-serif); font-weight: 800; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1; letter-spacing: .02em;
+                background: var(--ay-gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+                text-shadow: none;
             }
-            .rc-home .rc-hero-badge strong { font-family: 'Playfair Display', serif; font-size: 2.6rem; line-height: 1; color: #fff; }
-            .rc-home .rc-hero-badge span { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; margin-top: 6px; }
-            .rc-home .rc-infobar {
+            .ay-home .ay-brand-sub { margin-top: 8px; font-size: .74rem; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: #e9e1d9; }
+            .ay-home .ay-hero-badge {
+                display: inline-flex; align-items: center; gap: 10px; padding: 8px 18px; border-radius: 999px;
+                background: rgba(216,168,78,.15); border: 1px solid var(--ay-gold); backdrop-filter: blur(8px);
+                font-size: .74rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ay-gold-light);
+            }
+            .ay-home .ay-hero h1 {
+                font-size: clamp(2.8rem, 6.2vw, 5.4rem); line-height: 1.05; max-width: 900px; margin: 26px 0 24px; color: #fff;
+                text-shadow: 0 4px 24px rgba(0,0,0,.5);
+            }
+            .ay-home .ay-hero h1 em { color: var(--ay-gold-light); font-style: italic; font-weight: 600; }
+            .ay-home .ay-hero p { font-size: clamp(1.02rem, 1.7vw, 1.2rem); color: #ded6cf; max-width: 640px; line-height: 1.85; }
+            .ay-home .ay-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 38px; }
+            .ay-home .ay-hero-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+            .ay-home .ay-chip {
+                display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px; border-radius: 999px;
+                border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.05);
+                font-size: .76rem; font-weight: 600; color: #e9e1d9;
+            }
+            .ay-home .ay-chip .fa { color: var(--ay-gold); }
+            .ay-home .ay-rating-seal {
+                position: absolute; right: 7%; top: 28%; z-index: 2; width: 178px; height: 178px; border-radius: 50%;
+                display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+                background: rgba(16,11,8,.6); border: 1px solid var(--ay-gold); color: var(--ay-gold);
+                box-shadow: 0 0 0 10px rgba(216,168,78,.08), 0 24px 50px rgba(0,0,0,.45); backdrop-filter: blur(6px);
+                animation: ay-spin-in 1.4s ease both .5s;
+            }
+            .ay-home .ay-rating-seal strong { font-family: var(--ay-serif); font-size: 3rem; line-height: 1; color: #fff; }
+            .ay-home .ay-rating-seal span { font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; margin-top: 6px; }
+            .ay-home .ay-infobar {
                 position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
-                background: rgba(21,17,14,.72); backdrop-filter: blur(10px); border-top: 1px solid rgba(201,161,93,.25);
+                background: rgba(16,11,8,.88); backdrop-filter: blur(14px); border-top: 1px solid var(--ay-line);
             }
-            .rc-home .rc-infobar .rc-info { padding: 24px 10px; display: flex; gap: 14px; align-items: center; }
-            .rc-home .rc-infobar .rc-info i { color: var(--rc-gold); font-size: 1.35rem; }
-            .rc-home .rc-infobar small { display: block; color: var(--rc-muted); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; }
-            .rc-home .rc-infobar b { color: #fff; font-weight: 500; }
+            .ay-home .ay-info { display: flex; align-items: center; gap: 14px; padding: 22px 10px; }
+            .ay-home .ay-info i {
+                width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+                background: rgba(216,168,78,.12); border: 1px solid var(--ay-line); color: var(--ay-gold); font-size: 1.1rem;
+            }
+            .ay-home .ay-info small { display: block; font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ay-muted); }
+            .ay-home .ay-info b { color: #fff; font-size: .94rem; font-weight: 700; }
+            .ay-home .ay-info a { color: #fff; }
 
             /* ---------- marquee ---------- */
-            .rc-home .rc-marquee { background: var(--rc-gold); color: var(--rc-ink); overflow: hidden; padding: 18px 0; }
-            .rc-home .rc-marquee-track { display: flex; width: max-content; animation: rc-marquee 38s linear infinite; }
-            .rc-home .rc-marquee span { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-style: italic; padding: 0 28px; white-space: nowrap; }
-            .rc-home .rc-marquee span::after { content: "✦"; font-style: normal; font-size: .9rem; margin-left: 56px; vertical-align: middle; }
+            .ay-home .ay-marquee { background: var(--ay-gold-grad); color: var(--ay-teak); overflow: hidden; padding: 18px 0; }
+            .ay-home .ay-marquee-track { display: flex; width: max-content; animation: ay-marquee 38s linear infinite; }
+            .ay-home .ay-marquee:hover .ay-marquee-track { animation-play-state: paused; }
+            .ay-home .ay-marquee span { font-family: var(--ay-serif); font-size: 1.6rem; font-weight: 700; font-style: italic; padding: 0 26px; white-space: nowrap; }
+            .ay-home .ay-marquee span::after { content: "\2726"; font-family: var(--ay-sans); font-style: normal; font-size: .8rem; margin-left: 52px; vertical-align: middle; }
 
             /* ---------- story ---------- */
-            .rc-home .rc-story { background: var(--rc-espresso); }
-            .rc-home .rc-collage { position: relative; min-height: 560px; }
-            .rc-home .rc-collage img { position: absolute; object-fit: cover; border-radius: 6px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); }
-            .rc-home .rc-collage .rc-img-a { width: 68%; height: 82%; left: 0; top: 0; }
-            .rc-home .rc-collage .rc-img-b { width: 52%; height: 56%; right: 0; bottom: 0; border: 8px solid var(--rc-espresso); }
-            .rc-home .rc-collage .rc-stamp {
-                position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2;
-                background: var(--rc-gold); color: var(--rc-ink); border-radius: 50%; width: 132px; height: 132px;
+            .ay-home .ay-story { background: var(--ay-sand); }
+            .ay-home .ay-collage { position: relative; min-height: 540px; }
+            .ay-home .ay-collage img { position: absolute; object-fit: cover; border-radius: var(--ay-radius); }
+            .ay-home .ay-collage .ay-img-a { width: 76%; height: 80%; left: 0; top: 0; box-shadow: 0 24px 60px rgba(24,18,14,.2); }
+            .ay-home .ay-collage .ay-img-b { width: 54%; height: 52%; right: 0; bottom: 0; border: 8px solid var(--ay-sand); box-shadow: 0 20px 50px rgba(24,18,14,.25); }
+            .ay-home .ay-collage::before {
+                content: ""; position: absolute; left: -18px; top: -18px; width: 76%; height: 80%;
+                border: 1px solid var(--ay-gold); border-radius: var(--ay-radius); opacity: .45;
+            }
+            .ay-home .ay-stamp {
+                position: absolute; right: 26px; top: 34px; z-index: 2; width: 124px; height: 124px; border-radius: 50%;
+                background: var(--ay-teak); color: var(--ay-gold); border: 1px solid var(--ay-gold);
                 display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-                font-weight: 600; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+                box-shadow: 0 12px 30px rgba(0,0,0,.35);
             }
-            .rc-home .rc-collage .rc-stamp strong { font-family: 'Playfair Display', serif; font-size: 2.4rem; letter-spacing: 0; line-height: 1; }
-            .rc-home .rc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 44px; background: rgba(201,161,93,.25); border-radius: 6px; overflow: hidden; }
-            .rc-home .rc-stats div { background: var(--rc-espresso); padding: 24px 18px; }
-            .rc-home .rc-stats strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--rc-gold); }
-            .rc-home .rc-stats span { color: var(--rc-muted); font-size: .85rem; }
-            .rc-home .rc-signature { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: var(--rc-gold-soft); margin-top: 30px; }
+            .ay-home .ay-stamp strong { font-family: var(--ay-serif); font-size: 2.3rem; line-height: 1; color: #fff; }
+            .ay-home .ay-stamp span { font-size: .6rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; margin-top: 4px; }
+            .ay-home .ay-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 40px; background: var(--ay-sand-line); border-radius: var(--ay-radius); overflow: hidden; }
+            .ay-home .ay-stats div { background: #fff; padding: 24px 20px; transition: background .3s ease; }
+            .ay-home .ay-stats div:hover { background: var(--ay-cream); }
+            .ay-home .ay-stats strong { display: block; font-family: var(--ay-serif); font-size: 2.5rem; color: var(--ay-teak); line-height: 1.05; }
+            .ay-home .ay-stats span { font-size: .76rem; font-weight: 700; color: var(--ay-muted); text-transform: uppercase; letter-spacing: .1em; }
+            .ay-home .ay-tagline { font-family: var(--ay-serif); font-style: italic; font-size: 1.5rem; color: var(--ay-green); margin-top: 30px; }
 
-            /* ---------- signature dishes ---------- */
-            .rc-home .rc-dishes { background: var(--rc-ink); }
-            .rc-home .rc-dish {
-                position: relative; border-radius: 8px; overflow: hidden; height: 470px; display: block;
-                box-shadow: 0 24px 50px -24px rgba(0,0,0,.9);
+            /* ---------- signature menu ---------- */
+            .ay-home .ay-dish {
+                background: var(--ay-teak-card); border: 1px solid var(--ay-line); border-radius: var(--ay-radius); overflow: hidden;
+                height: 100%; display: flex; flex-direction: column;
+                transition: transform .35s var(--ay-ease), box-shadow .35s var(--ay-ease), border-color .35s ease;
             }
-            .rc-home .rc-dish img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
-            .rc-home .rc-dish::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(15,11,9,.95) 100%); }
-            .rc-home .rc-dish:hover img { transform: scale(1.09); }
-            .rc-home .rc-dish-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px; z-index: 2; }
-            .rc-home .rc-dish-tag { display: inline-block; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--rc-ink); background: var(--rc-gold); padding: 5px 12px; border-radius: 999px; }
-            .rc-home .rc-dish h3 { color: #fff; font-size: 1.6rem; margin: 14px 0 8px; }
-            .rc-home .rc-dish p { color: #cfc3b1; font-size: .92rem; margin: 0; max-height: 0; opacity: 0; transition: all .5s ease; }
-            .rc-home .rc-dish:hover p { max-height: 90px; opacity: 1; margin-bottom: 10px; }
-            .rc-home .rc-dish .rc-price { font-family: 'Playfair Display', serif; color: var(--rc-gold); font-size: 1.3rem; }
+            .ay-home .ay-dish:hover { transform: translateY(-8px); border-color: var(--ay-gold); box-shadow: 0 22px 44px rgba(0,0,0,.45); }
+            .ay-home .ay-dish-thumb { height: 230px; position: relative; overflow: hidden; }
+            .ay-home .ay-dish-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ay-ease); }
+            .ay-home .ay-dish:hover .ay-dish-thumb img { transform: scale(1.08); }
+            .ay-home .ay-dish-tag {
+                position: absolute; top: 14px; left: 14px; padding: 5px 13px; border-radius: 999px;
+                background: rgba(24,18,14,.85); backdrop-filter: blur(6px); border: 1px solid var(--ay-line);
+                color: var(--ay-gold-light); font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+            }
+            .ay-home .ay-dish-body { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+            .ay-home .ay-dish-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+            .ay-home .ay-dish h3 { font-size: 1.35rem; color: #fff; margin: 0; }
+            .ay-home .ay-price { font-family: var(--ay-serif); font-size: 1.45rem; font-weight: 700; color: var(--ay-gold-light); white-space: nowrap; }
+            .ay-home .ay-dish p { font-size: .88rem; color: #b0a49c; line-height: 1.65; margin: 0 0 20px; flex: 1; }
+            .ay-home .ay-dish-link {
+                display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px; border-radius: 999px;
+                border: 1px solid var(--ay-line); color: var(--ay-gold-light) !important;
+                font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; transition: all .3s ease;
+            }
+            .ay-home .ay-dish-link:hover { background: var(--ay-gold-grad); color: var(--ay-teak) !important; border-color: transparent; }
 
             /* ---------- experiences ---------- */
-            .rc-home .rc-experiences { background: var(--rc-cream); color: var(--rc-bean); }
-            .rc-home .rc-experiences .rc-title { color: var(--rc-ink); }
-            .rc-home .rc-experiences .rc-lead { color: #6f6253; }
-            .rc-home .rc-exp {
-                background: #fff; border-radius: 10px; padding: 38px 30px; height: 100%; display: block; color: var(--rc-bean);
-                border: 1px solid #eadfcd; transition: all .4s ease; position: relative; overflow: hidden;
+            .ay-home .ay-exp {
+                background: #fff; border: 1px solid var(--ay-sand-line); border-radius: var(--ay-radius); padding: 38px 30px; height: 100%;
+                display: block; color: var(--ay-ink); position: relative; overflow: hidden;
+                transition: transform .4s var(--ay-ease), box-shadow .4s var(--ay-ease), border-color .4s ease;
             }
-            .rc-home .rc-exp::before { content: ""; position: absolute; left: 0; top: 0; height: 4px; width: 0; background: var(--rc-gold); transition: width .5s ease; }
-            .rc-home .rc-exp:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -30px rgba(43,33,26,.45); }
-            .rc-home .rc-exp:hover::before { width: 100%; }
-            .rc-home .rc-exp .rc-icon {
-                width: 64px; height: 64px; border-radius: 50%; background: var(--rc-ink); color: var(--rc-gold);
-                display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 24px;
+            .ay-home .ay-exp::before { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: var(--ay-gold-grad); transition: width .5s var(--ay-ease); }
+            .ay-home .ay-exp:hover { transform: translateY(-8px); border-color: #e2cfaa; box-shadow: 0 30px 60px -30px rgba(24,18,14,.4); }
+            .ay-home .ay-exp:hover::before { width: 100%; }
+            .ay-home .ay-exp-icon {
+                width: 64px; height: 64px; border-radius: 50%; background: var(--ay-teak); color: var(--ay-gold-light);
+                display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 24px;
+                box-shadow: 0 0 0 6px var(--ay-sand); transition: transform .4s var(--ay-ease);
             }
-            .rc-home .rc-exp h3 { font-size: 1.45rem; color: var(--rc-ink); margin-bottom: 10px; }
-            .rc-home .rc-exp p { color: #6f6253; font-size: .95rem; line-height: 1.7; }
-            .rc-home .rc-exp .rc-more { color: #9a7a43; font-weight: 600; font-size: .9rem; }
+            .ay-home .ay-exp:hover .ay-exp-icon { transform: rotate(-8deg) scale(1.06); }
+            .ay-home .ay-exp h3 { font-size: 1.45rem; color: var(--ay-teak); margin-bottom: 10px; }
+            .ay-home .ay-exp p { color: var(--ay-body); font-size: .92rem; line-height: 1.75; }
+            .ay-home .ay-more { color: var(--ay-green); font-weight: 800; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; }
 
-            /* ---------- chef quote ---------- */
-            .rc-home .rc-quote {
-                background: linear-gradient(rgba(21,17,14,.82), rgba(21,17,14,.82)), url('/theme_bistro/static/src/img/configurator/ultrawide_lg_4.webp') center/cover fixed;
-                text-align: center; padding: 140px 0;
+            /* ---------- a day at ayshu's (service timeline) ---------- */
+            .ay-home .ay-day { background: radial-gradient(circle at 85% 10%, rgba(216,168,78,.12), transparent 45%), var(--ay-green); color: #fff; }
+            .ay-home .ay-day .ay-title { color: #fff; }
+            .ay-home .ay-day .ay-title em { color: var(--ay-gold-light); }
+            .ay-home .ay-day .ay-lead { color: #c9d6cc; }
+            .ay-home .ay-slot {
+                background: rgba(16,11,8,.28); border: 1px solid rgba(245,207,123,.22); border-radius: var(--ay-radius);
+                padding: 36px 32px; height: 100%; position: relative; transition: transform .35s var(--ay-ease), background .35s ease;
             }
-            .rc-home .rc-quote blockquote { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.6rem, 3.2vw, 2.6rem); line-height: 1.4; color: #fff; max-width: 900px; margin: 26px auto; }
-            .rc-home .rc-quote img { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid var(--rc-gold); }
-            .rc-home .rc-quote cite { display: block; margin-top: 14px; font-style: normal; color: var(--rc-gold); letter-spacing: .14em; text-transform: uppercase; font-size: .8rem; }
-
-            /* ---------- menu ---------- */
-            .rc-home .rc-menu { background: var(--rc-espresso); }
-            .rc-home .rc-menu-card { background: var(--rc-bean); border: 1px solid rgba(201,161,93,.2); border-radius: 10px; padding: 44px 40px; height: 100%; }
-            .rc-home .rc-menu-card h3 { color: var(--rc-gold); font-size: 1.7rem; margin-bottom: 6px; }
-            .rc-home .rc-menu-card .rc-sub { color: var(--rc-muted); font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 26px; }
-            .rc-home .rc-item { display: flex; align-items: baseline; gap: 12px; padding: 14px 0; border-bottom: 1px dashed rgba(201,161,93,.18); }
-            .rc-home .rc-item:last-child { border-bottom: 0; }
-            .rc-home .rc-item .rc-name { color: #fff; font-weight: 500; }
-            .rc-home .rc-item .rc-name small { display: block; color: var(--rc-muted); font-weight: 300; font-size: .85rem; margin-top: 3px; }
-            .rc-home .rc-item .rc-dots { flex: 1; border-bottom: 1px dotted rgba(246,239,228,.25); transform: translateY(-5px); }
-            .rc-home .rc-item .rc-cost { font-family: 'Playfair Display', serif; color: var(--rc-gold); font-size: 1.15rem; }
-            .rc-home .rc-veg { display: inline-block; width: 10px; height: 10px; border: 1px solid var(--rc-leaf); margin-right: 6px; position: relative; top: -1px; }
-            .rc-home .rc-veg::after { content: ""; position: absolute; inset: 2px; border-radius: 50%; background: #4caf6a; }
-
-            /* ---------- events and shop ---------- */
-            .rc-home .rc-feature { background: var(--rc-ink); }
-            .rc-home .rc-event-card {
-                display: flex; gap: 24px; align-items: center; padding: 22px; border-radius: 10px; color: var(--rc-cream);
-                background: var(--rc-espresso); border: 1px solid rgba(201,161,93,.15); transition: all .35s ease; margin-bottom: 18px;
-            }
-            .rc-home .rc-event-card:hover { border-color: var(--rc-gold); transform: translateX(6px); }
-            .rc-home .rc-event-date { min-width: 78px; text-align: center; background: var(--rc-gold); color: var(--rc-ink); border-radius: 8px; padding: 10px 6px; }
-            .rc-home .rc-event-date strong { display: block; font-family: 'Playfair Display', serif; font-size: 1.9rem; line-height: 1; }
-            .rc-home .rc-event-date span { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
-            .rc-home .rc-event-card h4 { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.25rem; margin: 0 0 4px; }
-            .rc-home .rc-event-card p { color: var(--rc-muted); margin: 0; font-size: .9rem; }
-            .rc-home .rc-shop-panel {
-                border-radius: 12px; padding: 48px 42px; height: 100%; position: relative; overflow: hidden;
-                background: radial-gradient(circle at 85% 20%, rgba(201,161,93,.35), transparent 55%), var(--rc-bean);
-                border: 1px solid rgba(201,161,93,.25);
-            }
-            .rc-home .rc-shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px 0; }
-            .rc-home .rc-shop-grid a { display: block; background: var(--rc-cream); border-radius: 10px; padding: 8px; transition: transform .35s ease; }
-            .rc-home .rc-shop-grid a:hover { transform: translateY(-6px) rotate(-1deg); }
-            .rc-home .rc-shop-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
+            .ay-home .ay-slot:hover { transform: translateY(-6px); background: rgba(16,11,8,.4); }
+            .ay-home .ay-slot-time { display: inline-block; padding: 6px 14px; border-radius: 999px; background: var(--ay-gold-grad); color: var(--ay-teak); font-size: .72rem; font-weight: 800; letter-spacing: .1em; }
+            .ay-home .ay-slot h3 { color: #fff; font-size: 1.7rem; margin: 18px 0 8px; }
+            .ay-home .ay-slot p { color: #c9d6cc; font-size: .92rem; line-height: 1.7; }
+            .ay-home .ay-slot ul { list-style: none; padding: 0; margin: 18px 0 0; }
+            .ay-home .ay-slot li { padding: 9px 0; border-top: 1px dashed rgba(245,207,123,.2); color: #f1ece4; font-size: .92rem; display: flex; gap: 10px; align-items: center; }
+            .ay-home .ay-slot li .fa { color: var(--ay-gold-light); width: 16px; }
+            .ay-home .ay-slot-num { position: absolute; right: 26px; top: 18px; font-family: var(--ay-serif); font-size: 3.6rem; font-weight: 800; color: rgba(245,207,123,.12); line-height: 1; }
 
             /* ---------- reviews ---------- */
-            .rc-home .rc-reviews { background: var(--rc-cream); color: var(--rc-bean); }
-            .rc-home .rc-reviews .rc-title { color: var(--rc-ink); }
-            .rc-home .rc-review { background: #fff; border-radius: 12px; padding: 34px; height: 100%; border: 1px solid #eadfcd; position: relative; }
-            .rc-home .rc-review::before { content: "\201C"; position: absolute; right: 26px; top: 6px; font-family: 'Playfair Display', serif; font-size: 6rem; color: #f0e3cc; line-height: 1; }
-            .rc-home .rc-stars { color: var(--rc-gold); letter-spacing: 3px; margin-bottom: 14px; }
-            .rc-home .rc-review p { color: #5d5145; line-height: 1.75; font-size: .98rem; }
-            .rc-home .rc-review .rc-who { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
-            .rc-home .rc-review .rc-who img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
-            .rc-home .rc-review .rc-who strong { display: block; color: var(--rc-ink); }
-            .rc-home .rc-review .rc-who span { color: #9a8b78; font-size: .85rem; }
-            .rc-home .rc-rating-summary { font-family: 'Playfair Display', serif; font-size: 4.2rem; color: var(--rc-ink); line-height: 1; }
+            .ay-home .ay-rating-banner {
+                background: var(--ay-teak-card); border: 1px solid var(--ay-line); border-radius: var(--ay-radius); padding: 30px 40px;
+                display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 46px;
+            }
+            .ay-home .ay-rating-banner h3 { color: #fff; font-size: 1.8rem; margin: 6px 0 0; }
+            .ay-home .ay-rating-big { font-family: var(--ay-serif); font-size: 3.6rem; font-weight: 700; color: #fff; line-height: 1; }
+            .ay-home .ay-stars { color: var(--ay-gold); letter-spacing: 3px; font-size: 1.15rem; }
+            .ay-home .ay-review {
+                background: var(--ay-teak-card); border: 1px solid var(--ay-line); border-radius: var(--ay-radius); padding: 36px 32px; height: 100%;
+                display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: transform .35s var(--ay-ease), border-color .35s ease;
+            }
+            .ay-home .ay-review:hover { transform: translateY(-6px); border-color: var(--ay-gold); }
+            .ay-home .ay-review::before { content: "\201C"; position: absolute; right: 24px; top: 0; font-family: var(--ay-serif); font-size: 6.5rem; color: rgba(216,168,78,.14); line-height: 1; }
+            .ay-home .ay-review p { font-family: var(--ay-serif); font-style: italic; font-size: 1.06rem; line-height: 1.75; color: #ded6cf; margin: 14px 0 24px; position: relative; }
+            .ay-home .ay-who { display: flex; align-items: center; gap: 14px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.08); }
+            .ay-home .ay-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--ay-gold-grad); color: var(--ay-teak); font-weight: 800; display: flex; align-items: center; justify-content: center; }
+            .ay-home .ay-who strong { display: block; color: #fff; font-size: .95rem; }
+            .ay-home .ay-who span { font-size: .76rem; color: var(--ay-muted); }
 
             /* ---------- gallery ---------- */
-            .rc-home .rc-gallery { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 210px; gap: 0; }
-            .rc-home .rc-gallery a { position: relative; overflow: hidden; display: block; }
-            .rc-home .rc-gallery a:nth-child(1) { grid-column: span 2; grid-row: span 2; }
-            .rc-home .rc-gallery a:nth-child(4) { grid-column: span 2; }
-            .rc-home .rc-gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease, filter .6s ease; filter: saturate(.9); }
-            .rc-home .rc-gallery a:hover img { transform: scale(1.08); filter: saturate(1.15); }
-
-            /* ---------- reservation ---------- */
-            .rc-home .rc-reserve {
-                background: linear-gradient(115deg, rgba(21,17,14,.95) 40%, rgba(21,17,14,.55)), url('/theme_bistro/static/src/img/configurator/set_1_landscape_md_2.webp') center/cover;
+            .ay-home .ay-gallery-section { background: var(--ay-sand); padding: 110px 0 0; }
+            .ay-home .ay-gallery { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 240px; gap: 6px; margin-top: 44px; }
+            .ay-home .ay-gallery a { position: relative; overflow: hidden; display: block; }
+            .ay-home .ay-gallery a:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+            .ay-home .ay-gallery a:nth-child(4) { grid-column: span 2; }
+            .ay-home .ay-gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ay-ease); }
+            .ay-home .ay-gallery a:hover img { transform: scale(1.1); }
+            .ay-home .ay-gallery-overlay {
+                position: absolute; inset: 0; background: rgba(24,18,14,.7); color: #fff; opacity: 0; transition: opacity .35s ease;
+                display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px;
             }
-            .rc-home .rc-hours { background: rgba(31,24,19,.85); border: 1px solid rgba(201,161,93,.3); border-radius: 12px; padding: 38px; backdrop-filter: blur(6px); }
-            .rc-home .rc-hours h3 { color: var(--rc-gold); font-size: 1.5rem; margin-bottom: 18px; }
-            .rc-home .rc-hours li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(246,239,228,.08); color: #e7dccb; }
-            .rc-home .rc-hours li span:last-child { color: #fff; font-weight: 500; }
-            .rc-home .rc-contact-line { color: #d9cfbf; margin: 8px 0; display: flex; gap: 12px; align-items: center; }
-            .rc-home .rc-contact-line i { color: var(--rc-gold); width: 18px; }
+            .ay-home .ay-gallery a:hover .ay-gallery-overlay { opacity: 1; }
+            .ay-home .ay-gallery-overlay .fa { font-size: 1.8rem; color: var(--ay-gold); margin-bottom: 8px; }
+            .ay-home .ay-gallery-overlay span { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 
-            /* ---------- website header (menu) on this page ---------- */
-            /* The header floats over the dark hero, so give it a dark glass background and light links. */
+            /* ---------- reserve &amp; visit ---------- */
+            .ay-home .ay-visit { background: var(--ay-cream); }
+            .ay-home .ay-book {
+                background: var(--ay-teak); color: #fff; border-radius: 14px; overflow: hidden; height: 100%;
+                box-shadow: 0 30px 70px -30px rgba(24,18,14,.6); position: relative;
+            }
+            .ay-home .ay-book-head { padding: 44px 44px 30px; border-bottom: 1px solid var(--ay-line); }
+            .ay-home .ay-book-head .ay-title { color: #fff; font-size: clamp(2rem, 3.4vw, 2.6rem); margin-bottom: 10px; }
+            .ay-home .ay-book-head .ay-title em { color: var(--ay-gold-light); }
+            .ay-home .ay-book-body { padding: 34px 44px 44px; }
+            .ay-home .ay-steps { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 14px; }
+            .ay-home .ay-steps li { display: flex; gap: 14px; align-items: flex-start; color: #ded6cf; font-size: .94rem; }
+            .ay-home .ay-steps b {
+                width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+                border: 1px solid var(--ay-gold); color: var(--ay-gold-light); font-size: .8rem;
+            }
+            .ay-home .ay-book small { color: #a69a91; display: block; margin-top: 16px; }
+            .ay-home .ay-loc {
+                background: #fff; border: 1px solid var(--ay-sand-line); border-radius: 14px; padding: 42px 38px; height: 100%;
+                box-shadow: 0 12px 30px rgba(24,18,14,.05);
+            }
+            .ay-home .ay-loc h3 { font-size: 2rem; color: var(--ay-teak); margin: 14px 0 10px; }
+            .ay-home .ay-contact-line { display: flex; gap: 12px; align-items: flex-start; margin: 14px 0; color: var(--ay-body); }
+            .ay-home .ay-contact-line .fa { color: var(--ay-gold); width: 18px; margin-top: 4px; }
+            .ay-home .ay-contact-line a { color: var(--ay-teak); font-weight: 700; }
+            .ay-home .ay-schedule { list-style: none; padding: 0; margin: 24px 0 0; }
+            .ay-home .ay-schedule li { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px dashed var(--ay-sand-line); font-size: .92rem; color: var(--ay-body); }
+            .ay-home .ay-schedule li:last-child { border-bottom: 0; }
+            .ay-home .ay-schedule li span:last-child { color: var(--ay-teak); font-weight: 700; text-align: right; }
+            .ay-home .ay-schedule li.ay-all { color: var(--ay-teak); font-weight: 700; }
+            .ay-home .ay-schedule li.ay-all span:last-child { background: var(--ay-teak); color: var(--ay-gold-light); padding: 4px 12px; border-radius: 999px; font-size: .82rem; }
+
+            /* ---------- closing brand band ---------- */
+            .ay-home .ay-closing { background: var(--ay-teak-deep); color: #fff; padding: 110px 0 120px; position: relative; overflow: hidden; text-align: center; border-top: 1px solid var(--ay-line); }
+            .ay-home .ay-closing .container { position: relative; z-index: 2; }
+            .ay-home .ay-crest { width: 54px; height: 54px; color: var(--ay-gold); }
+            .ay-home .ay-closing blockquote { font-family: var(--ay-serif); font-style: italic; font-size: clamp(1.9rem, 3.6vw, 3rem); color: #fff; margin: 22px auto 14px; max-width: 820px; line-height: 1.3; }
+            .ay-home .ay-closing p { color: #a69a91; max-width: 560px; margin: 0 auto 34px; }
+            .ay-home .ay-closing .ay-actions { justify-content: center; }
+            .ay-home .ay-watermark {
+                position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); z-index: 1;
+                font-family: var(--ay-serif); font-size: clamp(4.5rem, 12vw, 12rem); font-weight: 800; white-space: nowrap;
+                color: transparent; -webkit-text-stroke: 1.5px rgba(216,168,78,.1); pointer-events: none; user-select: none;
+            }
+
+            /* ---------- motion ---------- */
+            @keyframes ay-fade-up { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+            @keyframes ay-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+            @keyframes ay-spin-in { from { opacity: 0; transform: rotate(-90deg) scale(.6); } to { opacity: 1; transform: none; } }
+            .ay-home .ay-reveal { animation: ay-fade-up 1.1s var(--ay-ease) both; }
+            .ay-home .ay-d1 { animation-delay: .15s; } .ay-home .ay-d2 { animation-delay: .3s; } .ay-home .ay-d3 { animation-delay: .45s; } .ay-home .ay-d4 { animation-delay: .6s; }
+            @media (prefers-reduced-motion: reduce) {
+                .ay-home *, .ay-home *::before, .ay-home *::after { animation: none !important; transition: none !important; }
+            }
+
+            /* ---------- responsive ---------- */
+            @media (max-width: 991px) {
+                .ay-home .ay-section { padding: 88px 0; }
+                .ay-home .ay-rating-seal { display: none; }
+                .ay-home .ay-hero > .container { padding-bottom: 240px; }
+                .ay-home .ay-collage { min-height: 440px; margin-bottom: 40px; }
+                .ay-home .ay-collage::before { display: none; }
+                .ay-home .ay-gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 180px; }
+                .ay-home .ay-gallery a:nth-child(1), .ay-home .ay-gallery a:nth-child(4) { grid-column: span 2; grid-row: span 1; }
+            }
+            @media (max-width: 575px) {
+                .ay-home .ay-section { padding: 72px 0; }
+                .ay-home .ay-actions .ay-btn { width: 100%; justify-content: center; }
+                .ay-home .ay-hero-chips { display: none; }
+                .ay-home .ay-stats { grid-template-columns: 1fr; }
+                .ay-home .ay-rating-banner, .ay-home .ay-book-head, .ay-home .ay-book-body, .ay-home .ay-loc { padding-left: 22px; padding-right: 22px; }
+                .ay-home .ay-stamp { width: 100px; height: 100px; right: 10px; }
+                .ay-home .ay-stamp strong { font-size: 1.8rem; }
+                .ay-home .ay-brand-crest { width: 48px; height: 48px; }
+                .ay-home .ay-brand-sub { letter-spacing: .18em; }
+            }
+
+            /* ---------- website header (navbar) matching across all pages ---------- */
             header#top {
-                background: rgba(21,17,14,.62) !important;
-                backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-                border-bottom: 1px solid rgba(201,161,93,.22);
+                background: rgba(24,18,14,.94) !important;
+                backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+                border-bottom: 1px solid rgba(216,168,78,.22) !important;
                 transition: background .35s ease;
             }
             header#top.o_header_is_scrolled, header#top.o_header_affixed, header#top.o_top_fixed_element {
-                background: rgba(21,17,14,.94) !important;
+                background: rgba(16,11,8,.97) !important;
             }
             header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
             header#top .navbar .nav-link,
@@ -232,301 +369,404 @@
             header#top .navbar button:not(.btn-primary):not(.dropdown-item),
             header#top .navbar .navbar-brand,
             header#top .navbar .fa, header#top .navbar .oi {
-                color: #f6efe4 !important;
+                color: #fcf9f4 !important;
             }
-            header#top .navbar .nav-link { font-family: 'Inter', sans-serif; font-weight: 500; letter-spacing: .02em; }
+            header#top .navbar .navbar-brand {
+                font-family: 'Playfair Display', Georgia, serif !important;
+                font-weight: 700 !important;
+                letter-spacing: .03em !important;
+            }
+            header#top .navbar .nav-link {
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 600 !important;
+                font-size: .86rem !important;
+                letter-spacing: .02em !important;
+                text-transform: none !important;
+                position: relative;
+            }
+            header#top .navbar .nav-link::after {
+                content: ""; position: absolute; left: 50%; right: 50%; bottom: 4px; height: 1px; background: #d8a84e;
+                transition: left .35s ease, right .35s ease;
+            }
+            header#top .navbar .nav-link:hover::after, header#top .navbar .nav-link.active::after { left: 14px; right: 14px; }
             header#top .navbar .nav-link:hover,
             header#top .navbar .nav-link.active,
-            header#top .navbar .nav-item.active > .nav-link { color: #c9a15d !important; }
-            header#top .navbar .nav-link.active { box-shadow: inset 0 -2px 0 #c9a15d; }
+            header#top .navbar .nav-item.active > .nav-link { color: #f5cf7b !important; }
+            header#top .navbar .btn-primary {
+                background: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%) !important;
+                border: 0 !important;
+                color: #18120e !important;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 700 !important;
+                font-size: .82rem !important;
+                letter-spacing: .08em !important;
+                text-transform: uppercase !important;
+                border-radius: 999px !important;
+                box-shadow: 0 4px 16px rgba(216,168,78,.35) !important;
+            }
             header#top .o_navlink_background, header#top .navbar .btn-light, header#top .navbar .o_wsale_my_cart .btn {
-                background: rgba(246,239,228,.12) !important; border-color: rgba(246,239,228,.18) !important;
+                background: rgba(252,249,244,.1) !important; border-color: rgba(252,249,244,.18) !important;
             }
-            header#top .navbar-toggler { border-color: rgba(246,239,228,.4) !important; }
+            header#top .navbar-toggler { border-color: rgba(252,249,244,.4) !important; }
             header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
-            header#top .offcanvas { background: #1f1813 !important; color: #f6efe4; }
-            header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item), header#top .offcanvas .btn-close { color: #f6efe4 !important; }
+            header#top .offcanvas { background: #18120e !important; color: #fcf9f4; }
+            header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item), header#top .offcanvas .btn-close { color: #fcf9f4 !important; }
             header#top .offcanvas .btn-close { filter: invert(1); }
-            header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; }
-
-            /* ---------- motion ---------- */
-            @keyframes rc-fade-up { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
-            @keyframes rc-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-            @keyframes rc-spin-in { from { opacity: 0; transform: rotate(-90deg) scale(.6); } to { opacity: 1; transform: none; } }
-            .rc-home .rc-reveal { animation: rc-fade-up 1s cubic-bezier(.2,.7,.2,1) both; }
-            .rc-home .rc-d1 { animation-delay: .15s; } .rc-home .rc-d2 { animation-delay: .3s; } .rc-home .rc-d3 { animation-delay: .45s; }
-            @media (prefers-reduced-motion: reduce) {
-                .rc-home *, .rc-home *::before { animation: none !important; transition: none !important; }
-            }
-
-            /* ---------- responsive ---------- */
+            header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; text-transform: none; letter-spacing: 0; }
             @media (max-width: 991px) {
-                .rc-home .rc-section { padding: 84px 0; }
-                .rc-home .rc-hero-badge { display: none; }
-                .rc-home .rc-hero .container { padding-bottom: 260px; }
-                .rc-home .rc-collage { min-height: 440px; margin-bottom: 50px; }
-                .rc-home .rc-gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 170px; }
-                .rc-home .rc-gallery a:nth-child(1), .rc-home .rc-gallery a:nth-child(4) { grid-column: span 2; grid-row: span 1; }
-                .rc-home .rc-quote { background-attachment: scroll; }
+                header#top .navbar .nav-link::after { display: none; }
             }
-            @media (max-width: 575px) {
-                .rc-home .rc-stats { grid-template-columns: 1fr; }
-                .rc-home .rc-menu-card, .rc-home .rc-shop-panel { padding: 32px 22px; }
-                .rc-home .rc-shop-grid { grid-template-columns: repeat(2, 1fr); }
+
+            /* ---------- "Pre Order Food" navbar button ----------
+               The real (editable) button lives in the .ay-preorder-src strip at the top of the page.
+               It is hidden on the live site and only shown while editing, so you can change its
+               link/text with Odoo's link tool. The script below copies it into the navbar. */
+            .ay-preorder-src { display: none; }
+            body.editor_enable .ay-preorder-src {
+                display: block; padding: 14px 0; text-align: center;
+                background: #100b08; border-bottom: 1px dashed rgba(216,168,78,.45);
             }
+            body.editor_enable .ay-preorder-src::before {
+                content: "Navbar button: click it to edit the link and text (only visible while editing)";
+                display: block; margin-bottom: 8px; color: #b8aca3;
+                font: 500 .75rem 'Plus Jakarta Sans', sans-serif; letter-spacing: .04em;
+            }
+            .ay-preorder-btn {
+                display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+                padding: 8px 18px; border-radius: 999px; text-decoration: none !important;
+                background: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%);
+                color: #18120e !important;
+                font: 700 .8rem 'Plus Jakarta Sans', sans-serif; letter-spacing: .06em; text-transform: uppercase;
+                box-shadow: 0 4px 16px rgba(216,168,78,.35);
+                transition: transform .25s ease, box-shadow .25s ease;
+            }
+            .ay-preorder-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(216,168,78,.55); }
+            header#top .navbar a.ay-preorder-btn, header#top .navbar a.ay-preorder-btn .fa { color: #18120e !important; }
+            header#top .o_header_mobile a.ay-preorder-btn { padding: 6px 12px; font-size: .7rem; }
         </style>
+        <script>
+            (function () {
+                // Never inject while the website editor is open, so the copy is never saved into the header.
+                function isEditing() {
+                    return document.body.classList.contains('editor_enable') ||
+                        /[?&amp;]enable_editor=/.test(window.location.search) ||
+                        window.frameElement !== null;
+                }
+                function removeCopies() {
+                    document.querySelectorAll('header#top .ay-preorder-nav').forEach(function (el) { el.remove(); });
+                }
+                function inject() {
+                    removeCopies();
+                    if (isEditing()) { return; }
+                    var src = document.querySelector('.ay-preorder-src a');
+                    if (!src) { return; }
+                    var targets = [
+                        document.querySelector('header#top #o_main_nav > ul.navbar-nav:last-of-type'),
+                        document.querySelector('header#top .o_header_mobile_buttons_wrap')
+                    ];
+                    targets.forEach(function (ul) {
+                        if (!ul) { return; }
+                        var li = document.createElement('li');
+                        li.className = 'nav-item ay-preorder-nav';
+                        var a = src.cloneNode(true);
+                        a.classList.add('ay-preorder-btn');
+                        li.appendChild(a);
+                        ul.appendChild(li);
+                    });
+                }
+                function start() {
+                    inject();
+                    // Editor turned on after load: take the copies out again.
+                    new MutationObserver(function () {
+                        if (document.body.classList.contains('editor_enable')) { removeCopies(); }
+                    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+                }
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', start);
+                } else {
+                    start();
+                }
+            })();
+        </script>
     </t>
     <t t-call="website.layout" pageName.f="homepage" head="head">
 
-        <div id="wrap" class="oe_structure rc-home">
+        <div id="wrap" class="oe_structure ay-home">
+
+            <!-- ===================== NAVBAR "PRE ORDER FOOD" BUTTON (edit link here) ===================== -->
+            <section class="ay-preorder-src o_colored_level" data-name="Navbar Pre Order Button">
+                <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-preorder-btn"><i class="fa fa-cutlery"/> Pre Order Food</a>
+            </section>
 
             <!-- ===================== HERO ===================== -->
-            <section class="rc-hero o_colored_level" data-name="Hero">
+            <section class="ay-hero o_colored_level" data-name="Hero">
                 <div class="container">
-                    <span class="rc-eyebrow rc-reveal">Marine Drive · Kochi · Since 2014</span>
-                    <h1 class="rc-reveal rc-d1">Where Kerala's flavours meet <em>modern dining</em></h1>
-                    <p class="rc-reveal rc-d2">Slow-cooked heritage recipes, single-estate filter coffee and a warm table by the backwaters. Breakfast to late-night, every day.</p>
-                    <div class="rc-hero-actions rc-reveal rc-d3">
-                        <a href="/appointment" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve a Table</a>
-                        <a href="/pos-self/1?access_token=27a496086d6b42e4" class="rc-btn rc-btn-gold"><i class="fa fa-cutlery"/> Pre-Book Food</a>
-                        <a href="#rc-menu" class="rc-btn rc-btn-ghost">Explore the Menu <i class="fa fa-arrow-right"/></a>
+                    <div class="ay-brand ay-reveal">
+                        <svg class="ay-brand-crest" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                            <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                            <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                            <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                            <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                        </svg>
+                        <div>
+                            <div class="ay-brand-name">Ayshu's Culinary</div>
+                            <div class="ay-brand-sub">Aesthetic Cafe &amp; Arabian Kitchen</div>
+                        </div>
+                    </div>
+                    <span class="ay-hero-badge ay-reveal ay-d1"><i class="fa fa-map-marker"/> 26th Mile Bridge · Kanjirappally</span>
+                    <h1 class="ay-reveal ay-d1">Where Arabian heritage meets <em>Kerala soul</em></h1>
+                    <p class="ay-reveal ay-d2">An aesthetic cafe with multicuisine dishes and signature Arabian specialties: slow-cooked Kuzhimanthi, charcoal-seared Al Faham, freshly rolled shawarma, golden Turkish Kunafa and specialty coffee, in the heart of Kanjirappally.</p>
+                    <div class="ay-actions ay-reveal ay-d3">
+                        <a href="/appointment" class="ay-btn ay-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve a Table</a>
+                        <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-btn ay-btn-gold"><i class="fa fa-cutlery"/> Pre-Book Food</a>
+                        <a href="#ay-menu" class="ay-btn ay-btn-ghost">Explore the Menu <i class="fa fa-arrow-down"/></a>
+                    </div>
+                    <div class="ay-hero-chips ay-reveal ay-d4">
+                        <span class="ay-chip"><i class="fa fa-fire"/> Charcoal Grilled</span>
+                        <span class="ay-chip"><i class="fa fa-coffee"/> Artisan Cafe</span>
+                        <span class="ay-chip"><i class="fa fa-users"/> Family Dining</span>
                     </div>
                 </div>
-                <div class="rc-hero-badge">
+                <div class="ay-rating-seal">
                     <strong>4.8</strong>
-                    <span>★ Google<br/>2,400+ reviews</span>
+                    <span>★ Google<br/>1,200+ reviews</span>
                 </div>
-                <div class="rc-infobar">
+                <div class="ay-infobar">
                     <div class="container">
                         <div class="row g-0">
-                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-clock-o"/><div><small>Open today</small><b>7:00 AM – 11:00 PM</b></div></div></div>
-                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-map-marker"/><div><small>Find us</small><b>Marine Drive, Kochi</b></div></div></div>
-                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-phone"/><div><small>Reservations</small><b>+91 484 235 0000</b></div></div></div>
-                            <div class="col-6 col-lg-3"><div class="rc-info"><i class="fa fa-qrcode"/><div><small>At your table</small><b>Scan &amp; order instantly</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-clock-o"/><div><small>Open daily</small><b>11:00 AM – 11:00 PM</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-cutlery"/><div><small>Cuisine</small><b>Arabian &amp; Multicuisine</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-phone"/><div><small>Reservations</small><b><a href="tel:+919122227221">091222 27221</a></b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-qrcode"/><div><small>At your table</small><b>Scan &amp; order instantly</b></div></div></div>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- ===================== MARQUEE ===================== -->
-            <section class="rc-marquee o_colored_level" data-name="Dish Marquee">
-                <div class="rc-marquee-track">
-                    <span>Appam &amp; Stew</span><span>Malabar Biryani</span><span>Karimeen Pollichathu</span><span>Filter Coffee</span><span>Beef Ularthiyathu</span><span>Kozhikode Halwa</span><span>Onam Sadya</span><span>Plum Cake</span>
-                    <span>Appam &amp; Stew</span><span>Malabar Biryani</span><span>Karimeen Pollichathu</span><span>Filter Coffee</span><span>Beef Ularthiyathu</span><span>Kozhikode Halwa</span><span>Onam Sadya</span><span>Plum Cake</span>
+            <section class="ay-marquee o_colored_level" data-name="Dish Marquee">
+                <div class="ay-marquee-track">
+                    <span>Al Faham</span><span>Kuzhimanthi</span><span>Dum Biryani</span><span>Kunafa</span><span>Artisan Coffee</span><span>Shawarma</span><span>Mandi</span><span>Fresh Mocktails</span>
+                    <span>Al Faham</span><span>Kuzhimanthi</span><span>Dum Biryani</span><span>Kunafa</span><span>Artisan Coffee</span><span>Shawarma</span><span>Mandi</span><span>Fresh Mocktails</span>
                 </div>
             </section>
 
             <!-- ===================== STORY ===================== -->
-            <section class="rc-section rc-story o_colored_level" data-name="Our Story">
+            <section class="ay-section ay-story ay-light o_colored_level" data-name="Our Story">
                 <div class="container">
                     <div class="row align-items-center g-5">
                         <div class="col-lg-6">
-                            <div class="rc-collage">
-                                <img class="rc-img-a" src="/theme_bistro/static/src/img/configurator/set_doers_portrait_lg_1.webp" alt="Our head chef at work"/>
-                                <img class="rc-img-b" src="/theme_bistro/static/src/img/content/s_images_constellation_default_image.webp" alt="Signature plated dish"/>
-                                <div class="rc-stamp"><strong>12</strong>years of<br/>flavour</div>
+                            <div class="ay-collage">
+                                <img class="ay-img-a" src="https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Ayshu's Culinary dining room"/>
+                                <img class="ay-img-b" src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Aesthetic cafe lounge"/>
+                                <div class="ay-stamp"><strong>4.8</strong><span>Google ★<br/>Rated</span></div>
                             </div>
                         </div>
                         <div class="col-lg-6">
-                            <span class="rc-eyebrow">Our Story</span>
-                            <h2 class="rc-title">A family kitchen that grew into <em>Kochi's favourite table</em></h2>
-                            <p class="rc-lead">What began as a twelve-table café on Marine Drive is today a restaurant, bakery and café loved by families, food lovers and travellers. Our recipes come from grandmother's notebooks; our ingredients come from farmers we know by name.</p>
-                            <p class="rc-lead">Every curry is ground fresh each morning, every appam is made to order and every cup of coffee starts with beans we roast ourselves.</p>
-                            <div class="rc-stats">
-                                <div><strong>45+</strong><span>Signature dishes</span></div>
-                                <div><strong>25k</strong><span>Happy guests a year</span></div>
-                                <div><strong>18</strong><span>Local farm partners</span></div>
+                            <span class="ay-eyebrow">The Ayshu Experience</span>
+                            <h2 class="ay-title">Handcrafted spices, <em>charcoal embers</em> &amp; warm hospitality</h2>
+                            <p class="ay-lead">On the Kottayam–Kumily highway at 26th Mile Bridge, Ayshu's Culinary Restaurant is built on a passion for authentic culinary traditions.</p>
+                            <p class="ay-lead">From slow-steamed Kuzhimanthi made with aged basmati and whole spices, to Al Faham seared over open coals, every recipe is prepared fresh daily. Stop for an artisan coffee in our cosy cafe lounge or gather the whole family for an evening feast: you will find warmth in every detail.</p>
+                            <div class="ay-stats">
+                                <div><strong>40+</strong><span>Signature dishes</span></div>
+                                <div><strong>100%</strong><span>Charcoal pit cooked</span></div>
+                                <div><strong>3</strong><span>Dining &amp; lounge spaces</span></div>
                             </div>
-                            <div class="rc-signature">— Chef Joseph Antony, Founder</div>
+                            <div class="ay-tagline">"Flavours of Malabar. Soul of Arabia."</div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ===================== SIGNATURE DISHES ===================== -->
-            <section class="rc-section rc-dishes o_colored_level" data-name="Signature Dishes">
+            <!-- ===================== SIGNATURE MENU ===================== -->
+            <section id="ay-menu" class="ay-section ay-dark o_colored_level" data-name="Signature Menu">
                 <div class="container">
-                    <div class="row align-items-end mb-5">
-                        <div class="col-lg-7">
-                            <span class="rc-eyebrow">Chef's Signatures</span>
-                            <h2 class="rc-title">Plates our guests <em>come back for</em></h2>
-                        </div>
-                        <div class="col-lg-5 text-lg-end">
-                            <a href="#rc-menu" class="rc-btn rc-btn-ghost">View full menu <i class="fa fa-arrow-right"/></a>
-                        </div>
+                    <div class="text-center mb-5">
+                        <span class="ay-eyebrow">Signature Delicacies</span>
+                        <h2 class="ay-title">Our chef's <em>culinary masterpieces</em></h2>
+                        <p class="ay-lead mx-auto">Freshly hand-ground Malabar spices, heritage dum techniques and authentic Arabian marinades.</p>
                     </div>
                     <div class="row g-4">
-                        <div class="col-md-6 col-lg-3">
-                            <a href="#rc-menu" class="rc-dish">
-                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_5.webp" alt="Malabar steak"/>
-                                <div class="rc-dish-body">
-                                    <span class="rc-dish-tag">Bestseller</span>
-                                    <h3>Pepper Fry Platter</h3>
-                                    <p>Black pepper from Wayanad, curry leaves and coconut slivers, served with Malabar parotta.</p>
-                                    <span class="rc-price">$ 14.50</span>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-dish">
+                                <div class="ay-dish-thumb">
+                                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Signature Kuzhimanthi platter"/>
+                                    <span class="ay-dish-tag">Arabian Signature</span>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                            <a href="#rc-menu" class="rc-dish">
-                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_4.webp" alt="Garden salad"/>
-                                <div class="rc-dish-body">
-                                    <span class="rc-dish-tag">Vegan</span>
-                                    <h3>Kochi Garden Bowl</h3>
-                                    <p>Millets, sprouts, raw mango and toasted coconut with a tamarind-jaggery dressing.</p>
-                                    <span class="rc-price">$ 9.90</span>
+                                <div class="ay-dish-body">
+                                    <div class="ay-dish-head"><h3>Signature Kuzhimanthi</h3><span class="ay-price">&#8377;280</span></div>
+                                    <p>Slow-steamed spiced basmati and charcoal-smoked tender chicken, with spicy tomato salsa &amp; creamy garlic toum.</p>
+                                    <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-dish-link"><i class="fa fa-cutlery"/> Pre-book this dish</a>
                                 </div>
-                            </a>
+                            </div>
                         </div>
-                        <div class="col-md-6 col-lg-3">
-                            <a href="#rc-menu" class="rc-dish">
-                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_3.webp" alt="Pasta"/>
-                                <div class="rc-dish-body">
-                                    <span class="rc-dish-tag">New</span>
-                                    <h3>Coconut Seafood Linguine</h3>
-                                    <p>A coastal twist: prawns and squid in a light moilee cream with curry leaf oil.</p>
-                                    <span class="rc-price">$ 16.00</span>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-dish">
+                                <div class="ay-dish-thumb">
+                                    <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Pepper Al Faham"/>
+                                    <span class="ay-dish-tag">Live Charcoal</span>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                            <a href="#rc-menu" class="rc-dish">
-                                <img src="/theme_bistro/static/src/img/configurator/set_catalog_square_md_6.webp" alt="Chocolate lava cake"/>
-                                <div class="rc-dish-body">
-                                    <span class="rc-dish-tag">Dessert</span>
-                                    <h3>Jaggery Lava Cake</h3>
-                                    <p>Dark chocolate and palm jaggery with a molten heart, cardamom ice cream and berries.</p>
-                                    <span class="rc-price">$ 7.50</span>
+                                <div class="ay-dish-body">
+                                    <div class="ay-dish-head"><h3>Pepper Al Faham</h3><span class="ay-price">&#8377;280</span></div>
+                                    <p>Chicken infused with freshly cracked Malabar black pepper, garlic &amp; Arabic herbs, char-grilled over live embers with kuboos.</p>
+                                    <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-dish-link"><i class="fa fa-cutlery"/> Pre-book this dish</a>
                                 </div>
-                            </a>
+                            </div>
                         </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-dish">
+                                <div class="ay-dish-thumb">
+                                    <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Malabar Dum Biryani"/>
+                                    <span class="ay-dish-tag">Kerala Heritage</span>
+                                </div>
+                                <div class="ay-dish-body">
+                                    <div class="ay-dish-head"><h3>Malabar Dum Biryani</h3><span class="ay-price">&#8377;190</span></div>
+                                    <p>Jeerakasala kaima rice layered with slow-cooked chicken masala, golden fried onions and ghee, with raita &amp; date pickle.</p>
+                                    <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-dish-link"><i class="fa fa-cutlery"/> Pre-book this dish</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-dish">
+                                <div class="ay-dish-thumb">
+                                    <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Turkish Cheese Kunafa"/>
+                                    <span class="ay-dish-tag">Signature Dessert</span>
+                                </div>
+                                <div class="ay-dish-body">
+                                    <div class="ay-dish-head"><h3>Turkish Cheese Kunafa</h3><span class="ay-price">&#8377;180</span></div>
+                                    <p>Crisp golden kataifi pastry stuffed with melted cheese, drenched in orange blossom syrup &amp; pistachios.</p>
+                                    <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-dish-link"><i class="fa fa-cutlery"/> Pre-book this dish</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-dish">
+                                <div class="ay-dish-thumb">
+                                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Artisan Spanish Latte"/>
+                                    <span class="ay-dish-tag">Cafe Special</span>
+                                </div>
+                                <div class="ay-dish-body">
+                                    <div class="ay-dish-head"><h3>Artisan Spanish Latte</h3><span class="ay-price">&#8377;150</span></div>
+                                    <p>Single-estate espresso pulled fresh with sweetened condensed milk and velvety micro-foam, served hot or iced.</p>
+                                    <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-dish-link"><i class="fa fa-cutlery"/> Pre-book this dish</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ay-dish">
+                                <div class="ay-dish-thumb">
+                                    <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="Tender Coconut Shake"/>
+                                    <span class="ay-dish-tag">Refreshment</span>
+                                </div>
+                                <div class="ay-dish-body">
+                                    <div class="ay-dish-head"><h3>Tender Coconut Shake</h3><span class="ay-price">&#8377;120</span></div>
+                                    <p>Fresh elaneer pulp blended with thick dairy cream and vanilla ice cream: the ultimate cooler on the highway.</p>
+                                    <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-dish-link"><i class="fa fa-cutlery"/> Pre-book this dish</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-5">
+                        <a href="/appointment" class="ay-btn ay-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve your table</a>
                     </div>
                 </div>
             </section>
 
             <!-- ===================== EXPERIENCES ===================== -->
-            <section class="rc-section rc-experiences o_colored_level" data-name="Experiences">
+            <section class="ay-section ay-light o_colored_level" data-name="Experiences">
                 <div class="container">
                     <div class="text-center mb-5">
-                        <span class="rc-eyebrow">More than a restaurant</span>
-                        <h2 class="rc-title">One place, <em>four experiences</em></h2>
-                        <p class="rc-lead mx-auto">Dine with us, take a little of Kerala home, celebrate with us or let us bring the feast to you.</p>
+                        <span class="ay-eyebrow">More than a restaurant</span>
+                        <h2 class="ay-title">One address, <em>four experiences</em></h2>
+                        <p class="ay-lead mx-auto">A quick coffee on the highway, a family feast, a celebration or a parcel for home: Ayshu's has a table for it.</p>
                     </div>
                     <div class="row g-4">
                         <div class="col-md-6 col-lg-3">
-                            <a href="/appointment" class="rc-exp">
-                                <div class="rc-icon"><i class="fa fa-cutlery"/></div>
-                                <h3>Fine Dining</h3>
-                                <p>Candle-lit tables, a backwater view and a menu that travels from Malabar to Travancore.</p>
-                                <span class="rc-more">Book a table →</span>
+                            <a href="/appointment" class="ay-exp">
+                                <div class="ay-exp-icon"><i class="fa fa-fire"/></div>
+                                <h3>Arabian Grill House</h3>
+                                <p>Kuzhimanthi, Al Faham and Mandi from the charcoal pit, served piping hot to your table.</p>
+                                <span class="ay-more">Book a table →</span>
                             </a>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                            <a href="/shop" class="rc-exp">
-                                <div class="rc-icon"><i class="fa fa-shopping-bag"/></div>
-                                <h3>Café &amp; Deli Shop</h3>
-                                <p>Banana chips, masalas, pickles, plum cake and our filter coffee, delivered to your door.</p>
-                                <span class="rc-more">Shop online →</span>
+                            <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-exp">
+                                <div class="ay-exp-icon"><i class="fa fa-coffee"/></div>
+                                <h3>Aesthetic Cafe Lounge</h3>
+                                <p>Specialty roasts, Spanish lattes, Kunafa and shakes in a calm, beautifully lit lounge.</p>
+                                <span class="ay-more">Pre-book food →</span>
                             </a>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                            <a href="/event" class="rc-exp">
-                                <div class="rc-icon"><i class="fa fa-glass"/></div>
-                                <h3>Events &amp; Masterclasses</h3>
-                                <p>Sadya cooking classes, latte art workshops, food festivals and live music nights.</p>
-                                <span class="rc-more">See what's on →</span>
+                            <a href="/event" class="ay-exp">
+                                <div class="ay-exp-icon"><i class="fa fa-users"/></div>
+                                <h3>Family Lounge &amp; Banquets</h3>
+                                <p>A spacious AC family lounge with high chairs, birthday set-ups and private banquets for 10+ guests.</p>
+                                <span class="ay-more">Plan a celebration →</span>
                             </a>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                            <a href="/contactus" class="rc-exp">
-                                <div class="rc-icon"><i class="fa fa-truck"/></div>
-                                <h3>Catering</h3>
-                                <p>Weddings, office lunches and celebrations from 20 to 2,000 guests, with live counters.</p>
-                                <span class="rc-more">Get a quote →</span>
+                            <a href="/contactus" class="ay-exp">
+                                <div class="ay-exp-icon"><i class="fa fa-shopping-bag"/></div>
+                                <h3>Takeaway &amp; Catering</h3>
+                                <p>Parcel orders, bulk party catering and private lounge bookings, one call away.</p>
+                                <span class="ay-more">Get in touch →</span>
                             </a>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ===================== CHEF QUOTE ===================== -->
-            <section class="rc-quote o_colored_level" data-name="Chef Quote">
+            <!-- ===================== A DAY AT AYSHU'S ===================== -->
+            <section class="ay-section ay-day o_colored_level" data-name="A Day at Ayshu's">
                 <div class="container">
-                    <img src="/theme_bistro/static/src/img/configurator/portrait_lg_3.webp" alt="Head chef"/>
-                    <blockquote>"We don't cook to impress. We cook the way our mothers did - patiently, generously, with spices ground the same morning."</blockquote>
-                    <cite>Chef Joseph Antony · Founder &amp; Head Chef</cite>
-                </div>
-            </section>
-
-            <!-- ===================== MENU ===================== -->
-            <section id="rc-menu" class="rc-section rc-menu o_colored_level" data-name="Menu">
-                <div class="container">
-                    <div class="text-center mb-5">
-                        <span class="rc-eyebrow">The Menu</span>
-                        <h2 class="rc-title">Taste the <em>season</em></h2>
+                    <div class="row align-items-end mb-5">
+                        <div class="col-lg-7">
+                            <span class="ay-eyebrow" style="color: #f5cf7b;">From noon to night</span>
+                            <h2 class="ay-title">A day at <em>Ayshu's</em></h2>
+                        </div>
+                        <div class="col-lg-5">
+                            <p class="ay-lead mb-0">Open 7 days a week for continuous all-day dining and takeout. Kitchen last order at 10:30 PM.</p>
+                        </div>
                     </div>
                     <div class="row g-4">
-                        <div class="col-lg-6">
-                            <div class="rc-menu-card">
-                                <h3>From the Kitchen</h3>
-                                <div class="rc-sub">Lunch &amp; Dinner · 12 PM – 11 PM</div>
-                                <div class="rc-item"><div class="rc-name">Karimeen Pollichathu<small>Pearl spot fish wrapped in banana leaf, kudampuli masala</small></div><span class="rc-dots"/><span class="rc-cost">$ 15.00</span></div>
-                                <div class="rc-item"><div class="rc-name">Malabar Chicken Biryani<small>Jeerakasala rice, fried onions, raita &amp; date pickle</small></div><span class="rc-dots"/><span class="rc-cost">$ 11.50</span></div>
-                                <div class="rc-item"><div class="rc-name">Beef Ularthiyathu<small>Slow-roasted with coconut slivers and black pepper</small></div><span class="rc-dots"/><span class="rc-cost">$ 12.00</span></div>
-                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Kerala Sadya<small>26 dishes on a banana leaf · weekends only</small></div><span class="rc-dots"/><span class="rc-cost">$ 13.00</span></div>
-                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Mushroom &amp; Cashew Roast<small>Shallots, tomato and roasted coconut gravy</small></div><span class="rc-dots"/><span class="rc-cost">$ 9.50</span></div>
+                        <div class="col-lg-4">
+                            <div class="ay-slot">
+                                <span class="ay-slot-num">01</span>
+                                <span class="ay-slot-time">11:30 AM – 3:30 PM</span>
+                                <h3>Lunch Service</h3>
+                                <p>The midday rush for slow-steamed rice dishes, straight from the dum pot.</p>
+                                <ul>
+                                    <li><i class="fa fa-check"/> Signature Kuzhimanthi</li>
+                                    <li><i class="fa fa-check"/> Mandi</li>
+                                    <li><i class="fa fa-check"/> Malabar Dum Biryani</li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="rc-menu-card">
-                                <h3>Café &amp; Bakery</h3>
-                                <div class="rc-sub">All day · 7 AM – 11 PM</div>
-                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Appam &amp; Vegetable Stew<small>Lacy rice hoppers with mild coconut stew</small></div><span class="rc-dots"/><span class="rc-cost">$ 6.50</span></div>
-                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Ghee Roast Dosa<small>Crisp, golden, with three chutneys &amp; sambar</small></div><span class="rc-dots"/><span class="rc-cost">$ 5.50</span></div>
-                                <div class="rc-item"><div class="rc-name">South Indian Filter Coffee<small>Chikmagalur beans, roasted in-house every Monday</small></div><span class="rc-dots"/><span class="rc-cost">$ 2.75</span></div>
-                                <div class="rc-item"><div class="rc-name">Cardamom Cold Brew<small>18-hour brew, jaggery syrup, oat milk on request</small></div><span class="rc-dots"/><span class="rc-cost">$ 4.25</span></div>
-                                <div class="rc-item"><div class="rc-name"><span class="rc-veg"/>Tender Coconut Pudding<small>Silky set pudding with palm sugar caramel</small></div><span class="rc-dots"/><span class="rc-cost">$ 5.00</span></div>
+                        <div class="col-lg-4">
+                            <div class="ay-slot">
+                                <span class="ay-slot-num">02</span>
+                                <span class="ay-slot-time">4:00 PM – 7:00 PM</span>
+                                <h3>Sunset Cafe</h3>
+                                <p>Coffee, rolls and something sweet as the highway lights come on.</p>
+                                <ul>
+                                    <li><i class="fa fa-check"/> Fresh rumali Shawarma</li>
+                                    <li><i class="fa fa-check"/> Artisan Spanish Latte</li>
+                                    <li><i class="fa fa-check"/> Turkish Cheese Kunafa</li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-center mt-5">
-                        <a href="/appointment" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve your table</a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ===================== EVENTS & SHOP ===================== -->
-            <section class="rc-section rc-feature o_colored_level" data-name="Events and Shop">
-                <div class="container">
-                    <div class="row g-5">
-                        <div class="col-lg-6">
-                            <span class="rc-eyebrow">Upcoming at Resto Cafe</span>
-                            <h2 class="rc-title">Gather, learn &amp; <em>celebrate</em></h2>
-                            <a href="/event" class="rc-event-card">
-                                <div class="rc-event-date"><strong>19</strong><span>Nov</span></div>
-                                <div><h4>Latte Art Workshop</h4><p>Heart, tulip &amp; rosetta with our baristas · 4 PM</p></div>
-                            </a>
-                            <a href="/event" class="rc-event-card">
-                                <div class="rc-event-date"><strong>26</strong><span>Nov</span></div>
-                                <div><h4>Kerala Sadya Masterclass</h4><p>Cook 8 classic Sadya dishes with our head chef · 10 AM</p></div>
-                            </a>
-                            <a href="/event" class="rc-event-card">
-                                <div class="rc-event-date"><strong>24</strong><span>Dec</span></div>
-                                <div><h4>Christmas Food &amp; Wine Festival</h4><p>Cake mixing, live counters, carols &amp; wine pairing · 3 days</p></div>
-                            </a>
-                            <a href="/event" class="rc-btn rc-btn-ghost mt-3">All events <i class="fa fa-arrow-right"/></a>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="rc-shop-panel">
-                                <span class="rc-eyebrow">The Deli Shop</span>
-                                <h2 class="rc-title">Take <em>Kerala</em> home</h2>
-                                <p class="rc-lead">Small-batch snacks, masalas, pickles and our filter coffee, packed fresh in our kitchen and shipped across India.</p>
-                                <div class="rc-shop-grid">
-                                    <a href="/shop"><img src="/hudson_pos_demo_data/static/src/img/packaged_food/banana_chips.png" alt="Banana chips"/></a>
-                                    <a href="/shop"><img src="/hudson_pos_demo_data/static/src/img/packaged_food/filter_coffee.png" alt="Filter coffee"/></a>
-                                    <a href="/shop"><img src="/hudson_pos_demo_data/static/src/img/packaged_food/mango_pickle.png" alt="Mango pickle"/></a>
-                                </div>
-                                <a href="/shop" class="rc-btn rc-btn-gold"><i class="fa fa-shopping-bag"/> Visit the shop</a>
+                        <div class="col-lg-4">
+                            <div class="ay-slot">
+                                <span class="ay-slot-num">03</span>
+                                <span class="ay-slot-time">7:00 PM – 11:00 PM</span>
+                                <h3>Arabian Grills &amp; Dinner</h3>
+                                <p>The charcoal pit at full glow: our busiest, smokiest and most loved hours.</p>
+                                <ul>
+                                    <li><i class="fa fa-check"/> Pepper Al Faham</li>
+                                    <li><i class="fa fa-check"/> Family Kuzhimanthi platters</li>
+                                    <li><i class="fa fa-check"/> Fresh mocktails &amp; shakes</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -534,39 +774,47 @@
             </section>
 
             <!-- ===================== REVIEWS ===================== -->
-            <section class="rc-section rc-reviews o_colored_level" data-name="Reviews">
+            <section class="ay-section ay-dark o_colored_level" data-name="Reviews">
                 <div class="container">
-                    <div class="row align-items-end mb-5">
-                        <div class="col-lg-8">
-                            <span class="rc-eyebrow">Guest Love</span>
-                            <h2 class="rc-title">Words from <em>our tables</em></h2>
+                    <div class="ay-rating-banner">
+                        <div>
+                            <span class="ay-eyebrow">Verified Google Reviews</span>
+                            <h3>Loved by travellers &amp; families alike</h3>
                         </div>
-                        <div class="col-lg-4 text-lg-end">
-                            <div class="rc-rating-summary">4.8<small style="font-size:1.4rem;color:#9a8b78">/5</small></div>
-                            <div class="rc-stars">★★★★★</div>
-                            <small style="color:#9a8b78">from 2,400+ Google reviews</small>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="ay-rating-big">4.8</div>
+                            <div>
+                                <div class="ay-stars">★★★★★</div>
+                                <small style="color: #a69a91;">from 1,200+ Google reviews</small>
+                            </div>
                         </div>
                     </div>
                     <div class="row g-4">
                         <div class="col-md-4">
-                            <div class="rc-review">
-                                <div class="rc-stars">★★★★★</div>
-                                <p>The appam and stew tasted exactly like my grandmother's. Warm staff, beautiful sunset view, and the filter coffee is the best in Kochi.</p>
-                                <div class="rc-who"><img src="/theme_bistro/static/src/img/content/company_team_03.webp" alt="Guest"/><div><strong>Ananya Pillai</strong><span>Food blogger</span></div></div>
+                            <div class="ay-review">
+                                <div>
+                                    <div class="ay-stars">★★★★★</div>
+                                    <p>"Hands down the best Al Faham and Kuzhimanthi on the Kottayam–Kumily highway. The meat was fall-apart tender and the cafe ambience is extraordinary."</p>
+                                </div>
+                                <div class="ay-who"><div class="ay-avatar">MF</div><div><strong>Muhammed Fazil</strong><span>Local Guide · Kanjirappally</span></div></div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="rc-review">
-                                <div class="rc-stars">★★★★★</div>
-                                <p>They catered our 400-guest wedding reception without a single hiccup. The live counters were the talk of the night.</p>
-                                <div class="rc-who"><img src="/theme_bistro/static/src/img/content/company_team_02.webp" alt="Guest"/><div><strong>Rohan Thomas</strong><span>Catering client</span></div></div>
+                            <div class="ay-review">
+                                <div>
+                                    <div class="ay-stars">★★★★★</div>
+                                    <p>"We stopped at 26th Mile on our family road trip from Vagamon. The Turkish Cheese Kunafa and Spanish Latte were world-class! A very spacious, clean AC family lounge."</p>
+                                </div>
+                                <div class="ay-who"><div class="ay-avatar">AT</div><div><strong>Anjali &amp; Thomas</strong><span>Travellers from Kochi</span></div></div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="rc-review">
-                                <div class="rc-stars">★★★★★</div>
-                                <p>Ordering from the QR code at our table was so easy, and we could follow our food from the kitchen in real time. Brilliant.</p>
-                                <div class="rc-who"><img src="/theme_bistro/static/src/img/content/company_team_04.webp" alt="Guest"/><div><strong>Meera Nambiar</strong><span>Regular guest</span></div></div>
+                            <div class="ay-review">
+                                <div>
+                                    <div class="ay-stars">★★★★★</div>
+                                    <p>"Authentic Malabar Biryani with rich Arabian charcoal grills. Polite staff, easy parking right near the Hyundai showroom, and the food comes piping hot."</p>
+                                </div>
+                                <div class="ay-who"><div class="ay-avatar">VN</div><div><strong>Dr. Vivek Nair</strong><span>Regular guest</span></div></div>
                             </div>
                         </div>
                     </div>
@@ -574,49 +822,109 @@
             </section>
 
             <!-- ===================== GALLERY ===================== -->
-            <section class="rc-gallery-wrap o_colored_level" data-name="Gallery">
-                <div class="rc-gallery">
-                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_catalog_landscape_lg_1.webp" alt="Dinner spread"/></a>
-                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_1_landscape_md_2.webp" alt="Cheers"/></a>
-                    <a href="/event"><img src="/theme_bistro/static/src/img/backgrounds/15.webp" alt="Spices"/></a>
-                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/ultrawide_lg_6.webp" alt="Friends at dinner"/></a>
-                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_catalog_landscape_lg_3.webp" alt="Breakfast"/></a>
-                    <a href="/event"><img src="/theme_bistro/static/src/img/content/s_image_hexagonal_1.webp" alt="Coffee"/></a>
-                    <a href="/event"><img src="/theme_bistro/static/src/img/configurator/set_1_landscape_md_3.webp" alt="Mocktails"/></a>
+            <section class="ay-gallery-section ay-light o_colored_level" data-name="Gallery">
+                <div class="container">
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3">
+                        <div>
+                            <span class="ay-eyebrow">Visual Impressions</span>
+                            <h2 class="ay-title mb-0">Follow our <em>culinary journey</em></h2>
+                        </div>
+                        <a href="https://instagram.com/ayshusculinary" target="_blank" rel="noopener" class="ay-btn ay-btn-dark"><i class="fa fa-instagram"/> @ayshusculinary</a>
+                    </div>
+                </div>
+                <div class="ay-gallery">
+                    <a href="https://instagram.com/ayshusculinary" target="_blank" rel="noopener">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&amp;w=1000&amp;auto=format&amp;fit=crop" alt="Kuzhimanthi"/>
+                        <div class="ay-gallery-overlay"><i class="fa fa-instagram"/><span>Slow Dum Kuzhimanthi</span></div>
+                    </a>
+                    <a href="https://instagram.com/ayshusculinary" target="_blank" rel="noopener">
+                        <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Charcoal grills"/>
+                        <div class="ay-gallery-overlay"><i class="fa fa-instagram"/><span>Live Charcoal Al Faham</span></div>
+                    </a>
+                    <a href="https://instagram.com/ayshusculinary" target="_blank" rel="noopener">
+                        <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Kunafa"/>
+                        <div class="ay-gallery-overlay"><i class="fa fa-instagram"/><span>Fresh Baked Kunafa</span></div>
+                    </a>
+                    <a href="https://instagram.com/ayshusculinary" target="_blank" rel="noopener">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&amp;w=1000&amp;auto=format&amp;fit=crop" alt="Family feast"/>
+                        <div class="ay-gallery-overlay"><i class="fa fa-instagram"/><span>Family Feasts</span></div>
+                    </a>
+                    <a href="https://instagram.com/ayshusculinary" target="_blank" rel="noopener">
+                        <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Cafe corner"/>
+                        <div class="ay-gallery-overlay"><i class="fa fa-instagram"/><span>Aesthetic Cafe Corner</span></div>
+                    </a>
+                    <a href="https://instagram.com/ayshusculinary" target="_blank" rel="noopener">
+                        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="Specialty coffee"/>
+                        <div class="ay-gallery-overlay"><i class="fa fa-instagram"/><span>Specialty Pour Over</span></div>
+                    </a>
                 </div>
             </section>
 
-            <!-- ===================== RESERVATION ===================== -->
-            <section class="rc-section rc-reserve o_colored_level" data-name="Reservation">
+            <!-- ===================== RESERVE & VISIT ===================== -->
+            <section id="ay-visit" class="ay-section ay-visit ay-light o_colored_level" data-name="Reservation and Location">
                 <div class="container">
-                    <div class="row align-items-center g-5">
+                    <div class="row g-4">
                         <div class="col-lg-6">
-                            <span class="rc-eyebrow">Reservations</span>
-                            <h2 class="rc-title">Your table by the <em>backwaters</em> is waiting</h2>
-                            <p class="rc-lead">Book in seconds online, or call us for private dining, birthdays and corporate lunches. Walk-ins are always welcome.</p>
-                            <div class="rc-hero-actions">
-                                <a href="/appointment" class="rc-btn rc-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve a Table</a>
-                                <a href="tel:+914842350000" class="rc-btn rc-btn-ghost"><i class="fa fa-phone"/> +91 484 235 0000</a>
-                            </div>
-                            <div class="mt-4">
-                                <p class="rc-contact-line"><i class="fa fa-map-marker"/> Marine Drive, Ernakulam, Kochi, Kerala 682031</p>
-                                <p class="rc-contact-line"><i class="fa fa-envelope"/> hello@restocafe.example.com</p>
+                            <div class="ay-book">
+                                <div class="ay-book-head">
+                                    <span class="ay-eyebrow">Reserve Your Seat</span>
+                                    <h2 class="ay-title">Book a table at <em>Ayshu's</em></h2>
+                                    <p class="mb-0" style="color: #b8aca3;">Instant assistance: <a href="tel:+919122227221" style="color: #f5cf7b; font-weight: 700;">091222 27221</a></p>
+                                </div>
+                                <div class="ay-book-body">
+                                    <ul class="ay-steps">
+                                        <li><b>1</b><span>Pick your date, time slot and number of guests: lunch, sunset cafe or Arabian grills &amp; dinner.</span></li>
+                                        <li><b>2</b><span>Choose your seating: AC family lounge, cafe lounge or a private banquet for 10+ guests.</span></li>
+                                        <li><b>3</b><span>Add requests like high chairs or a birthday cake, and pre-book your food so it is ready when you arrive.</span></li>
+                                    </ul>
+                                    <div class="ay-actions mt-0">
+                                        <a href="/appointment" class="ay-btn ay-btn-gold"><i class="fa fa-calendar-check-o"/> Reserve a Table</a>
+                                        <a href="/pos-self/1?access_token=27a496086d6b42e4" class="ay-btn ay-btn-ghost"><i class="fa fa-cutlery"/> Pre-Book Food</a>
+                                    </div>
+                                    <small>Walk-ins are always welcome. Pre-booking is recommended for weekend evenings.</small>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-lg-5 offset-lg-1">
-                            <div class="rc-hours">
-                                <h3>Opening Hours</h3>
-                                <ul class="list-unstyled mb-0">
-                                    <li><span>Monday – Thursday</span><span>7:00 AM – 11:00 PM</span></li>
-                                    <li><span>Friday – Saturday</span><span>7:00 AM – 12:00 AM</span></li>
-                                    <li><span>Sunday Brunch</span><span>8:00 AM – 4:00 PM</span></li>
-                                    <li><span>Sunday Dinner</span><span>6:00 PM – 11:00 PM</span></li>
-                                    <li><span>Kitchen last order</span><span>45 min before close</span></li>
+                        <div class="col-lg-6">
+                            <div class="ay-loc">
+                                <span class="ay-eyebrow">Find Us Easily</span>
+                                <h3>Kanjirappally, Kerala</h3>
+                                <p class="ay-contact-line"><i class="fa fa-map-marker"/><span>26th Mile Bridge, near Hyundai showroom, Kanjirappally, Kerala 686518 · directly off the highway, with guest parking</span></p>
+                                <p class="ay-contact-line"><i class="fa fa-phone"/><a href="tel:+919122227221">091222 27221</a></p>
+                                <ul class="ay-schedule">
+                                    <li class="ay-all"><span>Monday – Sunday</span><span>11:00 AM – 11:00 PM</span></li>
+                                    <li><span>Lunch (Mandi &amp; Biryani)</span><span>11:30 AM – 3:30 PM</span></li>
+                                    <li><span>Sunset Cafe &amp; Shawarma</span><span>4:00 PM – 7:00 PM</span></li>
+                                    <li><span>Arabian Grills, Al Faham &amp; Dinner</span><span>7:00 PM – 11:00 PM</span></li>
+                                    <li><span>Kitchen last order</span><span>10:30 PM</span></li>
                                 </ul>
+                                <div class="ay-actions">
+                                    <a href="https://maps.google.com/?q=Ayshu%27s+Culinary+Restaurant+Kanjirappally" target="_blank" rel="noopener" class="ay-btn ay-btn-green"><i class="fa fa-map-marker"/> Open in Google Maps</a>
+                                    <a href="tel:+919122227221" class="ay-btn ay-btn-dark"><i class="fa fa-phone"/> Call Restaurant</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- ===================== CLOSING BRAND BAND ===================== -->
+            <section class="ay-closing o_colored_level" data-name="Closing">
+                <div class="container">
+                    <svg class="ay-crest" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                        <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                        <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                        <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                        <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                    </svg>
+                    <blockquote>"Flavours of Malabar. Soul of Arabia."</blockquote>
+                    <p>For parcel orders, bulk party catering and private lounge bookings, call us or book online.</p>
+                    <div class="ay-actions">
+                        <a href="/appointment" class="ay-btn ay-btn-gold"><i class="fa fa-calendar-check-o"/> Instant Table Booking</a>
+                        <a href="tel:+919122227221" class="ay-btn ay-btn-ghost"><i class="fa fa-phone"/> 091222 27221</a>
+                    </div>
+                </div>
+                <div class="ay-watermark" aria-hidden="true">Ayshu's Culinary</div>
             </section>
 
         </div>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal / public Knowledge app: /knowledge/home, /knowledge/article/<id>
+         (controllers/main.py, static/src/portal/knowledge_portal.js). -->
+
+    <template id="knowledge_portal_tree" name="Knowledge portal: sidebar items">
+        <t t-foreach="items" t-as="item">
+            <t t-set="item_children" t-value="not flat and tree['children'].get(item.id)"/>
+            <t t-set="item_access" t-value="'public' if access == 'public' else item._portal_get_access()"/>
+            <li t-attf-class="o_kp_item #{'o_kp_has_children' if item_children else ''} #{'o_kp_open' if item.id in open_ids else ''}"
+                t-att-data-article-id="item.id"
+                t-att-data-name="item.name"
+                t-att-data-icon="item.icon or ''"
+                t-att-data-url="item._portal_url()"
+                t-att-data-favorite="'1' if user_id in item.favorite_user_ids else ''"
+                t-att-data-can-write="'1' if item_access == 'write' and not item.is_locked else ''"
+                t-att-data-can-trash="'1' if item_access == 'write' and (not user_id.share or item.visibility == 'private') else ''"
+                t-att-data-write-date="item.write_date and item.write_date.strftime('%Y-%m-%d %H:%M:%S')"
+                t-att-data-writer="item.write_uid.name">
+                <div t-attf-class="o_kp_item_row #{'o_kp_active' if article and item.id == article.id else ''}">
+                    <button t-if="item_children" type="button" class="o_kp_caret" aria-label="Show sub-articles">
+                        <i class="oi" data-icon="chevron_right"/>
+                    </button>
+                    <span t-else="" class="o_kp_caret_placeholder"/>
+                    <a class="o_kp_link" t-att-href="item._portal_url()">
+                        <span class="o_kp_item_icon">
+                            <t t-if="item.icon" t-out="item.icon"/>
+                            <i t-else="" class="oi" data-icon="description"/>
+                        </span>
+                        <span class="o_kp_item_name" t-out="item.name"/>
+                    </a>
+                    <t t-if="not is_public_user">
+                        <button t-if="item_access == 'write' and not item.is_locked" type="button"
+                                class="o_kp_item_add" title="Add a sub-article">
+                            <i class="oi" data-icon="add"/>
+                        </button>
+                        <button type="button" class="o_kp_item_more" title="More actions">
+                            <i class="oi" data-icon="more_vert"/>
+                        </button>
+                    </t>
+                    <button t-else="" type="button" class="o_kp_item_more" title="More actions">
+                        <i class="oi" data-icon="more_vert"/>
+                    </button>
+                </div>
+                <ul t-if="item_children" class="o_kp_tree o_kp_children">
+                    <t t-call="hudson_knowledge.knowledge_portal_tree" items="item_children"/>
+                </ul>
+            </li>
+        </t>
+    </template>
+
+    <template id="knowledge_portal_page" name="Knowledge portal: page">
+        <t t-set="user_id" t-value="request.env.user"/>
+        <t t-call="web.frontend_layout"
+           title="article.name if article else 'Knowledge'"
+           no_header="True"
+           no_footer="True"
+           no_livechat="True">
+            <div class="o_knowledge_portal"
+                 t-att-data-article-id="article.id if article else ''"
+                 t-att-data-article-name="article.name if article else ''"
+                 t-att-data-can-write="'1' if can_write else ''"
+                 t-att-data-public-user="'1' if is_public_user else ''">
+                <!-- Sidebar -->
+                <aside class="o_kp_sidebar">
+                    <div class="o_kp_sidebar_header">
+                        <a class="o_kp_home" t-att-href="'/' if is_public_user else '/my'">
+                            <i class="oi" data-icon="home"/>
+                            <span>Home</span>
+                        </a>
+                        <button type="button" class="o_kp_search_btn" title="Search (Ctrl+K)">
+                            <i class="oi" data-icon="search"/>
+                        </button>
+                    </div>
+                    <div class="o_kp_sections">
+                        <t t-foreach="tree['sections']" t-as="section">
+                            <section t-if="section[2] or (section[0] == 'private' and can_create)"
+                                     class="o_kp_section" t-att-data-section="section[0]">
+                                <div t-if="section[1]" class="o_kp_section_title">
+                                    <span t-out="section[1]"/>
+                                    <button t-if="section[0] == 'private' and can_create" type="button"
+                                            class="o_kp_create_btn" title="Create a private article">
+                                        <i class="oi" data-icon="add"/>
+                                    </button>
+                                </div>
+                                <ul class="o_kp_tree">
+                                    <t t-call="hudson_knowledge.knowledge_portal_tree"
+                                       items="section[2]" flat="section[0] == 'favorites'"/>
+                                </ul>
+                                <button t-if="section[0] == 'private' and can_create and not section[2]"
+                                        type="button" class="o_kp_create_btn o_kp_create_inline">
+                                    <i class="oi" data-icon="add"/> New article
+                                </button>
+                            </section>
+                        </t>
+                    </div>
+                    <div t-if="is_public_user" class="o_kp_sidebar_footer">
+                        <a t-attf-href="/web/login?redirect=#{article._portal_url() if article else '/knowledge/home'}">Sign in</a>
+                    </div>
+                </aside>
+                <div class="o_kp_backdrop"/>
+
+                <!-- Article -->
+                <main class="o_kp_main">
+                    <header class="o_kp_topbar"
+                            t-att-data-article-id="article.id if article else ''"
+                            t-att-data-name="article.name if article else ''"
+                            t-att-data-url="article._portal_url() if article else ''"
+                            t-att-data-favorite="'1' if article and is_favorite else ''"
+                            t-att-data-can-write="'1' if can_write else ''"
+                            t-att-data-can-trash="'1' if article and can_trash else ''"
+                            t-att-data-write-date="article and article.write_date and article.write_date.strftime('%Y-%m-%d %H:%M:%S')"
+                            t-att-data-writer="article.write_uid.name if article else ''">
+                        <button type="button" class="o_kp_sidebar_toggle" title="Articles">
+                            <i class="oi" data-icon="menu"/>
+                        </button>
+                        <nav class="o_kp_breadcrumb" t-if="article">
+                            <t t-foreach="ancestors" t-as="ancestor">
+                                <a class="o_kp_crumb" t-att-href="ancestor._portal_url()">
+                                    <span t-if="ancestor.icon" t-out="ancestor.icon"/>
+                                    <span t-out="ancestor.name"/>
+                                </a>
+                                <span class="o_kp_crumb_sep">/</span>
+                            </t>
+                            <span class="o_kp_crumb o_kp_crumb_current">
+                                <span t-if="article.icon" t-out="article.icon"/>
+                                <span class="o_kp_title_current" t-out="article.name"/>
+                            </span>
+                            <span t-if="can_write" class="o_kp_save_state" data-status="saved" title="Saved">
+                                <i class="oi" data-icon="cloud"/>
+                            </span>
+                            <span t-elif="access in ('read', 'public')" class="o_kp_readonly_badge">
+                                <i class="oi" data-icon="lock"/> Read only
+                            </span>
+                        </nav>
+                        <div class="o_kp_actions" t-if="article">
+                            <t t-if="not is_public_user">
+                                <button type="button" t-attf-class="o_kp_fav_btn #{'o_kp_is_favorite' if is_favorite else ''}"
+                                        t-att-title="'Remove from Favorites' if is_favorite else 'Add to Favorites'">
+                                    <i class="oi" data-icon="star"/>
+                                </button>
+                                <button type="button" class="o_kp_more_btn" title="More actions">
+                                    <i class="oi" data-icon="more_vert"/>
+                                </button>
+                            </t>
+                            <a t-else="" class="btn btn-sm btn-primary"
+                               t-attf-href="/web/login?redirect=#{article._portal_url()}">Sign in</a>
+                        </div>
+                    </header>
+
+                    <div class="o_kp_scroll">
+                        <t t-if="article">
+                            <div t-if="cover_url" class="o_kp_cover">
+                                <img t-att-src="cover_url" alt=""
+                                     t-attf-style="object-position: center #{article.cover_position or '50%'};"/>
+                            </div>
+                            <div t-attf-class="o_kp_article #{'o_kp_full_width' if article.full_width else ''} #{'o_kp_has_cover' if cover_url else ''}">
+                                <div t-if="article.icon" class="o_kp_icon" t-out="article.icon"/>
+                                <div class="o_kp_body_host">
+                                    <div class="o_kp_body o_knowledge_body" t-out="body"/>
+                                </div>
+                                <textarea t-if="can_write" class="o_kp_raw_body d-none" t-out="raw_body"/>
+                            </div>
+                        </t>
+                        <div t-else="" class="o_kp_empty">
+                            <i class="oi" data-icon="article"/>
+                            <h3>No article yet</h3>
+                            <p>Articles shared with you will appear here. You can also write your own private notes.</p>
+                            <button t-if="can_create" type="button" class="btn btn-primary o_kp_create_btn">
+                                <i class="oi" data-icon="add"/> Create an article
+                            </button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </t>
+    </template>
+</odoo>

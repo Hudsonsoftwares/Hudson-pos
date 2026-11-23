@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ─────────────────────────────────────────────────────────────
+         Article Form View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_article_form" model="ir.ui.view">
+        <field name="name">knowledge.management.article.form</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="arch" type="xml">
+            <form class="o_knowledge_article_form">
+                <header>
+                    <!-- Odoo 19: use invisible= directly, not attrs= -->
+                    <button name="action_toggle_lock" type="object" string="Lock"
+                            class="btn-secondary" invisible="is_locked"/>
+                    <button name="action_toggle_lock" type="object" string="Unlock"
+                            class="btn-warning" invisible="not is_locked"/>
+                    <button name="action_move_to_trash" type="object"
+                            string="Move to Trash" class="btn-danger"/>
+                    <field name="visibility" widget="statusbar"
+                           statusbar_visible="workspace,shared,private"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="icon" nolabel="1"
+                                   style="font-size:2rem; margin-right:8px;"/>
+                            <field name="name" nolabel="1" placeholder="Article Title…"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="visibility" readonly="1"/>
+                            <field name="internal_permission" readonly="1" invisible="visibility != 'workspace'"/>
+                            <field name="parent_id" readonly="1"/>
+                            <field name="is_locked"/>
+                            <field name="full_width"/>
+                        </group>
+                        <group>
+                            <field name="favorite_user_ids" widget="many2many_tags"/>
+                            <field name="cover_image_url"/>
+                            <field name="cover_position"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Content">
+                            <field name="body_html" widget="html" nolabel="1"/>
+                        </page>
+                        <!-- Members page only useful when article is shared -->
+                        <page string="Members">
+                            <field name="member_ids" nolabel="1" readonly="1">
+                                <list editable="bottom">
+                                    <field name="partner_id"/>
+                                    <field name="permission"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Article List View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_article_list" model="ir.ui.view">
+        <field name="name">knowledge.management.article.list</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="arch" type="xml">
+            <list string="Articles"
+                  decoration-muted="is_locked == True">
+                <field name="icon" string=""/>
+                <field name="name" string="Title"/>
+                <field name="visibility" string="Visibility"/>
+                <field name="parent_id" string="Parent" optional="show"/>
+                <field name="is_locked" string="Locked" widget="boolean_toggle"/>
+                <field name="write_uid" string="Last Edited By"/>
+                <field name="write_date" string="Last Edited" widget="datetime"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Article Kanban View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_article_kanban" model="ir.ui.view">
+        <field name="name">knowledge.management.article.kanban</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="icon"/>
+                <field name="visibility"/>
+                <field name="is_locked"/>
+                <field name="write_date"/>
+                <field name="write_uid"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span style="font-size:1.3rem;"><field name="icon"/></span>
+                            <strong class="flex-grow-1 text-truncate"><field name="name"/></strong>
+                            <span t-if="record.is_locked.raw_value"
+                                  class="badge text-bg-warning">🔒</span>
+                        </div>
+                        <div class="text-muted small">
+                            Last edited by <field name="write_uid"/> ·
+                            <field name="write_date" widget="date"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Article Search View
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_article_search" model="ir.ui.view">
+        <field name="name">knowledge.management.article.search</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="arch" type="xml">
+            <search string="Search Articles">
+                <field name="name" string="Title"/>
+                <field name="body_html" string="Content"/>
+                <filter string="Workspace" name="workspace"
+                        domain="[('visibility', '=', 'workspace')]"/>
+                <filter string="Shared" name="shared"
+                        domain="[('visibility', '=', 'shared')]"/>
+                <filter string="Private" name="private"
+                        domain="[('visibility', '=', 'private')]"/>
+                <separator/>
+                <filter string="Favorites" name="favorites"
+                        domain="[('favorite_user_ids', 'in', [uid])]"/>
+                <filter string="Locked" name="locked"
+                        domain="[('is_locked', '=', True)]"/>
+                <separator/>
+                <filter string="Trash" name="trash"
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Visibility" name="group_visibility"
+                        context="{'group_by': 'visibility'}"/>
+                <filter string="Parent" name="group_parent"
+                        context="{'group_by': 'parent_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Window Action — Article list (used by Articles navbar tab)
+    ───────────────────────────────────────────────────────────────── -->
+    <!-- ─────────────────────────────────────────────────────────────
+         Trash: clicking a row opens the article in the Knowledge app
+         (content + deletion date + Restore), not the form view.
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_knowledge_article_trash_list" model="ir.ui.view">
+        <field name="name">knowledge.management.article.trash.list</field>
+        <field name="model">knowledge.management.article</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list string="Trash" create="false" action="action_open_in_knowledge" type="object">
+                <field name="icon" string=""/>
+                <field name="name" string="Title"/>
+                <field name="parent_id" string="Parent" optional="show"/>
+                <field name="write_uid" string="Deleted By"/>
+                <field name="write_date" string="Deleted On" widget="datetime"/>
+                <field name="to_delete_date" string="Deletion Date"/>
+                <button name="action_restore_from_trash" type="object"
+                        string="Restore" icon="fa-undo" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_knowledge_trash" model="ir.actions.act_window">
+        <field name="name">Trash</field>
+        <field name="res_model">knowledge.management.article</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_knowledge_article_trash_list"/>
+        <field name="search_view_id" ref="view_knowledge_article_search"/>
+        <field name="domain">[('active', '=', False), ('is_article_item', '=', False)]</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <record id="action_knowledge_article_list" model="ir.actions.act_window">
+        <field name="name">Articles</field>
+        <field name="res_model">knowledge.management.article</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_knowledge_article_search"/>
+        <field name="context">{'search_default_workspace': 1}</field>
+    </record>
+</odoo>

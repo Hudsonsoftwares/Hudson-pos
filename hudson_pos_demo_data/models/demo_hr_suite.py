@@ -217,18 +217,36 @@ def load_hr_suite_demo_data(env):
                 Leave = env['hr.leave'].sudo()
                 WorkEntryType = env['hr.work.entry.type'].sudo()
 
-                comp_country_id = env.company.country_id.id if env.company.country_id else False
-                country_domain = [('country_id', 'in', [comp_country_id, False])]
+                # Restrict leave type searches to global leave types (country_id = False) to avoid foreign types (R1)
+                country_domain = [('country_id', '=', False)]
 
-                wet_annual = WorkEntryType.search([('name', 'ilike', 'Annual')] + country_domain, limit=1)
+                wet_annual = WorkEntryType.search([('name', 'ilike', 'Paid Time Off')] + country_domain, limit=1)
                 if not wet_annual:
                     wet_annual = WorkEntryType.search([('name', 'ilike', 'Legal leave')] + country_domain, limit=1)
+                if not wet_annual:
+                    wet_annual = WorkEntryType.search([('name', 'ilike', 'Annual')] + country_domain, limit=1)
                 if not wet_annual:
                     wet_annual = WorkEntryType.search([('name', 'ilike', 'Generic Time Off')] + country_domain, limit=1)
                 if not wet_annual:
                     wet_annual = WorkEntryType.search(country_domain, limit=1)
                 if not wet_annual:
                     wet_annual = WorkEntryType.create({'name': 'Annual Paid Leave', 'code': 'ANNUAL_LEAVE', 'country_id': False})
+
+                # Heal any existing dirty leaves or allocations in this company pointing to foreign leave types
+                foreign_leaves = Leave.search([
+                    ('employee_company_id', '=', env.company.id),
+                    ('work_entry_type_id.country_id', '!=', False),
+                    ('work_entry_type_id.country_id', '!=', env.company.country_id.id if env.company.country_id else False),
+                ])
+                if foreign_leaves:
+                    foreign_leaves.write({'work_entry_type_id': wet_annual.id})
+                foreign_allocs = Allocation.search([
+                    ('employee_company_id', '=', env.company.id),
+                    ('work_entry_type_id.country_id', '!=', False),
+                    ('work_entry_type_id.country_id', '!=', env.company.country_id.id if env.company.country_id else False),
+                ])
+                if foreign_allocs:
+                    foreign_allocs.write({'work_entry_type_id': wet_annual.id})
 
                 # Allocate 15 days of annual leave to each employee
                 for emp in employees.values():

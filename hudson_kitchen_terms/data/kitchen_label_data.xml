@@ -2,351 +2,111 @@
 <odoo noupdate="1">
     <!-- Manufacturing / Kitchen Mode Default Terminology -->
 
-    <!-- Manufacturing App / Menus -->
-    <record id="label_manufacturing_orders" model="kitchen.label">
-        <field name="name">Manufacturing Orders</field>
-        <field name="kitchen_label">Production Orders</field>
-        <field name="category">mrp</field>
-        <field name="sequence">10</field>
-        <field name="notes">Standard Manufacturing Orders -> Production Orders</field>
-    </record>
-
-    <record id="label_manufacturing_order" model="kitchen.label">
-        <field name="name">Manufacturing Order</field>
-        <field name="kitchen_label">Production Order</field>
-        <field name="category">mrp</field>
-        <field name="sequence">11</field>
-        <field name="notes">Singular form of Manufacturing Order</field>
-    </record>
-
-    <record id="label_manufacturings" model="kitchen.label">
-        <field name="name">Manufacturings</field>
-        <field name="kitchen_label">Kitchen Productions</field>
-        <field name="category">mrp</field>
-        <field name="sequence">12</field>
-        <field name="notes">Menu item Manufacturings</field>
-    </record>
-
-    <record id="label_manufacturing" model="kitchen.label">
-        <field name="name">Manufacturing</field>
-        <field name="kitchen_label">Kitchen Production</field>
-        <field name="category">mrp</field>
-        <field name="sequence">13</field>
-        <field name="notes">Root app and module name</field>
-    </record>
-
     <!-- Bills of Materials / Recipes -->
     <record id="label_bills_of_materials" model="kitchen.label">
         <field name="name">Bills of Materials</field>
         <field name="kitchen_label">Recipes</field>
-        <field name="category">mrp</field>
-        <field name="sequence">20</field>
+        <field name="sequence">10</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Bills of Materials -> Recipes</field>
     </record>
 
-    <record id="label_bill_of_materials" model="kitchen.label">
-        <field name="name">Bill of Materials</field>
-        <field name="kitchen_label">Recipe</field>
-        <field name="category">mrp</field>
-        <field name="sequence">21</field>
-        <field name="notes">Singular form: Bill of Materials</field>
-    </record>
-
-    <record id="label_bill_of_material" model="kitchen.label">
-        <field name="name">Bill of Material</field>
-        <field name="kitchen_label">Recipe</field>
-        <field name="category">mrp</field>
-        <field name="sequence">22</field>
-        <field name="notes">Field string: Bill of Material</field>
-    </record>
-
-    <record id="label_boms" model="kitchen.label">
-        <field name="name">BoMs</field>
-        <field name="kitchen_label">Recipes</field>
-        <field name="category">mrp</field>
-        <field name="sequence">23</field>
-        <field name="notes">BoM abbreviation plural</field>
-    </record>
-
-    <record id="label_bom" model="kitchen.label">
-        <field name="name">BoM</field>
-        <field name="kitchen_label">Recipe</field>
-        <field name="category">mrp</field>
-        <field name="sequence">24</field>
-        <field name="notes">BoM abbreviation singular</field>
+    <!-- Manufacturing Orders / Production Orders -->
+    <record id="label_manufacturing_orders" model="kitchen.label">
+        <field name="name">Manufacturing Orders</field>
+        <field name="kitchen_label">Production Orders</field>
+        <field name="sequence">20</field>
+        <field name="company_id" eval="False"/>
+        <field name="notes">Standard Manufacturing Orders -> Production Orders</field>
     </record>
 
     <!-- Work Orders / Kitchen Tasks -->
     <record id="label_work_orders" model="kitchen.label">
         <field name="name">Work Orders</field>
         <field name="kitchen_label">Kitchen Tasks</field>
-        <field name="category">mrp</field>
         <field name="sequence">30</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Work Orders -> Kitchen Tasks</field>
-    </record>
-
-    <record id="label_work_order" model="kitchen.label">
-        <field name="name">Work Order</field>
-        <field name="kitchen_label">Kitchen Task</field>
-        <field name="category">mrp</field>
-        <field name="sequence">31</field>
-        <field name="notes">Singular form of Work Order</field>
     </record>
 
     <!-- Work Centers / Kitchen Stations -->
     <record id="label_work_centers" model="kitchen.label">
         <field name="name">Work Centers</field>
         <field name="kitchen_label">Kitchen Stations</field>
-        <field name="category">mrp</field>
         <field name="sequence">40</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Work Centers -> Kitchen Stations</field>
-    </record>
-
-    <record id="label_work_center" model="kitchen.label">
-        <field name="name">Work Center</field>
-        <field name="kitchen_label">Kitchen Station</field>
-        <field name="category">mrp</field>
-        <field name="sequence">41</field>
-        <field name="notes">Singular form of Work Center</field>
     </record>
 
     <!-- Components / Ingredients -->
     <record id="label_components" model="kitchen.label">
         <field name="name">Components</field>
         <field name="kitchen_label">Ingredients</field>
-        <field name="category">mrp</field>
         <field name="sequence">50</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Components -> Ingredients</field>
-    </record>
-
-    <record id="label_component" model="kitchen.label">
-        <field name="name">Component</field>
-        <field name="kitchen_label">Ingredient</field>
-        <field name="category">mrp</field>
-        <field name="sequence">51</field>
-        <field name="notes">Singular form of Component</field>
     </record>
 
     <!-- Operations / Prep Steps -->
     <record id="label_operations" model="kitchen.label">
         <field name="name">Operations</field>
         <field name="kitchen_label">Prep Steps</field>
-        <field name="category">mrp</field>
         <field name="sequence">60</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Operations -> Prep Steps</field>
-    </record>
-
-    <record id="label_operation" model="kitchen.label">
-        <field name="name">Operation</field>
-        <field name="kitchen_label">Prep Step</field>
-        <field name="category">mrp</field>
-        <field name="sequence">61</field>
-        <field name="notes">Singular form of Operation</field>
     </record>
 
     <!-- Scrap Orders / Wastage -->
     <record id="label_scrap_orders" model="kitchen.label">
         <field name="name">Scrap Orders</field>
         <field name="kitchen_label">Wastage</field>
-        <field name="category">mrp</field>
         <field name="sequence">70</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Scrap Orders -> Wastage</field>
-    </record>
-
-    <record id="label_scrap_order" model="kitchen.label">
-        <field name="name">Scrap Order</field>
-        <field name="kitchen_label">Wastage</field>
-        <field name="category">mrp</field>
-        <field name="sequence">71</field>
-        <field name="notes">Singular form of Scrap Order</field>
-    </record>
-
-    <record id="label_scrap" model="kitchen.label">
-        <field name="name">Scrap</field>
-        <field name="kitchen_label">Wastage</field>
-        <field name="category">mrp</field>
-        <field name="sequence">72</field>
-        <field name="notes">Short form / menu item Scrap</field>
     </record>
 
     <!-- Unbuild Orders / Batch Reversals -->
     <record id="label_unbuild_orders" model="kitchen.label">
         <field name="name">Unbuild Orders</field>
         <field name="kitchen_label">Batch Reversals</field>
-        <field name="category">mrp</field>
         <field name="sequence">80</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Unbuild Orders -> Batch Reversals</field>
     </record>
 
-    <record id="label_unbuild_order" model="kitchen.label">
-        <field name="name">Unbuild Order</field>
-        <field name="kitchen_label">Batch Reversal</field>
-        <field name="category">mrp</field>
-        <field name="sequence">81</field>
-        <field name="notes">Singular form of Unbuild Order</field>
-    </record>
-
-    <record id="label_unbuild" model="kitchen.label">
-        <field name="name">Unbuild</field>
-        <field name="kitchen_label">Batch Reversal</field>
-        <field name="category">mrp</field>
-        <field name="sequence">82</field>
-        <field name="notes">Short form Unbuild</field>
-    </record>
-
-    <!-- Productivity / Planning / Efficiency -->
+    <!-- Productivity Losses / Downtime Reasons -->
     <record id="label_productivity_losses" model="kitchen.label">
         <field name="name">Productivity Losses</field>
         <field name="kitchen_label">Downtime Reasons</field>
-        <field name="category">mrp</field>
         <field name="sequence">90</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Standard Productivity Losses -> Downtime Reasons</field>
     </record>
 
-    <record id="label_productivity_loss" model="kitchen.label">
-        <field name="name">Productivity Loss</field>
-        <field name="kitchen_label">Downtime Reason</field>
-        <field name="category">mrp</field>
-        <field name="sequence">91</field>
-        <field name="notes">Singular form of Productivity Loss</field>
-    </record>
-
+    <!-- Planning by Work Center / Station Planning -->
     <record id="label_planning_by_work_center" model="kitchen.label">
         <field name="name">Planning by Work Center</field>
         <field name="kitchen_label">Station Planning</field>
-        <field name="category">mrp</field>
-        <field name="sequence">92</field>
+        <field name="sequence">100</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Planning by Work Center -> Station Planning</field>
     </record>
 
+    <!-- Overall Equipment Effectiveness / Station Efficiency -->
     <record id="label_overall_equipment_effectiveness" model="kitchen.label">
         <field name="name">Overall Equipment Effectiveness</field>
         <field name="kitchen_label">Station Efficiency</field>
-        <field name="category">mrp</field>
-        <field name="sequence">93</field>
+        <field name="sequence">110</field>
+        <field name="company_id" eval="False"/>
         <field name="notes">Overall Equipment Effectiveness -> Station Efficiency</field>
     </record>
 
+    <!-- Shop Floor / Kitchen Floor -->
     <record id="label_shop_floor" model="kitchen.label">
         <field name="name">Shop Floor</field>
         <field name="kitchen_label">Kitchen Floor</field>
-        <field name="category">mrp</field>
-        <field name="sequence">94</field>
-        <field name="notes">Shop Floor -> Kitchen Floor</field>
-    </record>
-
-    <!-- Optional Modules: Quality -->
-    <record id="label_quality_checks" model="kitchen.label">
-        <field name="name">Quality Checks</field>
-        <field name="kitchen_label">Quality Audits</field>
-        <field name="category">quality</field>
-        <field name="sequence">100</field>
-        <field name="notes">Quality Checks -> Quality Audits</field>
-    </record>
-
-    <record id="label_quality_check" model="kitchen.label">
-        <field name="name">Quality Check</field>
-        <field name="kitchen_label">Quality Audit</field>
-        <field name="category">quality</field>
-        <field name="sequence">101</field>
-        <field name="notes">Singular Quality Check</field>
-    </record>
-
-    <record id="label_quality_points" model="kitchen.label">
-        <field name="name">Quality Points</field>
-        <field name="kitchen_label">Inspection Points</field>
-        <field name="category">quality</field>
-        <field name="sequence">102</field>
-        <field name="notes">Quality Points -> Inspection Points</field>
-    </record>
-
-    <record id="label_quality_point" model="kitchen.label">
-        <field name="name">Quality Point</field>
-        <field name="kitchen_label">Inspection Point</field>
-        <field name="category">quality</field>
-        <field name="sequence">103</field>
-        <field name="notes">Singular Quality Point</field>
-    </record>
-
-    <record id="label_quality_alerts" model="kitchen.label">
-        <field name="name">Quality Alerts</field>
-        <field name="kitchen_label">Quality Issues</field>
-        <field name="category">quality</field>
-        <field name="sequence">104</field>
-        <field name="notes">Quality Alerts -> Quality Issues</field>
-    </record>
-
-    <record id="label_quality_alert" model="kitchen.label">
-        <field name="name">Quality Alert</field>
-        <field name="kitchen_label">Quality Issue</field>
-        <field name="category">quality</field>
-        <field name="sequence">105</field>
-        <field name="notes">Singular Quality Alert</field>
-    </record>
-
-    <!-- Optional Modules: Maintenance -->
-    <record id="label_maintenance_requests" model="kitchen.label">
-        <field name="name">Maintenance Requests</field>
-        <field name="kitchen_label">Equipment Service Requests</field>
-        <field name="category">maintenance</field>
-        <field name="sequence">110</field>
-        <field name="notes">Maintenance Requests -> Equipment Service Requests</field>
-    </record>
-
-    <record id="label_maintenance_request" model="kitchen.label">
-        <field name="name">Maintenance Request</field>
-        <field name="kitchen_label">Equipment Service Request</field>
-        <field name="category">maintenance</field>
-        <field name="sequence">111</field>
-        <field name="notes">Singular Maintenance Request</field>
-    </record>
-
-    <record id="label_maintenance_teams" model="kitchen.label">
-        <field name="name">Maintenance Teams</field>
-        <field name="kitchen_label">Kitchen Maintenance Teams</field>
-        <field name="category">maintenance</field>
-        <field name="sequence">112</field>
-        <field name="notes">Maintenance Teams -> Kitchen Maintenance Teams</field>
-    </record>
-
-    <record id="label_maintenance_team" model="kitchen.label">
-        <field name="name">Maintenance Team</field>
-        <field name="kitchen_label">Kitchen Maintenance Team</field>
-        <field name="category">maintenance</field>
-        <field name="sequence">113</field>
-        <field name="notes">Singular Maintenance Team</field>
-    </record>
-
-    <!-- Optional Modules: PLM -->
-    <record id="label_engineering_change_orders" model="kitchen.label">
-        <field name="name">Engineering Change Orders</field>
-        <field name="kitchen_label">Recipe Revisions</field>
-        <field name="category">plm</field>
         <field name="sequence">120</field>
-        <field name="notes">Engineering Change Orders -> Recipe Revisions</field>
-    </record>
-
-    <record id="label_engineering_change_order" model="kitchen.label">
-        <field name="name">Engineering Change Order</field>
-        <field name="kitchen_label">Recipe Revision</field>
-        <field name="category">plm</field>
-        <field name="sequence">121</field>
-        <field name="notes">Singular Engineering Change Order</field>
-    </record>
-
-    <record id="label_ecos" model="kitchen.label">
-        <field name="name">ECOs</field>
-        <field name="kitchen_label">Recipe Revisions</field>
-        <field name="category">plm</field>
-        <field name="sequence">122</field>
-        <field name="notes">ECO abbreviation plural</field>
-    </record>
-
-    <record id="label_eco" model="kitchen.label">
-        <field name="name">ECO</field>
-        <field name="kitchen_label">Recipe Revision</field>
-        <field name="category">plm</field>
-        <field name="sequence">123</field>
-        <field name="notes">ECO abbreviation singular</field>
+        <field name="company_id" eval="False"/>
+        <field name="notes">Shop Floor -> Kitchen Floor</field>
     </record>
 </odoo>

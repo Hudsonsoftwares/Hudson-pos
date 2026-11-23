@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ─── Client Action (Main Knowledge App) ─── -->
+    <record id="action_knowledge_home" model="ir.actions.client">
+        <field name="name">Knowledge</field>
+        <field name="tag">hudson_knowledge.action_knowledge</field>
+        <field name="target">main</field>
+    </record>
+
+    <!-- ─── Root Menu ─── -->
+    <menuitem
+        id="menu_knowledge_root"
+        name="Knowledge"
+        sequence="75"
+        web_icon="hudson_knowledge,static/description/icon.png"
+        action="action_knowledge_home"/>
+
+    <!-- ─── Top-level Sub Menus (shown in navbar) ─── -->
+    <menuitem
+        id="menu_knowledge_home"
+        name="Home"
+        parent="menu_knowledge_root"
+        action="action_knowledge_home"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_knowledge_articles"
+        name="Articles"
+        parent="menu_knowledge_root"
+        action="action_knowledge_article_list"
+        sequence="20"/>
+
+    <!-- ─── Configuration Menus (manager only) ─── -->
+    <menuitem
+        id="menu_knowledge_config"
+        name="Configuration"
+        parent="menu_knowledge_root"
+        sequence="100"
+        groups="hudson_knowledge.group_knowledge_manager"/>
+
+    <menuitem
+        id="menu_knowledge_templates"
+        name="Templates"
+        parent="menu_knowledge_config"
+        action="action_knowledge_template"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_knowledge_template_categories"
+        name="Template Categories"
+        parent="menu_knowledge_config"
+        action="action_knowledge_template_category"
+        sequence="15"/>
+
+    <menuitem
+        id="menu_knowledge_item_stages"
+        name="Item Stages"
+        parent="menu_knowledge_config"
+        sequence="20"/>
+</odoo>

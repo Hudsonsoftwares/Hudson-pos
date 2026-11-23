@@ -1,0 +1,429 @@
+<t name="Jobs" t-name="website_hr_recruitment.index">
+    <t t-set="head">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+        <!-- Playfair Display (headings) + Plus Jakarta Sans (body), same as the home page -->
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+        <!-- Odoo 20 no longer ships Font Awesome: load it so the fa-* icons on this page show -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <style>
+            /* =====================================================================
+               AYSHU'S CULINARY - Careers, Kanjirappally
+               ===================================================================== */
+            #wrap.o_website_hr_recruitment_jobs_list {
+                --ay-teak: #18120e; --ay-teak-deep: #100b08; --ay-teak-card: #231914;
+                --ay-line: rgba(216,168,78,.22);
+                --ay-gold: #d8a84e; --ay-gold-light: #f5cf7b;
+                --ay-gold-grad: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%);
+                --ay-green: #1f3d2b; --ay-green-light: #2b563c;
+                --ay-cream: #fcf9f4; --ay-sand: #f4eee3; --ay-sand-line: #e3d7c5;
+                --ay-ink: #1c140f; --ay-muted: #8a7c72; --ay-body: #5c4e45;
+                --ay-serif: 'Playfair Display', Georgia, serif;
+                --ay-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+                --ay-radius: 14px; --ay-ease: cubic-bezier(.22,1,.36,1);
+                background: var(--ay-cream); font-family: var(--ay-sans); color: var(--ay-ink); line-height: 1.65;
+                overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            }
+            .o_website_hr_recruitment_jobs_list h1, .o_website_hr_recruitment_jobs_list h2,
+            .o_website_hr_recruitment_jobs_list h3, .o_website_hr_recruitment_jobs_list h4 {
+                font-family: var(--ay-serif); font-weight: 700; color: var(--ay-teak); letter-spacing: -.01em;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-eyebrow {
+                display: inline-flex; align-items: center; gap: 12px;
+                font-size: .74rem; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: var(--ay-gold);
+            }
+            .o_website_hr_recruitment_jobs_list .ay-eyebrow::before { content: ""; width: 32px; height: 1px; background: currentColor; opacity: .8; }
+            .o_website_hr_recruitment_jobs_list .ay-eyebrow-green { color: var(--ay-green); }
+            .o_website_hr_recruitment_jobs_list .ay-title em { color: var(--ay-gold); font-style: italic; font-weight: 600; }
+            .o_website_hr_recruitment_jobs_list .ay-btn {
+                display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border-radius: 999px; text-decoration: none;
+                font-size: .78rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; border: 1px solid transparent;
+                transition: transform .3s var(--ay-ease), box-shadow .3s var(--ay-ease), background .3s ease, color .3s ease, border-color .3s ease;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-btn-gold { background: var(--ay-gold-grad); color: var(--ay-teak) !important; box-shadow: 0 10px 30px rgba(216,168,78,.38); }
+            .o_website_hr_recruitment_jobs_list .ay-btn-gold:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(216,168,78,.58); }
+            .o_website_hr_recruitment_jobs_list .ay-btn-ghost { border-color: rgba(255,255,255,.35); color: #fff !important; background: rgba(255,255,255,.06); backdrop-filter: blur(8px); }
+            .o_website_hr_recruitment_jobs_list .ay-btn-ghost:hover { border-color: var(--ay-gold); color: var(--ay-gold-light) !important; transform: translateY(-3px); }
+
+            /* ---------- hero ---------- */
+            .o_website_hr_recruitment_jobs_list .ay-jobs-hero {
+                position: relative; color: #fff; overflow: hidden; padding: 150px 0 0;
+                background: url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&amp;w=2000&amp;auto=format&amp;fit=crop') center/cover no-repeat;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-jobs-hero::before {
+                content: ""; position: absolute; inset: 0;
+                background:
+                    radial-gradient(ellipse at 25% 40%, rgba(216,168,78,.16), transparent 60%),
+                    linear-gradient(100deg, rgba(16,11,8,.95) 0%, rgba(24,18,14,.85) 50%, rgba(24,18,14,.45) 100%);
+            }
+            .o_website_hr_recruitment_jobs_list .ay-jobs-hero > .container { position: relative; z-index: 2; padding-bottom: 80px; }
+            .o_website_hr_recruitment_jobs_list .ay-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+            .o_website_hr_recruitment_jobs_list .ay-brand-crest { width: 56px; height: 56px; color: var(--ay-gold); flex-shrink: 0; filter: drop-shadow(0 4px 14px rgba(216,168,78,.35)); }
+            .o_website_hr_recruitment_jobs_list .ay-brand-name {
+                font-family: var(--ay-serif); font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.8rem); line-height: 1; letter-spacing: .02em;
+                background: var(--ay-gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-brand-sub { margin-top: 8px; font-size: .72rem; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: #e9e1d9; }
+            .o_website_hr_recruitment_jobs_list .ay-jobs-hero h1 {
+                font-size: clamp(2.6rem, 5.6vw, 4.8rem); line-height: 1.06; color: #fff !important; margin: 22px 0; max-width: 860px;
+                text-shadow: 0 4px 24px rgba(0,0,0,.45);
+            }
+            .o_website_hr_recruitment_jobs_list .ay-jobs-hero h1 em { color: var(--ay-gold-light); font-style: italic; font-weight: 600; }
+            .o_website_hr_recruitment_jobs_list .ay-jobs-hero p { color: #ded6cf; font-size: 1.1rem; line-height: 1.85; max-width: 620px; }
+            .o_website_hr_recruitment_jobs_list .ay-hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+            .o_website_hr_recruitment_jobs_list .ay-roles { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+            .o_website_hr_recruitment_jobs_list .ay-roles span {
+                display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; border-radius: 999px;
+                border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.05); color: #e9e1d9; font-size: .82rem; font-weight: 600;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-roles .fa { color: var(--ay-gold); }
+            .o_website_hr_recruitment_jobs_list .ay-infobar { position: relative; z-index: 3; background: rgba(16,11,8,.9); backdrop-filter: blur(14px); border-top: 1px solid var(--ay-line); }
+            .o_website_hr_recruitment_jobs_list .ay-info { display: flex; align-items: center; gap: 14px; padding: 22px 10px; }
+            .o_website_hr_recruitment_jobs_list .ay-info i {
+                width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+                background: rgba(216,168,78,.12); border: 1px solid var(--ay-line); color: var(--ay-gold); font-size: 1.05rem;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-info small { display: block; font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ay-muted); }
+            .o_website_hr_recruitment_jobs_list .ay-info b { color: #fff; font-size: .94rem; font-weight: 700; }
+
+            /* ---------- perks ---------- */
+            .o_website_hr_recruitment_jobs_list .ay-perks-section { padding: 100px 0 30px; }
+            .o_website_hr_recruitment_jobs_list .ay-perk {
+                background: #fff; border: 1px solid var(--ay-sand-line); border-radius: var(--ay-radius); padding: 32px 26px; height: 100%;
+                position: relative; overflow: hidden; transition: transform .4s var(--ay-ease), box-shadow .4s var(--ay-ease), border-color .4s ease;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-perk::before { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: var(--ay-gold-grad); transition: width .5s var(--ay-ease); }
+            .o_website_hr_recruitment_jobs_list .ay-perk:hover { transform: translateY(-6px); border-color: #e2cfaa; box-shadow: 0 30px 60px -32px rgba(24,18,14,.4); }
+            .o_website_hr_recruitment_jobs_list .ay-perk:hover::before { width: 100%; }
+            .o_website_hr_recruitment_jobs_list .ay-perk-icon {
+                width: 58px; height: 58px; border-radius: 50%; background: var(--ay-teak); color: var(--ay-gold-light);
+                display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 20px; box-shadow: 0 0 0 6px var(--ay-sand);
+            }
+            .o_website_hr_recruitment_jobs_list .ay-perk h4 { font-size: 1.3rem; margin-bottom: 8px; }
+            .o_website_hr_recruitment_jobs_list .ay-perk p { color: var(--ay-body); font-size: .9rem; margin: 0; line-height: 1.7; }
+
+            /* ---------- open positions (Odoo topbar, filters, job cards) ---------- */
+            .o_website_hr_recruitment_jobs_list .ay-openings-head { padding-top: 70px; }
+            .o_website_hr_recruitment_jobs_list .ay-openings-head p { color: var(--ay-body); max-width: 600px; margin: 8px 0 0; }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_wevent_index_topbar_filters {
+                background: #fff; border: 1px solid var(--ay-sand-line); border-radius: var(--ay-radius); padding: 18px 14px; margin: 26px 0 30px !important;
+                box-shadow: 0 14px 34px -26px rgba(24,18,14,.45);
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_wevent_index_topbar_filters h1 { font-size: 1.5rem !important; }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_wevent_index_topbar_filters h1::before {
+                content: "\f0b1"; font-family: FontAwesome; font-weight: normal; color: var(--ay-gold); margin-right: 12px; font-size: 1.1rem;
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .form-control,
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .form-select { border-radius: 999px; border-color: var(--ay-sand-line); background-color: var(--ay-cream); font-family: var(--ay-sans); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .form-control:focus,
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .form-select:focus { border-color: var(--ay-gold); box-shadow: 0 0 0 4px rgba(216,168,78,.16); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .input-group .btn,
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_jobs_topbar_search_bar .btn { border-radius: 999px; background: var(--ay-teak); border-color: var(--ay-teak); color: var(--ay-gold-light); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .dropdown-toggle,
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .btn-light {
+                border-radius: 999px; background: var(--ay-sand); border: 1px solid var(--ay-sand-line); color: var(--ay-teak); font-weight: 600;
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card {
+                background: #fff; border: 1px solid var(--ay-sand-line); border-radius: var(--ay-radius); overflow: hidden; position: relative;
+                box-shadow: 0 1px 2px rgba(24,18,14,.04);
+                transition: transform .4s var(--ay-ease), box-shadow .4s var(--ay-ease), border-color .4s ease;
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card::before {
+                content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--ay-gold-grad); opacity: 0; transition: opacity .35s ease;
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card:hover { transform: translateY(-6px); border-color: var(--ay-gold); box-shadow: 0 30px 56px -30px rgba(24,18,14,.5); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card:hover::before { opacity: 1; }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card-body { padding: 30px 34px 30px !important; padding-right: 190px !important; position: relative; }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card-body::after {
+                content: "Apply now  \2192"; position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
+                padding: 12px 22px; border-radius: 999px; background: var(--ay-teak); color: var(--ay-gold-light);
+                font-weight: 800; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; transition: all .3s ease;
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card:hover .card-body::after { background: var(--ay-gold-grad); color: var(--ay-teak); box-shadow: 0 10px 24px rgba(216,168,78,.4); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card h3 { font-size: 1.7rem; margin-bottom: 6px; color: var(--ay-teak); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .card h5 {
+                display: inline-block; font-family: var(--ay-sans); font-size: .7rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+                padding: 5px 12px; border-radius: 999px; background: rgba(31,61,43,.1); color: var(--ay-green) !important; margin: 4px 0 14px;
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_job_card_description { color: var(--ay-body) !important; font-size: .94rem; line-height: 1.7; }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_job_infos { flex-direction: row !important; flex-wrap: wrap; gap: 8px 12px; }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_job_infos > span,
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_job_infos > div {
+                display: inline-flex; align-items: center; gap: 6px; padding: 5px 13px; border-radius: 999px;
+                background: var(--ay-sand); border: 1px solid var(--ay-sand-line); color: var(--ay-body); font-size: .82rem;
+            }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_job_infos > span::before { content: "\f041"; font-family: FontAwesome; color: var(--ay-gold); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .o_job_infos .oi { color: var(--ay-gold); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .alert-info { background: #fff; border: 1px dashed var(--ay-sand-line); color: var(--ay-body); border-radius: var(--ay-radius); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .alert-warning { border-radius: var(--ay-radius); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .pagination .page-link { border-radius: 999px !important; margin: 0 3px; border-color: var(--ay-sand-line); color: var(--ay-teak); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .pagination .page-item.active .page-link { background: var(--ay-teak); border-color: var(--ay-teak); color: var(--ay-gold-light); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs aside .nav-link,
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .list-group-item { color: var(--ay-body); }
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs .list-group-item.active,
+            .o_website_hr_recruitment_jobs_list .oe_website_jobs aside .nav-link.active { background: var(--ay-teak); border-color: var(--ay-teak); color: var(--ay-gold-light); }
+
+            /* ---------- hiring process ---------- */
+            .o_website_hr_recruitment_jobs_list .ay-process {
+                margin: 70px 0 0; border-radius: 20px; padding: 58px 50px; color: #fff; position: relative; overflow: hidden;
+                background: radial-gradient(circle at 88% 12%, rgba(216,168,78,.18), transparent 45%), var(--ay-teak);
+            }
+            .o_website_hr_recruitment_jobs_list .ay-process h2 { color: #fff; font-size: clamp(1.9rem, 3.2vw, 2.6rem); margin: 12px 0 36px; }
+            .o_website_hr_recruitment_jobs_list .ay-process h2 em { color: var(--ay-gold-light); font-style: italic; }
+            .o_website_hr_recruitment_jobs_list .ay-step {
+                display: flex; gap: 16px; height: 100%; padding: 24px 22px; border-radius: 12px;
+                background: var(--ay-teak-card); border: 1px solid var(--ay-line); transition: border-color .3s ease, transform .3s var(--ay-ease);
+            }
+            .o_website_hr_recruitment_jobs_list .ay-step:hover { border-color: var(--ay-gold); transform: translateY(-4px); }
+            .o_website_hr_recruitment_jobs_list .ay-step b { font-family: var(--ay-serif); font-size: 2.3rem; line-height: 1; background: var(--ay-gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+            .o_website_hr_recruitment_jobs_list .ay-step h4 { color: #fff; font-size: 1.15rem; margin: 0 0 6px; }
+            .o_website_hr_recruitment_jobs_list .ay-step p { color: #b0a49c; margin: 0; font-size: .88rem; line-height: 1.6; }
+
+            /* ---------- walk-in / spontaneous application band ---------- */
+            .o_website_hr_recruitment_jobs_list .ay-walkin {
+                margin: 28px 0 90px; border-radius: 20px; padding: 44px 50px; background: var(--ay-green); color: #fff;
+                display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
+            }
+            .o_website_hr_recruitment_jobs_list .ay-walkin h3 { color: #fff; font-size: clamp(1.6rem, 2.8vw, 2.2rem); margin: 10px 0 6px; }
+            .o_website_hr_recruitment_jobs_list .ay-walkin p { color: #c9d6cc; margin: 0; max-width: 580px; }
+            .o_website_hr_recruitment_jobs_list .ay-walkin .ay-eyebrow { color: var(--ay-gold-light); }
+
+            /* ---------- motion &amp; responsive ---------- */
+            @keyframes ay-fade-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+            .o_website_hr_recruitment_jobs_list .ay-reveal { animation: ay-fade-up 1s var(--ay-ease) both; }
+            .o_website_hr_recruitment_jobs_list .ay-d1 { animation-delay: .15s; } .o_website_hr_recruitment_jobs_list .ay-d2 { animation-delay: .3s; } .o_website_hr_recruitment_jobs_list .ay-d3 { animation-delay: .45s; }
+            @media (prefers-reduced-motion: reduce) {
+                .o_website_hr_recruitment_jobs_list *, .o_website_hr_recruitment_jobs_list *::before, .o_website_hr_recruitment_jobs_list *::after { animation: none !important; transition: none !important; }
+            }
+            @media (max-width: 991px) {
+                .o_website_hr_recruitment_jobs_list .ay-jobs-hero { padding-top: 120px; }
+            }
+            @media (max-width: 767px) {
+                .o_website_hr_recruitment_jobs_list .oe_website_jobs .card-body { padding: 24px 22px 80px !important; }
+                .o_website_hr_recruitment_jobs_list .oe_website_jobs .card-body::after { top: auto; bottom: 22px; left: 22px; right: 22px; transform: none; text-align: center; }
+                .o_website_hr_recruitment_jobs_list .ay-process, .o_website_hr_recruitment_jobs_list .ay-walkin { padding: 36px 22px; }
+                .o_website_hr_recruitment_jobs_list .ay-hero-actions .ay-btn { width: 100%; justify-content: center; }
+                .o_website_hr_recruitment_jobs_list .ay-brand-crest { width: 46px; height: 46px; }
+                .o_website_hr_recruitment_jobs_list .ay-brand-sub { letter-spacing: .16em; }
+            }
+
+            /* ---------- website header (navbar) matching across all pages ---------- */
+            header#top {
+                background: rgba(24,18,14,.94) !important;
+                backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+                border-bottom: 1px solid rgba(216,168,78,.22) !important;
+                transition: background .35s ease;
+            }
+            header#top.o_header_is_scrolled, header#top.o_header_affixed, header#top.o_top_fixed_element {
+                background: rgba(16,11,8,.97) !important;
+            }
+            header#top .navbar, header#top .o_cc, header#top .o_header_mobile { background: transparent !important; }
+            header#top .navbar .nav-link,
+            header#top .navbar a:not(.dropdown-item):not(.btn-primary),
+            header#top .navbar button:not(.btn-primary):not(.dropdown-item),
+            header#top .navbar .navbar-brand,
+            header#top .navbar .fa, header#top .navbar .oi {
+                color: #fcf9f4 !important;
+            }
+            header#top .navbar .navbar-brand {
+                font-family: 'Playfair Display', Georgia, serif !important;
+                font-weight: 700 !important;
+                letter-spacing: .03em !important;
+            }
+            header#top .navbar .nav-link {
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 600 !important;
+                font-size: .86rem !important;
+                letter-spacing: .02em !important;
+                text-transform: none !important;
+                position: relative;
+            }
+            header#top .navbar .nav-link::after {
+                content: ""; position: absolute; left: 50%; right: 50%; bottom: 4px; height: 1px; background: #d8a84e;
+                transition: left .35s ease, right .35s ease;
+            }
+            header#top .navbar .nav-link:hover::after, header#top .navbar .nav-link.active::after { left: 14px; right: 14px; }
+            header#top .navbar .nav-link:hover,
+            header#top .navbar .nav-link.active,
+            header#top .navbar .nav-item.active > .nav-link { color: #f5cf7b !important; }
+            header#top .navbar .btn-primary {
+                background: linear-gradient(135deg, #f5cf7b 0%, #efbe58 40%, #d8a84e 100%) !important;
+                border: 0 !important;
+                color: #18120e !important;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                font-weight: 700 !important;
+                font-size: .82rem !important;
+                letter-spacing: .08em !important;
+                text-transform: uppercase !important;
+                border-radius: 999px !important;
+                box-shadow: 0 4px 16px rgba(216,168,78,.35) !important;
+            }
+            header#top .o_navlink_background, header#top .navbar .btn-light, header#top .navbar .o_wsale_my_cart .btn {
+                background: rgba(252,249,244,.1) !important; border-color: rgba(252,249,244,.18) !important;
+            }
+            header#top .navbar-toggler { border-color: rgba(252,249,244,.4) !important; }
+            header#top .navbar-toggler-icon { filter: invert(1) brightness(2); }
+            header#top .offcanvas { background: #18120e !important; color: #fcf9f4; }
+            header#top .offcanvas .nav-link, header#top .offcanvas a:not(.dropdown-item), header#top .offcanvas .btn-close { color: #fcf9f4 !important; }
+            header#top .offcanvas .btn-close { filter: invert(1); }
+            header#top .dropdown-menu .dropdown-item, header#top .dropdown-menu a { color: #212529 !important; text-transform: none; letter-spacing: 0; }
+            @media (max-width: 991px) {
+                header#top .navbar .nav-link::after { display: none; }
+            }
+        </style>
+    </t>
+    <t t-call="website.layout" head="head">
+        <div id="wrap" class="o_website_hr_recruitment_jobs_list">
+
+            <!-- ===================== HERO ===================== -->
+            <section class="ay-jobs-hero">
+                <div class="container">
+                    <div class="ay-brand ay-reveal">
+                        <svg class="ay-brand-crest" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+                            <path d="M50 4 C48 26 34 44 22 50 C32 46 42 38 48 24 C54 38 64 46 74 50 C62 44 52 26 50 4 Z"/>
+                            <path d="M50 30 C45 47 28 61 12 65 C24 62 36 55 45 43 C48 50 52 50 55 43 C64 55 76 62 88 65 C72 61 55 47 50 30 Z"/>
+                            <path d="M50 52 C44 66 30 78 18 82 C28 80 38 74 46 64 C49 70 51 70 54 64 C62 74 72 80 82 82 C70 78 56 66 50 52 Z"/>
+                            <path d="M26 88 L74 88 L68 94 L32 94 Z"/>
+                        </svg>
+                        <div>
+                            <div class="ay-brand-name">Ayshu's Culinary</div>
+                            <div class="ay-brand-sub">Aesthetic Cafe &amp; Arabian Kitchen</div>
+                        </div>
+                    </div>
+                    <span class="ay-eyebrow ay-reveal ay-d1">Careers at Ayshu's</span>
+                    <h1 class="ay-reveal ay-d1">Cook, serve &amp; grow with <em>Kanjirappally's warmest kitchen</em></h1>
+                    <p class="ay-reveal ay-d2">From the charcoal pit to the cafe counter, our team brings Malabar spice and Arabian hospitality to every table. If you love food and people, there's a place for you here.</p>
+                    <div class="ay-hero-actions ay-reveal ay-d3">
+                        <a href="#ay-openings" class="ay-btn ay-btn-gold"><i class="fa fa-briefcase"/> See open positions</a>
+                        <a href="tel:+919122227221" class="ay-btn ay-btn-ghost"><i class="fa fa-phone"/> 091222 27221</a>
+                    </div>
+                    <div class="ay-roles ay-reveal ay-d3">
+                        <span><i class="fa fa-fire"/>Kitchen &amp; grill</span>
+                        <span><i class="fa fa-coffee"/>Cafe &amp; barista</span>
+                        <span><i class="fa fa-cutlery"/>Floor service</span>
+                        <span><i class="fa fa-motorcycle"/>Delivery</span>
+                    </div>
+                </div>
+                <div class="ay-infobar">
+                    <div class="container">
+                        <div class="row g-0">
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-map-marker"/><div><small>Work at</small><b>26th Mile, Kanjirappally</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-clock-o"/><div><small>Shifts</small><b>Lunch, cafe &amp; dinner</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-graduation-cap"/><div><small>Experience</small><b>Freshers welcome</b></div></div></div>
+                            <div class="col-6 col-lg-3"><div class="ay-info"><i class="fa fa-cutlery"/><div><small>Every shift</small><b>Free staff meal</b></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Snippet area -->
+            <div class="oe_structure" id="oe_structure_hr_recruitment_index_top"/>
+
+            <!-- ===================== WHY WORK WITH US ===================== -->
+            <section class="ay-perks-section">
+                <div class="container">
+                    <span class="ay-eyebrow ay-eyebrow-green">Why work with us</span>
+                    <h2 class="ay-title mt-3 mb-4" style="font-size: clamp(2rem, 3.6vw, 3rem);">More than a job, <em>a second family</em></h2>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-perk"><div class="ay-perk-icon"><i class="fa fa-cutlery"/></div><h4>Staff meals</h4><p>A hot meal from our own kitchen on every shift.</p></div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-perk"><div class="ay-perk-icon"><i class="fa fa-graduation-cap"/></div><h4>Learn from our chefs</h4><p>Hands-on training in Arabian grills, dum cooking and barista skills.</p></div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-perk"><div class="ay-perk-icon"><i class="fa fa-calendar"/></div><h4>Fair shifts</h4><p>Planned rotas across lunch, sunset cafe and dinner, with a weekly off.</p></div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="ay-perk"><div class="ay-perk-icon"><i class="fa fa-line-chart"/></div><h4>Grow with us</h4><p>Commis to chef, server to captain: we promote from within.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== OPEN POSITIONS (Odoo job list) ===================== -->
+            <div id="ay-openings" class="container oe_website_jobs">
+                <div class="ay-openings-head">
+                    <span class="ay-eyebrow ay-eyebrow-green">Open positions</span>
+                    <h2 class="ay-title mt-3 mb-0" style="font-size: clamp(2rem, 3.6vw, 3rem);">Find your <em>place at Ayshu's</em></h2>
+                    <p>Click a role to read the details and apply online in a couple of minutes.</p>
+                </div>
+                <!-- Topbar -->
+                <section class="o_wevent_index_topbar_filters row d-flex d-print-none align-items-center justify-content-lg-end flex-wrap mt-4 mb-3">
+                    <div class="flex-grow-1 col-12 col-lg-8">
+                        <h1 class="mb-0 h4">Our Job Opportunities</h1>
+                    </div>
+                    <!-- Customizations -->
+                    <t t-call="website_hr_recruitment.topbar_customizations"/>
+                </section>
+                <div class="row pb16">
+                    <div class="d-none" id="jobs_grid_left"/>
+                    <div class="col-lg" id="jobs_grid">
+                        <div class="row flex-column">
+                            <t t-if="not jobs">
+                                <div class="col">
+                                    <div t-if="search" class="alert alert-warning text-center" role="alert">
+                                        No results found for '<span t-out="search"/>'.
+                                    </div>
+                                    <div class="alert alert-info text-center text-muted" groups="hr_recruitment.group_hr_recruitment_manager">
+                                        Create new job pages from the <strong>+ <i>New</i></strong> top-right button.
+                                    </div>
+                                    <div class="col-lg-12 text-center pt24">
+                                        <p class="h5 fw-light text-muted pb24">
+                                            There are currently no open job opportunities,<br class="mb-2"/>
+                                            but feel free to <span class="fw-bold">contact us</span> for a spontaneous application.
+                                        </p>
+                                        <img class="img-fluid o_we_custom_image pb24" src="/website_hr_recruitment/static/src/img/job_not_found.svg" style="width: 50% !important;" alt="Job not found"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-elif="search and original_search">
+                                <div class="col">
+                                    <div class="alert alert-info text-center" role="alert">
+                                        No results found for '<span t-out="original_search"/>'. Showing results for '<span t-out="search"/>'.
+                                        <t t-set="search" t-value="original_search"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <div t-foreach="jobs" t-as="job" class="col-lg mb32">
+                                <t t-call="website_hr_recruitment.job_card"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pager -->
+                    <div class="navbar mb-3 w-100">
+                        <t t-call="website.pager" classname.f="mx-auto"/>
+                    </div>
+                </div>
+
+                <!-- ===================== HIRING PROCESS ===================== -->
+                <div class="ay-process">
+                    <span class="ay-eyebrow">How we hire</span>
+                    <h2>Four simple steps to <em>joining the team</em></h2>
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-3"><div class="ay-step"><b>01</b><div><h4>Apply online</h4><p>Pick a role and send your details and CV from this page.</p></div></div></div>
+                        <div class="col-md-6 col-lg-3"><div class="ay-step"><b>02</b><div><h4>Quick call</h4><p>Our team calls you within a few days to get to know you.</p></div></div></div>
+                        <div class="col-md-6 col-lg-3"><div class="ay-step"><b>03</b><div><h4>Trial shift</h4><p>Spend a paid shift with us in the kitchen, cafe or on the floor.</p></div></div></div>
+                        <div class="col-md-6 col-lg-3"><div class="ay-step"><b>04</b><div><h4>Welcome aboard</h4><p>Get your uniform, rota and training plan, and meet the family.</p></div></div></div>
+                    </div>
+                </div>
+
+                <!-- ===================== WALK-IN BAND ===================== -->
+                <div class="ay-walkin">
+                    <div>
+                        <span class="ay-eyebrow">Don't see your role?</span>
+                        <h3>Walk in or call us anytime</h3>
+                        <p>We are always happy to meet good cooks, baristas and service staff. Drop by the restaurant at 26th Mile Bridge, near the Hyundai showroom, or call us for a spontaneous application.</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="tel:+919122227221" class="ay-btn ay-btn-gold"><i class="fa fa-phone"/> Call 091222 27221</a>
+                        <a href="/contactus" class="ay-btn ay-btn-ghost"><i class="fa fa-envelope"/> Contact us</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Snippet area -->
+            <div class="oe_structure" id="oe_structure_hr_recruitment_index_bottom"/>
+        </div>
+    </t>
+</t>
