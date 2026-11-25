@@ -51,6 +51,7 @@ export class ShopFloorApp extends Component {
         this.action = useService("action");
         this.dialog = useService("dialog");
         this.notification = useService("notification");
+        this.shopFloorName = this.props.action?.name || "Kitchen Floor";
 
         this.state = proxy({
             // Tabs: "overview" | "my_wo" | workcenter id

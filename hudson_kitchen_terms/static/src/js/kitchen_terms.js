@@ -62,14 +62,14 @@ function applyKitchenTerms(str) {
     return result;
 }
 
-if (session && session.kitchen_mode && session.kitchen_terms && session.kitchen_mrp_app_id) {
+if (session && session.kitchen_mode && session.kitchen_terms && (session.kitchen_mrp_app_ids?.length || session.kitchen_mrp_app_id)) {
     setKitchenTerms(session.kitchen_terms);
-    const mrpAppId = String(session.kitchen_mrp_app_id);
+    const mrpAppIds = (session.kitchen_mrp_app_ids || (session.kitchen_mrp_app_id ? [session.kitchen_mrp_app_id] : [])).map(String);
 
     function isManufacturingAppActive() {
         try {
             // Set by the menu service each time the current app changes.
-            return sessionStorage.getItem("menu_id") === mrpAppId;
+            return mrpAppIds.includes(String(sessionStorage.getItem("menu_id")));
         } catch {
             return false;
         }

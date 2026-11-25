@@ -143,6 +143,14 @@ class KitchenLabel(models.Model):
         help="Leave blank to make this mapping available to all companies (global), or select a specific company to restrict it."
     )
 
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
+        if 'company_id' in fields_list and not defaults.get('company_id'):
+            comp = self._get_kitchen_company()
+            defaults['company_id'] = comp.id if comp else self.env.company.id
+        return defaults
+
     @api.constrains('name', 'company_id')
     def _check_unique_name(self):
         for record in self:
@@ -177,7 +185,7 @@ class KitchenLabel(models.Model):
 
     def init(self):
         super().init()
-        # Remove legacy seeded records if any
+        # 1. Remove legacy seeded records if any from ir_model_data
         self.env.cr.execute("""
             WITH legacy AS (
                 DELETE FROM ir_model_data
@@ -188,14 +196,41 @@ class KitchenLabel(models.Model):
             )
             DELETE FROM kitchen_label WHERE id IN (SELECT res_id FROM legacy)
         """, [list(self._LEGACY_XMLIDS)])
-        # Companies that already use Kitchen Mode get their own label set
-        if 'kitchen_mode' in self.env['res.company']._fields:
-            self.env.cr.execute("SELECT 1 FROM information_schema.columns WHERE table_name = 'res_company' AND column_name = 'kitchen_mode'")
-            if self.env.cr.fetchone():
-                companies = self.env['res.company'].sudo().search([('kitchen_mode', '=', True)])
-                if companies:
-                    self._ensure_company_labels(companies)
-        # Ensure menu_kitchen_label only has mrp.group_mrp_routings
+
+        # 2. Ensure every company in the database has its own full label set
+        companies = self.env['res.company'].sudo().search([])
+        if companies:
+            self._ensure_company_labels(companies)
+
+        # 3. Sync any user modifications from legacy global records to company records, then remove all global records
+        self.env.cr.execute("""
+            UPDATE kitchen_label c
+               SET kitchen_label = g.kitchen_label,
+                   active = g.active
+              FROM kitchen_label g
+             WHERE g.company_id IS NULL
+               AND c.company_id IS NOT NULL
+               AND lower(trim(c.name)) = lower(trim(g.name))
+               AND (g.kitchen_label != c.kitchen_label OR g.active != c.active);
+
+            DELETE FROM kitchen_label WHERE company_id IS NULL;
+        """)
+
+        # 4. Remove any duplicate records within the same company (keep lowest id)
+        self.env.cr.execute("""
+            DELETE FROM kitchen_label
+             WHERE id NOT IN (
+                 SELECT DISTINCT ON (company_id, lower(trim(name))) id
+                   FROM kitchen_label
+                  WHERE company_id IS NOT NULL
+                  ORDER BY company_id, lower(trim(name)), id ASC
+             ) AND company_id IS NOT NULL;
+        """)
+
+        # 5. Invalidate caches so all workers reload terminology immediately
+        self._invalidate_terminology_caches()
+
+        # 6. Ensure menu_kitchen_label only has mrp.group_mrp_routings
         kitchen_menu = self.env.ref('hudson_kitchen_terms.menu_kitchen_label', raise_if_not_found=False)
         routing_group = self.env.ref('mrp.group_mrp_routings', raise_if_not_found=False)
         if kitchen_menu and routing_group:
@@ -206,16 +241,10 @@ class KitchenLabel(models.Model):
         """
         Give each company its own full set of labels the first time Kitchen
         Mode is used, so editing one company's labels never changes another
-        company. The set is copied from the global (company-less) labels when
-        they exist, otherwise from DEFAULT_KITCHEN_LABELS.
+        company.
         """
         Label = self.sudo().with_context(active_test=False)
-        globals_ = Label.search([('company_id', '=', False)], order='sequence, id')
-        template = [
-            {'name': g.name, 'kitchen_label': g.kitchen_label, 'sequence': g.sequence,
-             'active': g.active, 'notes': g.notes}
-            for g in globals_
-        ] or [dict(vals) for vals in DEFAULT_KITCHEN_LABELS]
+        template = [dict(vals) for vals in DEFAULT_KITCHEN_LABELS]
         for company in companies:
             existing = {n.strip().lower() for n in Label.search([('company_id', '=', company.id)]).mapped('name') if n}
             to_create = [
@@ -396,13 +425,16 @@ class KitchenLabel(models.Model):
         global_records = records.filtered(lambda r: not r.company_id)
         company_records = records.filtered(lambda r: r.company_id.id == company_id) if company_id else self.browse()
 
-        # If target_company has kitchen_mode enabled but no records in DB yet, auto-seed them
+        # A company without its own labels yet simply uses the defaults/global
+        # labels above. Never create records here: this runs during page loads
+        # (load_menus, get_views, session_info) on read-only cursors, and
+        # creating labels also flushes the registry caches mid-request.
+        # Company labels are seeded when Kitchen Mode is switched on
+        # (res.company create/write, settings, module upgrade).
         if target_company and target_company.kitchen_mode and not company_records:
-            try:
-                self._ensure_company_labels(target_company)
-                company_records = self.sudo().with_context(active_test=False).search([('company_id', '=', company_id)], order='sequence, id')
-            except Exception as e:
-                _logger.warning("Could not auto-seed company labels: %s", e)
+            from .kitchen_trace import kitchen_trace
+            kitchen_trace(self.env, 'company has Kitchen Mode but no own labels: using defaults',
+                          level='WARNING', company=target_company)
 
         # Apply global records (override defaults)
         for r in global_records:
@@ -511,7 +543,7 @@ class KitchenLabel(models.Model):
     def apply_terms_to_menus(self, menus_dict, terms=None, company=None):
         """
         Transforms visible menu titles in menus_dict returned by ir.ui.menu.load_menus().
-        Strictly restricted to Manufacturing (mrp) menus. Menus belonging to other
+        Strictly restricted to Manufacturing (mrp) and Shop Floor menus. Menus belonging to other
         modules (Payroll, HR, Accounting, etc.) are never modified.
         """
         if not menus_dict or not isinstance(menus_dict, dict):
@@ -522,15 +554,27 @@ class KitchenLabel(models.Model):
             return menus_dict
 
         mrp_root = self.env.ref('mrp.menu_mrp_root', raise_if_not_found=False)
-        if not mrp_root:
-            return menus_dict
+        shopfloor_menu = self.env.ref('hudson_shopfloor.menu_hudson_shopfloor', raise_if_not_found=False)
+        target_app_ids = set()
+        if mrp_root:
+            target_app_ids.add(mrp_root.id)
+        if shopfloor_menu:
+            target_app_ids.add(shopfloor_menu.id)
+
         kitchen_menu = self.env.ref('hudson_kitchen_terms.menu_kitchen_label', raise_if_not_found=False)
 
         # The result of load_menus() is shared through ormcache: never mutate
         # it in place, only replace the entries that change.
         menus_copy = dict(menus_dict)
         for menu_id, menu in menus_dict.items():
-            if not isinstance(menu, dict) or menu.get('app_id') != mrp_root.id:
+            if not isinstance(menu, dict):
+                continue
+            is_target = (
+                menu.get('app_id') in target_app_ids
+                or menu_id in target_app_ids
+                or (isinstance(menu.get('name'), str) and 'shop floor' in menu.get('name').lower())
+            )
+            if not is_target:
                 continue
             if kitchen_menu and menu.get('id') == kitchen_menu.id:
                 continue
@@ -573,22 +617,39 @@ class KitchenLabel(models.Model):
         if not terms:
             return views_result
 
+        # The dicts inside views_result can come from Odoo's view cache and are
+        # shared between companies/requests: build copies, never mutate them.
+        result = dict(views_result)
+
         # Process views arch
         views = views_result.get('views')
         if isinstance(views, dict):
+            new_views = {}
             for v_type, v_info in views.items():
-                if isinstance(v_info, dict) and 'arch' in v_info and isinstance(v_info['arch'], str):
-                    v_info['arch'] = self.apply_terms_to_arch(v_info['arch'], terms)
+                if isinstance(v_info, dict) and isinstance(v_info.get('arch'), str):
+                    v_info = dict(v_info, arch=self.apply_terms_to_arch(v_info['arch'], terms))
+                new_views[v_type] = v_info
+            result['views'] = new_views
 
         # Process model fields
         models_dict = views_result.get('models')
         if isinstance(models_dict, dict):
+            new_models = {}
             for model_name, m_info in models_dict.items():
-                if isinstance(m_info, dict) and 'fields' in m_info and isinstance(m_info['fields'], dict):
+                if isinstance(m_info, dict) and isinstance(m_info.get('fields'), dict):
+                    new_fields = {}
                     for fname, f_info in m_info['fields'].items():
                         if isinstance(f_info, dict):
-                            for f_key in ('string', 'help', 'placeholder'):
-                                if f_key in f_info and isinstance(f_info[f_key], str):
-                                    f_info[f_key] = self.apply_terms_to_text(f_info[f_key], terms)
+                            changes = {
+                                f_key: self.apply_terms_to_text(f_info[f_key], terms)
+                                for f_key in ('string', 'help', 'placeholder')
+                                if isinstance(f_info.get(f_key), str)
+                            }
+                            if changes:
+                                f_info = dict(f_info, **changes)
+                        new_fields[fname] = f_info
+                    m_info = dict(m_info, fields=new_fields)
+                new_models[model_name] = m_info
+            result['models'] = new_models
 
-        return views_result
+        return result

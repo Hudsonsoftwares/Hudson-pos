@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
 
+from .kitchen_trace import kitchen_trace
+
 
 class ResCompany(models.Model):
     _inherit = 'res.company'
@@ -25,6 +27,8 @@ class ResCompany(models.Model):
             record.kitchen_task = is_enabled
 
     def _inverse_kitchen_task(self):
+        kitchen_trace(self.env, 'kitchen_task changed (GLOBAL: affects every company)',
+                      level='WARNING', companies=[(c.id, c.name, c.kitchen_task) for c in self])
         routing_group = self.env.ref('mrp.group_mrp_routings', raise_if_not_found=False)
         group_user = self.env.ref('base.group_user', raise_if_not_found=False)
         if routing_group and group_user:
@@ -38,12 +42,13 @@ class ResCompany(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         companies = super().create(vals_list)
-        enabled = companies.filtered('kitchen_mode')
-        if enabled:
-            self.env['kitchen.label']._ensure_company_labels(enabled)
+        self.env['kitchen.label']._ensure_company_labels(companies)
         return companies
 
     def write(self, vals):
+        if 'kitchen_mode' in vals or 'kitchen_task' in vals:
+            kitchen_trace(self.env, 'res.company write', companies=[(c.id, c.name) for c in self],
+                          vals={k: vals[k] for k in ('kitchen_mode', 'kitchen_task') if k in vals})
         res = super().write(vals)
         if vals.get('kitchen_mode'):
             self.env['kitchen.label']._ensure_company_labels(self.filtered('kitchen_mode'))

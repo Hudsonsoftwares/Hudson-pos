@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Kitchen Mode Terminology for Manufacturing',
-    'version': '1.0.1',
+    'version': '1.0.3',
     'category': 'Manufacturing/Manufacturing',
     'summary': 'Presentation-level Kitchen Mode terminology for Manufacturing (Recipes, Kitchen Stations, Tasks, etc.)',
     'description': """
@@ -33,6 +33,7 @@ Manufacturing -> Configuration -> Kitchen Labels
     'data': [
         'security/ir.access.csv',
         'data/kitchen_label_data.xml',
+        'data/kitchen_trace_data.xml',
         'views/kitchen_label_views.xml',
         'views/res_config_settings_views.xml',
     ],
