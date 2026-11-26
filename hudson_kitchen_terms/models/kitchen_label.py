@@ -183,9 +183,24 @@ class KitchenLabel(models.Model):
         'label_ecos', 'label_eco',
     )
 
+    _LEGACY_NAMES = (
+        'manufacturing order', 'manufacturings', 'manufacturing',
+        'bill of materials', 'bill of material', 'boms', 'bom',
+        'work order', 'work center', 'component', 'operation',
+        'scrap order', 'scrap', 'unbuild order', 'unbuild',
+        'productivity loss',
+        'quality checks', 'quality check', 'quality points', 'quality point',
+        'quality alerts', 'quality alert',
+        'maintenance requests', 'maintenance request',
+        'maintenance teams', 'maintenance team',
+        'engineering change orders', 'engineering change order',
+        'ecos', 'eco',
+    )
+
     def init(self):
         super().init()
-        # 1. Remove legacy seeded records if any from ir_model_data
+        # 1. Remove legacy seeded records (by xmlid and by legacy variant name,
+        #    including company-specific copies created before variants were unified)
         self.env.cr.execute("""
             WITH legacy AS (
                 DELETE FROM ir_model_data
@@ -194,8 +209,10 @@ class KitchenLabel(models.Model):
                    AND name = ANY(%s)
              RETURNING res_id
             )
-            DELETE FROM kitchen_label WHERE id IN (SELECT res_id FROM legacy)
-        """, [list(self._LEGACY_XMLIDS)])
+            DELETE FROM kitchen_label
+             WHERE id IN (SELECT res_id FROM legacy)
+                OR lower(trim(name)) = ANY(%s)
+        """, [list(self._LEGACY_XMLIDS), list(self._LEGACY_NAMES)])
 
         # 2. Ensure every company in the database has its own full label set
         companies = self.env['res.company'].sudo().search([])
